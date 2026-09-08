@@ -335,8 +335,25 @@ export default function Home() {
     }
   };
   useEffect(() => {
-    const timer = window.setTimeout(() => { void refreshSnapshot(); }, 0);
-    return () => window.clearTimeout(timer);
+    let cancelled = false;
+
+    const initialize = async () => {
+      try {
+        const fallback = await readSnapshot("./data/seedf-snapshot.json");
+        if (!cancelled) {
+          setSnapshot(fallback);
+          setSyncMode("fallback");
+          setLastUpdated(`GitHub · backup · ${formatSnapshotDate(fallback.source.synced_at)}`);
+        }
+      } catch {
+        // A live request below can still initialize the dashboard when no backup is available.
+      }
+
+      if (!cancelled) void refreshSnapshot();
+    };
+
+    void initialize();
+    return () => { cancelled = true; };
   }, []);
   const activeLabel = navigation.find((item) => item.id === section)?.label ?? "Visão geral";
   const nextAction = snapshot?.dashboard.next_action ?? "D01 · Português + LDB";

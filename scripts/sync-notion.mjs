@@ -5,6 +5,7 @@ import path from "node:path";
 const DEFAULT_PAGE_ID = "3d4cf5a2-6731-8106-a2c9-c97816aa6cf5";
 const NOTION_API_BASE = "https://api.notion.com/v1";
 const NOTION_VERSION = process.env.NOTION_VERSION || "2026-03-11";
+const MAX_NOTION_CONCURRENCY = 4;
 const pageId = normalizePageId(process.env.NOTION_PAGE_ID || DEFAULT_PAGE_ID);
 const token = process.env.NOTION_TOKEN?.trim();
 const outputPath = path.resolve("public/data/seedf-snapshot.json");
@@ -13,9 +14,10 @@ if (!token) {
   throw new Error("NOTION_TOKEN is not configured. Add it as a GitHub Actions secret.");
 }
 
-const page = await notionRequest(`/pages/${pageId}`);
-const topLevelBlocks = await getAllChildren(pageId);
-const blocks = await expandBlocks(topLevelBlocks);
+const request = createNotionRequest();
+const page = await request(`/pages/${pageId}`);
+const topLevelBlocks = await getAllChildren(pageId, request);
+const blocks = await expandBlocks(topLevelBlocks, request);
 const sourceText = blocks.map(blockToText).filter(Boolean).join("\n");
 const contentHash = createHash("sha256").update(sourceText).digest("hex");
 const previous = await readPreviousSnapshot();
@@ -73,14 +75,47 @@ async function notionRequest(endpoint) {
   return JSON.parse(body);
 }
 
-async function getAllChildren(blockId) {
+function createNotionRequest() {
+  let inFlight = 0;
+  const waiting = [];
+
+  const acquire = () =>
+    new Promise((resolve) => {
+      if (inFlight < MAX_NOTION_CONCURRENCY) {
+        inFlight += 1;
+        resolve();
+      } else {
+        waiting.push(resolve);
+      }
+    });
+
+  const release = () => {
+    const next = waiting.shift();
+    if (next) {
+      next();
+    } else {
+      inFlight -= 1;
+    }
+  };
+
+  return async (endpoint) => {
+    await acquire();
+    try {
+      return await notionRequest(endpoint);
+    } finally {
+      release();
+    }
+  };
+}
+
+async function getAllChildren(blockId, request) {
   const children = [];
   let cursor = null;
 
   do {
     const query = new URLSearchParams({ page_size: "100" });
     if (cursor) query.set("start_cursor", cursor);
-    const response = await notionRequest(`/blocks/${blockId}/children?${query}`);
+    const response = await request(`/blocks/${blockId}/children?${query}`);
     children.push(...(response.results || []));
     cursor = response.has_more ? response.next_cursor : null;
   } while (cursor);
@@ -88,15 +123,35 @@ async function getAllChildren(blockId) {
   return children;
 }
 
-async function expandBlocks(blocks, depth = 0) {
-  const expanded = [];
-  for (const block of blocks) {
-    expanded.push(block);
-    if (block.has_children && depth < 3 && block.type !== "child_page") {
-      expanded.push(...(await expandBlocks(await getAllChildren(block.id), depth + 1)));
+async function expandBlocks(blocks, request, depth = 0) {
+  const nested = await mapWithConcurrency(blocks, MAX_NOTION_CONCURRENCY, async (block) => {
+    if (!block.has_children || depth >= 3 || block.type === "child_page") {
+      return [];
     }
-  }
-  return expanded;
+
+    return expandBlocks(await getAllChildren(block.id, request), request, depth + 1);
+  });
+
+  return blocks.flatMap((block, index) => [block, ...nested[index]]);
+}
+
+async function mapWithConcurrency(items, concurrency, mapper) {
+  const results = new Array(items.length);
+  let nextIndex = 0;
+
+  const worker = async () => {
+    while (true) {
+      const index = nextIndex++;
+      if (index >= items.length) return;
+      results[index] = await mapper(items[index], index);
+    }
+  };
+
+  await Promise.all(
+    Array.from({ length: Math.min(concurrency, items.length) }, () => worker()),
+  );
+
+  return results;
 }
 
 function blockToText(block) {

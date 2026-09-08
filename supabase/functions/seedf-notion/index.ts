@@ -2,6 +2,7 @@ const NOTION_API_BASE = "https://api.notion.com/v1";
 const NOTION_VERSION = "2026-03-11";
 const PAGE_ID = "3d4cf5a2-6731-8106-a2c9-c97816aa6cf5";
 const CACHE_TTL_MS = 60_000;
+const MAX_NOTION_CONCURRENCY = 4;
 
 const allowedOrigins = new Set([
   "https://rodrigorosadantas.github.io",
@@ -52,9 +53,10 @@ Deno.serve(async (request) => {
 });
 
 async function buildSnapshot(token: string): Promise<DashboardSnapshot> {
-  const page = await notionRequest(`/pages/${PAGE_ID}`, token);
-  const topLevelBlocks = await getAllChildren(PAGE_ID, token);
-  const blocks = await expandBlocks(topLevelBlocks, token);
+  const request = createNotionRequest(token);
+  const page = await request(`/pages/${PAGE_ID}`);
+  const topLevelBlocks = await getAllChildren(PAGE_ID, request);
+  const blocks = await expandBlocks(topLevelBlocks, request);
   const sourceText = blocks.map(blockToText).filter(Boolean).join("\n");
   const contentHash = await sha256(sourceText);
 
@@ -110,14 +112,49 @@ async function notionRequest(endpoint: string, token: string): Promise<Record<st
   }
 }
 
-async function getAllChildren(blockId: string, token: string): Promise<Array<Record<string, any>>> {
+type NotionRequest = (endpoint: string) => Promise<Record<string, any>>;
+
+function createNotionRequest(token: string): NotionRequest {
+  let inFlight = 0;
+  const waiting: Array<() => void> = [];
+
+  const acquire = () =>
+    new Promise<void>((resolve) => {
+      if (inFlight < MAX_NOTION_CONCURRENCY) {
+        inFlight += 1;
+        resolve();
+      } else {
+        waiting.push(resolve);
+      }
+    });
+
+  const release = () => {
+    const next = waiting.shift();
+    if (next) {
+      next();
+    } else {
+      inFlight -= 1;
+    }
+  };
+
+  return async (endpoint: string) => {
+    await acquire();
+    try {
+      return await notionRequest(endpoint, token);
+    } finally {
+      release();
+    }
+  };
+}
+
+async function getAllChildren(blockId: string, request: NotionRequest): Promise<Array<Record<string, any>>> {
   const children: Array<Record<string, any>> = [];
   let cursor: string | null = null;
 
   do {
     const query = new URLSearchParams({ page_size: "100" });
     if (cursor) query.set("start_cursor", cursor);
-    const response = await notionRequest(`/blocks/${blockId}/children?${query}`, token);
+    const response = await request(`/blocks/${blockId}/children?${query}`);
     children.push(...(response.results || []));
     cursor = response.has_more ? response.next_cursor : null;
   } while (cursor);
@@ -125,17 +162,39 @@ async function getAllChildren(blockId: string, token: string): Promise<Array<Rec
   return children;
 }
 
-async function expandBlocks(blocks: Array<Record<string, any>>, token: string, depth = 0) {
-  const expanded: Array<Record<string, any>> = [];
-
-  for (const block of blocks) {
-    expanded.push(block);
-    if (block.has_children && depth < 3 && block.type !== "child_page") {
-      expanded.push(...(await expandBlocks(await getAllChildren(block.id, token), token, depth + 1)));
+async function expandBlocks(blocks: Array<Record<string, any>>, request: NotionRequest, depth = 0) {
+  const nested = await mapWithConcurrency(blocks, MAX_NOTION_CONCURRENCY, async (block) => {
+    if (!block.has_children || depth >= 3 || block.type === "child_page") {
+      return [];
     }
-  }
 
-  return expanded;
+    return expandBlocks(await getAllChildren(block.id, request), request, depth + 1);
+  });
+
+  return blocks.flatMap((block, index) => [block, ...nested[index]]);
+}
+
+async function mapWithConcurrency<T, R>(
+  items: T[],
+  concurrency: number,
+  mapper: (item: T, index: number) => Promise<R>,
+): Promise<R[]> {
+  const results = new Array<R>(items.length);
+  let nextIndex = 0;
+
+  const worker = async () => {
+    while (true) {
+      const index = nextIndex++;
+      if (index >= items.length) return;
+      results[index] = await mapper(items[index], index);
+    }
+  };
+
+  await Promise.all(
+    Array.from({ length: Math.min(concurrency, items.length) }, () => worker()),
+  );
+
+  return results;
 }
 
 function blockToText(block: Record<string, any>) {
