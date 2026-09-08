@@ -689,6 +689,26 @@ function Materials({ snapshot = activeDashboardSnapshot }: { snapshot?: Dashboar
   const hasLiveMaterials = Boolean(liveMaterials?.days?.length);
   const displayedMaterials = hasLiveMaterials ? liveMaterials!.days : studyMaterials;
   const displayedLegislation = liveMaterials?.legislation?.length ? liveMaterials.legislation : legislationPlan;
+  const [lawQuery, setLawQuery] = useState("");
+  const [lawFilter, setLawFilter] = useState("Todos");
+  const normalizedLawQuery = normalizeSearch(lawQuery.trim());
+  const filteredLegislation = displayedLegislation.filter((item) => {
+    const searchableText = [
+      item.day,
+      item.title,
+      item.detail,
+      item.status,
+      ...item.links.flatMap((link) => [link.label, link.href]),
+    ].join(" ");
+    const matchesQuery =
+      !normalizedLawQuery || normalizeSearch(searchableText).includes(normalizedLawQuery);
+    const hasOfficialSource = item.links.length > 0;
+    const matchesFilter =
+      lawFilter === "Todos" ||
+      (lawFilter === "Com fonte oficial" && hasOfficialSource) ||
+      (lawFilter === "Sem lei seca" && !hasOfficialSource);
+    return matchesQuery && matchesFilter;
+  });
   const displayedFuture = liveMaterials?.future?.length ? liveMaterials.future : futureMaterials;
   const displayedSequence = liveMaterials?.sequence?.length ? liveMaterials.sequence : sequentialMaterialsFallback;
   const sequenceSource = displayedSequence[0]?.href || notionSequentialMaterialsPage;
@@ -743,7 +763,9 @@ function Materials({ snapshot = activeDashboardSnapshot }: { snapshot?: Dashboar
               <p>{material.detail}</p>
               <a className="text-button" href={material.href} target="_blank" rel="noreferrer">Abrir material <ArrowRight size={15} /></a>
             </article>
-          ))}
+          )) : (
+            <div className="legislation-empty">Nenhum dia encontrado. Tente buscar por outra lei ou fonte.</div>
+          )}
         </div>
       </section>
 
@@ -797,8 +819,31 @@ function Materials({ snapshot = activeDashboardSnapshot }: { snapshot?: Dashboar
           description="O roteiro é lido da página de materiais do Notion quando a API está disponível. “Sem lei seca nuclear” significa que o dia prioriza material técnico, conceitos ou revisão adaptativa."
           action={<a className="text-button" href={materialSource} target="_blank" rel="noreferrer">Ver roteiro no Notion <ChevronRight size={16} /></a>}
         />
+        <div className="legislation-toolbar">
+          <label className="legislation-search">
+            <span className="sr-only">Buscar lei ou fonte oficial</span>
+            <input
+              type="search"
+              value={lawQuery}
+              onChange={(event) => setLawQuery(event.target.value)}
+              placeholder="Buscar LDB, ECA, LAI, LC 840..."
+              aria-label="Buscar lei ou fonte oficial"
+            />
+          </label>
+          <select
+            className="legislation-filter"
+            value={lawFilter}
+            onChange={(event) => setLawFilter(event.target.value)}
+            aria-label="Filtrar leis"
+          >
+            <option value="Todos">Todos os dias</option>
+            <option value="Com fonte oficial">Com fonte oficial</option>
+            <option value="Sem lei seca">Sem lei seca nuclear</option>
+          </select>
+          <span className="legislation-count">{filteredLegislation.length} de {displayedLegislation.length} dias</span>
+        </div>
         <div className="legislation-list">
-          {displayedLegislation.map((item) => (
+          {filteredLegislation.length > 0 ? filteredLegislation.map((item) => (
             <article className={`legislation-item legislation-${item.tone}`} key={item.day}>
               <div className="legislation-day">{item.day}</div>
               <div className="legislation-body">
