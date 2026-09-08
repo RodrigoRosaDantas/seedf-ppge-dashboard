@@ -1,6 +1,8 @@
 const NOTION_API_BASE = "https://api.notion.com/v1";
 const NOTION_VERSION = "2026-03-11";
 const PAGE_ID = "3d4cf5a2-6731-8106-a2c9-c97816aa6cf5";
+const MATERIALS_PAGE_ID = "3d4cf5a2-6731-81a4-a51f-eed1c396c77b";
+const CYCLE_PAGE_ID = "3d4cf5a2-6731-8185-a1c6-da3820a7687b";
 const CACHE_TTL_MS = 60_000;
 const MAX_NOTION_CONCURRENCY = 4;
 
@@ -54,11 +56,35 @@ Deno.serve(async (request) => {
 
 async function buildSnapshot(token: string): Promise<DashboardSnapshot> {
   const request = createNotionRequest(token);
-  const page = await request(`/pages/${PAGE_ID}`);
-  const topLevelBlocks = await getAllChildren(PAGE_ID, request);
+  const [page, topLevelBlocks] = await Promise.all([
+    request(`/pages/${PAGE_ID}`),
+    getAllChildren(PAGE_ID, request),
+  ]);
   const blocks = await expandBlocks(topLevelBlocks, request);
   const sourceText = blocks.map(blockToText).filter(Boolean).join("\n");
-  const contentHash = await sha256(sourceText);
+  let materials: MaterialsSnapshot | null = null;
+  let materialsText = "";
+
+  try {
+    const [materialsPage, materialsTopLevelBlocks, cycleTopLevelBlocks] = await Promise.all([
+      request(`/pages/${MATERIALS_PAGE_ID}`),
+      getAllChildren(MATERIALS_PAGE_ID, request),
+      getAllChildren(CYCLE_PAGE_ID, request),
+    ]);
+    const [materialBlocks, cycleBlocks] = await Promise.all([
+      expandBlocks(materialsTopLevelBlocks, request),
+      expandBlocks(cycleTopLevelBlocks, request),
+    ]);
+    materialsText = materialBlocks.map(blockToText).filter(Boolean).join("\n");
+    materials = buildMaterialsSnapshot(materialsPage, materialsText, cycleBlocks);
+  } catch (error) {
+    console.error(
+      "SEEDF materials sync unavailable:",
+      error instanceof Error ? error.message : "unknown error",
+    );
+  }
+
+  const contentHash = await sha256([sourceText, materialsText].filter(Boolean).join("\n"));
 
   return {
     schema_version: 1,
@@ -84,7 +110,8 @@ async function buildSnapshot(token: string): Promise<DashboardSnapshot> {
       verticalized_axes: 60,
       jobs: 3,
     },
-    notice: "Dados consultados em tempo real no Notion. O conteúdo completo não é exposto.",
+    materials,
+    notice: "Dados consultados em tempo real no Notion. O site expõe apenas um índice sanitizado de materiais e fontes.",
   };
 }
 
@@ -202,17 +229,141 @@ function blockToText(block: Record<string, any>) {
   if (!data) return "";
 
   if (Array.isArray(data.rich_text)) {
-    return data.rich_text.map((item: any) => item.plain_text || item.text?.content || "").join("");
+    return richTextToMarkdown(data.rich_text);
   }
 
   if (block.type === "table_row" && Array.isArray(data.cells)) {
-    return data.cells
-      .map((cell: any[]) => cell.map((item) => item.plain_text || item.text?.content || "").join(""))
-      .join(" | ");
+    return data.cells.map((cell: any[]) => richTextToMarkdown(cell)).join(" | ");
   }
 
   if (block.type === "child_page") return data.title || "";
   return "";
+}
+
+function richTextToMarkdown(items: any[]) {
+  return items
+    .map((item) => {
+      const text = item.plain_text || item.text?.content || item.mention?.page?.title || "";
+      const href =
+        item.href ||
+        item.text?.link?.url ||
+        (item.mention?.page?.id ? notionPageUrl(item.mention.page.id) : null);
+      return href && text ? `[${text}](${href})` : text;
+    })
+    .join("");
+}
+
+function buildMaterialsSnapshot(
+  page: Record<string, any>,
+  materialsText: string,
+  cycleBlocks: Array<Record<string, any>>,
+): MaterialsSnapshot {
+  const materialPages = new Map<string, string>();
+  const materialTitles = new Map<string, string>();
+
+  for (const block of cycleBlocks) {
+    if (block.type !== "child_page") continue;
+    const title = block.child_page?.title || "";
+    const day = title.match(/^(D\d{2})\b/i)?.[1]?.toUpperCase();
+    if (day) {
+      materialPages.set(day, notionPageUrl(block.id));
+      materialTitles.set(day, title.replace(/^D\d{2}\s*[—–-]\s*/i, "").trim());
+    }
+  }
+
+  const legislation = extractDayLines(materialsText)
+    .map((line) => parseReadingDay(line, materialPages))
+    .filter((item): item is MaterialsDay => Boolean(item));
+  const legislationByDay = new Map(legislation.map((item) => [item.day, item]));
+  const days = Array.from(new Set([...materialTitles.keys(), ...legislationByDay.keys()])).map((day) => {
+    const lawItem = legislationByDay.get(day);
+    return {
+      day,
+      title: materialTitles.get(day) || lawItem?.title || day,
+      detail: lawItem?.title ? `Leitura vinculada: ${lawItem.title}.` : "Material do ciclo no Notion.",
+      meta: META_BY_DAY[day] || "",
+      href: materialPages.get(day) || notionPageUrl(CYCLE_PAGE_ID),
+      tone: TONE_BY_DAY[day] || "teal",
+    } satisfies MaterialsDaySummary;
+  });
+
+  return {
+    source_url: page.url || notionPageUrl(MATERIALS_PAGE_ID),
+    last_edited_time: page.last_edited_time || null,
+    days,
+    legislation,
+    future: extractFutureMaterials(materialsText),
+  };
+}
+
+function extractDayLines(text: string) {
+  return text
+    .split(/\n+/)
+    .map((line) => line.trim())
+    .filter((line) => /^(?:[-*]\s*)?(?:\*{1,2})?D\d{2}\b/i.test(line));
+}
+
+function parseReadingDay(line: string, materialPages: Map<string, string>): MaterialsDay | null {
+  const normalized = line
+    .replace(/^[-*]\s*/, "")
+    .replace(/^\*+/, "")
+    .replace(/\*+$/, "")
+    .trim();
+  const match = normalized.match(/^D(\d{2})\s*[—–-]\s*([^:]+):\s*(.*)$/i);
+  if (!match) return null;
+
+  const day = `D${match[1]}`;
+  const title = stripInlineMarkup(match[2]);
+  const rawDetail = match[3].trim();
+  const links = extractLinks(rawDetail).filter((link) => !/notion\.so|app\.notion\.com/i.test(link.href));
+
+  return {
+    day,
+    title,
+    detail: stripInlineMarkup(rawDetail),
+    meta: META_BY_DAY[day] || "",
+    href: materialPages.get(day) || notionPageUrl(CYCLE_PAGE_ID),
+    status: STATUS_BY_DAY[day] || "Material do ciclo",
+    tone: TONE_BY_DAY[day] || "teal",
+    links,
+  };
+}
+
+function extractFutureMaterials(text: string): FutureMaterial[] {
+  const start = text.indexOf("Fila posterior");
+  if (start < 0) return [];
+  const section = text.slice(start);
+  return section
+    .split(/\n+/)
+    .map((line) => line.trim())
+    .filter((line) => /^(?:[-*]\s*)?(?:\*{1,2})?MS\d{2}/i.test(line))
+    .map((line) => {
+      const normalized = line.replace(/^[-*]\s*/, "").replace(/^\*+/, "").replace(/\*+$/, "").trim();
+      const match = normalized.match(/^(MS\d{2}(?:\/MS\d{2})?):\s*(.*)$/i);
+      return match ? { label: match[1].toUpperCase(), detail: stripInlineMarkup(match[2]) } : null;
+    })
+    .filter((item): item is FutureMaterial => Boolean(item));
+}
+
+function extractLinks(value: string) {
+  return Array.from(value.matchAll(/\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g)).map((match) => ({
+    label: match[1].trim(),
+    href: match[2].trim(),
+  }));
+}
+
+function stripInlineMarkup(value: string) {
+  return value
+    .replace(/\[([^\]]+)\]\(https?:\/\/[^)]+\)/g, "$1")
+    .replace(/<mention-page[^>]*\/>/g, "")
+    .replace(/\*{1,2}/g, "")
+    .replace(/\s{2,}/g, " ")
+    .trim();
+}
+
+function notionPageUrl(value: string) {
+  const normalized = normalizePageId(value);
+  return `https://app.notion.com/p/${(normalized || value).replaceAll("-", "")}`;
 }
 
 function pageTitle(page: Record<string, any>) {
@@ -264,6 +415,57 @@ function json(value: unknown, status: number, headers: Record<string, string>) {
   return new Response(JSON.stringify(value), { status, headers });
 }
 
+const META_BY_DAY: Record<string, string> = {
+  D01: "25 questões",
+  D02: "30 questões",
+  D03: "30 questões",
+  D04: "30 questões",
+  D05: "35 questões",
+  D06: "35 questões",
+  D07: "30 questões · adaptativo",
+  D08: "35 questões",
+  D09: "30 questões",
+  D10: "35 questões",
+  D11: "35 questões",
+  D12: "35 questões",
+  D13: "30 questões",
+  D14: "40 questões · adaptativo",
+};
+
+const STATUS_BY_DAY: Record<string, string> = {
+  D01: "Leitura obrigatória",
+  D02: "Leitura obrigatória",
+  D03: "Leitura obrigatória + atualização",
+  D04: "Questões primeiro",
+  D05: "Leitura obrigatória",
+  D06: "Fonte técnica",
+  D07: "Revisão pelos dados",
+  D08: "Leitura complementar",
+  D09: "Conceitos + questões",
+  D10: "Teoria + questões",
+  D11: "Leitura obrigatória",
+  D12: "Reforço pontual",
+  D13: "Leitura + radar normativo",
+  D14: "Checkpoint adaptativo",
+};
+
+const TONE_BY_DAY = {
+  D01: "gold",
+  D02: "teal",
+  D03: "violet",
+  D04: "teal",
+  D05: "coral",
+  D06: "violet",
+  D07: "violet",
+  D08: "teal",
+  D09: "teal",
+  D10: "coral",
+  D11: "gold",
+  D12: "teal",
+  D13: "coral",
+  D14: "violet",
+} as const;
+
 type DashboardSnapshot = {
   schema_version: number;
   source: {
@@ -286,5 +488,39 @@ type DashboardSnapshot = {
     verticalized_axes: number;
     jobs: number;
   };
+  materials: MaterialsSnapshot | null;
   notice: string;
+};
+
+type MaterialsSnapshot = {
+  source_url: string;
+  last_edited_time: string | null;
+  days: MaterialsDaySummary[];
+  legislation: MaterialsDay[];
+  future: FutureMaterial[];
+};
+
+type MaterialsDaySummary = {
+  day: string;
+  title: string;
+  detail: string;
+  meta: string;
+  href: string;
+  tone: "gold" | "teal" | "violet" | "coral";
+};
+
+type MaterialsDay = {
+  day: string;
+  title: string;
+  detail: string;
+  meta: string;
+  href: string;
+  status: string;
+  tone: "gold" | "teal" | "violet" | "coral";
+  links: Array<{ label: string; href: string }>;
+};
+
+type FutureMaterial = {
+  label: string;
+  detail: string;
 };

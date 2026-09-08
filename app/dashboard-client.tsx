@@ -25,6 +25,38 @@ import {
 import type { LucideIcon } from "lucide-react";
 
 type SectionId = "inicio" | "estudar" | "fases" | "cargos" | "progresso" | "materiais";
+type MaterialsTone = "gold" | "teal" | "violet" | "coral";
+
+type StudyMaterial = {
+  day: string;
+  title: string;
+  detail: string;
+  meta: string;
+  href: string;
+  tone: MaterialsTone;
+};
+
+type LegislationItem = {
+  day: string;
+  title: string;
+  detail: string;
+  status: string;
+  tone: MaterialsTone;
+  links: Array<{ label: string; href: string }>;
+};
+
+type FutureMaterial = {
+  label: string;
+  detail: string;
+};
+
+type MaterialsSnapshot = {
+  source_url: string;
+  last_edited_time: string | null;
+  days: StudyMaterial[];
+  legislation?: LegislationItem[];
+  future: FutureMaterial[];
+};
 
 type DashboardSnapshot = {
   schema_version: number;
@@ -48,12 +80,14 @@ type DashboardSnapshot = {
     verticalized_axes: number;
     jobs: number;
   };
+  materials?: MaterialsSnapshot | null;
   notice?: string;
 };
 
 const LIVE_NOTION_API_URL = "https://fqqkkyusnzhuuizahkww.supabase.co/functions/v1/seedf-notion";
 // Public Supabase anon key: it gates the read-only function; the Notion token never reaches the browser.
 const LIVE_NOTION_API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZxcWtreXVzbnpodXVpemFoa3d3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU3MjIwNTksImV4cCI6MjEwMTI5ODA1OX0.YZd0d4XsFHFT6uETemPZdcDc9t0pQUn8_XmNFHx7hJ0";
+let activeDashboardSnapshot: DashboardSnapshot | null = null;
 
 function isDashboardSnapshot(value: unknown): value is DashboardSnapshot {
   if (!value || typeof value !== "object") return false;
@@ -82,6 +116,13 @@ function formatSnapshotDate(value: string | null) {
   const date = new Date(value);
   if (Number.isNaN(date.valueOf())) return "aguardando sincronização";
   return new Intl.DateTimeFormat("pt-BR", { dateStyle: "short", timeStyle: "short" }).format(date);
+}
+
+function formatMaterialsAudit(value: string | null) {
+  if (!value) return "LEITURA LEGISLATIVA · AUDITORIA 08/09/2026";
+  const date = new Date(value);
+  if (Number.isNaN(date.valueOf())) return "LEITURA LEGISLATIVA · AUDITORIA 08/09/2026";
+  return `LEITURA LEGISLATIVA · NOTION ATUALIZADO ${new Intl.DateTimeFormat("pt-BR", { dateStyle: "short" }).format(date)}`;
 }
 
 const navigation: Array<{ id: SectionId; label: string; icon: LucideIcon }> = [
@@ -155,7 +196,7 @@ const notionMaterialsPage = "https://app.notion.com/p/3d4cf5a2673181a4a51feed1c3
 const d01NotionPage = "https://app.notion.com/p/3d4cf5a2673181fabef1f407c2451392";
 const ldbOfficialUrl = "https://www.planalto.gov.br/ccivil_03/leis/l9394compilado.htm";
 
-const studyMaterials = [
+const studyMaterials: StudyMaterial[] = [
   { day: "D01", title: "Português fino + LDB", detail: "Fundamentos e organização", meta: "25 questões", href: d01NotionPage, tone: "gold" },
   { day: "D02", title: "CF/88 Educação + LDB", detail: "Deveres e sistemas", meta: "30 questões", href: "https://app.notion.com/p/3d4cf5a267318134be45ca366aa2cda5", tone: "teal" },
   { day: "D03", title: "PNE 2026 + PNED + LDB", detail: "Atualizações educacionais", meta: "30 questões", href: "https://app.notion.com/p/3d4cf5a2673181cba515e85f76f0804e", tone: "violet" },
@@ -170,9 +211,9 @@ const studyMaterials = [
   { day: "D12", title: "Materiais + patrimônio + LAI", detail: "Manutenção de alta eficiência", meta: "35 questões", href: "https://app.notion.com/p/3d4cf5a2673181339102dfeed723def3", tone: "teal" },
   { day: "D13", title: "ECA + acessibilidade + Educação Especial", detail: "Núcleo Monitor", meta: "30 questões", href: "https://app.notion.com/p/3d4cf5a26731817db4f3d27a70ed8646", tone: "coral" },
   { day: "D14", title: "Revisão integrada + checkpoint", detail: "Fechamento do Ciclo 01", meta: "40 questões · adaptativo", href: "https://app.notion.com/p/3d4cf5a2673181db8454e5ad9dd90c01", tone: "violet" },
-] as const;
+];
 
-const legislationPlan = [
+const legislationPlan: LegislationItem[] = [
   {
     day: "D01",
     title: "LDB — fundamentos",
@@ -320,9 +361,9 @@ const legislationPlan = [
     tone: "violet",
     links: [],
   },
-] as const;
+];
 
-const futureMaterials = [
+const futureMaterials: FutureMaterial[] = [
   { label: "MS03/MS07", detail: "PDE-DF e LODF — transição posterior, sem antecipar novo ciclo." },
   { label: "MS05/MS06", detail: "Direito Administrativo e LC 840 — aprofundar conforme lacunas reais." },
   { label: "MS13", detail: "Lei 14.133/2021 — licitações e contratos." },
@@ -467,8 +508,97 @@ function Progress() {
   return <div className="inner-page"><section className="page-intro"><div><p className="eyebrow">PAINÉIS E PROGRESSO</p><h1>O painel começa em zero por honestidade</h1><p>O C01 está planejado; ainda não está executado. A diferença é exatamente o que protege sua decisão.</p></div><StatusPill>Sem sessões registradas</StatusPill></section><section className="stats-grid progress-stats"><StatCard icon={Check} label="Questões feitas" value="0" detail={`de ${totalPlanned} fixas no C01`} tone="blue" /><StatCard icon={TrendingUp} label="Precisão" value="—" detail="Aparece após a primeira correção" tone="teal" /><StatCard icon={CircleAlert} label="Caderno de erros" value="0" detail="Nenhum erro SEEDF importado" tone="coral" /><StatCard icon={Clock3} label="Tempo médio" value="—" detail="Exige volume de execução" tone="violet" /></section><section className="content-grid two-thirds"><div className="panel empty-chart"><div className="empty-chart-lines"><span /><span /><span /><span /><span /></div><div className="empty-chart-message"><div className="empty-icon"><BarChart3 size={21} /></div><h3>Gráfico liberado após a primeira sessão</h3><p>O painel vai mostrar evolução por cargo, matéria, assunto, acertos, erros, omissões e tempo médio quando houver dados reais.</p></div></div><div className="panel decision-panel"><p className="eyebrow">DECISÃO DO PAINEL</p><h3>Agora, estudar. Depois, recalibrar.</h3><p>Não ajuste a carga antes de existir evidência SEEDF. O histórico TDAS/EDAS serve para o estado inicial dos tópicos, não para fabricar acurácia.</p><div className="decision-quote">“Métrica sem decisão não entra como KPI principal.”</div></div></section></div>;
 }
 
-function Materials() {
+function MaterialsLegacy() {
   return <div className="inner-page"><section className="page-intro"><div><p className="eyebrow">BIBLIOTECA SEEDF</p><h1>Fontes que alimentam a preparação</h1><p>O site organiza o acesso. A verdade continua no material oficial e no Notion operacional.</p></div><StatusPill tone="teal">Fonte: Notion SEEDF</StatusPill></section><section className="source-grid">{sources.map((source) => <article className="panel source-card" key={source.title}><div className="source-card-top"><span className="source-icon"><FileCheck2 size={18} /></span><StatusPill>{source.tag}</StatusPill></div><h3>{source.title}</h3><p>{source.detail}</p><a className="text-button" href={source.href} target="_blank" rel="noreferrer">Abrir no Notion <ChevronRight size={16} /></a></article>)}</section><section className="panel materials-roadmap"><SectionHeading eyebrow="CICLO 01 · MATERIAL COMPLETO" title="Materiais do D01 ao D14" description="Cada cartão abre a página correspondente no Notion. A meta e o estado seguem a sequência operacional do C01." action={<a className="text-button" href={notionMaterialsPage} target="_blank" rel="noreferrer">Abrir biblioteca no Notion <ChevronRight size={16} /></a>} /><div className="material-grid">{studyMaterials.map((material) => <article className={`material-card material-${material.tone}`} key={material.day}><div className="material-card-top"><span className="material-day">{material.day}</span><StatusPill tone={material.tone === "coral" ? "coral" : material.tone === "gold" ? "gold" : material.tone === "violet" ? "violet" : "teal"}>{material.meta}</StatusPill></div><h3>{material.title}</h3><p>{material.detail}</p><a className="text-button" href={material.href} target="_blank" rel="noreferrer">Abrir material <ArrowRight size={15} /></a></article>)}</div></section><section className="panel legislation-panel"><SectionHeading eyebrow="LEITURA LEGISLATIVA · AUDITORIA 08/09/2026" title="Leis e fontes oficiais por dia" description="O roteiro abaixo foi organizado a partir da página de materiais do Notion. “Sem lei seca nuclear” significa que o dia prioriza material técnico, conceitos ou revisão adaptativa." action={<a className="text-button" href={notionMaterialsPage} target="_blank" rel="noreferrer">Ver roteiro no Notion <ChevronRight size={16} /></a>} /><div className="legislation-list">{legislationPlan.map((item) => <article className={`legislation-item legislation-${item.tone}`} key={item.day}><div className="legislation-day">{item.day}</div><div className="legislation-body"><div className="legislation-title-row"><h3>{item.title}</h3><StatusPill tone={item.tone === "coral" ? "coral" : item.tone === "gold" ? "gold" : item.tone === "violet" ? "violet" : "teal"}>{item.status}</StatusPill></div><p>{item.detail}</p>{item.links.length > 0 ? <div className="law-links">{item.links.map((link) => <a href={link.href} target="_blank" rel="noreferrer" key={link.href}>{link.label} <ArrowRight size={13} /></a>)}</div> : <span className="law-empty">Sem lei seca nuclear neste recorte</span>}</div></article>)}</div></section><section className="panel future-materials"><SectionHeading eyebrow="FILA POSTERIOR · NOTION" title="Materiais já previstos para depois do C01" description="Eles permanecem no repositório, mas não deslocam o D01 nem antecipam um novo ciclo." action={<a className="text-button" href={notionMaterialsPage} target="_blank" rel="noreferrer">Abrir materiais sequenciais <ChevronRight size={16} /></a>} /><div className="future-material-grid">{futureMaterials.map((material) => <div className="future-material" key={material.label}><strong>{material.label}</strong><span>{material.detail}</span></div>)}</div></section><section className="panel materials-note"><div className="note-icon"><CircleAlert size={19} /></div><div><p className="eyebrow">REGRA-MÃE</p><h3>Fonte oficial atualizada prevalece sobre resumo antigo.</h3><p>O Notion mantém o material completo; o site oferece uma visão rápida, com links para a fonte oficial e para cada página do C01.</p></div></section></div>;
+}
+
+function Materials({ snapshot = activeDashboardSnapshot }: { snapshot?: DashboardSnapshot | null }) {
+  const liveMaterials = snapshot?.materials;
+  const hasLiveMaterials = Boolean(liveMaterials?.days?.length);
+  const displayedMaterials = hasLiveMaterials ? liveMaterials!.days : studyMaterials;
+  const displayedLegislation = liveMaterials?.legislation?.length ? liveMaterials.legislation : legislationPlan;
+  const displayedFuture = liveMaterials?.future?.length ? liveMaterials.future : futureMaterials;
+  const materialSource = liveMaterials?.source_url || notionMaterialsPage;
+  const auditLabel = formatMaterialsAudit(liveMaterials?.last_edited_time ?? null);
+
+  return (
+    <div className="inner-page">
+      <section className="page-intro">
+        <div>
+          <p className="eyebrow">BIBLIOTECA SEEDF</p>
+          <h1>Fontes que alimentam a preparação</h1>
+          <p>O site organiza o acesso. A verdade continua no material oficial e no Notion operacional.</p>
+        </div>
+        <StatusPill tone={hasLiveMaterials ? "teal" : "gold"}>{hasLiveMaterials ? "Notion ao vivo" : "Recorte do Notion"}</StatusPill>
+      </section>
+
+      <section className="source-grid">
+        {sources.map((source) => (
+          <article className="panel source-card" key={source.title}>
+            <div className="source-card-top"><span className="source-icon"><FileCheck2 size={18} /></span><StatusPill>{source.tag}</StatusPill></div>
+            <h3>{source.title}</h3>
+            <p>{source.detail}</p>
+            <a className="text-button" href={source.href} target="_blank" rel="noreferrer">Abrir no Notion <ChevronRight size={16} /></a>
+          </article>
+        ))}
+      </section>
+
+      <section className="panel materials-roadmap">
+        <SectionHeading
+          eyebrow="CICLO 01 · MATERIAL COMPLETO"
+          title="Materiais do D01 ao D14"
+          description="Cada cartão abre a página correspondente no Notion. A meta e o estado seguem a sequência operacional do C01."
+          action={<a className="text-button" href={materialSource} target="_blank" rel="noreferrer">Abrir biblioteca no Notion <ChevronRight size={16} /></a>}
+        />
+        <div className="material-grid">
+          {displayedMaterials.map((material) => (
+            <article className={`material-card material-${material.tone}`} key={material.day}>
+              <div className="material-card-top"><span className="material-day">{material.day}</span><StatusPill tone={material.tone}>{material.meta}</StatusPill></div>
+              <h3>{material.title}</h3>
+              <p>{material.detail}</p>
+              <a className="text-button" href={material.href} target="_blank" rel="noreferrer">Abrir material <ArrowRight size={15} /></a>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="panel legislation-panel">
+        <SectionHeading
+          eyebrow={auditLabel}
+          title="Leis e fontes oficiais por dia"
+          description="O roteiro é lido da página de materiais do Notion quando a API está disponível. “Sem lei seca nuclear” significa que o dia prioriza material técnico, conceitos ou revisão adaptativa."
+          action={<a className="text-button" href={materialSource} target="_blank" rel="noreferrer">Ver roteiro no Notion <ChevronRight size={16} /></a>}
+        />
+        <div className="legislation-list">
+          {displayedLegislation.map((item) => (
+            <article className={`legislation-item legislation-${item.tone}`} key={item.day}>
+              <div className="legislation-day">{item.day}</div>
+              <div className="legislation-body">
+                <div className="legislation-title-row"><h3>{item.title}</h3><StatusPill tone={item.tone}>{item.status}</StatusPill></div>
+                <p>{item.detail}</p>
+                {item.links.length > 0 ? <div className="law-links">{item.links.map((link) => <a href={link.href} target="_blank" rel="noreferrer" key={link.href}>{link.label} <ArrowRight size={13} /></a>)}</div> : <span className="law-empty">Sem lei seca nuclear neste recorte</span>}
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="panel future-materials">
+        <SectionHeading
+          eyebrow="FILA POSTERIOR · NOTION"
+          title="Materiais já previstos para depois do C01"
+          description="Eles permanecem no repositório, mas não deslocam o D01 nem antecipam um novo ciclo."
+          action={<a className="text-button" href={materialSource} target="_blank" rel="noreferrer">Abrir materiais sequenciais <ChevronRight size={16} /></a>}
+        />
+        <div className="future-material-grid">{displayedFuture.map((material) => <div className="future-material" key={material.label}><strong>{material.label}</strong><span>{material.detail}</span></div>)}</div>
+      </section>
+
+      <section className="panel materials-note">
+        <div className="note-icon"><CircleAlert size={19} /></div>
+        <div><p className="eyebrow">REGRA-MÃE</p><h3>Fonte oficial atualizada prevalece sobre resumo antigo.</h3><p>O Notion mantém o material completo; o site indexa a biblioteca e conserva o backup do GitHub para quando a consulta ao vivo estiver indisponível.</p></div>
+      </section>
+    </div>
+  );
 }
 
 export default function Home() {
@@ -540,5 +670,6 @@ export default function Home() {
   }, []);
   const activeLabel = navigation.find((item) => item.id === section)?.label ?? "Visão geral";
   const nextAction = snapshot?.dashboard.next_action ?? "D01 · Português fino + LDB";
+  activeDashboardSnapshot = snapshot;
   return <main className="site-shell"><aside className={`sidebar ${menuOpen ? "sidebar-open" : ""}`}><div className="brand-block"><div className="brand-mark">S</div><div><strong>SEEDF</strong><span>PPGE · Dashboard PRO</span></div><button className="close-menu" onClick={() => setMenuOpen(false)} aria-label="Fechar menu"><X size={18} /></button></div><div className="sidebar-context"><span className="live-dot" /> Pré-edital 2026/2027</div><nav className="main-nav" aria-label="Navegação principal">{navigation.map((item) => { const Icon = item.icon; const active = section === item.id; return <button className={`nav-item ${active ? "nav-active" : ""}`} key={item.id} onClick={() => handleNavigate(item.id)}><Icon size={18} /><span>{item.label}</span>{active && <span className="nav-indicator" />}</button>; })}</nav><div className="sidebar-bottom"><div className="sidebar-card"><p className="eyebrow">PRÓXIMA AÇÃO</p><strong>{nextAction}</strong><button onClick={() => handleNavigate("estudar")}>Abrir execução <ArrowRight size={15} /></button></div><div className="sidebar-footer"><span className="source-dot" /> Notion como fonte operacional</div></div></aside>{menuOpen && <button className="scrim" onClick={() => setMenuOpen(false)} aria-label="Fechar menu" />}<div className="main-column"><header className="topbar"><div className="topbar-left"><button className="menu-button" onClick={() => setMenuOpen(true)} aria-label="Abrir menu"><Menu size={20} /></button><div><span className="breadcrumb">SEEDF PPGE</span><strong>{activeLabel}</strong></div></div><div className="topbar-actions"><span className={`sync-label ${syncError ? "sync-error" : syncMode === "fallback" ? "sync-fallback" : ""}`}><span className="source-dot" /> {lastUpdated}</span><button className={`refresh-button ${refreshing ? "is-refreshing" : ""}`} onClick={refreshSnapshot} disabled={refreshing} aria-label="Atualizar dados do Notion" title="Consultar a API do Notion agora"><RefreshCw size={17} /></button></div></header><div className="page-content">{section === "inicio" && <Overview onNavigate={handleNavigate} snapshot={snapshot} />}{section === "estudar" && <StudyToday />}{section === "fases" && <Phases />}{section === "cargos" && <Jobs />}{section === "progresso" && <Progress />}{section === "materiais" && <Materials />}</div><footer className="site-footer"><span>SEEDF PPGE · Projeto exclusivo</span><span>{syncMode === "live" ? `Notion ao vivo · ${formatSnapshotDate(snapshot?.source?.synced_at ?? null)}` : syncMode === "fallback" ? `Backup do GitHub · ${formatSnapshotDate(snapshot?.source?.synced_at ?? null)}` : "Notion · indisponível"}</span></footer></div></main>;
 }

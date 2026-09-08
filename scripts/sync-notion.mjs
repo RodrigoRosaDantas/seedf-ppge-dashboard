@@ -3,6 +3,8 @@ import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 const DEFAULT_PAGE_ID = "3d4cf5a2-6731-8106-a2c9-c97816aa6cf5";
+const MATERIALS_PAGE_ID = "3d4cf5a2-6731-81a4-a51f-eed1c396c77b";
+const CYCLE_PAGE_ID = "3d4cf5a2-6731-8185-a1c6-da3820a7687b";
 const NOTION_API_BASE = "https://api.notion.com/v1";
 const NOTION_VERSION = process.env.NOTION_VERSION || "2026-03-11";
 const MAX_NOTION_CONCURRENCY = 4;
@@ -15,11 +17,32 @@ if (!token) {
 }
 
 const request = createNotionRequest();
-const page = await request(`/pages/${pageId}`);
-const topLevelBlocks = await getAllChildren(pageId, request);
+const [page, topLevelBlocks] = await Promise.all([
+  request(`/pages/${pageId}`),
+  getAllChildren(pageId, request),
+]);
 const blocks = await expandBlocks(topLevelBlocks, request);
 const sourceText = blocks.map(blockToText).filter(Boolean).join("\n");
-const contentHash = createHash("sha256").update(sourceText).digest("hex");
+let materials = null;
+let materialsText = "";
+
+try {
+  const [materialsPage, materialsTopLevelBlocks, cycleTopLevelBlocks] = await Promise.all([
+    request(`/pages/${MATERIALS_PAGE_ID}`),
+    getAllChildren(MATERIALS_PAGE_ID, request),
+    getAllChildren(CYCLE_PAGE_ID, request),
+  ]);
+  const [materialBlocks, cycleBlocks] = await Promise.all([
+    expandBlocks(materialsTopLevelBlocks, request),
+    expandBlocks(cycleTopLevelBlocks, request),
+  ]);
+  materialsText = materialBlocks.map(blockToText).filter(Boolean).join("\n");
+  materials = buildMaterialsSnapshot(materialsPage, materialsText, cycleBlocks);
+} catch (error) {
+  console.error("Materiais do Notion indisponíveis:", error instanceof Error ? error.message : "unknown error");
+}
+
+const contentHash = createHash("sha256").update([sourceText, materialsText].filter(Boolean).join("\n")).digest("hex");
 const previous = await readPreviousSnapshot();
 const syncedAt =
   previous?.source?.content_hash === contentHash && previous?.source?.synced_at
@@ -51,7 +74,8 @@ const snapshot = {
     verticalized_axes: 60,
     jobs: 3,
   },
-  notice: "Snapshot público sanitizado. O conteúdo completo continua no Notion.",
+  materials,
+  notice: "Snapshot público sanitizado. O conteúdo completo continua no Notion; materiais e fontes são indexados para consulta.",
 };
 
 await mkdir(path.dirname(outputPath), { recursive: true });
@@ -159,18 +183,186 @@ function blockToText(block) {
   if (!data) return "";
 
   if (Array.isArray(data.rich_text)) {
-    return data.rich_text.map((item) => item.plain_text || item.text?.content || "").join("");
+    return richTextToMarkdown(data.rich_text);
   }
 
   if (block.type === "table_row" && Array.isArray(data.cells)) {
-    return data.cells
-      .map((cell) => cell.map((item) => item.plain_text || item.text?.content || "").join(""))
-      .join(" | ");
+    return data.cells.map((cell) => richTextToMarkdown(cell)).join(" | ");
   }
 
   if (block.type === "child_page") return data.title || "";
   return "";
 }
+
+function richTextToMarkdown(items) {
+  return items
+    .map((item) => {
+      const text = item.plain_text || item.text?.content || item.mention?.page?.title || "";
+      const href =
+        item.href ||
+        item.text?.link?.url ||
+        (item.mention?.page?.id ? notionPageUrl(item.mention.page.id) : null);
+      return href && text ? `[${text}](${href})` : text;
+    })
+    .join("");
+}
+
+function buildMaterialsSnapshot(page, materialsText, cycleBlocks) {
+  const materialPages = new Map();
+  const materialTitles = new Map();
+
+  for (const block of cycleBlocks) {
+    if (block.type !== "child_page") continue;
+    const title = block.child_page?.title || "";
+    const day = title.match(/^(D\d{2})\b/i)?.[1]?.toUpperCase();
+    if (day) {
+      materialPages.set(day, notionPageUrl(block.id));
+      materialTitles.set(day, title.replace(/^D\d{2}\s*[—–-]\s*/i, "").trim());
+    }
+  }
+
+  const legislation = extractDayLines(materialsText)
+    .map((line) => parseReadingDay(line, materialPages))
+    .filter(Boolean);
+  const legislationByDay = new Map(legislation.map((item) => [item.day, item]));
+  const days = Array.from(new Set([...materialTitles.keys(), ...legislationByDay.keys()])).map((day) => {
+    const lawItem = legislationByDay.get(day);
+    return {
+      day,
+      title: materialTitles.get(day) || lawItem?.title || day,
+      detail: lawItem?.title ? `Leitura vinculada: ${lawItem.title}.` : "Material do ciclo no Notion.",
+      meta: META_BY_DAY[day] || "",
+      href: materialPages.get(day) || notionPageUrl(CYCLE_PAGE_ID),
+      tone: TONE_BY_DAY[day] || "teal",
+    };
+  });
+
+  return {
+    source_url: page.url || notionPageUrl(MATERIALS_PAGE_ID),
+    last_edited_time: page.last_edited_time || null,
+    days,
+    legislation,
+    future: extractFutureMaterials(materialsText),
+  };
+}
+
+function extractDayLines(text) {
+  return text
+    .split(/\n+/)
+    .map((line) => line.trim())
+    .filter((line) => /^(?:[-*]\s*)?(?:\*{1,2})?D\d{2}\b/i.test(line));
+}
+
+function parseReadingDay(line, materialPages) {
+  const normalized = line
+    .replace(/^[-*]\s*/, "")
+    .replace(/^\*+/, "")
+    .replace(/\*+$/, "")
+    .trim();
+  const match = normalized.match(/^D(\d{2})\s*[—–-]\s*([^:]+):\s*(.*)$/i);
+  if (!match) return null;
+
+  const day = `D${match[1]}`;
+  const rawDetail = match[3].trim();
+  return {
+    day,
+    title: stripInlineMarkup(match[2]),
+    detail: stripInlineMarkup(rawDetail),
+    meta: META_BY_DAY[day] || "",
+    href: materialPages.get(day) || notionPageUrl(CYCLE_PAGE_ID),
+    status: STATUS_BY_DAY[day] || "Material do ciclo",
+    tone: TONE_BY_DAY[day] || "teal",
+    links: extractLinks(rawDetail).filter((link) => !/notion\.so|app\.notion\.com/i.test(link.href)),
+  };
+}
+
+function extractFutureMaterials(text) {
+  const start = text.indexOf("Fila posterior");
+  if (start < 0) return [];
+  return text
+    .slice(start)
+    .split(/\n+/)
+    .map((line) => line.trim())
+    .filter((line) => /^(?:[-*]\s*)?(?:\*{1,2})?MS\d{2}/i.test(line))
+    .map((line) => {
+      const normalized = line.replace(/^[-*]\s*/, "").replace(/^\*+/, "").replace(/\*+$/, "").trim();
+      const match = normalized.match(/^(MS\d{2}(?:\/MS\d{2})?):\s*(.*)$/i);
+      return match ? { label: match[1].toUpperCase(), detail: stripInlineMarkup(match[2]) } : null;
+    })
+    .filter(Boolean);
+}
+
+function extractLinks(value) {
+  return Array.from(value.matchAll(/\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g)).map((match) => ({
+    label: match[1].trim(),
+    href: match[2].trim(),
+  }));
+}
+
+function stripInlineMarkup(value) {
+  return value
+    .replace(/\[([^\]]+)\]\(https?:\/\/[^)]+\)/g, "$1")
+    .replace(/<mention-page[^>]*\/>/g, "")
+    .replace(/\*{1,2}/g, "")
+    .replace(/\s{2,}/g, " ")
+    .trim();
+}
+
+function notionPageUrl(value) {
+  const normalized = normalizePageId(value);
+  return `https://app.notion.com/p/${normalized.replaceAll("-", "")}`;
+}
+
+const META_BY_DAY = {
+  D01: "25 questões",
+  D02: "30 questões",
+  D03: "30 questões",
+  D04: "30 questões",
+  D05: "35 questões",
+  D06: "35 questões",
+  D07: "30 questões · adaptativo",
+  D08: "35 questões",
+  D09: "30 questões",
+  D10: "35 questões",
+  D11: "35 questões",
+  D12: "35 questões",
+  D13: "30 questões",
+  D14: "40 questões · adaptativo",
+};
+
+const STATUS_BY_DAY = {
+  D01: "Leitura obrigatória",
+  D02: "Leitura obrigatória",
+  D03: "Leitura obrigatória + atualização",
+  D04: "Questões primeiro",
+  D05: "Leitura obrigatória",
+  D06: "Fonte técnica",
+  D07: "Revisão pelos dados",
+  D08: "Leitura complementar",
+  D09: "Conceitos + questões",
+  D10: "Teoria + questões",
+  D11: "Leitura obrigatória",
+  D12: "Reforço pontual",
+  D13: "Leitura + radar normativo",
+  D14: "Checkpoint adaptativo",
+};
+
+const TONE_BY_DAY = {
+  D01: "gold",
+  D02: "teal",
+  D03: "violet",
+  D04: "teal",
+  D05: "coral",
+  D06: "violet",
+  D07: "violet",
+  D08: "teal",
+  D09: "teal",
+  D10: "coral",
+  D11: "gold",
+  D12: "teal",
+  D13: "coral",
+  D14: "violet",
+};
 
 function pageTitle(pageObject) {
   const titleProperty = pageObject?.properties?.title;
