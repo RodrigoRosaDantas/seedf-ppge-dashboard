@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ArrowRight,
   BarChart3,
@@ -58,6 +58,60 @@ type MaterialsSnapshot = {
   future: FutureMaterial[];
 };
 
+type ExecutionDay = {
+  day: string;
+  title: string;
+  status: string;
+  type: string;
+  order: number;
+  planned: number;
+  done: number;
+  correct: number;
+  errors: number;
+  doubts: number;
+  minutes: number;
+  precision: number | null;
+  progress: number;
+  href: string;
+  executed_at: string | null;
+};
+
+type ExecutionTotals = {
+  planned: number;
+  fixed_meta: number;
+  done: number;
+  correct: number;
+  errors: number;
+  doubts: number;
+  minutes: number;
+  precision: number | null;
+  progress: number;
+};
+
+type SubjectExecution = {
+  subject: string;
+  planned: number;
+  done: number;
+  correct: number;
+  errors: number;
+  doubts: number;
+  precision: number | null;
+  rows: number;
+};
+
+type ExecutionSnapshot = {
+  as_of: string;
+  c01: {
+    days: ExecutionDay[];
+    totals: ExecutionTotals;
+    subjects: SubjectExecution[];
+    statuses: Record<string, number>;
+    active_day: string | null;
+    error_count: number;
+    question_rows: number;
+  };
+};
+
 type DashboardSnapshot = {
   schema_version: number;
   source: {
@@ -81,6 +135,7 @@ type DashboardSnapshot = {
     jobs: number;
   };
   materials?: MaterialsSnapshot | null;
+  execution?: ExecutionSnapshot | null;
   notice?: string;
 };
 
@@ -123,6 +178,15 @@ function formatMaterialsAudit(value: string | null) {
   const date = new Date(value);
   if (Number.isNaN(date.valueOf())) return "LEITURA LEGISLATIVA · AUDITORIA 08/09/2026";
   return `LEITURA LEGISLATIVA · NOTION ATUALIZADO ${new Intl.DateTimeFormat("pt-BR", { dateStyle: "short" }).format(date)}`;
+}
+
+function formatExecutionPercent(value: number | null) {
+  return value === null || !Number.isFinite(value) ? "—" : `${Math.round(value * 100)}%`;
+}
+
+function formatExecutionMinutes(value: number, done: number) {
+  if (!value || !done) return "—";
+  return `${Math.round(value / done)} min`;
 }
 
 const navigation: Array<{ id: SectionId; label: string; icon: LucideIcon }> = [
@@ -193,6 +257,7 @@ const sources = [
 ];
 
 const notionMaterialsPage = "https://app.notion.com/p/3d4cf5a2673181a4a51feed1c396c77b";
+const notionExecutionPage = "https://app.notion.com/p/3d4cf5a26731815087fcc1ec3783f65c";
 const d01NotionPage = "https://app.notion.com/p/3d4cf5a2673181fabef1f407c2451392";
 const ldbOfficialUrl = "https://www.planalto.gov.br/ccivil_03/leis/l9394compilado.htm";
 
@@ -503,9 +568,68 @@ function Jobs() {
   return <div className="inner-page"><section className="page-intro"><div><p className="eyebrow">EDITAL PROJETADO · 60 EIXOS</p><h1>Cargos-meta e trilhas de cobrança</h1><p>O núcleo comum conversa com os três cargos; a prioridade e o aprofundamento continuam visíveis.</p></div><StatusPill tone="gold">v0.2 · 07/09/2026</StatusPill></section><section className="job-list">{jobs.map((job) => <JobCard job={job} key={job.code} />)}</section><section className="content-grid three-columns"><div className="panel mini-metric"><p className="eyebrow">MANUTENÇÃO</p><strong>24</strong><span>eixos com base histórica pertinente</span></div><div className="panel mini-metric"><p className="eyebrow">REFORÇO</p><strong>25</strong><span>eixos que pedem teoria + questões</span></div><div className="panel mini-metric"><p className="eyebrow">NOVOS</p><strong>11</strong><span>eixos sem domínio presumido</span></div></section></div>;
 }
 
-function Progress() {
-  const totalPlanned = useMemo(() => workload.reduce((sum, item) => sum + item.questions, 0), []);
-  return <div className="inner-page"><section className="page-intro"><div><p className="eyebrow">PAINÉIS E PROGRESSO</p><h1>O painel começa em zero por honestidade</h1><p>O C01 está planejado; ainda não está executado. A diferença é exatamente o que protege sua decisão.</p></div><StatusPill>Sem sessões registradas</StatusPill></section><section className="stats-grid progress-stats"><StatCard icon={Check} label="Questões feitas" value="0" detail={`de ${totalPlanned} fixas no C01`} tone="blue" /><StatCard icon={TrendingUp} label="Precisão" value="—" detail="Aparece após a primeira correção" tone="teal" /><StatCard icon={CircleAlert} label="Caderno de erros" value="0" detail="Nenhum erro SEEDF importado" tone="coral" /><StatCard icon={Clock3} label="Tempo médio" value="—" detail="Exige volume de execução" tone="violet" /></section><section className="content-grid two-thirds"><div className="panel empty-chart"><div className="empty-chart-lines"><span /><span /><span /><span /><span /></div><div className="empty-chart-message"><div className="empty-icon"><BarChart3 size={21} /></div><h3>Gráfico liberado após a primeira sessão</h3><p>O painel vai mostrar evolução por cargo, matéria, assunto, acertos, erros, omissões e tempo médio quando houver dados reais.</p></div></div><div className="panel decision-panel"><p className="eyebrow">DECISÃO DO PAINEL</p><h3>Agora, estudar. Depois, recalibrar.</h3><p>Não ajuste a carga antes de existir evidência SEEDF. O histórico TDAS/EDAS serve para o estado inicial dos tópicos, não para fabricar acurácia.</p><div className="decision-quote">“Métrica sem decisão não entra como KPI principal.”</div></div></section></div>;
+function Progress({ snapshot = activeDashboardSnapshot }: { snapshot?: DashboardSnapshot | null } = {}) {
+  const execution = snapshot?.execution?.c01;
+  const totals = execution?.totals;
+  const fixedPlanned = totals?.fixed_meta ?? snapshot?.dashboard.planned_questions ?? 385;
+  const projectedPlanned = totals?.planned ?? snapshot?.dashboard.projected_questions ?? 455;
+  const done = totals?.done ?? snapshot?.dashboard.executed_questions ?? 0;
+  const precisionValue = totals?.precision ?? null;
+  const errorBank = execution?.error_count ?? 0;
+  const averageMinutes = totals ? formatExecutionMinutes(totals.minutes, totals.done) : "—";
+  const hasExecutionData = Boolean(execution && (done > 0 || totals?.errors || totals?.doubts));
+  const statusLabel = hasExecutionData ? "Execução registrada" : "Sem sessões registradas";
+  const subjects = execution?.subjects ?? [];
+  const days = execution?.days ?? [];
+
+  return (
+    <div className="inner-page">
+      <section className="page-intro">
+        <div>
+          <p className="eyebrow">PAINÉIS E PROGRESSO · C01</p>
+          <h1>Execução real, lida direto do Notion</h1>
+          <p>O planejamento aparece separado do que foi efetivamente feito. O painel não transforma histórico de outros projetos em desempenho SEEDF.</p>
+        </div>
+        <StatusPill tone={hasExecutionData ? "teal" : "gold"}>{statusLabel}</StatusPill>
+      </section>
+
+      <section className="stats-grid progress-stats">
+        <StatCard icon={Check} label="Questões feitas" value={String(done)} detail={`de ${projectedPlanned} projetadas · ${fixedPlanned} fixas`} tone="blue" />
+        <StatCard icon={TrendingUp} label="Precisão" value={formatExecutionPercent(precisionValue)} detail={precisionValue === null ? "Aparece após a primeira correção" : `${totals?.correct ?? 0} acertos em ${done} questões`} tone="teal" />
+        <StatCard icon={CircleAlert} label="Caderno de erros" value={String(errorBank)} detail={errorBank ? "Registros no banco SEEDF" : "Nenhum erro SEEDF registrado"} tone="coral" />
+        <StatCard icon={Clock3} label="Tempo médio" value={averageMinutes} detail={totals?.minutes ? `${totals.minutes} min acumulados` : "Exige registro de tempo"} tone="violet" />
+      </section>
+
+      <section className="content-grid two-thirds">
+        <div className="panel execution-overview-panel">
+          <SectionHeading eyebrow="C01 · CONSOLIDADO" title="O que já virou evidência" description="A meta do dia é agregada no Banco de Dias; a distribuição por matéria vem do Banco de Controle de Questões." action={<StatusPill tone="teal">{formatExecutionPercent(totals?.progress ?? 0)} do planejado</StatusPill>} />
+          <div className="execution-progress-track"><span style={{ width: `${Math.min(100, Math.max(0, (totals?.progress ?? 0) * 100))}%` }} /></div>
+          <div className="execution-summary-grid">
+            <div><span>Meta projetada</span><strong>{projectedPlanned}</strong></div>
+            <div><span>Acertos</span><strong>{totals?.correct ?? 0}</strong></div>
+            <div><span>Erros</span><strong>{totals?.errors ?? 0}</strong></div>
+            <div><span>Dúvidas</span><strong>{totals?.doubts ?? 0}</strong></div>
+          </div>
+          <div className="subject-performance">
+            <div className="subsection-heading"><p className="eyebrow">DISTRIBUIÇÃO POR MATÉRIA</p><span>{execution?.question_rows ?? 0} linhas ativas</span></div>
+            {subjects.length > 0 ? <div className="performance-list">{subjects.map((subject) => <div className="performance-row" key={subject.subject}><div><strong>{subject.subject}</strong><span>{subject.planned} previstas · {subject.rows} linhas</span></div><div className="performance-bar"><span style={{ width: `${subject.planned ? Math.min(100, (subject.done / subject.planned) * 100) : 0}%` }} /></div><strong className="performance-value">{subject.done}/{subject.planned}</strong><StatusPill tone={subject.precision === null ? "neutral" : subject.precision >= .8 ? "teal" : subject.precision >= .6 ? "gold" : "coral"}>{formatExecutionPercent(subject.precision)}</StatusPill></div>)}</div> : <div className="execution-empty"><BarChart3 size={20} /><span>As linhas de questões do C01 aparecerão aqui quando o banco estiver populado.</span></div>}
+          </div>
+        </div>
+
+        <div className="panel decision-panel">
+          <p className="eyebrow">DECISÃO DO PAINEL</p>
+          <h3>{hasExecutionData ? "Use o resultado para recalibrar." : "Agora, estudar. Depois, recalibrar."}</h3>
+          <p>{hasExecutionData ? "A próxima revisão deve nascer de erros, dúvidas e reincidências registradas no Caderno de Erros do SEEDF." : "Não ajuste a carga antes de existir evidência SEEDF. O histórico TDAS/EDAS serve para o estado inicial dos tópicos, não para fabricar acurácia."}</p>
+          <div className="decision-quote">“Métrica sem decisão não entra como KPI principal.”</div>
+        </div>
+      </section>
+
+      <section className="panel execution-days-panel">
+        <SectionHeading eyebrow="BANCO DE DIAS · C01" title="Andamento por dia efetivamente estudado" description="O painel lê o status e os totais agregados do Notion. D07 e D14 permanecem adaptativos até haver resultados que os alimentem." action={<a className="text-button" href={notionExecutionPage} target="_blank" rel="noreferrer">Abrir execução no Notion <ArrowRight size={15} /></a>} />
+        {days.length > 0 ? <div className="execution-day-list">{days.map((day) => <div className="execution-day-row" key={day.day}><div className="execution-day-name"><strong>{day.day}</strong><span>{day.title.replace(/^C01-D\d{2}\s*[—–-]\s*/i, "")}</span></div><StatusPill tone={day.status === "Próximo" ? "gold" : day.done > 0 ? "teal" : "neutral"}>{day.status}</StatusPill><div className="execution-day-track"><span style={{ width: `${Math.min(100, Math.max(0, day.progress * 100))}%` }} /></div><span className="execution-day-count">{day.done}/{day.planned}</span><span className="execution-day-result">{day.done ? `${day.correct} ac. · ${day.errors} er.` : "Aguardando execução"}</span></div>)}</div> : <div className="execution-empty execution-empty-large"><BarChart3 size={20} /><span>O Banco de Dias do C01 ainda não foi sincronizado.</span></div>}
+      </section>
+    </div>
+  );
 }
 
 function MaterialsLegacy() {

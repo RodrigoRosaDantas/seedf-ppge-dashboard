@@ -5,6 +5,9 @@ import path from "node:path";
 const DEFAULT_PAGE_ID = "3d4cf5a2-6731-8106-a2c9-c97816aa6cf5";
 const MATERIALS_PAGE_ID = "3d4cf5a2-6731-81a4-a51f-eed1c396c77b";
 const CYCLE_PAGE_ID = "3d4cf5a2-6731-8185-a1c6-da3820a7687b";
+const DAYS_DATA_SOURCE_ID = "60966f0a-b3eb-416b-8995-64253ed26a45";
+const QUESTIONS_DATA_SOURCE_ID = "8a241986-94e7-4340-b898-dc905b19fd58";
+const ERRORS_DATA_SOURCE_ID = "68d7c880-165b-4e44-988b-cb9e3c38d8b2";
 const NOTION_API_BASE = "https://api.notion.com/v1";
 const NOTION_VERSION = process.env.NOTION_VERSION || "2026-03-11";
 const MAX_NOTION_CONCURRENCY = 4;
@@ -42,7 +45,26 @@ try {
   console.error("Materiais do Notion indisponíveis:", error instanceof Error ? error.message : "unknown error");
 }
 
-const contentHash = createHash("sha256").update([sourceText, materialsText].filter(Boolean).join("\n")).digest("hex");
+let execution = null;
+let executionHashText = "";
+
+try {
+  const [dayPages, questionPages, errorPages] = await Promise.all([
+    queryDataSource(DAYS_DATA_SOURCE_ID, request),
+    queryDataSource(QUESTIONS_DATA_SOURCE_ID, request),
+    queryDataSource(ERRORS_DATA_SOURCE_ID, request),
+  ]);
+  execution = buildExecutionSnapshot(dayPages, questionPages, errorPages);
+  executionHashText = JSON.stringify(
+    [dayPages, questionPages, errorPages].map((pages) =>
+      pages.map((page) => ({ id: page.id, edited: page.last_edited_time, properties: page.properties })),
+    ),
+  );
+} catch (error) {
+  console.error("Execução SEEDF indisponível:", error instanceof Error ? error.message : "unknown error");
+}
+
+const contentHash = createHash("sha256").update([sourceText, materialsText, executionHashText].filter(Boolean).join("\n")).digest("hex");
 const previous = await readPreviousSnapshot();
 const syncedAt =
   previous?.source?.content_hash === contentHash && previous?.source?.synced_at
@@ -70,24 +92,27 @@ const snapshot = {
     planned_questions:
       firstNumber(sourceText, /metas fixas somam\s*([\d.]+)\s*questões/i) || 385,
     projected_questions: 455,
-    executed_questions: sourceText.includes("Ainda não há desempenho SEEDF executado") ? 0 : null,
+    executed_questions: execution?.c01?.totals?.done ?? (sourceText.includes("Ainda não há desempenho SEEDF executado") ? 0 : null),
     verticalized_axes: 60,
     jobs: 3,
   },
   materials,
-  notice: "Snapshot público sanitizado. O conteúdo completo continua no Notion; materiais e fontes são indexados para consulta.",
+  execution,
+  notice: "Snapshot público sanitizado. O conteúdo completo continua no Notion; materiais, fontes e execução do C01 são indexados para consulta.",
 };
 
 await mkdir(path.dirname(outputPath), { recursive: true });
 await writeFile(outputPath, `${JSON.stringify(snapshot, null, 2)}\n`, "utf8");
 console.log(`Snapshot do Notion atualizado em ${outputPath}`);
 
-async function notionRequest(endpoint) {
+async function notionRequest(endpoint, init = {}) {
   const response = await fetch(`${NOTION_API_BASE}${endpoint}`, {
+    ...init,
     headers: {
       Authorization: `Bearer ${token}`,
       "Notion-Version": NOTION_VERSION,
       "Content-Type": "application/json",
+      ...(init.headers || {}),
     },
   });
 
@@ -122,14 +147,177 @@ function createNotionRequest() {
     }
   };
 
-  return async (endpoint) => {
+  return async (endpoint, init = {}) => {
     await acquire();
     try {
-      return await notionRequest(endpoint);
+      return await notionRequest(endpoint, init);
     } finally {
       release();
     }
   };
+}
+
+async function queryDataSource(dataSourceId, request) {
+  const pages = [];
+  let cursor = null;
+
+  do {
+    const body = { page_size: 100 };
+    if (cursor) body.start_cursor = cursor;
+    const response = await request(`/data_sources/${dataSourceId}/query`, {
+      method: "POST",
+      body: JSON.stringify(body),
+    });
+    pages.push(...(response.results || []));
+    cursor = response.has_more ? response.next_cursor : null;
+  } while (cursor);
+
+  return pages;
+}
+
+function buildExecutionSnapshot(dayPages, questionPages, errorPages) {
+  const days = dayPages
+    .map(parseExecutionDay)
+    .filter(Boolean)
+    .sort((left, right) => left.order - right.order || left.day.localeCompare(right.day));
+
+  const currentQuestionPages = questionPages
+    .map((page) => ({ page, day: normalizeC01Day(propertyText(page.properties, "Dia ID")) }))
+    .filter((item) => Boolean(item.day));
+
+  const subjects = new Map();
+  for (const { page } of currentQuestionPages) {
+    const properties = page.properties || {};
+    const subject = propertyText(properties, "Matéria") || "Sem matéria";
+    const current = subjects.get(subject) || {
+      subject,
+      planned: 0,
+      done: 0,
+      correct: 0,
+      errors: 0,
+      doubts: 0,
+      precision: null,
+      rows: 0,
+    };
+    current.planned += propertyNumber(properties, "Meta de questões");
+    current.done += propertyNumber(properties, "Questões feitas");
+    current.correct += propertyNumber(properties, "Acertos");
+    current.errors += propertyNumber(properties, "Erros");
+    current.doubts += propertyNumber(properties, "Acertos com dúvida");
+    current.rows += 1;
+    current.precision = precision(current.correct, current.done);
+    subjects.set(subject, current);
+  }
+
+  const fixedMeta = Array.from(subjects.values()).reduce((sum, subject) => sum + subject.planned, 0);
+  const totals = days.reduce(
+    (sum, day) => ({
+      planned: sum.planned + day.planned,
+      fixed_meta: fixedMeta,
+      done: sum.done + day.done,
+      correct: sum.correct + day.correct,
+      errors: sum.errors + day.errors,
+      doubts: sum.doubts + day.doubts,
+      minutes: sum.minutes + day.minutes,
+      precision: null,
+      progress: 0,
+    }),
+    { planned: 0, fixed_meta: fixedMeta, done: 0, correct: 0, errors: 0, doubts: 0, minutes: 0, precision: null, progress: 0 },
+  );
+  totals.precision = precision(totals.correct, totals.done);
+  totals.progress = totals.planned > 0 ? totals.done / totals.planned : 0;
+
+  const statuses = {};
+  for (const day of days) statuses[day.status] = (statuses[day.status] || 0) + 1;
+  const activeDay = days.find((day) => /próximo|andamento|execução/i.test(day.status))?.day ||
+    days.find((day) => day.done > 0 && day.done < day.planned)?.day || null;
+
+  return {
+    as_of: new Date().toISOString(),
+    c01: {
+      days,
+      totals: { ...totals, fixed_meta: fixedMeta },
+      subjects: Array.from(subjects.values()).sort((left, right) => right.planned - left.planned || left.subject.localeCompare(right.subject)),
+      statuses,
+      active_day: activeDay,
+      error_count: errorPages.length,
+      question_rows: currentQuestionPages.length,
+    },
+  };
+}
+
+function parseExecutionDay(page) {
+  const properties = page.properties || {};
+  const day = normalizeC01Day(propertyText(properties, "Dia"));
+  if (!day || propertyText(properties, "Ciclo") !== "C01") return null;
+
+  const planned = propertyNumber(properties, "Meta questões");
+  const done = propertyNumber(properties, "Questões feitas");
+  const correct = propertyNumber(properties, "Acertos");
+  const errors = propertyNumber(properties, "Erros");
+  const doubts = propertyNumber(properties, "Acertos com dúvida");
+  return {
+    day,
+    title: propertyText(properties, "Dia") || day,
+    status: propertyText(properties, "Situação") || "Sem situação",
+    type: propertyText(properties, "Tipo") || "Temático",
+    order: propertyNumber(properties, "Ordem"),
+    planned,
+    done,
+    correct,
+    errors,
+    doubts,
+    minutes: firstNumberProperty(properties, ["Tempo (min)", "Minutos", "Tempo"]),
+    precision: precision(correct, done),
+    progress: planned > 0 ? done / planned : 0,
+    href: propertyUrl(properties, "Página do dia") || page.url || notionPageUrl(page.id),
+    executed_at: propertyDate(properties, "Data execução"),
+  };
+}
+
+function normalizeC01Day(value) {
+  const match = value.match(/\bC01-D(0[1-9]|1[0-4])\b/i);
+  return match ? `D${match[1]}` : null;
+}
+
+function propertyText(properties, name) {
+  const property = properties?.[name];
+  if (!property) return "";
+  if (property.type === "title" || property.title) {
+    return (property.title || []).map((item) => item.plain_text || item.text?.content || "").join("").trim();
+  }
+  if (property.type === "rich_text" || property.rich_text) {
+    return (property.rich_text || []).map((item) => item.plain_text || item.text?.content || "").join("").trim();
+  }
+  if (property.type === "select" || property.select) return property.select?.name || "";
+  if (property.type === "status" || property.status) return property.status?.name || "";
+  if (property.type === "formula" && property.formula?.type === "string") return property.formula.string || "";
+  return "";
+}
+
+function propertyNumber(properties, name) {
+  const property = properties?.[name];
+  return typeof property?.number === "number" && Number.isFinite(property.number) ? property.number : 0;
+}
+
+function firstNumberProperty(properties, names) {
+  for (const name of names) {
+    const value = propertyNumber(properties, name);
+    if (value) return value;
+  }
+  return 0;
+}
+
+function propertyUrl(properties, name) {
+  return properties?.[name]?.url || "";
+}
+
+function propertyDate(properties, name) {
+  return properties?.[name]?.date?.start || null;
+}
+
+function precision(correct, done) {
+  return done > 0 ? correct / done : null;
 }
 
 async function getAllChildren(blockId, request) {

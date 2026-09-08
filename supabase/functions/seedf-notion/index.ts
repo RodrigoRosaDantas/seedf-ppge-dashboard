@@ -3,6 +3,9 @@ const NOTION_VERSION = "2026-03-11";
 const PAGE_ID = "3d4cf5a2-6731-8106-a2c9-c97816aa6cf5";
 const MATERIALS_PAGE_ID = "3d4cf5a2-6731-81a4-a51f-eed1c396c77b";
 const CYCLE_PAGE_ID = "3d4cf5a2-6731-8185-a1c6-da3820a7687b";
+const DAYS_DATA_SOURCE_ID = "60966f0a-b3eb-416b-8995-64253ed26a45";
+const QUESTIONS_DATA_SOURCE_ID = "8a241986-94e7-4340-b898-dc905b19fd58";
+const ERRORS_DATA_SOURCE_ID = "68d7c880-165b-4e44-988b-cb9e3c38d8b2";
 const CACHE_TTL_MS = 60_000;
 const MAX_NOTION_CONCURRENCY = 4;
 
@@ -86,7 +89,31 @@ async function buildSnapshot(token: string): Promise<DashboardSnapshot> {
     );
   }
 
-  const contentHash = await sha256([sourceText, materialsText].filter(Boolean).join("\n"));
+  let execution: ExecutionSnapshot | null = null;
+  let executionHashText = "";
+
+  try {
+    const [dayPages, questionPages, errorPages] = await Promise.all([
+      queryDataSource(DAYS_DATA_SOURCE_ID, request),
+      queryDataSource(QUESTIONS_DATA_SOURCE_ID, request),
+      queryDataSource(ERRORS_DATA_SOURCE_ID, request),
+    ]);
+    execution = buildExecutionSnapshot(dayPages, questionPages, errorPages);
+    executionHashText = JSON.stringify(
+      [dayPages, questionPages, errorPages].map((pages) =>
+        pages.map((page) => ({ id: page.id, edited: page.last_edited_time, properties: page.properties })),
+      ),
+    );
+  } catch (error) {
+    console.error(
+      "SEEDF execution sync unavailable:",
+      error instanceof Error ? error.message : "unknown error",
+    );
+  }
+
+  const contentHash = await sha256([sourceText, materialsText, executionHashText].filter(Boolean).join("\n"));
+  const executedQuestions = execution?.c01.totals.done ??
+    (sourceText.includes("Ainda não há desempenho SEEDF executado") ? 0 : null);
 
   return {
     schema_version: 1,
@@ -108,26 +135,33 @@ async function buildSnapshot(token: string): Promise<DashboardSnapshot> {
         "D01 · Português fino + LDB",
       planned_questions: firstNumber(sourceText, /metas fixas somam\s*([\d.]+)\s*questões/i) || 385,
       projected_questions: 455,
-      executed_questions: sourceText.includes("Ainda não há desempenho SEEDF executado") ? 0 : null,
+      executed_questions: executedQuestions,
       verticalized_axes: 60,
       jobs: 3,
     },
     materials,
-    notice: "Dados consultados em tempo real no Notion. O site expõe apenas um índice sanitizado de materiais e fontes.",
+    execution,
+    notice: "Dados consultados em tempo real no Notion. O site expõe apenas um índice sanitizado de materiais, fontes e execução do C01.",
   };
 }
 
-async function notionRequest(endpoint: string, token: string): Promise<Record<string, any>> {
+async function notionRequest(
+  endpoint: string,
+  token: string,
+  init: RequestInit = {},
+): Promise<Record<string, any>> {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 15_000);
 
   try {
+    const headers = new Headers(init.headers);
+    headers.set("Authorization", `Bearer ${token}`);
+    headers.set("Notion-Version", NOTION_VERSION);
+    headers.set("Content-Type", "application/json");
+
     const response = await fetch(`${NOTION_API_BASE}${endpoint}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Notion-Version": NOTION_VERSION,
-        "Content-Type": "application/json",
-      },
+      ...init,
+      headers,
       signal: controller.signal,
     });
 
@@ -141,7 +175,7 @@ async function notionRequest(endpoint: string, token: string): Promise<Record<st
   }
 }
 
-type NotionRequest = (endpoint: string) => Promise<Record<string, any>>;
+type NotionRequest = (endpoint: string, init?: RequestInit) => Promise<Record<string, any>>;
 
 function createNotionRequest(token: string): NotionRequest {
   let inFlight = 0;
@@ -166,14 +200,198 @@ function createNotionRequest(token: string): NotionRequest {
     }
   };
 
-  return async (endpoint: string) => {
+  return async (endpoint: string, init: RequestInit = {}) => {
     await acquire();
     try {
-      return await notionRequest(endpoint, token);
+      return await notionRequest(endpoint, token, init);
     } finally {
       release();
     }
   };
+}
+
+async function queryDataSource(
+  dataSourceId: string,
+  request: NotionRequest,
+): Promise<Array<Record<string, any>>> {
+  const pages: Array<Record<string, any>> = [];
+  let cursor: string | null = null;
+
+  do {
+    const body: Record<string, unknown> = { page_size: 100 };
+    if (cursor) body.start_cursor = cursor;
+    const response = await request(`/data_sources/${dataSourceId}/query`, {
+      method: "POST",
+      body: JSON.stringify(body),
+    });
+    pages.push(...(response.results || []));
+    cursor = response.has_more ? response.next_cursor : null;
+  } while (cursor);
+
+  return pages;
+}
+
+function buildExecutionSnapshot(
+  dayPages: Array<Record<string, any>>,
+  questionPages: Array<Record<string, any>>,
+  errorPages: Array<Record<string, any>>,
+): ExecutionSnapshot {
+  const days = dayPages
+    .map(parseExecutionDay)
+    .filter((day): day is ExecutionDay => Boolean(day))
+    .sort((left, right) => left.order - right.order || left.day.localeCompare(right.day));
+
+  const currentQuestionPages = questionPages
+    .map((page) => ({ page, day: normalizeC01Day(propertyText(page.properties, "Dia ID")) }))
+    .filter((item): item is { page: Record<string, any>; day: string } => Boolean(item.day));
+
+  const subjects = new Map<string, SubjectExecution>();
+  for (const { page } of currentQuestionPages) {
+    const properties = page.properties || {};
+    const subject = propertyText(properties, "Matéria") || "Sem matéria";
+    const current = subjects.get(subject) || {
+      subject,
+      planned: 0,
+      done: 0,
+      correct: 0,
+      errors: 0,
+      doubts: 0,
+      precision: null,
+      rows: 0,
+    };
+    current.planned += propertyNumber(properties, "Meta de questões");
+    current.done += propertyNumber(properties, "Questões feitas");
+    current.correct += propertyNumber(properties, "Acertos");
+    current.errors += propertyNumber(properties, "Erros");
+    current.doubts += propertyNumber(properties, "Acertos com dúvida");
+    current.rows += 1;
+    current.precision = precision(current.correct, current.done);
+    subjects.set(subject, current);
+  }
+
+  const planned = days.reduce((sum, day) => sum + day.planned, 0);
+  const fixedMeta = Array.from(subjects.values()).reduce((sum, subject) => sum + subject.planned, 0);
+  const totals = days.reduce(
+    (sum, day) => ({
+      planned: sum.planned + day.planned,
+      fixed_meta: fixedMeta,
+      done: sum.done + day.done,
+      correct: sum.correct + day.correct,
+      errors: sum.errors + day.errors,
+      doubts: sum.doubts + day.doubts,
+      minutes: sum.minutes + day.minutes,
+      precision: null,
+      progress: 0,
+    }),
+    {
+      planned: 0,
+      fixed_meta: fixedMeta,
+      done: 0,
+      correct: 0,
+      errors: 0,
+      doubts: 0,
+      minutes: 0,
+      precision: null as number | null,
+      progress: 0,
+    },
+  );
+  totals.planned = planned;
+  totals.fixed_meta = fixedMeta;
+  totals.precision = precision(totals.correct, totals.done);
+  totals.progress = totals.planned > 0 ? totals.done / totals.planned : 0;
+
+  const statuses: Record<string, number> = {};
+  for (const day of days) statuses[day.status] = (statuses[day.status] || 0) + 1;
+  const activeDay = days.find((day) => /próximo|andamento|execução/i.test(day.status))?.day ||
+    days.find((day) => day.done > 0 && day.done < day.planned)?.day || null;
+
+  return {
+    as_of: new Date().toISOString(),
+    c01: {
+      days,
+      totals,
+      subjects: Array.from(subjects.values()).sort((left, right) => right.planned - left.planned || left.subject.localeCompare(right.subject)),
+      statuses,
+      active_day: activeDay,
+      error_count: errorPages.length,
+      question_rows: currentQuestionPages.length,
+    },
+  };
+}
+
+function parseExecutionDay(page: Record<string, any>): ExecutionDay | null {
+  const properties = page.properties || {};
+  const day = normalizeC01Day(propertyText(properties, "Dia"));
+  if (!day || propertyText(properties, "Ciclo") !== "C01") return null;
+
+  const planned = propertyNumber(properties, "Meta questões");
+  const done = propertyNumber(properties, "Questões feitas");
+  const correct = propertyNumber(properties, "Acertos");
+  const errors = propertyNumber(properties, "Erros");
+  const doubts = propertyNumber(properties, "Acertos com dúvida");
+  return {
+    day,
+    title: propertyText(properties, "Dia") || day,
+    status: propertyText(properties, "Situação") || "Sem situação",
+    type: propertyText(properties, "Tipo") || "Temático",
+    order: propertyNumber(properties, "Ordem"),
+    planned,
+    done,
+    correct,
+    errors,
+    doubts,
+    minutes: firstNumberProperty(properties, ["Tempo (min)", "Minutos", "Tempo"]),
+    precision: precision(correct, done),
+    progress: planned > 0 ? done / planned : 0,
+    href: propertyUrl(properties, "Página do dia") || page.url || notionPageUrl(page.id),
+    executed_at: propertyDate(properties, "Data execução"),
+  };
+}
+
+function normalizeC01Day(value: string) {
+  const match = value.match(/\bC01-D(0[1-9]|1[0-4])\b/i);
+  return match ? `D${match[1]}` : null;
+}
+
+function propertyText(properties: Record<string, any> | undefined, name: string) {
+  const property = properties?.[name];
+  if (!property) return "";
+  if (property.type === "title" || property.title) {
+    return (property.title || []).map((item: any) => item.plain_text || item.text?.content || "").join("").trim();
+  }
+  if (property.type === "rich_text" || property.rich_text) {
+    return (property.rich_text || []).map((item: any) => item.plain_text || item.text?.content || "").join("").trim();
+  }
+  if (property.type === "select" || property.select) return property.select?.name || "";
+  if (property.type === "status" || property.status) return property.status?.name || "";
+  if (property.type === "formula" && property.formula?.type === "string") return property.formula.string || "";
+  return "";
+}
+
+function propertyNumber(properties: Record<string, any> | undefined, name: string) {
+  const property = properties?.[name];
+  return typeof property?.number === "number" && Number.isFinite(property.number) ? property.number : 0;
+}
+
+function firstNumberProperty(properties: Record<string, any> | undefined, names: string[]) {
+  for (const name of names) {
+    const value = propertyNumber(properties, name);
+    if (value) return value;
+  }
+  return 0;
+}
+
+function propertyUrl(properties: Record<string, any> | undefined, name: string) {
+  const property = properties?.[name];
+  return property?.url || "";
+}
+
+function propertyDate(properties: Record<string, any> | undefined, name: string) {
+  return properties?.[name]?.date?.start || null;
+}
+
+function precision(correct: number, done: number) {
+  return done > 0 ? correct / done : null;
 }
 
 async function getAllChildren(blockId: string, request: NotionRequest): Promise<Array<Record<string, any>>> {
@@ -491,7 +709,62 @@ type DashboardSnapshot = {
     jobs: number;
   };
   materials: MaterialsSnapshot | null;
+  execution: ExecutionSnapshot | null;
   notice: string;
+};
+
+type ExecutionSnapshot = {
+  as_of: string;
+  c01: {
+    days: ExecutionDay[];
+    totals: ExecutionTotals;
+    subjects: SubjectExecution[];
+    statuses: Record<string, number>;
+    active_day: string | null;
+    error_count: number;
+    question_rows: number;
+  };
+};
+
+type ExecutionDay = {
+  day: string;
+  title: string;
+  status: string;
+  type: string;
+  order: number;
+  planned: number;
+  done: number;
+  correct: number;
+  errors: number;
+  doubts: number;
+  minutes: number;
+  precision: number | null;
+  progress: number;
+  href: string;
+  executed_at: string | null;
+};
+
+type ExecutionTotals = {
+  planned: number;
+  fixed_meta: number;
+  done: number;
+  correct: number;
+  errors: number;
+  doubts: number;
+  minutes: number;
+  precision: number | null;
+  progress: number;
+};
+
+type SubjectExecution = {
+  subject: string;
+  planned: number;
+  done: number;
+  correct: number;
+  errors: number;
+  doubts: number;
+  precision: number | null;
+  rows: number;
 };
 
 type MaterialsSnapshot = {
