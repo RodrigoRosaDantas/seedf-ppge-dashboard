@@ -27,12 +27,14 @@ Deno.serve(async (request) => {
     return json({ error: "Método não permitido." }, 405, headers);
   }
 
+  const forceRefresh = new URL(request.url).searchParams.get("refresh") === "1";
+
   const token = Deno.env.get("SEEDF")?.trim();
   if (!token) {
     return json({ error: "API temporariamente indisponível." }, 503, headers);
   }
 
-  if (cachedSnapshot && cachedSnapshot.expiresAt > Date.now()) {
+  if (!forceRefresh && cachedSnapshot && cachedSnapshot.expiresAt > Date.now()) {
     return json(cachedSnapshot.value, 200, {
       ...headers,
       "X-SEEDF-Cache": "hit",

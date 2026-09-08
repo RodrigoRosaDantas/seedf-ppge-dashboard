@@ -622,7 +622,7 @@ export default function Home() {
     setRefreshing(true);
     setSyncError(false);
     try {
-      const candidate = await readSnapshot(LIVE_NOTION_API_URL, {
+      const candidate = await readSnapshot(`${LIVE_NOTION_API_URL}?refresh=1`, {
         headers: {
           Accept: "application/json",
           apikey: LIVE_NOTION_API_KEY,
