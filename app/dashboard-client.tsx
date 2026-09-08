@@ -763,9 +763,7 @@ function Materials({ snapshot = activeDashboardSnapshot }: { snapshot?: Dashboar
               <p>{material.detail}</p>
               <a className="text-button" href={material.href} target="_blank" rel="noreferrer">Abrir material <ArrowRight size={15} /></a>
             </article>
-          )) : (
-            <div className="legislation-empty">Nenhum dia encontrado. Tente buscar por outra lei ou fonte.</div>
-          )}
+          ))}
         </div>
       </section>
 
@@ -852,7 +850,9 @@ function Materials({ snapshot = activeDashboardSnapshot }: { snapshot?: Dashboar
                 {item.links.length > 0 ? <div className="law-links">{item.links.map((link) => <a href={link.href} target="_blank" rel="noreferrer" key={link.href}>{link.label} <ArrowRight size={13} /></a>)}</div> : <span className="law-empty">Sem lei seca nuclear neste recorte</span>}
               </div>
             </article>
-          ))}
+          )) : (
+            <div className="legislation-empty">Nenhum dia encontrado. Tente buscar por outra lei ou fonte.</div>
+          )}
         </div>
       </section>
 
