@@ -6,8 +6,8 @@
     "page_id": "3d4cf5a2-6731-8106-a2c9-c97816aa6cf5",
     "page_url": "https://app.notion.com/p/SEEDF-PPGE-Gestor-Analista-Monitor-Dashboard-PRO-3d4cf5a267318106a2c9c97816aa6cf5",
     "last_edited_time": "2026-09-08T14:29:00.000Z",
-    "synced_at": "2026-09-08T16:16:35.071Z",
-    "content_hash": "1adbf4e56b4ccbfb3d06597985c7f733962c395aa77aefbc25ad8f6ab9d8c991",
+    "synced_at": "2026-09-08T16:52:55.107Z",
+    "content_hash": "5be73982b6f3d526509fa404834c665aa68cf02d008b65abe6f23bedbf0db709",
     "status": "synced"
   },
   "dashboard": {
@@ -405,10 +405,188 @@
         "label": "MS15/MS16",
         "detail": "tecnologia, segurança, arquivologia e preservação digital — atualizar apenas com fonte oficial e aderência ao edital."
       }
+    ],
+    "sequence": [
+      {
+        "code": "MS01",
+        "order": 1,
+        "title": "CF/88 e direito à educação",
+        "group": "Base educacional",
+        "detail": "Material sequencial atemporal do Notion.",
+        "href": "https://app.notion.com/p/Materiais-Sequenciais-SEEDF-MS01-MS22-3d4cf5a26731815283c2e9f51eb86cc6"
+      },
+      {
+        "code": "MS02",
+        "order": 2,
+        "title": "LDB vigente",
+        "group": "Base educacional",
+        "detail": "Material sequencial atemporal do Notion.",
+        "href": "https://app.notion.com/p/Materiais-Sequenciais-SEEDF-MS01-MS22-3d4cf5a26731815283c2e9f51eb86cc6"
+      },
+      {
+        "code": "MS03",
+        "order": 3,
+        "title": "PNE 2026 + PNED + transição do PDE-DF",
+        "group": "Base educacional",
+        "detail": "Material sequencial atemporal do Notion.",
+        "href": "https://app.notion.com/p/Materiais-Sequenciais-SEEDF-MS01-MS22-3d4cf5a26731815283c2e9f51eb86cc6"
+      },
+      {
+        "code": "MS04",
+        "order": 4,
+        "title": "Português para SEEDF",
+        "group": "Base educacional",
+        "detail": "Material sequencial atemporal do Notion.",
+        "href": "https://app.notion.com/p/Materiais-Sequenciais-SEEDF-MS01-MS22-3d4cf5a26731815283c2e9f51eb86cc6"
+      },
+      {
+        "code": "MS05",
+        "order": 5,
+        "title": "Direito Administrativo",
+        "group": "Gestão e Administração",
+        "detail": "Material sequencial atemporal do Notion.",
+        "href": "https://app.notion.com/p/Materiais-Sequenciais-SEEDF-MS01-MS22-3d4cf5a26731815283c2e9f51eb86cc6"
+      },
+      {
+        "code": "MS06",
+        "order": 6,
+        "title": "LC 840/2011 + estágio probatório 2026",
+        "group": "Gestão e Administração",
+        "detail": "Material sequencial atemporal do Notion.",
+        "href": "https://app.notion.com/p/Materiais-Sequenciais-SEEDF-MS01-MS22-3d4cf5a26731815283c2e9f51eb86cc6"
+      },
+      {
+        "code": "MS07",
+        "order": 7,
+        "title": "LODF + realidade do DF",
+        "group": "Gestão e Administração",
+        "detail": "Material sequencial atemporal do Notion.",
+        "href": "https://app.notion.com/p/Materiais-Sequenciais-SEEDF-MS01-MS22-3d4cf5a26731815283c2e9f51eb86cc6"
+      },
+      {
+        "code": "MS08",
+        "order": 8,
+        "title": "Administração Geral e Pública",
+        "group": "Gestão e Administração",
+        "detail": "Material sequencial atemporal do Notion.",
+        "href": "https://app.notion.com/p/Materiais-Sequenciais-SEEDF-MS01-MS22-3d4cf5a26731815283c2e9f51eb86cc6"
+      },
+      {
+        "code": "MS09",
+        "order": 9,
+        "title": "Planejamento, SWOT, APO, BSC e decisão",
+        "group": "Gestão e Administração",
+        "detail": "Material sequencial atemporal do Notion.",
+        "href": "https://app.notion.com/p/Materiais-Sequenciais-SEEDF-MS01-MS22-3d4cf5a26731815283c2e9f51eb86cc6"
+      },
+      {
+        "code": "MS10",
+        "order": 10,
+        "title": "Gestão de Pessoas e comportamento",
+        "group": "Gestão, orçamento e transparência",
+        "detail": "Material sequencial atemporal do Notion.",
+        "href": "https://app.notion.com/p/Materiais-Sequenciais-SEEDF-MS01-MS22-3d4cf5a26731815283c2e9f51eb86cc6"
+      },
+      {
+        "code": "MS11",
+        "order": 11,
+        "title": "Qualidade, processos e projetos",
+        "group": "Gestão, orçamento e transparência",
+        "detail": "Material sequencial atemporal do Notion.",
+        "href": "https://app.notion.com/p/Materiais-Sequenciais-SEEDF-MS01-MS22-3d4cf5a26731815283c2e9f51eb86cc6"
+      },
+      {
+        "code": "MS12",
+        "order": 12,
+        "title": "AFO e orçamento público",
+        "group": "Gestão, orçamento e transparência",
+        "detail": "Material sequencial atemporal do Notion.",
+        "href": "https://app.notion.com/p/Materiais-Sequenciais-SEEDF-MS01-MS22-3d4cf5a26731815283c2e9f51eb86cc6"
+      },
+      {
+        "code": "MS13",
+        "order": 13,
+        "title": "Lei 14.133/2021, licitações e contratos",
+        "group": "Gestão, orçamento e transparência",
+        "detail": "Material sequencial atemporal do Notion.",
+        "href": "https://app.notion.com/p/Materiais-Sequenciais-SEEDF-MS01-MS22-3d4cf5a26731815283c2e9f51eb86cc6"
+      },
+      {
+        "code": "MS14",
+        "order": 14,
+        "title": "Redação Oficial, LAI e ética",
+        "group": "Gestão, orçamento e transparência",
+        "detail": "Material sequencial atemporal do Notion.",
+        "href": "https://app.notion.com/p/Materiais-Sequenciais-SEEDF-MS01-MS22-3d4cf5a26731815283c2e9f51eb86cc6"
+      },
+      {
+        "code": "MS15",
+        "order": 15,
+        "title": "Informática atualizada",
+        "group": "Tecnologia e apoio",
+        "detail": "Material sequencial atemporal do Notion.",
+        "href": "https://app.notion.com/p/Materiais-Sequenciais-SEEDF-MS01-MS22-3d4cf5a26731815283c2e9f51eb86cc6"
+      },
+      {
+        "code": "MS16",
+        "order": 16,
+        "title": "Arquivologia e gestão documental",
+        "group": "Tecnologia e apoio",
+        "detail": "Material sequencial atemporal do Notion.",
+        "href": "https://app.notion.com/p/Materiais-Sequenciais-SEEDF-MS01-MS22-3d4cf5a26731815283c2e9f51eb86cc6"
+      },
+      {
+        "code": "MS17",
+        "order": 17,
+        "title": "Materiais, estoques e patrimônio",
+        "group": "Tecnologia e apoio",
+        "detail": "Material sequencial atemporal do Notion.",
+        "href": "https://app.notion.com/p/Materiais-Sequenciais-SEEDF-MS01-MS22-3d4cf5a26731815283c2e9f51eb86cc6"
+      },
+      {
+        "code": "MS18",
+        "order": 18,
+        "title": "ECA e proteção integral",
+        "group": "Educação, proteção e revisão",
+        "detail": "Material sequencial atemporal do Notion.",
+        "href": "https://app.notion.com/p/Materiais-Sequenciais-SEEDF-MS01-MS22-3d4cf5a26731815283c2e9f51eb86cc6"
+      },
+      {
+        "code": "MS19",
+        "order": 19,
+        "title": "Acessibilidade, LBI e Educação Especial Inclusiva",
+        "group": "Educação, proteção e revisão",
+        "detail": "Material sequencial atemporal do Notion.",
+        "href": "https://app.notion.com/p/Materiais-Sequenciais-SEEDF-MS01-MS22-3d4cf5a26731815283c2e9f51eb86cc6"
+      },
+      {
+        "code": "MS20",
+        "order": 20,
+        "title": "Educação Infantil, desenvolvimento e convivência escolar",
+        "group": "Educação, proteção e revisão",
+        "detail": "Material sequencial atemporal do Notion.",
+        "href": "https://app.notion.com/p/Materiais-Sequenciais-SEEDF-MS01-MS22-3d4cf5a26731815283c2e9f51eb86cc6"
+      },
+      {
+        "code": "MS21",
+        "order": 21,
+        "title": "Discursiva SEEDF",
+        "group": "Educação, proteção e revisão",
+        "detail": "Material sequencial atemporal do Notion.",
+        "href": "https://app.notion.com/p/Materiais-Sequenciais-SEEDF-MS01-MS22-3d4cf5a26731815283c2e9f51eb86cc6"
+      },
+      {
+        "code": "MS22",
+        "order": 22,
+        "title": "Revisão integrada e simulados",
+        "group": "Educação, proteção e revisão",
+        "detail": "Material sequencial atemporal do Notion.",
+        "href": "https://app.notion.com/p/Materiais-Sequenciais-SEEDF-MS01-MS22-3d4cf5a26731815283c2e9f51eb86cc6"
+      }
     ]
   },
   "execution": {
-    "as_of": "2026-09-08T16:16:35.068Z",
+    "as_of": "2026-09-08T16:52:55.102Z",
     "c01": {
       "days": [
         {
@@ -782,5 +960,5 @@
       "question_rows": 39
     }
   },
-  "notice": "Snapshot público sanitizado. O conteúdo completo continua no Notion; materiais, fontes e execução do C01 são indexados para consulta."
+  "notice": "Dados consultados em tempo real no Notion. O site expõe apenas um índice sanitizado de materiais, fontes e execução do C01."
 }
