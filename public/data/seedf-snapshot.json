@@ -20,9 +20,573 @@
     "verticalized_axes": 60,
     "jobs": 3
   },
-  "materials": null,
+  "materials": {
+    "source_url": "https://app.notion.com/p/PDFs-e-Materiais-de-Estudo-SEEDF-PPGE-3d4cf5a2673181a4a51feed1c396c77b",
+    "last_edited_time": "2026-09-08T02:55:00.000Z",
+    "days": [
+      {
+        "day": "D01",
+        "title": "Português fino + LDB | Fundamentos e organização",
+        "detail": "Leitura vinculada: Português fino + LDB.",
+        "meta": "25 questões",
+        "href": "https://app.notion.com/p/3d4cf5a2673181fabef1f407c2451392",
+        "tone": "gold"
+      },
+      {
+        "day": "D02",
+        "title": "CF/88 Educação + LDB | Deveres e sistemas",
+        "detail": "Leitura vinculada: CF/88 + LDB.",
+        "meta": "30 questões",
+        "href": "https://app.notion.com/p/3d4cf5a267318134be45ca366aa2cda5",
+        "tone": "teal"
+      },
+      {
+        "day": "D03",
+        "title": "PNE 2026 + PNED + atualizações da LDB",
+        "detail": "Leitura vinculada: PNE, PNED e atualizações da LDB.",
+        "meta": "30 questões",
+        "href": "https://app.notion.com/p/3d4cf5a2673181cba515e85f76f0804e",
+        "tone": "violet"
+      },
+      {
+        "day": "D04",
+        "title": "Administração Geral/Pública + PODC | Manutenção ativa",
+        "detail": "Leitura vinculada: Administração Geral/Pública.",
+        "meta": "30 questões",
+        "href": "https://app.notion.com/p/3d4cf5a267318162b575d24188df79fe",
+        "tone": "teal"
+      },
+      {
+        "day": "D05",
+        "title": "LC 840 + atos administrativos | Pontos finos e atualização 2026",
+        "detail": "Leitura vinculada: LC 840 e atos administrativos.",
+        "meta": "35 questões",
+        "href": "https://app.notion.com/p/3d4cf5a2673181cb92befed47cd317f5",
+        "tone": "coral"
+      },
+      {
+        "day": "D06",
+        "title": "Informática atualizada | Windows 11 + Microsoft 365 + Internet e Segurança",
+        "detail": "Leitura vinculada: Informática atualizada.",
+        "meta": "35 questões",
+        "href": "https://app.notion.com/p/3d4cf5a2673181dd8545efe40f585297",
+        "tone": "violet"
+      },
+      {
+        "day": "D07",
+        "title": "Revisão adaptativa D01–D06 | Recalibração",
+        "detail": "Leitura vinculada: Revisão adaptativa.",
+        "meta": "30 questões · adaptativo",
+        "href": "https://app.notion.com/p/3d4cf5a2673181ac9f28e46ce90bf88e",
+        "tone": "violet"
+      },
+      {
+        "day": "D08",
+        "title": "Arquivologia + gestão documental + e-ARQ Brasil 2.0",
+        "detail": "Leitura vinculada: Arquivologia.",
+        "meta": "35 questões",
+        "href": "https://app.notion.com/p/3d4cf5a26731819093ebd77e661ed9dd",
+        "tone": "teal"
+      },
+      {
+        "day": "D09",
+        "title": "Qualidade + Processos/BPM + Projetos | Manutenção aplicada",
+        "detail": "Leitura vinculada: Qualidade, processos e projetos.",
+        "meta": "30 questões",
+        "href": "https://app.notion.com/p/3d4cf5a26731814d9a81e0354b75d6b9",
+        "tone": "teal"
+      },
+      {
+        "day": "D10",
+        "title": "Gestão de Pessoas + comportamento organizacional | Validação de retenção",
+        "detail": "Leitura vinculada: Gestão de Pessoas.",
+        "meta": "35 questões",
+        "href": "https://app.notion.com/p/3d4cf5a2673181b381fad65285d56860",
+        "tone": "coral"
+      },
+      {
+        "day": "D11",
+        "title": "AFO + orçamento público | Reforço dirigido 2026",
+        "detail": "Leitura vinculada: AFO.",
+        "meta": "35 questões",
+        "href": "https://app.notion.com/p/3d4cf5a2673181f985a9fcffe5e94bfa",
+        "tone": "gold"
+      },
+      {
+        "day": "D12",
+        "title": "Materiais + patrimônio + LAI | Manutenção de alta eficiência",
+        "detail": "Leitura vinculada: Materiais, patrimônio e LAI.",
+        "meta": "35 questões",
+        "href": "https://app.notion.com/p/3d4cf5a2673181339102dfeed723def3",
+        "tone": "teal"
+      },
+      {
+        "day": "D13",
+        "title": "ECA + acessibilidade + Educação Especial Inclusiva | Núcleo Monitor",
+        "detail": "Leitura vinculada: ECA, LBI e Educação Especial Inclusiva.",
+        "meta": "30 questões",
+        "href": "https://app.notion.com/p/3d4cf5a26731817db4f3d27a70ed8646",
+        "tone": "coral"
+      },
+      {
+        "day": "D14",
+        "title": "Revisão integrada + checkpoint | Fechamento do Ciclo 01",
+        "detail": "Leitura vinculada: Revisão integrada.",
+        "meta": "40 questões · adaptativo",
+        "href": "https://app.notion.com/p/3d4cf5a2673181db8454e5ad9dd90c01",
+        "tone": "violet"
+      }
+    ],
+    "legislation": [
+      {
+        "day": "D01",
+        "title": "Português fino + LDB",
+        "detail": "Lei nº 9.394/1996 — LDB, texto compilado: arts. 1º–5º e 8º–14. Ler a redação vigente; o art. 26 e suas alterações ficam consolidados no D03.",
+        "meta": "25 questões",
+        "href": "https://app.notion.com/p/3d4cf5a2673181fabef1f407c2451392",
+        "status": "Leitura obrigatória",
+        "tone": "gold",
+        "links": [
+          {
+            "label": "Lei nº 9.394/1996 — LDB, texto compilado",
+            "href": "https://www.planalto.gov.br/ccivil_03/leis/l9394compilado.htm"
+          }
+        ]
+      },
+      {
+        "day": "D02",
+        "title": "CF/88 + LDB",
+        "detail": "Constituição Federal: arts. 205–214; LDB: arts. 8º–14, com foco em competências, deveres e regime de colaboração. Material: D02 — CF/88 Educação + LDB | Deveres e sistemas.",
+        "meta": "30 questões",
+        "href": "https://app.notion.com/p/3d4cf5a267318134be45ca366aa2cda5",
+        "status": "Leitura obrigatória",
+        "tone": "teal",
+        "links": [
+          {
+            "label": "Constituição Federal",
+            "href": "https://www.planalto.gov.br/ccivil_03/constituicao/constituicaocompilado.htm"
+          }
+        ]
+      },
+      {
+        "day": "D03",
+        "title": "PNE, PNED e atualizações da LDB",
+        "detail": "Lei nº 15.388/2026 — PNE: arts. 1º–20 e metas/estratégias selecionadas no material; Lei nº 14.533/2023 — PNED: núcleo dos arts. 1º–4º. Conferir a LDB compilada após as alterações das Leis 14.644/2023, 14.945/2024, 15.231/2025, 15.369/2026 e 15.468/2026. Ler as leis alteradoras apenas no dispositivo alterado + redação consolidada.",
+        "meta": "30 questões",
+        "href": "https://app.notion.com/p/3d4cf5a2673181cba515e85f76f0804e",
+        "status": "Leitura obrigatória + atualização",
+        "tone": "violet",
+        "links": [
+          {
+            "label": "Lei nº 15.388/2026 — PNE",
+            "href": "https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2026/lei/l15388.htm"
+          },
+          {
+            "label": "Lei nº 14.533/2023 — PNED",
+            "href": "https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2023/lei/l14533.htm"
+          },
+          {
+            "label": "14.644/2023",
+            "href": "https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2023/lei/l14644.htm"
+          },
+          {
+            "label": "14.945/2024",
+            "href": "https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2024/lei/l14945.htm"
+          },
+          {
+            "label": "15.231/2025",
+            "href": "https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2025/lei/l15231.htm"
+          },
+          {
+            "label": "15.369/2026",
+            "href": "https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2026/lei/l15369.htm"
+          },
+          {
+            "label": "15.468/2026",
+            "href": "https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2026/lei/l15468.htm"
+          }
+        ]
+      },
+      {
+        "day": "D04",
+        "title": "Administração Geral/Pública",
+        "detail": "Constituição Federal, art. 37, caput; Decreto-Lei nº 200/1967, arts. 6º–10º. O material permanece de manutenção: questões primeiro e releitura só por erro/dúvida. Como atualização institucional complementar, consultar a Portaria SEEDF nº 167/2026 — Regimento Interno; ela não é cobrança obrigatória antes do edital.",
+        "meta": "30 questões",
+        "href": "https://app.notion.com/p/3d4cf5a267318162b575d24188df79fe",
+        "status": "Questões primeiro",
+        "tone": "teal",
+        "links": [
+          {
+            "label": "Decreto-Lei nº 200/1967",
+            "href": "https://www.planalto.gov.br/ccivil_03/decreto-lei/del0200.htm"
+          },
+          {
+            "label": "Portaria SEEDF nº 167/2026 — Regimento Interno",
+            "href": "https://www.sinj.df.gov.br/sinj/Norma/1ff2ce3031664ac8a9f1b499bf904ab9/Portaria_167_24_02_2026.html"
+          }
+        ]
+      },
+      {
+        "day": "D05",
+        "title": "LC 840 e atos administrativos",
+        "detail": "Lei Complementar nº 840/2011 — SINJ/DF, arts. 22–40; Decreto nº 48.806/2026 — SINJ/DF, com atenção aos arts. 22–31 da LC. Atos administrativos seguem o recorte do material, sem importar automaticamente lei federal como se fosse norma distrital.",
+        "meta": "35 questões",
+        "href": "https://app.notion.com/p/3d4cf5a2673181cb92befed47cd317f5",
+        "status": "Leitura obrigatória",
+        "tone": "coral",
+        "links": [
+          {
+            "label": "Lei Complementar nº 840/2011 — SINJ/DF",
+            "href": "https://www.sinj.df.gov.br/sinj/Norma/70196/LC_840.html"
+          },
+          {
+            "label": "Decreto nº 48.806/2026 — SINJ/DF",
+            "href": "https://www.sinj.df.gov.br/sinj/Norma/1ea7112d3ff24d658213638f263d87bf/Decreto_48806_18_06_2026.html"
+          }
+        ]
+      },
+      {
+        "day": "D06",
+        "title": "Informática atualizada",
+        "detail": "não há lei seca nuclear no material fixo. Priorizar Windows 11, Microsoft 365, internet e segurança conforme fontes técnicas atuais; LGPD e Marco Civil permanecem condicionados ao edital.",
+        "meta": "35 questões",
+        "href": "https://app.notion.com/p/3d4cf5a2673181dd8545efe40f585297",
+        "status": "Fonte técnica",
+        "tone": "violet",
+        "links": []
+      },
+      {
+        "day": "D07",
+        "title": "Revisão adaptativa",
+        "detail": "nenhuma lei nova. Reabrir somente artigos, dúvidas e erros produzidos em D01–D06.",
+        "meta": "30 questões · adaptativo",
+        "href": "https://app.notion.com/p/3d4cf5a2673181ac9f28e46ce90bf88e",
+        "status": "Revisão pelos dados",
+        "tone": "violet",
+        "links": []
+      },
+      {
+        "day": "D08",
+        "title": "Arquivologia",
+        "detail": "Resolução CONARQ nº 50/2022 — e-ARQ Brasil 2.0; usar as Resoluções CONARQ nº 48/2021 e nº 51/2023 como complementos indicados no material. Leitura legal curta complementar: Lei nº 8.159/1991, arts. 1º–3º e 7º–10º.",
+        "meta": "35 questões",
+        "href": "https://app.notion.com/p/3d4cf5a26731819093ebd77e661ed9dd",
+        "status": "Leitura complementar",
+        "tone": "teal",
+        "links": [
+          {
+            "label": "Resolução CONARQ nº 50/2022 — e-ARQ Brasil 2.0",
+            "href": "https://www.gov.br/conarq/pt-br/legislacao-arquivistica/resolucoes-do-conarq/resolucao-no-50-de-06-de-maio-de-2022"
+          },
+          {
+            "label": "Lei nº 8.159/1991",
+            "href": "https://www.planalto.gov.br/ccivil_03/leis/l8159.htm"
+          }
+        ]
+      },
+      {
+        "day": "D09",
+        "title": "Qualidade, processos e projetos",
+        "detail": "não há lei seca nuclear; estudar conceitos, aplicações e questões do material.",
+        "meta": "30 questões",
+        "href": "https://app.notion.com/p/3d4cf5a26731814d9a81e0354b75d6b9",
+        "status": "Conceitos + questões",
+        "tone": "teal",
+        "links": []
+      },
+      {
+        "day": "D10",
+        "title": "Gestão de Pessoas",
+        "detail": "não há lei seca nuclear; estudar teoria, comportamento e questões do material.",
+        "meta": "35 questões",
+        "href": "https://app.notion.com/p/3d4cf5a2673181b381fad65285d56860",
+        "status": "Teoria + questões",
+        "tone": "coral",
+        "links": []
+      },
+      {
+        "day": "D11",
+        "title": "AFO",
+        "detail": "Constituição Federal, arts. 165–169; Lei nº 4.320/1964, orçamento, créditos adicionais, receita, despesa e controle; Lei Complementar nº 101/2000 — LRF, planejamento, responsabilidade fiscal, despesa e transparência. Usar ainda o MTO 2026 e o MCASP 11ª edição já apontados no material.",
+        "meta": "35 questões",
+        "href": "https://app.notion.com/p/3d4cf5a2673181f985a9fcffe5e94bfa",
+        "status": "Leitura obrigatória",
+        "tone": "gold",
+        "links": [
+          {
+            "label": "Lei nº 4.320/1964",
+            "href": "https://www.planalto.gov.br/ccivil_03/leis/l4320.htm"
+          },
+          {
+            "label": "Lei Complementar nº 101/2000 — LRF",
+            "href": "https://www.planalto.gov.br/ccivil_03/leis/lcp/lcp101.htm"
+          }
+        ]
+      },
+      {
+        "day": "D12",
+        "title": "Materiais, patrimônio e LAI",
+        "detail": "Lei nº 12.527/2011 — LAI; Lei Distrital nº 4.990/2012; Decreto Distrital nº 34.276/2013. Materiais e patrimônio permanecem em manutenção por questões, com lei seca da transparência em reforço pontual.",
+        "meta": "35 questões",
+        "href": "https://app.notion.com/p/3d4cf5a2673181339102dfeed723def3",
+        "status": "Reforço pontual",
+        "tone": "teal",
+        "links": [
+          {
+            "label": "Lei nº 12.527/2011 — LAI",
+            "href": "https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2011/lei/l12527.htm"
+          },
+          {
+            "label": "Lei Distrital nº 4.990/2012",
+            "href": "https://www.sinj.df.gov.br/sinj/Norma/72983/Lei_4990.html"
+          },
+          {
+            "label": "Decreto Distrital nº 34.276/2013",
+            "href": "https://www.sinj.df.gov.br/sinj/Norma/74029/decreto_34276_11_04_2013.html"
+          }
+        ]
+      },
+      {
+        "day": "D13",
+        "title": "ECA, LBI e Educação Especial Inclusiva",
+        "detail": "ECA — Lei nº 8.069/1990, arts. 1º–6º, 53–59, 98–102 e 131–136; LBI — Lei nº 13.146/2015, núcleo educacional dos arts. 1º–4º e 27–30; Decreto nº 12.686/2025 e Decreto nº 12.773/2025. Radar: Lei nº 15.450/2026 acrescenta o art. 14, § 6º, ao ECA, mas tem vigência após 180 dias; na auditoria de 08/09/2026, não tratá-la como regra vigente.",
+        "meta": "30 questões",
+        "href": "https://app.notion.com/p/3d4cf5a26731817db4f3d27a70ed8646",
+        "status": "Leitura + radar normativo",
+        "tone": "coral",
+        "links": [
+          {
+            "label": "ECA — Lei nº 8.069/1990",
+            "href": "https://www.planalto.gov.br/ccivil_03/leis/l8069.htm"
+          },
+          {
+            "label": "LBI — Lei nº 13.146/2015",
+            "href": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2015/lei/l13146.htm"
+          },
+          {
+            "label": "Decreto nº 12.686/2025",
+            "href": "https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2025/decreto/d12686.htm"
+          },
+          {
+            "label": "Decreto nº 12.773/2025",
+            "href": "https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2025/decreto/d12773.htm"
+          },
+          {
+            "label": "Lei nº 15.450/2026",
+            "href": "https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2026/lei/l15450.htm"
+          }
+        ]
+      },
+      {
+        "day": "D14",
+        "title": "Revisão integrada",
+        "detail": "nenhuma leitura nova. A seleção será feita depois dos dados reais, pelo Caderno de Erros, dúvidas, reincidências e desempenho do C01.",
+        "meta": "40 questões · adaptativo",
+        "href": "https://app.notion.com/p/3d4cf5a2673181db8454e5ad9dd90c01",
+        "status": "Checkpoint adaptativo",
+        "tone": "violet",
+        "links": []
+      }
+    ],
+    "future": [
+      {
+        "label": "MS03/MS07",
+        "detail": "transição do PDE-DF e LODF — manter no repositório, sem antecipar um novo ciclo."
+      },
+      {
+        "label": "MS05/MS06",
+        "detail": "Direito Administrativo e LC 840 — aprofundar conforme lacunas reais."
+      },
+      {
+        "label": "MS13",
+        "detail": "Lei nº 14.133/2021, licitações e contratos — material previsto, mas não desloca o D01."
+      },
+      {
+        "label": "MS15/MS16",
+        "detail": "tecnologia, segurança, arquivologia e preservação digital — atualizar apenas com fonte oficial e aderência ao edital."
+      }
+    ],
+    "sequence": [
+      {
+        "code": "MS01",
+        "order": 1,
+        "title": "CF/88 e direito à educação",
+        "group": "Base educacional",
+        "detail": "Material sequencial atemporal do Notion.",
+        "href": "https://app.notion.com/p/Materiais-Sequenciais-SEEDF-MS01-MS22-3d4cf5a26731815283c2e9f51eb86cc6"
+      },
+      {
+        "code": "MS02",
+        "order": 2,
+        "title": "LDB vigente",
+        "group": "Base educacional",
+        "detail": "Material sequencial atemporal do Notion.",
+        "href": "https://app.notion.com/p/Materiais-Sequenciais-SEEDF-MS01-MS22-3d4cf5a26731815283c2e9f51eb86cc6"
+      },
+      {
+        "code": "MS03",
+        "order": 3,
+        "title": "PNE 2026 + PNED + transição do PDE-DF",
+        "group": "Base educacional",
+        "detail": "Material sequencial atemporal do Notion.",
+        "href": "https://app.notion.com/p/Materiais-Sequenciais-SEEDF-MS01-MS22-3d4cf5a26731815283c2e9f51eb86cc6"
+      },
+      {
+        "code": "MS04",
+        "order": 4,
+        "title": "Português para SEEDF",
+        "group": "Base educacional",
+        "detail": "Material sequencial atemporal do Notion.",
+        "href": "https://app.notion.com/p/Materiais-Sequenciais-SEEDF-MS01-MS22-3d4cf5a26731815283c2e9f51eb86cc6"
+      },
+      {
+        "code": "MS05",
+        "order": 5,
+        "title": "Direito Administrativo",
+        "group": "Gestão e Administração",
+        "detail": "Material sequencial atemporal do Notion.",
+        "href": "https://app.notion.com/p/Materiais-Sequenciais-SEEDF-MS01-MS22-3d4cf5a26731815283c2e9f51eb86cc6"
+      },
+      {
+        "code": "MS06",
+        "order": 6,
+        "title": "LC 840/2011 + estágio probatório 2026",
+        "group": "Gestão e Administração",
+        "detail": "Material sequencial atemporal do Notion.",
+        "href": "https://app.notion.com/p/Materiais-Sequenciais-SEEDF-MS01-MS22-3d4cf5a26731815283c2e9f51eb86cc6"
+      },
+      {
+        "code": "MS07",
+        "order": 7,
+        "title": "LODF + realidade do DF",
+        "group": "Gestão e Administração",
+        "detail": "Material sequencial atemporal do Notion.",
+        "href": "https://app.notion.com/p/Materiais-Sequenciais-SEEDF-MS01-MS22-3d4cf5a26731815283c2e9f51eb86cc6"
+      },
+      {
+        "code": "MS08",
+        "order": 8,
+        "title": "Administração Geral e Pública",
+        "group": "Gestão e Administração",
+        "detail": "Material sequencial atemporal do Notion.",
+        "href": "https://app.notion.com/p/Materiais-Sequenciais-SEEDF-MS01-MS22-3d4cf5a26731815283c2e9f51eb86cc6"
+      },
+      {
+        "code": "MS09",
+        "order": 9,
+        "title": "Planejamento, SWOT, APO, BSC e decisão",
+        "group": "Gestão e Administração",
+        "detail": "Material sequencial atemporal do Notion.",
+        "href": "https://app.notion.com/p/Materiais-Sequenciais-SEEDF-MS01-MS22-3d4cf5a26731815283c2e9f51eb86cc6"
+      },
+      {
+        "code": "MS10",
+        "order": 10,
+        "title": "Gestão de Pessoas e comportamento",
+        "group": "Gestão, orçamento e transparência",
+        "detail": "Material sequencial atemporal do Notion.",
+        "href": "https://app.notion.com/p/Materiais-Sequenciais-SEEDF-MS01-MS22-3d4cf5a26731815283c2e9f51eb86cc6"
+      },
+      {
+        "code": "MS11",
+        "order": 11,
+        "title": "Qualidade, processos e projetos",
+        "group": "Gestão, orçamento e transparência",
+        "detail": "Material sequencial atemporal do Notion.",
+        "href": "https://app.notion.com/p/Materiais-Sequenciais-SEEDF-MS01-MS22-3d4cf5a26731815283c2e9f51eb86cc6"
+      },
+      {
+        "code": "MS12",
+        "order": 12,
+        "title": "AFO e orçamento público",
+        "group": "Gestão, orçamento e transparência",
+        "detail": "Material sequencial atemporal do Notion.",
+        "href": "https://app.notion.com/p/Materiais-Sequenciais-SEEDF-MS01-MS22-3d4cf5a26731815283c2e9f51eb86cc6"
+      },
+      {
+        "code": "MS13",
+        "order": 13,
+        "title": "Lei 14.133/2021, licitações e contratos",
+        "group": "Gestão, orçamento e transparência",
+        "detail": "Material sequencial atemporal do Notion.",
+        "href": "https://app.notion.com/p/Materiais-Sequenciais-SEEDF-MS01-MS22-3d4cf5a26731815283c2e9f51eb86cc6"
+      },
+      {
+        "code": "MS14",
+        "order": 14,
+        "title": "Redação Oficial, LAI e ética",
+        "group": "Gestão, orçamento e transparência",
+        "detail": "Material sequencial atemporal do Notion.",
+        "href": "https://app.notion.com/p/Materiais-Sequenciais-SEEDF-MS01-MS22-3d4cf5a26731815283c2e9f51eb86cc6"
+      },
+      {
+        "code": "MS15",
+        "order": 15,
+        "title": "Informática atualizada",
+        "group": "Tecnologia e apoio",
+        "detail": "Material sequencial atemporal do Notion.",
+        "href": "https://app.notion.com/p/Materiais-Sequenciais-SEEDF-MS01-MS22-3d4cf5a26731815283c2e9f51eb86cc6"
+      },
+      {
+        "code": "MS16",
+        "order": 16,
+        "title": "Arquivologia e gestão documental",
+        "group": "Tecnologia e apoio",
+        "detail": "Material sequencial atemporal do Notion.",
+        "href": "https://app.notion.com/p/Materiais-Sequenciais-SEEDF-MS01-MS22-3d4cf5a26731815283c2e9f51eb86cc6"
+      },
+      {
+        "code": "MS17",
+        "order": 17,
+        "title": "Materiais, estoques e patrimônio",
+        "group": "Tecnologia e apoio",
+        "detail": "Material sequencial atemporal do Notion.",
+        "href": "https://app.notion.com/p/Materiais-Sequenciais-SEEDF-MS01-MS22-3d4cf5a26731815283c2e9f51eb86cc6"
+      },
+      {
+        "code": "MS18",
+        "order": 18,
+        "title": "ECA e proteção integral",
+        "group": "Educação, proteção e revisão",
+        "detail": "Material sequencial atemporal do Notion.",
+        "href": "https://app.notion.com/p/Materiais-Sequenciais-SEEDF-MS01-MS22-3d4cf5a26731815283c2e9f51eb86cc6"
+      },
+      {
+        "code": "MS19",
+        "order": 19,
+        "title": "Acessibilidade, LBI e Educação Especial Inclusiva",
+        "group": "Educação, proteção e revisão",
+        "detail": "Material sequencial atemporal do Notion.",
+        "href": "https://app.notion.com/p/Materiais-Sequenciais-SEEDF-MS01-MS22-3d4cf5a26731815283c2e9f51eb86cc6"
+      },
+      {
+        "code": "MS20",
+        "order": 20,
+        "title": "Educação Infantil, desenvolvimento e convivência escolar",
+        "group": "Educação, proteção e revisão",
+        "detail": "Material sequencial atemporal do Notion.",
+        "href": "https://app.notion.com/p/Materiais-Sequenciais-SEEDF-MS01-MS22-3d4cf5a26731815283c2e9f51eb86cc6"
+      },
+      {
+        "code": "MS21",
+        "order": 21,
+        "title": "Discursiva SEEDF",
+        "group": "Educação, proteção e revisão",
+        "detail": "Material sequencial atemporal do Notion.",
+        "href": "https://app.notion.com/p/Materiais-Sequenciais-SEEDF-MS01-MS22-3d4cf5a26731815283c2e9f51eb86cc6"
+      },
+      {
+        "code": "MS22",
+        "order": 22,
+        "title": "Revisão integrada e simulados",
+        "group": "Educação, proteção e revisão",
+        "detail": "Material sequencial atemporal do Notion.",
+        "href": "https://app.notion.com/p/Materiais-Sequenciais-SEEDF-MS01-MS22-3d4cf5a26731815283c2e9f51eb86cc6"
+      }
+    ]
+  },
   "execution": {
-    "as_of": "2026-09-08T17:59:21.641Z",
+    "as_of": "2026-09-08T20:56:27.908Z",
     "c01": {
       "days": [
         {
