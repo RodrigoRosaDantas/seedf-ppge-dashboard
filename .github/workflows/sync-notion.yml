@@ -27,12 +27,12 @@ jobs:
 
       - name: Sync sanitized Notion snapshot
         env:
-          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+          NOTION_TOKEN: ${{ secrets.SEEDF }}
           NOTION_PAGE_ID: ${{ vars.NOTION_PAGE_ID }}
           NOTION_VERSION: "2026-03-11"
         run: |
           if [ -z "$NOTION_TOKEN" ]; then
-            echo "::error::Configure the NOTION_TOKEN Actions secret before running this workflow."
+            echo "::error::Configure the SEEDF Actions secret before running this workflow."
             exit 1
           fi
           node scripts/sync-notion.mjs
