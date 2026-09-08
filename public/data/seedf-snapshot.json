@@ -6,7 +6,7 @@
     "page_id": "3d4cf5a2-6731-8106-a2c9-c97816aa6cf5",
     "page_url": "https://app.notion.com/p/SEEDF-PPGE-Gestor-Analista-Monitor-Dashboard-PRO-3d4cf5a267318106a2c9c97816aa6cf5",
     "last_edited_time": "2026-09-08T14:29:00.000Z",
-    "synced_at": "2026-09-08T16:07:55.543Z",
+    "synced_at": "2026-09-08T16:16:35.071Z",
     "content_hash": "1adbf4e56b4ccbfb3d06597985c7f733962c395aa77aefbc25ad8f6ab9d8c991",
     "status": "synced"
   },
@@ -408,7 +408,7 @@
     ]
   },
   "execution": {
-    "as_of": "2026-09-08T16:07:55.536Z",
+    "as_of": "2026-09-08T16:16:35.068Z",
     "c01": {
       "days": [
         {
@@ -720,7 +720,7 @@
           "errors": 0,
           "doubts": 0,
           "precision": null,
-          "rows": 8
+          "rows": 4
         },
         {
           "subject": "Português",
@@ -779,7 +779,7 @@
       },
       "active_day": "D01",
       "error_count": 0,
-      "question_rows": 43
+      "question_rows": 39
     }
   },
   "notice": "Snapshot público sanitizado. O conteúdo completo continua no Notion; materiais, fontes e execução do C01 são indexados para consulta."

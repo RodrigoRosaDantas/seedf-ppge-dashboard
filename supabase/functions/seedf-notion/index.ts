@@ -349,7 +349,7 @@ function parseExecutionDay(page: Record<string, any>): ExecutionDay | null {
 }
 
 function normalizeC01Day(value: string) {
-  const match = value.match(/\bC01-D(0[1-9]|1[0-4])\b/i);
+  const match = value.match(/(?:^|\s)C01-D(0[1-9]|1[0-4])(?=$|[\s—–-])/i);
   return match ? `D${match[1]}` : null;
 }
 
