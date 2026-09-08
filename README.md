@@ -29,7 +29,7 @@ Para ativar a sincronização:
 
 1. Crie um token de leitura no Notion e conecte a integração à página SEEDF.
 2. No GitHub, abra **Settings → Secrets and variables → Actions**.
-3. Crie o secret `NOTION_TOKEN` sem colocar o token no código ou em mensagens.
+3. Crie o secret `SEEDF` sem colocar o token no código ou em mensagens.
 4. Execute manualmente o workflow uma vez; depois ele roda a cada 15 minutos.
 
 O botão **Atualizar** recarrega o último snapshot publicado. Quando o workflow detectar uma mudança, o GitHub Pages será reconstruído automaticamente.
