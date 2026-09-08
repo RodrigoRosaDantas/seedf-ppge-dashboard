@@ -1,7 +1,17 @@
 import type { NextConfig } from "next";
 
+const isGithubPages = process.env.GITHUB_PAGES === "1";
+const githubPagesBasePath = isGithubPages
+  ? process.env.GITHUB_PAGES_BASE_PATH ?? ""
+  : "";
+
 const nextConfig: NextConfig = {
-  /* config options here */
+  ...(isGithubPages
+      ? {
+        output: "export" as const,
+        assetPrefix: githubPagesBasePath ? `${githubPagesBasePath}/` : undefined,
+      }
+    : {}),
 };
 
 export default nextConfig;

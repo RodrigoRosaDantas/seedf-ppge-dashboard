@@ -1,6 +1,11 @@
 import type { Metadata } from "next";
 import "./globals.css";
 
+const siteBasePath =
+  process.env.GITHUB_PAGES === "1"
+    ? process.env.GITHUB_PAGES_BASE_PATH ?? ""
+    : "";
+
 export const metadata: Metadata = {
   title: "SEEDF PPGE — Dashboard PRO",
   description: "Central de comando da preparação pré-edital para Gestor PPGE, Analista PPGE — Apoio Administrativo e Analista PPGE — Monitor.",
@@ -8,10 +13,10 @@ export const metadata: Metadata = {
     "codex-preview": "development",
   },
   icons: {
-    icon: "/favicon.svg",
-    shortcut: "/favicon.svg",
+    icon: `${siteBasePath}/favicon.svg`,
+    shortcut: `${siteBasePath}/favicon.svg`,
   },
-  manifest: "/manifest.webmanifest",
+  manifest: `${siteBasePath}/manifest.webmanifest`,
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

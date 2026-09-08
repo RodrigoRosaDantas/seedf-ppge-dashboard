@@ -2,15 +2,15 @@
   "name": "SEEDF PPGE — Dashboard PRO",
   "short_name": "SEEDF PPGE",
   "description": "Central de comando da preparação pré-edital SEEDF.",
-  "start_url": "/",
-  "scope": "/",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#071824",
   "theme_color": "#071824",
   "lang": "pt-BR",
   "icons": [
     {
-      "src": "/favicon.svg",
+      "src": "./favicon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any maskable"
