@@ -12,6 +12,57 @@ const ERRORS_DATA_SOURCE_ID = "68d7c880-165b-4e44-988b-cb9e3c38d8b2";
 const NOTION_API_BASE = "https://api.notion.com/v1";
 const NOTION_VERSION = process.env.NOTION_VERSION || "2026-03-11";
 const MAX_NOTION_CONCURRENCY = 4;
+const META_BY_DAY = {
+  D01: "25 questões",
+  D02: "30 questões",
+  D03: "30 questões",
+  D04: "30 questões",
+  D05: "35 questões",
+  D06: "35 questões",
+  D07: "30 questões · adaptativo",
+  D08: "35 questões",
+  D09: "30 questões",
+  D10: "35 questões",
+  D11: "35 questões",
+  D12: "35 questões",
+  D13: "30 questões",
+  D14: "40 questões · adaptativo",
+};
+
+const STATUS_BY_DAY = {
+  D01: "Leitura obrigatória",
+  D02: "Leitura obrigatória",
+  D03: "Leitura obrigatória + atualização",
+  D04: "Questões primeiro",
+  D05: "Leitura obrigatória",
+  D06: "Fonte técnica",
+  D07: "Revisão pelos dados",
+  D08: "Leitura complementar",
+  D09: "Conceitos + questões",
+  D10: "Teoria + questões",
+  D11: "Leitura obrigatória",
+  D12: "Reforço pontual",
+  D13: "Leitura + radar normativo",
+  D14: "Checkpoint adaptativo",
+};
+
+const TONE_BY_DAY = {
+  D01: "gold",
+  D02: "teal",
+  D03: "violet",
+  D04: "teal",
+  D05: "coral",
+  D06: "violet",
+  D07: "violet",
+  D08: "teal",
+  D09: "teal",
+  D10: "coral",
+  D11: "gold",
+  D12: "teal",
+  D13: "coral",
+  D14: "violet",
+};
+
 const pageId = normalizePageId(process.env.NOTION_PAGE_ID || DEFAULT_PAGE_ID);
 const token = process.env.NOTION_TOKEN?.trim();
 const outputPath = path.resolve("public/data/seedf-snapshot.json");
@@ -113,7 +164,7 @@ const snapshot = {
     verticalized_axes: 60,
     jobs: 3,
   },
-  materials,
+  materials: materials || previous?.materials || null,
   execution,
   notice: "Snapshot público sanitizado. O conteúdo completo continua no Notion; materiais, fontes e execução do C01 são indexados para consulta.",
 };
@@ -552,57 +603,6 @@ function notionPageUrl(value) {
   const normalized = normalizePageId(value);
   return `https://app.notion.com/p/${normalized.replaceAll("-", "")}`;
 }
-
-const META_BY_DAY = {
-  D01: "25 questões",
-  D02: "30 questões",
-  D03: "30 questões",
-  D04: "30 questões",
-  D05: "35 questões",
-  D06: "35 questões",
-  D07: "30 questões · adaptativo",
-  D08: "35 questões",
-  D09: "30 questões",
-  D10: "35 questões",
-  D11: "35 questões",
-  D12: "35 questões",
-  D13: "30 questões",
-  D14: "40 questões · adaptativo",
-};
-
-const STATUS_BY_DAY = {
-  D01: "Leitura obrigatória",
-  D02: "Leitura obrigatória",
-  D03: "Leitura obrigatória + atualização",
-  D04: "Questões primeiro",
-  D05: "Leitura obrigatória",
-  D06: "Fonte técnica",
-  D07: "Revisão pelos dados",
-  D08: "Leitura complementar",
-  D09: "Conceitos + questões",
-  D10: "Teoria + questões",
-  D11: "Leitura obrigatória",
-  D12: "Reforço pontual",
-  D13: "Leitura + radar normativo",
-  D14: "Checkpoint adaptativo",
-};
-
-const TONE_BY_DAY = {
-  D01: "gold",
-  D02: "teal",
-  D03: "violet",
-  D04: "teal",
-  D05: "coral",
-  D06: "violet",
-  D07: "violet",
-  D08: "teal",
-  D09: "teal",
-  D10: "coral",
-  D11: "gold",
-  D12: "teal",
-  D13: "coral",
-  D14: "violet",
-};
 
 function pageTitle(pageObject) {
   const titleProperty = pageObject?.properties?.title;

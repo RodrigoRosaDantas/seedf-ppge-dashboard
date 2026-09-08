@@ -45,6 +45,16 @@ type LegislationItem = {
   links: Array<{ label: string; href: string }>;
 };
 
+type MaterialPreview = {
+  label: string;
+  title: string;
+  detail: string;
+  meta: string;
+  href: string;
+  tone: MaterialsTone;
+  legislation?: LegislationItem;
+};
+
 type FutureMaterial = {
   label: string;
   detail: string;
@@ -685,6 +695,17 @@ function toneForSequence(order: number): MaterialsTone {
 }
 
 function Materials({ snapshot = activeDashboardSnapshot }: { snapshot?: DashboardSnapshot | null }) {
+  const [selectedMaterial, setSelectedMaterial] = useState<MaterialPreview | null>(null);
+
+  useEffect(() => {
+    if (!selectedMaterial) return;
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setSelectedMaterial(null);
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [selectedMaterial]);
+
   const liveMaterials = snapshot?.materials;
   const hasLiveMaterials = Boolean(liveMaterials?.days?.length);
   const displayedMaterials = hasLiveMaterials ? liveMaterials!.days : studyMaterials;
@@ -752,7 +773,7 @@ function Materials({ snapshot = activeDashboardSnapshot }: { snapshot?: Dashboar
         <SectionHeading
           eyebrow="CICLO 01 · MATERIAL COMPLETO"
           title="Materiais do D01 ao D14"
-          description="Cada cartão abre a página correspondente no Notion. A meta e o estado seguem a sequência operacional do C01."
+          description="Cada cartão abre um resumo dentro do site. A fonte original do Notion continua disponível nos botões de origem."
           action={<a className="text-button" href={materialSource} target="_blank" rel="noreferrer">Abrir biblioteca no Notion <ChevronRight size={16} /></a>}
         />
         <div className="material-grid">
@@ -761,7 +782,24 @@ function Materials({ snapshot = activeDashboardSnapshot }: { snapshot?: Dashboar
               <div className="material-card-top"><span className="material-day">{material.day}</span><StatusPill tone={material.tone}>{material.meta}</StatusPill></div>
               <h3>{material.title}</h3>
               <p>{material.detail}</p>
-              <a className="text-button" href={material.href} target="_blank" rel="noreferrer">Abrir material <ArrowRight size={15} /></a>
+              <button
+                className="text-button material-open-button"
+                type="button"
+                onClick={() => {
+                  const legislation = displayedLegislation.find((item) => item.day === material.day);
+                  setSelectedMaterial({
+                    label: material.day,
+                    title: material.title,
+                    detail: material.detail,
+                    meta: material.meta,
+                    href: material.href,
+                    tone: material.tone,
+                    legislation,
+                  });
+                }}
+              >
+                Abrir material no site <ArrowRight size={15} />
+              </button>
             </article>
           ))}
         </div>
@@ -803,7 +841,22 @@ function Materials({ snapshot = activeDashboardSnapshot }: { snapshot?: Dashboar
                 <div className="material-card-top"><span className="material-day">{material.code}</span><StatusPill tone={tone}>{material.group}</StatusPill></div>
                 <h3>{material.title}</h3>
                 <p>{material.detail}</p>
-                <a className="text-button" href={material.href} target="_blank" rel="noreferrer">Abrir no Notion <ArrowRight size={15} /></a>
+                <button
+                  className="text-button material-open-button"
+                  type="button"
+                  onClick={() =>
+                    setSelectedMaterial({
+                      label: material.code,
+                      title: material.title,
+                      detail: material.detail,
+                      meta: material.group,
+                      href: material.href,
+                      tone,
+                    })
+                  }
+                >
+                  Abrir material no site <ArrowRight size={15} />
+                </button>
               </article>
             );
           }) : <div className="sequence-empty">Nenhum material corresponde à busca ou ao filtro atual.</div>}
@@ -870,6 +923,66 @@ function Materials({ snapshot = activeDashboardSnapshot }: { snapshot?: Dashboar
         <div className="note-icon"><CircleAlert size={19} /></div>
         <div><p className="eyebrow">REGRA-MÃE</p><h3>Fonte oficial atualizada prevalece sobre resumo antigo.</h3><p>O Notion mantém o material completo; o site indexa a biblioteca e conserva o backup do GitHub para quando a consulta ao vivo estiver indisponível.</p></div>
       </section>
+      {selectedMaterial ? (
+        <div
+          className="material-modal-backdrop"
+          role="presentation"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) setSelectedMaterial(null);
+          }}
+        >
+          <section
+            className={`material-modal material-modal-${selectedMaterial.tone}`}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="material-modal-title"
+            onMouseDown={(event) => event.stopPropagation()}
+          >
+            <div className="material-modal-top">
+              <div>
+                <p className="eyebrow">{selectedMaterial.label} · LEITURA NO SITE</p>
+                <h2 id="material-modal-title">{selectedMaterial.title}</h2>
+              </div>
+              <button
+                className="secondary-button material-modal-close"
+                type="button"
+                onClick={() => setSelectedMaterial(null)}
+                aria-label="Fechar visualização do material"
+              >
+                <X size={17} />
+              </button>
+            </div>
+            <div className="material-modal-meta"><StatusPill tone={selectedMaterial.tone}>{selectedMaterial.meta}</StatusPill></div>
+            <p className="material-modal-detail">{selectedMaterial.detail}</p>
+            {selectedMaterial.legislation ? (
+              <div className="material-modal-reading">
+                <p className="eyebrow">ROTEIRO LEGISLATIVO VINCULADO</p>
+                <h3>{selectedMaterial.legislation.title}</h3>
+                <p>{selectedMaterial.legislation.detail}</p>
+                {selectedMaterial.legislation.links.length > 0 ? (
+                  <div className="law-links material-modal-links">
+                    {selectedMaterial.legislation.links.map((link) => (
+                      <a href={link.href} target="_blank" rel="noreferrer" key={link.href}>
+                        {link.label} <ArrowRight size={13} />
+                      </a>
+                    ))}
+                  </div>
+                ) : null}
+              </div>
+            ) : null}
+            <div className="material-modal-note">
+              <CircleAlert size={17} />
+              <span>Este é o resumo público sincronizado. Para conferir o conteúdo integral e a versão mais recente, use a fonte do Notion.</span>
+            </div>
+            <div className="material-modal-actions">
+              <button className="secondary-button" type="button" onClick={() => setSelectedMaterial(null)}>Fechar</button>
+              <a className="primary-button" href={selectedMaterial.href} target="_blank" rel="noreferrer">
+                Ver fonte no Notion <ArrowRight size={15} />
+              </a>
+            </div>
+          </section>
+        </div>
+      ) : null}
     </div>
   );
 }

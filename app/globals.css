@@ -125,3 +125,30 @@ h3 { margin-bottom: 8px; font-size: 16px; line-height: 1.25; }
 .legislation-empty { grid-column: 1 / -1; padding: 25px; border: 1px dashed var(--line); border-radius: 12px; color: var(--muted); text-align: center; font-size: 12px; }
 @media (max-width: 1120px) { .legislation-toolbar { grid-template-columns: minmax(220px, 1fr) minmax(190px, .65fr); }.legislation-count { grid-column: 1 / -1; } }
 @media (max-width: 760px) { .legislation-toolbar { grid-template-columns: 1fr; }.legislation-count { grid-column: auto; white-space: normal; } }
+
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+.material-open-button { font-family: inherit; }
+.material-modal-backdrop { position: fixed; inset: 0; z-index: 60; display: grid; place-items: center; padding: 20px; background: rgba(7, 24, 33, .46); backdrop-filter: blur(5px); }
+.material-modal { width: min(680px, 100%); max-height: min(780px, calc(100vh - 40px)); overflow: auto; box-sizing: border-box; padding: 29px; border: 1px solid var(--line); border-top: 4px solid var(--teal); border-radius: 18px; background: #fff; box-shadow: 0 26px 80px rgba(8, 33, 42, .24); }
+.material-modal-gold { border-top-color: var(--gold); }
+.material-modal-teal { border-top-color: var(--teal); }
+.material-modal-violet { border-top-color: var(--violet); }
+.material-modal-coral { border-top-color: var(--coral); }
+.material-modal-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 18px; }
+.material-modal h2 { margin: 4px 0 0; color: var(--ink); font-family: Georgia, "Times New Roman", serif; font-size: clamp(25px, 4vw, 36px); line-height: 1.06; }
+.material-modal-close { min-width: 38px; min-height: 38px; padding: 0 10px; }
+.material-modal-meta { margin-top: 18px; }
+.material-modal-detail { margin: 18px 0 0; color: var(--ink); font-size: 14px; line-height: 1.7; }
+.material-modal-reading { margin-top: 21px; padding: 16px 18px; border-left: 3px solid var(--gold); border-radius: 0 12px 12px 0; background: #fffaf1; }
+.material-modal-reading h3 { margin: 5px 0 8px; color: var(--ink); font-size: 16px; }
+.material-modal-reading p:not(.eyebrow) { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.65; }
+.material-modal-links { margin-top: 14px; }
+.material-modal-note { display: flex; align-items: flex-start; gap: 10px; margin-top: 21px; padding: 14px; border: 1px solid #e2eeee; border-radius: 12px; background: #f7fbfb; color: var(--muted); font-size: 12px; line-height: 1.55; }
+.material-modal-note svg { flex: 0 0 auto; color: var(--teal-dark); margin-top: 1px; }
+.material-modal-actions { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
+@media (max-width: 760px) {
+  .material-modal-backdrop { align-items: end; padding: 10px; }
+  .material-modal { max-height: calc(100vh - 20px); padding: 22px 18px; border-radius: 16px; }
+  .material-modal-actions { display: grid; grid-template-columns: 1fr; }
+  .material-modal-actions .primary-button, .material-modal-actions .secondary-button { width: 100%; }
+}
