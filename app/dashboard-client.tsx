@@ -769,7 +769,44 @@ function Materials({ snapshot = activeDashboardSnapshot }: { snapshot?: Dashboar
         ))}
       </section>
 
-      <section className="panel materials-roadmap">
+      <section className="panel materials-overview">
+        <div className="materials-overview-head">
+          <div>
+            <p className="eyebrow">MAPA DA BIBLIOTECA</p>
+            <h2>Escolha o caminho de estudo</h2>
+            <p>O C01 mostra o que estudar agora; o catálogo organiza a trilha completa; a legislação aponta a fonte oficial de cada dia.</p>
+          </div>
+          <StatusPill tone={hasLiveMaterials ? "teal" : "gold"}>{hasLiveMaterials ? "Notion sincronizado" : "Snapshot de segurança"}</StatusPill>
+        </div>
+        <div className="materials-summary-grid">
+          <a className="materials-summary-card materials-summary-gold" href="#c01-materials" aria-label="Ir para materiais do C01">
+            <span className="materials-summary-icon"><Target size={18} /></span>
+            <span><strong>{displayedMaterials.length}</strong><small>Dias do C01</small></span>
+            <ChevronRight size={16} />
+          </a>
+          <a className="materials-summary-card materials-summary-teal" href="#sequence-materials" aria-label="Ir para catálogo MS01 a MS22">
+            <span className="materials-summary-icon"><Layers3 size={18} /></span>
+            <span><strong>{displayedSequence.length}</strong><small>Módulos MS</small></span>
+            <ChevronRight size={16} />
+          </a>
+          <a className="materials-summary-card materials-summary-violet" href="#legislation-materials" aria-label="Ir para legislação por dia">
+            <span className="materials-summary-icon"><FileText size={18} /></span>
+            <span><strong>{displayedLegislation.length}</strong><small>Roteiros legais</small></span>
+            <ChevronRight size={16} />
+          </a>
+          <a className="materials-summary-card materials-summary-coral" href="#future-materials" aria-label="Ir para fila posterior">
+            <span className="materials-summary-icon"><Route size={18} /></span>
+            <span><strong>{displayedFuture.length}</strong><small>Itens posteriores</small></span>
+            <ChevronRight size={16} />
+          </a>
+        </div>
+        <div className="materials-overview-foot">
+          <span><Check size={14} /> Clique nos cartões para abrir o resumo no site.</span>
+          <a className="text-button" href={materialSource} target="_blank" rel="noreferrer">Ver fonte no Notion <ArrowRight size={15} /></a>
+        </div>
+      </section>
+
+      <section id="c01-materials" className="panel materials-roadmap materials-anchor">
         <SectionHeading
           eyebrow="CICLO 01 · MATERIAL COMPLETO"
           title="Materiais do D01 ao D14"
@@ -805,7 +842,7 @@ function Materials({ snapshot = activeDashboardSnapshot }: { snapshot?: Dashboar
         </div>
       </section>
 
-      <section className="panel sequence-panel">
+      <section id="sequence-materials" className="panel sequence-panel materials-anchor">
         <SectionHeading
           eyebrow="TRILHA ATEMPORAL · NOTION"
           title="Catálogo completo MS01–MS22"
@@ -863,7 +900,7 @@ function Materials({ snapshot = activeDashboardSnapshot }: { snapshot?: Dashboar
         </div>
       </section>
 
-      <section className="panel legislation-panel">
+      <section id="legislation-materials" className="panel legislation-panel materials-anchor">
         <SectionHeading
           eyebrow={auditLabel}
           title="Leis e fontes oficiais por dia"
@@ -909,7 +946,7 @@ function Materials({ snapshot = activeDashboardSnapshot }: { snapshot?: Dashboar
         </div>
       </section>
 
-      <section className="panel future-materials">
+      <section id="future-materials" className="panel future-materials materials-anchor">
         <SectionHeading
           eyebrow="FILA POSTERIOR · NOTION"
           title="Materiais já previstos para depois do C01"
@@ -921,7 +958,7 @@ function Materials({ snapshot = activeDashboardSnapshot }: { snapshot?: Dashboar
 
       <section className="panel materials-note">
         <div className="note-icon"><CircleAlert size={19} /></div>
-        <div><p className="eyebrow">REGRA-MÃE</p><h3>Fonte oficial atualizada prevalece sobre resumo antigo.</h3><p>O Notion mantém o material completo; o site indexa a biblioteca e conserva o backup do GitHub para quando a consulta ao vivo estiver indisponível.</p></div>
+        <div><p className="eyebrow">REGRA-MÃE</p><h3>Fonte oficial atualizada prevalece sobre resumo antigo.</h3><p>O site abre os resumos e as leis vinculadas; o Notion mantém o conteúdo completo e o GitHub conserva o backup quando a consulta ao vivo estiver indisponível.</p></div>
       </section>
       {selectedMaterial ? (
         <div
