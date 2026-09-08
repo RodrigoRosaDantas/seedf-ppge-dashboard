@@ -129,14 +129,19 @@ const workload = [
 
 const dayRows = [
   { day: "D01", label: "Português fino + LDB", detail: "Próxima ação", state: "next", meta: "25 questões" },
-  { day: "D02", label: "Material já preparado", detail: "Aguardando execução", state: "ready", meta: "Não iniciado" },
-  { day: "D03", label: "Material já preparado", detail: "Aguardando execução", state: "ready", meta: "Não iniciado" },
-  { day: "D04", label: "Material já preparado", detail: "Aguardando execução", state: "ready", meta: "Não iniciado" },
-  { day: "D05", label: "Material já preparado", detail: "Aguardando execução", state: "ready", meta: "Não iniciado" },
-  { day: "D06", label: "Material já preparado", detail: "Aguardando execução", state: "ready", meta: "Não iniciado" },
-  { day: "D07", label: "Checkpoint adaptativo", detail: "Definido pelos resultados de D01–D06", state: "adaptive", meta: "A criar após execução" },
-  { day: "D08–D13", label: "Materiais já preparados", detail: "Aguardando execução", state: "ready", meta: "Não iniciado" },
-  { day: "D14", label: "Fechamento do Ciclo 01", detail: "Bateria integrada de 40 questões", state: "adaptive", meta: "Após D01–D13" },
+  { day: "D02", label: "CF/88 Educação + LDB", detail: "Aguardando execução", state: "ready", meta: "30 questões" },
+  { day: "D03", label: "PNE 2026 + PNED + LDB", detail: "Aguardando execução", state: "ready", meta: "30 questões" },
+  { day: "D04", label: "Administração Geral/Pública + PODC", detail: "Aguardando execução", state: "ready", meta: "30 questões" },
+  { day: "D05", label: "LC 840 + atos administrativos", detail: "Aguardando execução", state: "ready", meta: "35 questões" },
+  { day: "D06", label: "Informática atualizada", detail: "Aguardando execução", state: "ready", meta: "35 questões" },
+  { day: "D07", label: "Revisão adaptativa", detail: "Definida pelos resultados de D01–D06", state: "adaptive", meta: "30 questões · adaptativo" },
+  { day: "D08", label: "Arquivologia + e-ARQ", detail: "Aguardando execução", state: "ready", meta: "35 questões" },
+  { day: "D09", label: "Qualidade + BPM + Projetos", detail: "Aguardando execução", state: "ready", meta: "30 questões" },
+  { day: "D10", label: "Gestão de Pessoas + comportamento", detail: "Aguardando execução", state: "ready", meta: "35 questões" },
+  { day: "D11", label: "AFO + orçamento público", detail: "Aguardando execução", state: "ready", meta: "35 questões" },
+  { day: "D12", label: "Materiais + patrimônio + LAI", detail: "Aguardando execução", state: "ready", meta: "35 questões" },
+  { day: "D13", label: "ECA + acessibilidade + Educação Especial", detail: "Aguardando execução", state: "ready", meta: "30 questões" },
+  { day: "D14", label: "Fechamento do Ciclo 01", detail: "Bateria integrada após D01–D13", state: "adaptive", meta: "40 questões · adaptativo" },
 ];
 
 const sources = [
