@@ -128,7 +128,7 @@ const workload = [
 ];
 
 const dayRows = [
-  { day: "D01", label: "Português fino + LDB", detail: "Próxima ação", state: "next", meta: "30 questões" },
+  { day: "D01", label: "Português fino + LDB", detail: "Próxima ação", state: "next", meta: "25 questões" },
   { day: "D02", label: "Material já preparado", detail: "Aguardando execução", state: "ready", meta: "Não iniciado" },
   { day: "D03", label: "Material já preparado", detail: "Aguardando execução", state: "ready", meta: "Não iniciado" },
   { day: "D04", label: "Material já preparado", detail: "Aguardando execução", state: "ready", meta: "Não iniciado" },
@@ -203,7 +203,7 @@ function Overview({ onNavigate, snapshot }: { onNavigate: (section: SectionId) =
           <h3>{nextAction}</h3>
           <p>Primeira unidade de execução do C01. Teoria curta, questões registradas no banco SEEDF e fechamento do dia.</p>
           <div className="focus-rule" />
-          <div className="focus-meta"><span><Target size={15} /> Meta inicial</span><strong>30 questões</strong></div>
+          <div className="focus-meta"><span><Target size={15} /> Meta inicial</span><strong>25 questões</strong></div>
           <div className="focus-meta"><span><TimerReset size={15} /> Estado</span><strong>Próximo</strong></div>
         </div>
       </section>
@@ -356,6 +356,6 @@ export default function Home() {
     return () => { cancelled = true; };
   }, []);
   const activeLabel = navigation.find((item) => item.id === section)?.label ?? "Visão geral";
-  const nextAction = snapshot?.dashboard.next_action ?? "D01 · Português + LDB";
+  const nextAction = snapshot?.dashboard.next_action ?? "D01 · Português fino + LDB";
   return <main className="site-shell"><aside className={`sidebar ${menuOpen ? "sidebar-open" : ""}`}><div className="brand-block"><div className="brand-mark">S</div><div><strong>SEEDF</strong><span>PPGE · Dashboard PRO</span></div><button className="close-menu" onClick={() => setMenuOpen(false)} aria-label="Fechar menu"><X size={18} /></button></div><div className="sidebar-context"><span className="live-dot" /> Pré-edital 2026/2027</div><nav className="main-nav" aria-label="Navegação principal">{navigation.map((item) => { const Icon = item.icon; const active = section === item.id; return <button className={`nav-item ${active ? "nav-active" : ""}`} key={item.id} onClick={() => handleNavigate(item.id)}><Icon size={18} /><span>{item.label}</span>{active && <span className="nav-indicator" />}</button>; })}</nav><div className="sidebar-bottom"><div className="sidebar-card"><p className="eyebrow">PRÓXIMA AÇÃO</p><strong>{nextAction}</strong><button onClick={() => handleNavigate("estudar")}>Abrir execução <ArrowRight size={15} /></button></div><div className="sidebar-footer"><span className="source-dot" /> Notion como fonte operacional</div></div></aside>{menuOpen && <button className="scrim" onClick={() => setMenuOpen(false)} aria-label="Fechar menu" />}<div className="main-column"><header className="topbar"><div className="topbar-left"><button className="menu-button" onClick={() => setMenuOpen(true)} aria-label="Abrir menu"><Menu size={20} /></button><div><span className="breadcrumb">SEEDF PPGE</span><strong>{activeLabel}</strong></div></div><div className="topbar-actions"><span className={`sync-label ${syncError ? "sync-error" : syncMode === "fallback" ? "sync-fallback" : ""}`}><span className="source-dot" /> {lastUpdated}</span><button className={`refresh-button ${refreshing ? "is-refreshing" : ""}`} onClick={refreshSnapshot} disabled={refreshing} aria-label="Atualizar dados do Notion" title="Consultar a API do Notion agora"><RefreshCw size={17} /></button></div></header><div className="page-content">{section === "inicio" && <Overview onNavigate={handleNavigate} snapshot={snapshot} />}{section === "estudar" && <StudyToday />}{section === "fases" && <Phases />}{section === "cargos" && <Jobs />}{section === "progresso" && <Progress />}{section === "materiais" && <Materials />}</div><footer className="site-footer"><span>SEEDF PPGE · Projeto exclusivo</span><span>{syncMode === "live" ? `Notion ao vivo · ${formatSnapshotDate(snapshot?.source?.synced_at ?? null)}` : syncMode === "fallback" ? `Backup do GitHub · ${formatSnapshotDate(snapshot?.source?.synced_at ?? null)}` : "Notion · indisponível"}</span></footer></div></main>;
 }
