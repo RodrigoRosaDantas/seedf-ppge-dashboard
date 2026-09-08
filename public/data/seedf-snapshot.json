@@ -4,16 +4,16 @@
     "kind": "notion",
     "title": "SEEDF — PPGE | Gestor + Analista + Monitor | Dashboard PRO",
     "page_id": "3d4cf5a2-6731-8106-a2c9-c97816aa6cf5",
-    "page_url": "https://app.notion.com/p/3d4cf5a267318106a2c9c97816aa6cf5",
-    "last_edited_time": null,
-    "synced_at": null,
-    "content_hash": null,
-    "status": "awaiting-secret"
+    "page_url": "https://app.notion.com/p/SEEDF-PPGE-Gestor-Analista-Monitor-Dashboard-PRO-3d4cf5a267318106a2c9c97816aa6cf5",
+    "last_edited_time": "2026-09-08T14:29:00.000Z",
+    "synced_at": "2026-09-08T14:36:05.843Z",
+    "content_hash": "9bf3210ee91f36e2f6b8436d9531f1adbdfbefe6aca083fa11a563cbca16e05f",
+    "status": "synced"
   },
   "dashboard": {
     "phase": "Fase 1",
     "cycle": "Ciclo 01",
-    "next_action": "D01 · Português fino + LDB",
+    "next_action": "D01 — Português fino + LDB",
     "planned_questions": 385,
     "projected_questions": 455,
     "executed_questions": 0,
