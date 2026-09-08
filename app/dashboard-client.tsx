@@ -51,6 +51,10 @@ type DashboardSnapshot = {
   notice?: string;
 };
 
+const LIVE_NOTION_API_URL = "https://fqqkkyusnzhuuizahkww.supabase.co/functions/v1/seedf-notion";
+// Public Supabase anon key: it gates the read-only function; the Notion token never reaches the browser.
+const LIVE_NOTION_API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZxcWtreXVzbnpodXVpemFoa3d3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU3MjIwNTksImV4cCI6MjEwMTI5ODA1OX0.YZd0d4XsFHFT6uETemPZdcDc9t0pQUn8_XmNFHx7hJ0";
+
 function isDashboardSnapshot(value: unknown): value is DashboardSnapshot {
   if (!value || typeof value !== "object") return false;
   const candidate = value as Record<string, unknown>;
@@ -291,20 +295,41 @@ export default function Home() {
   const [lastUpdated, setLastUpdated] = useState("Notion · carregando...");
   const [refreshing, setRefreshing] = useState(false);
   const [syncError, setSyncError] = useState(false);
+  const [syncMode, setSyncMode] = useState<"live" | "fallback" | "error">("error");
   const handleNavigate = (next: SectionId) => { setSection(next); setMenuOpen(false); window.scrollTo({ top: 0, behavior: "smooth" }); };
+  const readSnapshot = async (url: string, options: RequestInit = {}) => {
+    const separator = url.includes("?") ? "&" : "?";
+    const response = await fetch(`${url}${separator}ts=${Date.now()}`, { ...options, cache: "no-store" });
+    if (!response.ok) throw new Error("Snapshot indisponível");
+    const candidate: unknown = await response.json();
+    if (!isDashboardSnapshot(candidate)) throw new Error("Snapshot inválido");
+    return candidate;
+  };
   const refreshSnapshot = async () => {
     setRefreshing(true);
     setSyncError(false);
     try {
-      const response = await fetch(`./data/seedf-snapshot.json?ts=${Date.now()}`, { cache: "no-store" });
-      if (!response.ok) throw new Error("Snapshot indisponível");
-      const candidate: unknown = await response.json();
-      if (!isDashboardSnapshot(candidate)) throw new Error("Snapshot inválido");
+      const candidate = await readSnapshot(LIVE_NOTION_API_URL, {
+        headers: {
+          Accept: "application/json",
+          apikey: LIVE_NOTION_API_KEY,
+          Authorization: `Bearer ${LIVE_NOTION_API_KEY}`,
+        },
+      });
       setSnapshot(candidate);
-      setLastUpdated(`Notion · ${formatSnapshotDate(candidate.source.synced_at)}`);
+      setSyncMode("live");
+      setLastUpdated(`Notion · ao vivo · ${formatSnapshotDate(candidate.source.synced_at)}`);
     } catch {
-      setSyncError(true);
-      setLastUpdated("Notion · indisponível");
+      try {
+        const candidate = await readSnapshot("./data/seedf-snapshot.json");
+        setSnapshot(candidate);
+        setSyncMode("fallback");
+        setLastUpdated(`GitHub · backup · ${formatSnapshotDate(candidate.source.synced_at)}`);
+      } catch {
+        setSyncMode("error");
+        setSyncError(true);
+        setLastUpdated("Notion · indisponível");
+      }
     } finally {
       setRefreshing(false);
     }
@@ -315,5 +340,5 @@ export default function Home() {
   }, []);
   const activeLabel = navigation.find((item) => item.id === section)?.label ?? "Visão geral";
   const nextAction = snapshot?.dashboard.next_action ?? "D01 · Português + LDB";
-  return <main className="site-shell"><aside className={`sidebar ${menuOpen ? "sidebar-open" : ""}`}><div className="brand-block"><div className="brand-mark">S</div><div><strong>SEEDF</strong><span>PPGE · Dashboard PRO</span></div><button className="close-menu" onClick={() => setMenuOpen(false)} aria-label="Fechar menu"><X size={18} /></button></div><div className="sidebar-context"><span className="live-dot" /> Pré-edital 2026/2027</div><nav className="main-nav" aria-label="Navegação principal">{navigation.map((item) => { const Icon = item.icon; const active = section === item.id; return <button className={`nav-item ${active ? "nav-active" : ""}`} key={item.id} onClick={() => handleNavigate(item.id)}><Icon size={18} /><span>{item.label}</span>{active && <span className="nav-indicator" />}</button>; })}</nav><div className="sidebar-bottom"><div className="sidebar-card"><p className="eyebrow">PRÓXIMA AÇÃO</p><strong>{nextAction}</strong><button onClick={() => handleNavigate("estudar")}>Abrir execução <ArrowRight size={15} /></button></div><div className="sidebar-footer"><span className="source-dot" /> Notion como fonte operacional</div></div></aside>{menuOpen && <button className="scrim" onClick={() => setMenuOpen(false)} aria-label="Fechar menu" />}<div className="main-column"><header className="topbar"><div className="topbar-left"><button className="menu-button" onClick={() => setMenuOpen(true)} aria-label="Abrir menu"><Menu size={20} /></button><div><span className="breadcrumb">SEEDF PPGE</span><strong>{activeLabel}</strong></div></div><div className="topbar-actions"><span className={`sync-label ${syncError ? "sync-error" : ""}`}><span className="source-dot" /> {lastUpdated}</span><button className={`refresh-button ${refreshing ? "is-refreshing" : ""}`} onClick={refreshSnapshot} disabled={refreshing} aria-label="Atualizar snapshot do Notion" title="Recarregar último snapshot publicado"><RefreshCw size={17} /></button></div></header><div className="page-content">{section === "inicio" && <Overview onNavigate={handleNavigate} snapshot={snapshot} />}{section === "estudar" && <StudyToday />}{section === "fases" && <Phases />}{section === "cargos" && <Jobs />}{section === "progresso" && <Progress />}{section === "materiais" && <Materials />}</div><footer className="site-footer"><span>SEEDF PPGE · Projeto exclusivo</span><span>{snapshot?.source?.status === "synced" ? `Snapshot do Notion · ${formatSnapshotDate(snapshot.source.synced_at)}` : "Snapshot público · aguardando Notion"}</span></footer></div></main>;
+  return <main className="site-shell"><aside className={`sidebar ${menuOpen ? "sidebar-open" : ""}`}><div className="brand-block"><div className="brand-mark">S</div><div><strong>SEEDF</strong><span>PPGE · Dashboard PRO</span></div><button className="close-menu" onClick={() => setMenuOpen(false)} aria-label="Fechar menu"><X size={18} /></button></div><div className="sidebar-context"><span className="live-dot" /> Pré-edital 2026/2027</div><nav className="main-nav" aria-label="Navegação principal">{navigation.map((item) => { const Icon = item.icon; const active = section === item.id; return <button className={`nav-item ${active ? "nav-active" : ""}`} key={item.id} onClick={() => handleNavigate(item.id)}><Icon size={18} /><span>{item.label}</span>{active && <span className="nav-indicator" />}</button>; })}</nav><div className="sidebar-bottom"><div className="sidebar-card"><p className="eyebrow">PRÓXIMA AÇÃO</p><strong>{nextAction}</strong><button onClick={() => handleNavigate("estudar")}>Abrir execução <ArrowRight size={15} /></button></div><div className="sidebar-footer"><span className="source-dot" /> Notion como fonte operacional</div></div></aside>{menuOpen && <button className="scrim" onClick={() => setMenuOpen(false)} aria-label="Fechar menu" />}<div className="main-column"><header className="topbar"><div className="topbar-left"><button className="menu-button" onClick={() => setMenuOpen(true)} aria-label="Abrir menu"><Menu size={20} /></button><div><span className="breadcrumb">SEEDF PPGE</span><strong>{activeLabel}</strong></div></div><div className="topbar-actions"><span className={`sync-label ${syncError ? "sync-error" : syncMode === "fallback" ? "sync-fallback" : ""}`}><span className="source-dot" /> {lastUpdated}</span><button className={`refresh-button ${refreshing ? "is-refreshing" : ""}`} onClick={refreshSnapshot} disabled={refreshing} aria-label="Atualizar dados do Notion" title="Consultar a API do Notion agora"><RefreshCw size={17} /></button></div></header><div className="page-content">{section === "inicio" && <Overview onNavigate={handleNavigate} snapshot={snapshot} />}{section === "estudar" && <StudyToday />}{section === "fases" && <Phases />}{section === "cargos" && <Jobs />}{section === "progresso" && <Progress />}{section === "materiais" && <Materials />}</div><footer className="site-footer"><span>SEEDF PPGE · Projeto exclusivo</span><span>{syncMode === "live" ? `Notion ao vivo · ${formatSnapshotDate(snapshot?.source?.synced_at ?? null)}` : syncMode === "fallback" ? `Backup do GitHub · ${formatSnapshotDate(snapshot?.source?.synced_at ?? null)}` : "Notion · indisponível"}</span></footer></div></main>;
 }
