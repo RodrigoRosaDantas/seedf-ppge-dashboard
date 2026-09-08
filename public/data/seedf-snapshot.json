@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "source": {
+    "kind": "notion",
+    "title": "SEEDF — PPGE | Gestor + Analista + Monitor | Dashboard PRO",
+    "page_id": "3d4cf5a2-6731-8106-a2c9-c97816aa6cf5",
+    "page_url": "https://app.notion.com/p/3d4cf5a267318106a2c9c97816aa6cf5",
+    "last_edited_time": null,
+    "synced_at": null,
+    "content_hash": null,
+    "status": "awaiting-secret"
+  },
+  "dashboard": {
+    "phase": "Fase 1",
+    "cycle": "Ciclo 01",
+    "next_action": "D01 · Português fino + LDB",
+    "planned_questions": 385,
+    "projected_questions": 455,
+    "executed_questions": 0,
+    "verticalized_axes": 60,
+    "jobs": 3
+  },
+  "notice": "Snapshot público sanitizado. O conteúdo completo continua no Notion."
+}

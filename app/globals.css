@@ -54,7 +54,9 @@ button:focus-visible { outline: 3px solid rgba(25, 184, 173, 0.42); outline-offs
 .menu-button { display: none; border: 0; color: var(--ink); background: transparent; cursor: pointer; }
 .topbar-actions { gap: 14px; }
 .sync-label { display: inline-flex; align-items: center; gap: 9px; color: var(--muted); font-size: 11px; }
+.sync-label.sync-error { color: var(--coral); }
 .refresh-button { width: 33px; height: 33px; display: grid; place-items: center; border: 1px solid var(--line); border-radius: 9px; color: var(--ink-soft); background: var(--paper); cursor: pointer; transition: .18s ease; }
+.refresh-button:disabled { cursor: wait; opacity: .7; }
 .refresh-button:hover { color: var(--teal-dark); border-color: #b4dedb; transform: translateY(-1px); }
 .refresh-button.is-refreshing svg { animation: spin .7s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   ArrowRight,
   BarChart3,
@@ -25,6 +25,60 @@ import {
 import type { LucideIcon } from "lucide-react";
 
 type SectionId = "inicio" | "estudar" | "fases" | "cargos" | "progresso" | "materiais";
+
+type DashboardSnapshot = {
+  schema_version: number;
+  source: {
+    kind: "notion";
+    title: string;
+    page_id: string;
+    page_url: string;
+    last_edited_time: string | null;
+    synced_at: string | null;
+    content_hash: string | null;
+    status: string;
+  };
+  dashboard: {
+    phase: string;
+    cycle: string;
+    next_action: string;
+    planned_questions: number;
+    projected_questions: number;
+    executed_questions: number | null;
+    verticalized_axes: number;
+    jobs: number;
+  };
+  notice?: string;
+};
+
+function isDashboardSnapshot(value: unknown): value is DashboardSnapshot {
+  if (!value || typeof value !== "object") return false;
+  const candidate = value as Record<string, unknown>;
+  const source = candidate.source as Record<string, unknown> | undefined;
+  const dashboard = candidate.dashboard as Record<string, unknown> | undefined;
+  return Boolean(
+    source &&
+      dashboard &&
+      source.kind === "notion" &&
+      typeof source.title === "string" &&
+      typeof source.page_id === "string" &&
+      typeof source.page_url === "string" &&
+      typeof dashboard.phase === "string" &&
+      typeof dashboard.cycle === "string" &&
+      typeof dashboard.next_action === "string" &&
+      typeof dashboard.planned_questions === "number" &&
+      typeof dashboard.projected_questions === "number" &&
+      typeof dashboard.verticalized_axes === "number" &&
+      typeof dashboard.jobs === "number",
+  );
+}
+
+function formatSnapshotDate(value: string | null) {
+  if (!value) return "aguardando sincronização";
+  const date = new Date(value);
+  if (Number.isNaN(date.valueOf())) return "aguardando sincronização";
+  return new Intl.DateTimeFormat("pt-BR", { dateStyle: "short", timeStyle: "short" }).format(date);
+}
 
 const navigation: Array<{ id: SectionId; label: string; icon: LucideIcon }> = [
   { id: "inicio", label: "Visão geral", icon: LayoutDashboard },
@@ -118,7 +172,14 @@ function SectionHeading({ eyebrow, title, description, action }: { eyebrow: stri
   );
 }
 
-function Overview({ onNavigate }: { onNavigate: (section: SectionId) => void }) {
+function Overview({ onNavigate, snapshot }: { onNavigate: (section: SectionId) => void; snapshot: DashboardSnapshot | null }) {
+  const nextAction = snapshot?.dashboard.next_action ?? "D01 · Português fino + LDB";
+  const plannedQuestions = snapshot?.dashboard.planned_questions ?? 385;
+  const projectedQuestions = snapshot?.dashboard.projected_questions ?? 455;
+  const executedQuestions = snapshot?.dashboard.executed_questions ?? 0;
+  const verticalizedAxes = snapshot?.dashboard.verticalized_axes ?? 60;
+  const jobsCount = snapshot?.dashboard.jobs ?? 3;
+  const executionRate = plannedQuestions > 0 ? Math.round((executedQuestions / plannedQuestions) * 100) : 0;
   return (
     <>
       <section className="hero-grid">
@@ -135,7 +196,7 @@ function Overview({ onNavigate }: { onNavigate: (section: SectionId) => void }) 
         </div>
         <div className="focus-card">
           <div className="focus-topline"><span>FOCO DE HOJE</span><StatusPill tone="gold">D01</StatusPill></div>
-          <h3>Português fino + LDB</h3>
+          <h3>{nextAction}</h3>
           <p>Primeira unidade de execução do C01. Teoria curta, questões registradas no banco SEEDF e fechamento do dia.</p>
           <div className="focus-rule" />
           <div className="focus-meta"><span><Target size={15} /> Meta inicial</span><strong>30 questões</strong></div>
@@ -144,15 +205,15 @@ function Overview({ onNavigate }: { onNavigate: (section: SectionId) => void }) 
       </section>
 
       <section className="stats-grid" aria-label="Resumo do projeto">
-        <StatCard icon={Layers3} label="Eixos verticalizados" value="60" detail="24 manutenção · 25 reforço · 11 novos" tone="blue" />
-        <StatCard icon={Target} label="Carga fixa do C01" value="385" detail="Questões já cadastradas no Notion" tone="gold" />
-        <StatCard icon={TrendingUp} label="Projeção do C01" value="≈ 455" detail="Inclui checkpoints adaptativos" tone="teal" />
-        <StatCard icon={GraduationCap} label="Cargos-meta" value="3" detail="Gestor + dois Analistas PPGE" tone="violet" />
+        <StatCard icon={Layers3} label="Eixos verticalizados" value={String(verticalizedAxes)} detail="24 manutenção · 25 reforço · 11 novos" tone="blue" />
+        <StatCard icon={Target} label="Carga fixa do C01" value={String(plannedQuestions)} detail="Questões sincronizadas do Notion" tone="gold" />
+        <StatCard icon={TrendingUp} label="Projeção do C01" value={`≈ ${projectedQuestions}`} detail="Inclui checkpoints adaptativos" tone="teal" />
+        <StatCard icon={GraduationCap} label="Cargos-meta" value={String(jobsCount)} detail="Gestor + dois Analistas PPGE" tone="violet" />
       </section>
 
       <section className="content-grid two-thirds">
         <div className="panel workload-panel">
-          <SectionHeading eyebrow="CICLO 01 · SNAPSHOT PRÉ-EXECUÇÃO" title="Onde a energia deve entrar" description="A carga abaixo é planejamento. Ela ainda não é desempenho." action={<StatusPill>0% executado</StatusPill>} />
+          <SectionHeading eyebrow="CICLO 01 · SNAPSHOT PRÉ-EXECUÇÃO" title="Onde a energia deve entrar" description="A carga abaixo é planejamento. Ela ainda não é desempenho." action={<StatusPill>{executionRate}% executado</StatusPill>} />
           <div className="workload-list">
             {workload.map((item) => <div className="workload-row" key={item.label}><div className="workload-label"><span className={`workload-dot dot-${item.tone}`} /><strong>{item.label}</strong><span>{item.blocks} blocos</span></div><div className="workload-track"><span className={`workload-fill fill-${item.tone}`} style={{ width: `${item.questions ? Math.max(6, (item.questions / 175) * 100) : 0}%` }} /></div><strong className="workload-number">{item.questions}</strong></div>)}
           </div>
@@ -226,10 +287,33 @@ function Materials() {
 export default function Home() {
   const [section, setSection] = useState<SectionId>("inicio");
   const [menuOpen, setMenuOpen] = useState(false);
-  const [lastUpdated, setLastUpdated] = useState("08/09/2026 · snapshot inicial");
+  const [snapshot, setSnapshot] = useState<DashboardSnapshot | null>(null);
+  const [lastUpdated, setLastUpdated] = useState("Notion · carregando...");
   const [refreshing, setRefreshing] = useState(false);
+  const [syncError, setSyncError] = useState(false);
   const handleNavigate = (next: SectionId) => { setSection(next); setMenuOpen(false); window.scrollTo({ top: 0, behavior: "smooth" }); };
-  const refreshSnapshot = () => { setRefreshing(true); window.setTimeout(() => { setLastUpdated(new Intl.DateTimeFormat("pt-BR", { dateStyle: "short", timeStyle: "short" }).format(new Date())); setRefreshing(false); }, 450); };
+  const refreshSnapshot = async () => {
+    setRefreshing(true);
+    setSyncError(false);
+    try {
+      const response = await fetch(`./data/seedf-snapshot.json?ts=${Date.now()}`, { cache: "no-store" });
+      if (!response.ok) throw new Error("Snapshot indisponível");
+      const candidate: unknown = await response.json();
+      if (!isDashboardSnapshot(candidate)) throw new Error("Snapshot inválido");
+      setSnapshot(candidate);
+      setLastUpdated(`Notion · ${formatSnapshotDate(candidate.source.synced_at)}`);
+    } catch {
+      setSyncError(true);
+      setLastUpdated("Notion · indisponível");
+    } finally {
+      setRefreshing(false);
+    }
+  };
+  useEffect(() => {
+    const timer = window.setTimeout(() => { void refreshSnapshot(); }, 0);
+    return () => window.clearTimeout(timer);
+  }, []);
   const activeLabel = navigation.find((item) => item.id === section)?.label ?? "Visão geral";
-  return <main className="site-shell"><aside className={`sidebar ${menuOpen ? "sidebar-open" : ""}`}><div className="brand-block"><div className="brand-mark">S</div><div><strong>SEEDF</strong><span>PPGE · Dashboard PRO</span></div><button className="close-menu" onClick={() => setMenuOpen(false)} aria-label="Fechar menu"><X size={18} /></button></div><div className="sidebar-context"><span className="live-dot" /> Pré-edital 2026/2027</div><nav className="main-nav" aria-label="Navegação principal">{navigation.map((item) => { const Icon = item.icon; const active = section === item.id; return <button className={`nav-item ${active ? "nav-active" : ""}`} key={item.id} onClick={() => handleNavigate(item.id)}><Icon size={18} /><span>{item.label}</span>{active && <span className="nav-indicator" />}</button>; })}</nav><div className="sidebar-bottom"><div className="sidebar-card"><p className="eyebrow">PRÓXIMA AÇÃO</p><strong>D01 · Português + LDB</strong><button onClick={() => handleNavigate("estudar")}>Abrir execução <ArrowRight size={15} /></button></div><div className="sidebar-footer"><span className="source-dot" /> Notion como fonte operacional</div></div></aside>{menuOpen && <button className="scrim" onClick={() => setMenuOpen(false)} aria-label="Fechar menu" />}<div className="main-column"><header className="topbar"><div className="topbar-left"><button className="menu-button" onClick={() => setMenuOpen(true)} aria-label="Abrir menu"><Menu size={20} /></button><div><span className="breadcrumb">SEEDF PPGE</span><strong>{activeLabel}</strong></div></div><div className="topbar-actions"><span className="sync-label"><span className="source-dot" /> {lastUpdated}</span><button className={`refresh-button ${refreshing ? "is-refreshing" : ""}`} onClick={refreshSnapshot} aria-label="Atualizar snapshot" title="Atualizar snapshot"><RefreshCw size={17} /></button></div></header><div className="page-content">{section === "inicio" && <Overview onNavigate={handleNavigate} />}{section === "estudar" && <StudyToday />}{section === "fases" && <Phases />}{section === "cargos" && <Jobs />}{section === "progresso" && <Progress />}{section === "materiais" && <Materials />}</div><footer className="site-footer"><span>SEEDF PPGE · Projeto exclusivo</span><span>Dados planejados: Notion SEEDF · 08/09/2026</span></footer></div></main>;
+  const nextAction = snapshot?.dashboard.next_action ?? "D01 · Português + LDB";
+  return <main className="site-shell"><aside className={`sidebar ${menuOpen ? "sidebar-open" : ""}`}><div className="brand-block"><div className="brand-mark">S</div><div><strong>SEEDF</strong><span>PPGE · Dashboard PRO</span></div><button className="close-menu" onClick={() => setMenuOpen(false)} aria-label="Fechar menu"><X size={18} /></button></div><div className="sidebar-context"><span className="live-dot" /> Pré-edital 2026/2027</div><nav className="main-nav" aria-label="Navegação principal">{navigation.map((item) => { const Icon = item.icon; const active = section === item.id; return <button className={`nav-item ${active ? "nav-active" : ""}`} key={item.id} onClick={() => handleNavigate(item.id)}><Icon size={18} /><span>{item.label}</span>{active && <span className="nav-indicator" />}</button>; })}</nav><div className="sidebar-bottom"><div className="sidebar-card"><p className="eyebrow">PRÓXIMA AÇÃO</p><strong>{nextAction}</strong><button onClick={() => handleNavigate("estudar")}>Abrir execução <ArrowRight size={15} /></button></div><div className="sidebar-footer"><span className="source-dot" /> Notion como fonte operacional</div></div></aside>{menuOpen && <button className="scrim" onClick={() => setMenuOpen(false)} aria-label="Fechar menu" />}<div className="main-column"><header className="topbar"><div className="topbar-left"><button className="menu-button" onClick={() => setMenuOpen(true)} aria-label="Abrir menu"><Menu size={20} /></button><div><span className="breadcrumb">SEEDF PPGE</span><strong>{activeLabel}</strong></div></div><div className="topbar-actions"><span className={`sync-label ${syncError ? "sync-error" : ""}`}><span className="source-dot" /> {lastUpdated}</span><button className={`refresh-button ${refreshing ? "is-refreshing" : ""}`} onClick={refreshSnapshot} disabled={refreshing} aria-label="Atualizar snapshot do Notion" title="Recarregar último snapshot publicado"><RefreshCw size={17} /></button></div></header><div className="page-content">{section === "inicio" && <Overview onNavigate={handleNavigate} snapshot={snapshot} />}{section === "estudar" && <StudyToday />}{section === "fases" && <Phases />}{section === "cargos" && <Jobs />}{section === "progresso" && <Progress />}{section === "materiais" && <Materials />}</div><footer className="site-footer"><span>SEEDF PPGE · Projeto exclusivo</span><span>{snapshot?.source?.status === "synced" ? `Snapshot do Notion · ${formatSnapshotDate(snapshot.source.synced_at)}` : "Snapshot público · aguardando Notion"}</span></footer></div></main>;
 }
