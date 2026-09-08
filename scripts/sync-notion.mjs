@@ -4,6 +4,7 @@ import path from "node:path";
 
 const DEFAULT_PAGE_ID = "3d4cf5a2-6731-8106-a2c9-c97816aa6cf5";
 const MATERIALS_PAGE_ID = "3d4cf5a2-6731-81a4-a51f-eed1c396c77b";
+const SEQUENTIAL_MATERIALS_PAGE_ID = "3d4cf5a2-6731-8152-83c2-e9f51eb86cc6";
 const CYCLE_PAGE_ID = "3d4cf5a2-6731-8185-a1c6-da3820a7687b";
 const DAYS_DATA_SOURCE_ID = "60966f0a-b3eb-416b-8995-64253ed26a45";
 const QUESTIONS_DATA_SOURCE_ID = "8a241986-94e7-4340-b898-dc905b19fd58";
@@ -28,20 +29,36 @@ const blocks = await expandBlocks(topLevelBlocks, request);
 const sourceText = blocks.map(blockToText).filter(Boolean).join("\n");
 let materials = null;
 let materialsText = "";
+let sequenceText = "";
 
 try {
-  const [materialsPage, materialsTopLevelBlocks, cycleTopLevelBlocks] = await Promise.all([
+  const [
+    materialsPage,
+    materialsTopLevelBlocks,
+    cycleTopLevelBlocks,
+    sequencePage,
+    sequenceTopLevelBlocks,
+  ] = await Promise.all([
     request(`/pages/${MATERIALS_PAGE_ID}`),
     getAllChildren(MATERIALS_PAGE_ID, request),
     getAllChildren(CYCLE_PAGE_ID, request),
+    request(`/pages/${SEQUENTIAL_MATERIALS_PAGE_ID}`),
+    getAllChildren(SEQUENTIAL_MATERIALS_PAGE_ID, request),
   ]);
-  const [materialBlocks, cycleBlocks] = await Promise.all([
+  const [materialBlocks, cycleBlocks, sequenceBlocks] = await Promise.all([
     expandBlocks(materialsTopLevelBlocks, request),
     expandBlocks(cycleTopLevelBlocks, request),
+    expandBlocks(sequenceTopLevelBlocks, request),
   ]);
   materialsText = materialBlocks.map(blockToText).filter(Boolean).join("\n");
-  materials = buildMaterialsSnapshot(materialsPage, materialsText, cycleBlocks);
-} catch (error) {
+  sequenceText = sequenceBlocks.map(blockToText).filter(Boolean).join("\n");
+  materials = buildMaterialsSnapshot(
+    materialsPage,
+    materialsText,
+    cycleBlocks,
+    sequencePage,
+    sequenceText,
+  );} catch (error) {
   console.error("Materiais do Notion indisponíveis:", error instanceof Error ? error.message : "unknown error");
 }
 
@@ -64,7 +81,7 @@ try {
   console.error("Execução SEEDF indisponível:", error instanceof Error ? error.message : "unknown error");
 }
 
-const contentHash = createHash("sha256").update([sourceText, materialsText, executionHashText].filter(Boolean).join("\n")).digest("hex");
+const contentHash = createHash("sha256").update([sourceText, materialsText, sequenceText, executionHashText].filter(Boolean).join("\n")).digest("hex");
 const previous = await readPreviousSnapshot();
 const syncedAt =
   previous?.source?.content_hash === contentHash && previous?.source?.synced_at
@@ -395,7 +412,7 @@ function richTextToMarkdown(items) {
     .join("");
 }
 
-function buildMaterialsSnapshot(page, materialsText, cycleBlocks) {
+function buildMaterialsSnapshot(page, materialsText, cycleBlocks, sequencePage, sequenceText) {
   const materialPages = new Map();
   const materialTitles = new Map();
 
@@ -431,6 +448,10 @@ function buildMaterialsSnapshot(page, materialsText, cycleBlocks) {
     days,
     legislation,
     future: extractFutureMaterials(materialsText),
+    sequence: extractSequentialMaterials(
+      sequenceText,
+      sequencePage.url || notionPageUrl(SEQUENTIAL_MATERIALS_PAGE_ID),
+    ),
   };
 }
 
@@ -478,6 +499,37 @@ function extractFutureMaterials(text) {
       return match ? { label: match[1].toUpperCase(), detail: stripInlineMarkup(match[2]) } : null;
     })
     .filter(Boolean);
+}
+
+function extractSequentialMaterials(text, sourceUrl) {
+  return text
+    .split(/\n+/)
+    .map((line) => line.trim())
+    .map((line) => {
+      const normalized = line.replace(/^\*+/, "").replace(/\*+$/, "").trim();
+      const match = normalized.match(/^(?:\d+\.\s*)?(MS\d{2})\s*[—–-]\s*(.+)$/i);
+      if (!match) return null;
+      const code = match[1].toUpperCase();
+      const order = Number(code.slice(2));
+      return {
+        code,
+        order,
+        title: stripInlineMarkup(match[2]),
+        group: sequenceGroup(order),
+        detail: "Material sequencial atemporal do Notion.",
+        href: sourceUrl,
+      };
+    })
+    .filter(Boolean)
+    .sort((left, right) => left.order - right.order);
+}
+
+function sequenceGroup(order) {
+  if (order <= 4) return "Base educacional";
+  if (order <= 9) return "Gestão e Administração";
+  if (order <= 14) return "Gestão, orçamento e transparência";
+  if (order <= 17) return "Tecnologia e apoio";
+  return "Educação, proteção e revisão";
 }
 
 function extractLinks(value) {

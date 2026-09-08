@@ -50,12 +50,22 @@ type FutureMaterial = {
   detail: string;
 };
 
+type SequenceMaterial = {
+  code: string;
+  order: number;
+  title: string;
+  group: string;
+  detail: string;
+  href: string;
+};
+
 type MaterialsSnapshot = {
   source_url: string;
   last_edited_time: string | null;
   days: StudyMaterial[];
   legislation?: LegislationItem[];
   future: FutureMaterial[];
+  sequence?: SequenceMaterial[];
 };
 
 type ExecutionDay = {
@@ -257,6 +267,7 @@ const sources = [
 ];
 
 const notionMaterialsPage = "https://app.notion.com/p/3d4cf5a2673181a4a51feed1c396c77b";
+const notionSequentialMaterialsPage = "https://app.notion.com/p/3d4cf5a26731815283c2e9f51eb86cc6";
 const notionExecutionPage = "https://app.notion.com/p/3d4cf5a26731815087fcc1ec3783f65c";
 const d01NotionPage = "https://app.notion.com/p/3d4cf5a2673181fabef1f407c2451392";
 const ldbOfficialUrl = "https://www.planalto.gov.br/ccivil_03/leis/l9394compilado.htm";
@@ -426,6 +437,31 @@ const legislationPlan: LegislationItem[] = [
     tone: "violet",
     links: [],
   },
+];
+
+const sequentialMaterialsFallback: SequenceMaterial[] = [
+  { code: "MS01", order: 1, title: "CF/88 e direito à educação", group: "Base educacional", detail: "Material sequencial atemporal do Notion.", href: notionSequentialMaterialsPage },
+  { code: "MS02", order: 2, title: "LDB vigente", group: "Base educacional", detail: "Material sequencial atemporal do Notion.", href: notionSequentialMaterialsPage },
+  { code: "MS03", order: 3, title: "PNE 2026 + PNED + transição do PDE-DF", group: "Base educacional", detail: "Material sequencial atemporal do Notion.", href: notionSequentialMaterialsPage },
+  { code: "MS04", order: 4, title: "Português para SEEDF", group: "Base educacional", detail: "Material sequencial atemporal do Notion.", href: notionSequentialMaterialsPage },
+  { code: "MS05", order: 5, title: "Direito Administrativo", group: "Gestão e Administração", detail: "Material sequencial atemporal do Notion.", href: notionSequentialMaterialsPage },
+  { code: "MS06", order: 6, title: "LC 840/2011 + estágio probatório 2026", group: "Gestão e Administração", detail: "Material sequencial atemporal do Notion.", href: notionSequentialMaterialsPage },
+  { code: "MS07", order: 7, title: "LODF + realidade do DF", group: "Gestão e Administração", detail: "Material sequencial atemporal do Notion.", href: notionSequentialMaterialsPage },
+  { code: "MS08", order: 8, title: "Administração Geral e Pública", group: "Gestão e Administração", detail: "Material sequencial atemporal do Notion.", href: notionSequentialMaterialsPage },
+  { code: "MS09", order: 9, title: "Planejamento, SWOT, APO, BSC e decisão", group: "Gestão e Administração", detail: "Material sequencial atemporal do Notion.", href: notionSequentialMaterialsPage },
+  { code: "MS10", order: 10, title: "Gestão de Pessoas e comportamento", group: "Gestão, orçamento e transparência", detail: "Material sequencial atemporal do Notion.", href: notionSequentialMaterialsPage },
+  { code: "MS11", order: 11, title: "Qualidade, processos e projetos", group: "Gestão, orçamento e transparência", detail: "Material sequencial atemporal do Notion.", href: notionSequentialMaterialsPage },
+  { code: "MS12", order: 12, title: "AFO e orçamento público", group: "Gestão, orçamento e transparência", detail: "Material sequencial atemporal do Notion.", href: notionSequentialMaterialsPage },
+  { code: "MS13", order: 13, title: "Lei 14.133/2021, licitações e contratos", group: "Gestão, orçamento e transparência", detail: "Material sequencial atemporal do Notion.", href: notionSequentialMaterialsPage },
+  { code: "MS14", order: 14, title: "Redação Oficial, LAI e ética", group: "Gestão, orçamento e transparência", detail: "Material sequencial atemporal do Notion.", href: notionSequentialMaterialsPage },
+  { code: "MS15", order: 15, title: "Informática atualizada", group: "Tecnologia e apoio", detail: "Material sequencial atemporal do Notion.", href: notionSequentialMaterialsPage },
+  { code: "MS16", order: 16, title: "Arquivologia e gestão documental", group: "Tecnologia e apoio", detail: "Material sequencial atemporal do Notion.", href: notionSequentialMaterialsPage },
+  { code: "MS17", order: 17, title: "Materiais, estoques e patrimônio", group: "Tecnologia e apoio", detail: "Material sequencial atemporal do Notion.", href: notionSequentialMaterialsPage },
+  { code: "MS18", order: 18, title: "ECA e proteção integral", group: "Educação, proteção e revisão", detail: "Material sequencial atemporal do Notion.", href: notionSequentialMaterialsPage },
+  { code: "MS19", order: 19, title: "Acessibilidade, LBI e Educação Especial Inclusiva", group: "Educação, proteção e revisão", detail: "Material sequencial atemporal do Notion.", href: notionSequentialMaterialsPage },
+  { code: "MS20", order: 20, title: "Educação Infantil, desenvolvimento e convivência escolar", group: "Educação, proteção e revisão", detail: "Material sequencial atemporal do Notion.", href: notionSequentialMaterialsPage },
+  { code: "MS21", order: 21, title: "Discursiva SEEDF", group: "Educação, proteção e revisão", detail: "Material sequencial atemporal do Notion.", href: notionSequentialMaterialsPage },
+  { code: "MS22", order: 22, title: "Revisão integrada e simulados", group: "Educação, proteção e revisão", detail: "Material sequencial atemporal do Notion.", href: notionSequentialMaterialsPage },
 ];
 
 const futureMaterials: FutureMaterial[] = [
@@ -636,12 +672,37 @@ function MaterialsLegacy() {
   return <div className="inner-page"><section className="page-intro"><div><p className="eyebrow">BIBLIOTECA SEEDF</p><h1>Fontes que alimentam a preparação</h1><p>O site organiza o acesso. A verdade continua no material oficial e no Notion operacional.</p></div><StatusPill tone="teal">Fonte: Notion SEEDF</StatusPill></section><section className="source-grid">{sources.map((source) => <article className="panel source-card" key={source.title}><div className="source-card-top"><span className="source-icon"><FileCheck2 size={18} /></span><StatusPill>{source.tag}</StatusPill></div><h3>{source.title}</h3><p>{source.detail}</p><a className="text-button" href={source.href} target="_blank" rel="noreferrer">Abrir no Notion <ChevronRight size={16} /></a></article>)}</section><section className="panel materials-roadmap"><SectionHeading eyebrow="CICLO 01 · MATERIAL COMPLETO" title="Materiais do D01 ao D14" description="Cada cartão abre a página correspondente no Notion. A meta e o estado seguem a sequência operacional do C01." action={<a className="text-button" href={notionMaterialsPage} target="_blank" rel="noreferrer">Abrir biblioteca no Notion <ChevronRight size={16} /></a>} /><div className="material-grid">{studyMaterials.map((material) => <article className={`material-card material-${material.tone}`} key={material.day}><div className="material-card-top"><span className="material-day">{material.day}</span><StatusPill tone={material.tone === "coral" ? "coral" : material.tone === "gold" ? "gold" : material.tone === "violet" ? "violet" : "teal"}>{material.meta}</StatusPill></div><h3>{material.title}</h3><p>{material.detail}</p><a className="text-button" href={material.href} target="_blank" rel="noreferrer">Abrir material <ArrowRight size={15} /></a></article>)}</div></section><section className="panel legislation-panel"><SectionHeading eyebrow="LEITURA LEGISLATIVA · AUDITORIA 08/09/2026" title="Leis e fontes oficiais por dia" description="O roteiro abaixo foi organizado a partir da página de materiais do Notion. “Sem lei seca nuclear” significa que o dia prioriza material técnico, conceitos ou revisão adaptativa." action={<a className="text-button" href={notionMaterialsPage} target="_blank" rel="noreferrer">Ver roteiro no Notion <ChevronRight size={16} /></a>} /><div className="legislation-list">{legislationPlan.map((item) => <article className={`legislation-item legislation-${item.tone}`} key={item.day}><div className="legislation-day">{item.day}</div><div className="legislation-body"><div className="legislation-title-row"><h3>{item.title}</h3><StatusPill tone={item.tone === "coral" ? "coral" : item.tone === "gold" ? "gold" : item.tone === "violet" ? "violet" : "teal"}>{item.status}</StatusPill></div><p>{item.detail}</p>{item.links.length > 0 ? <div className="law-links">{item.links.map((link) => <a href={link.href} target="_blank" rel="noreferrer" key={link.href}>{link.label} <ArrowRight size={13} /></a>)}</div> : <span className="law-empty">Sem lei seca nuclear neste recorte</span>}</div></article>)}</div></section><section className="panel future-materials"><SectionHeading eyebrow="FILA POSTERIOR · NOTION" title="Materiais já previstos para depois do C01" description="Eles permanecem no repositório, mas não deslocam o D01 nem antecipam um novo ciclo." action={<a className="text-button" href={notionMaterialsPage} target="_blank" rel="noreferrer">Abrir materiais sequenciais <ChevronRight size={16} /></a>} /><div className="future-material-grid">{futureMaterials.map((material) => <div className="future-material" key={material.label}><strong>{material.label}</strong><span>{material.detail}</span></div>)}</div></section><section className="panel materials-note"><div className="note-icon"><CircleAlert size={19} /></div><div><p className="eyebrow">REGRA-MÃE</p><h3>Fonte oficial atualizada prevalece sobre resumo antigo.</h3><p>O Notion mantém o material completo; o site oferece uma visão rápida, com links para a fonte oficial e para cada página do C01.</p></div></section></div>;
 }
 
+function normalizeSearch(value: string) {
+  return value.normalize("NFD").replace(/\p{Diacritic}/gu, "").toLowerCase();
+}
+
+function toneForSequence(order: number): MaterialsTone {
+  if (order <= 4) return "gold";
+  if (order <= 9) return "teal";
+  if (order <= 14) return "coral";
+  if (order <= 17) return "violet";
+  return "teal";
+}
+
 function Materials({ snapshot = activeDashboardSnapshot }: { snapshot?: DashboardSnapshot | null }) {
   const liveMaterials = snapshot?.materials;
   const hasLiveMaterials = Boolean(liveMaterials?.days?.length);
   const displayedMaterials = hasLiveMaterials ? liveMaterials!.days : studyMaterials;
   const displayedLegislation = liveMaterials?.legislation?.length ? liveMaterials.legislation : legislationPlan;
   const displayedFuture = liveMaterials?.future?.length ? liveMaterials.future : futureMaterials;
+  const displayedSequence = liveMaterials?.sequence?.length ? liveMaterials.sequence : sequentialMaterialsFallback;
+  const sequenceSource = displayedSequence[0]?.href || notionSequentialMaterialsPage;
+  const [sequenceQuery, setSequenceQuery] = useState("");
+  const [sequenceGroupFilter, setSequenceGroupFilter] = useState("Todos");
+  const sequenceGroups = ["Todos", ...Array.from(new Set(displayedSequence.map((item) => item.group)))];
+  const normalizedSequenceQuery = normalizeSearch(sequenceQuery.trim());
+  const filteredSequence = displayedSequence.filter((item) => {
+    const matchesQuery =
+      !normalizedSequenceQuery ||
+      normalizeSearch([item.code, item.title, item.group].join(" ")).includes(normalizedSequenceQuery);
+    const matchesGroup = sequenceGroupFilter === "Todos" || item.group === sequenceGroupFilter;
+    return matchesQuery && matchesGroup;
+  });
   const materialSource = liveMaterials?.source_url || notionMaterialsPage;
   const auditLabel = formatMaterialsAudit(liveMaterials?.last_edited_time ?? null);
 
@@ -683,6 +744,49 @@ function Materials({ snapshot = activeDashboardSnapshot }: { snapshot?: Dashboar
               <a className="text-button" href={material.href} target="_blank" rel="noreferrer">Abrir material <ArrowRight size={15} /></a>
             </article>
           ))}
+        </div>
+      </section>
+
+      <section className="panel sequence-panel">
+        <SectionHeading
+          eyebrow="TRILHA ATEMPORAL · NOTION"
+          title="Catálogo completo MS01–MS22"
+          description="Os módulos são a biblioteca estruturante do projeto. O Macro distribui a sequência nos dias dos ciclos sem criar datas artificiais."
+          action={<a className="text-button" href={sequenceSource} target="_blank" rel="noreferrer">Abrir sequência no Notion <ChevronRight size={16} /></a>}
+        />
+        <div className="sequence-toolbar">
+          <label className="sequence-search">
+            <span className="sr-only">Buscar material sequencial</span>
+            <input
+              type="search"
+              value={sequenceQuery}
+              onChange={(event) => setSequenceQuery(event.target.value)}
+              placeholder="Buscar por código, matéria ou tema"
+              aria-label="Buscar material sequencial"
+            />
+          </label>
+          <select
+            className="sequence-filter"
+            value={sequenceGroupFilter}
+            onChange={(event) => setSequenceGroupFilter(event.target.value)}
+            aria-label="Filtrar materiais sequenciais"
+          >
+            {sequenceGroups.map((group) => <option value={group} key={group}>{group}</option>)}
+          </select>
+          <span className="sequence-count">{filteredSequence.length} de {displayedSequence.length} materiais</span>
+        </div>
+        <div className="sequence-grid">
+          {filteredSequence.length > 0 ? filteredSequence.map((material) => {
+            const tone = toneForSequence(material.order);
+            return (
+              <article className={`material-card material-${tone} sequence-card`} key={material.code}>
+                <div className="material-card-top"><span className="material-day">{material.code}</span><StatusPill tone={tone}>{material.group}</StatusPill></div>
+                <h3>{material.title}</h3>
+                <p>{material.detail}</p>
+                <a className="text-button" href={material.href} target="_blank" rel="noreferrer">Abrir no Notion <ArrowRight size={15} /></a>
+              </article>
+            );
+          }) : <div className="sequence-empty">Nenhum material corresponde à busca ou ao filtro atual.</div>}
         </div>
       </section>
 
