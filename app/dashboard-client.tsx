@@ -26,6 +26,7 @@ import type { LucideIcon } from "lucide-react";
 
 type SectionId = "inicio" | "estudar" | "fases" | "cargos" | "progresso" | "materiais";
 type MaterialsTone = "gold" | "teal" | "violet" | "coral";
+type MaterialsView = "c01" | "legislation" | "sequence" | "future";
 
 type StudyMaterial = {
   day: string;
@@ -696,6 +697,7 @@ function toneForSequence(order: number): MaterialsTone {
 
 function Materials({ snapshot = activeDashboardSnapshot }: { snapshot?: DashboardSnapshot | null }) {
   const [selectedMaterial, setSelectedMaterial] = useState<MaterialPreview | null>(null);
+  const [materialsView, setMaterialsView] = useState<MaterialsView>("c01");
 
   useEffect(() => {
     if (!selectedMaterial) return;
@@ -758,55 +760,84 @@ function Materials({ snapshot = activeDashboardSnapshot }: { snapshot?: Dashboar
         <StatusPill tone={hasLiveMaterials ? "teal" : "gold"}>{hasLiveMaterials ? "Notion ao vivo" : "Recorte do Notion"}</StatusPill>
       </section>
 
-      <section className="source-grid">
-        {sources.map((source) => (
-          <article className="panel source-card" key={source.title}>
-            <div className="source-card-top"><span className="source-icon"><FileCheck2 size={18} /></span><StatusPill>{source.tag}</StatusPill></div>
-            <h3>{source.title}</h3>
-            <p>{source.detail}</p>
-            <a className="text-button" href={source.href} target="_blank" rel="noreferrer">Abrir no Notion <ChevronRight size={16} /></a>
-          </article>
-        ))}
-      </section>
-
       <section className="panel materials-overview">
         <div className="materials-overview-head">
           <div>
-            <p className="eyebrow">MAPA DA BIBLIOTECA</p>
-            <h2>Escolha o caminho de estudo</h2>
-            <p>O C01 mostra o que estudar agora; o catálogo organiza a trilha completa; a legislação aponta a fonte oficial de cada dia.</p>
+            <p className="eyebrow">BIBLIOTECA DE ESTUDO</p>
+            <h2>Escolha uma seção</h2>
+            <p>Abra apenas o bloco que você quer consultar. O C01 fica aberto por padrão; os demais continuam disponíveis sem alongar a página.</p>
           </div>
           <StatusPill tone={hasLiveMaterials ? "teal" : "gold"}>{hasLiveMaterials ? "Notion sincronizado" : "Snapshot de segurança"}</StatusPill>
         </div>
-        <div className="materials-summary-grid">
-          <a className="materials-summary-card materials-summary-gold" href="#c01-materials" aria-label="Ir para materiais do C01">
+        <div className="materials-summary-grid" role="tablist" aria-label="Seções da biblioteca">
+          <button
+            id="materials-tab-c01"
+            className={`materials-summary-card materials-summary-gold ${materialsView === "c01" ? "materials-summary-active" : ""}`}
+            type="button"
+            role="tab"
+            aria-selected={materialsView === "c01"}
+            aria-controls="c01-materials"
+            onClick={() => setMaterialsView("c01")}
+          >
             <span className="materials-summary-icon"><Target size={18} /></span>
-            <span><strong>{displayedMaterials.length}</strong><small>Dias do C01</small></span>
+            <span><strong>{displayedMaterials.length}</strong><small>Agora · C01</small></span>
             <ChevronRight size={16} />
-          </a>
-          <a className="materials-summary-card materials-summary-teal" href="#sequence-materials" aria-label="Ir para catálogo MS01 a MS22">
+          </button>
+          <button
+            id="materials-tab-sequence"
+            className={`materials-summary-card materials-summary-teal ${materialsView === "sequence" ? "materials-summary-active" : ""}`}
+            type="button"
+            role="tab"
+            aria-selected={materialsView === "sequence"}
+            aria-controls="sequence-materials"
+            onClick={() => setMaterialsView("sequence")}
+          >
             <span className="materials-summary-icon"><Layers3 size={18} /></span>
-            <span><strong>{displayedSequence.length}</strong><small>Módulos MS</small></span>
+            <span><strong>{displayedSequence.length}</strong><small>Catálogo MS</small></span>
             <ChevronRight size={16} />
-          </a>
-          <a className="materials-summary-card materials-summary-violet" href="#legislation-materials" aria-label="Ir para legislação por dia">
+          </button>
+          <button
+            id="materials-tab-legislation"
+            className={`materials-summary-card materials-summary-violet ${materialsView === "legislation" ? "materials-summary-active" : ""}`}
+            type="button"
+            role="tab"
+            aria-selected={materialsView === "legislation"}
+            aria-controls="legislation-materials"
+            onClick={() => setMaterialsView("legislation")}
+          >
             <span className="materials-summary-icon"><FileText size={18} /></span>
-            <span><strong>{displayedLegislation.length}</strong><small>Roteiros legais</small></span>
+            <span><strong>{displayedLegislation.length}</strong><small>Leis por dia</small></span>
             <ChevronRight size={16} />
-          </a>
-          <a className="materials-summary-card materials-summary-coral" href="#future-materials" aria-label="Ir para fila posterior">
+          </button>
+          <button
+            id="materials-tab-future"
+            className={`materials-summary-card materials-summary-coral ${materialsView === "future" ? "materials-summary-active" : ""}`}
+            type="button"
+            role="tab"
+            aria-selected={materialsView === "future"}
+            aria-controls="future-materials"
+            onClick={() => setMaterialsView("future")}
+          >
             <span className="materials-summary-icon"><Route size={18} /></span>
-            <span><strong>{displayedFuture.length}</strong><small>Itens posteriores</small></span>
+            <span><strong>{displayedFuture.length}</strong><small>Depois do C01</small></span>
             <ChevronRight size={16} />
-          </a>
+          </button>
         </div>
         <div className="materials-overview-foot">
-          <span><Check size={14} /> Clique nos cartões para abrir o resumo no site.</span>
-          <a className="text-button" href={materialSource} target="_blank" rel="noreferrer">Ver fonte no Notion <ArrowRight size={15} /></a>
+          <span><Check size={14} /> Uma seção aberta por vez.</span>
+          <div className="materials-source-strip">
+            <span>Fontes:</span>
+            {sources.map((source) => (
+              <a href={source.href} target="_blank" rel="noreferrer" key={source.title}>
+                {source.tag} · {source.title} <ChevronRight size={13} />
+              </a>
+            ))}
+            <a className="materials-source-main" href={materialSource} target="_blank" rel="noreferrer">Notion operacional <ArrowRight size={14} /></a>
+          </div>
         </div>
       </section>
 
-      <section id="c01-materials" className="panel materials-roadmap materials-anchor">
+      <section id="c01-materials" role="tabpanel" aria-labelledby="materials-tab-c01" className={`panel materials-roadmap materials-anchor ${materialsView === "c01" ? "" : "materials-view-hidden"}`}>
         <SectionHeading
           eyebrow="CICLO 01 · MATERIAL COMPLETO"
           title="Materiais do D01 ao D14"
@@ -842,7 +873,7 @@ function Materials({ snapshot = activeDashboardSnapshot }: { snapshot?: Dashboar
         </div>
       </section>
 
-      <section id="sequence-materials" className="panel sequence-panel materials-anchor">
+      <section id="sequence-materials" role="tabpanel" aria-labelledby="materials-tab-sequence" className={`panel sequence-panel materials-anchor ${materialsView === "sequence" ? "" : "materials-view-hidden"}`}>
         <SectionHeading
           eyebrow="TRILHA ATEMPORAL · NOTION"
           title="Catálogo completo MS01–MS22"
@@ -900,7 +931,7 @@ function Materials({ snapshot = activeDashboardSnapshot }: { snapshot?: Dashboar
         </div>
       </section>
 
-      <section id="legislation-materials" className="panel legislation-panel materials-anchor">
+      <section id="legislation-materials" role="tabpanel" aria-labelledby="materials-tab-legislation" className={`panel legislation-panel materials-anchor ${materialsView === "legislation" ? "" : "materials-view-hidden"}`}>
         <SectionHeading
           eyebrow={auditLabel}
           title="Leis e fontes oficiais por dia"
@@ -946,7 +977,7 @@ function Materials({ snapshot = activeDashboardSnapshot }: { snapshot?: Dashboar
         </div>
       </section>
 
-      <section id="future-materials" className="panel future-materials materials-anchor">
+      <section id="future-materials" role="tabpanel" aria-labelledby="materials-tab-future" className={`panel future-materials materials-anchor ${materialsView === "future" ? "" : "materials-view-hidden"}`}>
         <SectionHeading
           eyebrow="FILA POSTERIOR · NOTION"
           title="Materiais já previstos para depois do C01"
