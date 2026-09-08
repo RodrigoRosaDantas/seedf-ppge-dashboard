@@ -151,6 +151,184 @@ const sources = [
   { title: "Bancos SEEDF", detail: "Questões, erros, simulados, conceitos e discursivas em bancos próprios.", tag: "EXECUÇÃO", href: "https://app.notion.com/p/3d4cf5a26731814e88b1e91e1d4b3208" },
 ];
 
+const notionMaterialsPage = "https://app.notion.com/p/3d4cf5a2673181a4a51feed1c396c77b";
+const d01NotionPage = "https://app.notion.com/p/3d4cf5a2673181fabef1f407c2451392";
+const ldbOfficialUrl = "https://www.planalto.gov.br/ccivil_03/leis/l9394compilado.htm";
+
+const studyMaterials = [
+  { day: "D01", title: "Português fino + LDB", detail: "Fundamentos e organização", meta: "25 questões", href: d01NotionPage, tone: "gold" },
+  { day: "D02", title: "CF/88 Educação + LDB", detail: "Deveres e sistemas", meta: "30 questões", href: "https://app.notion.com/p/3d4cf5a267318134be45ca366aa2cda5", tone: "teal" },
+  { day: "D03", title: "PNE 2026 + PNED + LDB", detail: "Atualizações educacionais", meta: "30 questões", href: "https://app.notion.com/p/3d4cf5a2673181cba515e85f76f0804e", tone: "violet" },
+  { day: "D04", title: "Administração Geral/Pública + PODC", detail: "Manutenção ativa", meta: "30 questões", href: "https://app.notion.com/p/3d4cf5a267318162b575d24188df79fe", tone: "teal" },
+  { day: "D05", title: "LC 840 + atos administrativos", detail: "Pontos finos e atualização 2026", meta: "35 questões", href: "https://app.notion.com/p/3d4cf5a2673181cb92befed47cd317f5", tone: "coral" },
+  { day: "D06", title: "Informática atualizada", detail: "Windows 11, Microsoft 365, internet e segurança", meta: "35 questões", href: "https://app.notion.com/p/3d4cf5a2673181dd8545efe40f585297", tone: "violet" },
+  { day: "D07", title: "Revisão adaptativa D01–D06", detail: "Recalibração pelos resultados reais", meta: "30 questões · adaptativo", href: "https://app.notion.com/p/3d4cf5a2673181ac9f28e46ce90bf88e", tone: "violet" },
+  { day: "D08", title: "Arquivologia + gestão documental", detail: "e-ARQ Brasil 2.0", meta: "35 questões", href: "https://app.notion.com/p/3d4cf5a26731819093ebd77e661ed9dd", tone: "teal" },
+  { day: "D09", title: "Qualidade + Processos/BPM + Projetos", detail: "Manutenção aplicada", meta: "30 questões", href: "https://app.notion.com/p/3d4cf5a26731814d9a81e0354b75d6b9", tone: "teal" },
+  { day: "D10", title: "Gestão de Pessoas", detail: "Comportamento organizacional", meta: "35 questões", href: "https://app.notion.com/p/3d4cf5a2673181b381fad65285d56860", tone: "coral" },
+  { day: "D11", title: "AFO + orçamento público", detail: "Reforço dirigido 2026", meta: "35 questões", href: "https://app.notion.com/p/3d4cf5a2673181f985a9fcffe5e94bfa", tone: "gold" },
+  { day: "D12", title: "Materiais + patrimônio + LAI", detail: "Manutenção de alta eficiência", meta: "35 questões", href: "https://app.notion.com/p/3d4cf5a2673181339102dfeed723def3", tone: "teal" },
+  { day: "D13", title: "ECA + acessibilidade + Educação Especial", detail: "Núcleo Monitor", meta: "30 questões", href: "https://app.notion.com/p/3d4cf5a26731817db4f3d27a70ed8646", tone: "coral" },
+  { day: "D14", title: "Revisão integrada + checkpoint", detail: "Fechamento do Ciclo 01", meta: "40 questões · adaptativo", href: "https://app.notion.com/p/3d4cf5a2673181db8454e5ad9dd90c01", tone: "violet" },
+] as const;
+
+const legislationPlan = [
+  {
+    day: "D01",
+    title: "LDB — fundamentos",
+    detail: "Arts. 1º–5º e 8º–14º. O art. 26 e suas alterações ficam consolidados no D03.",
+    status: "Leitura obrigatória",
+    tone: "gold",
+    links: [{ label: "LDB compilada", href: ldbOfficialUrl }],
+  },
+  {
+    day: "D02",
+    title: "CF/88 + LDB — educação e sistemas",
+    detail: "CF, arts. 205–214; LDB, arts. 8º–14º, com foco em competências, deveres e colaboração.",
+    status: "Leitura obrigatória",
+    tone: "teal",
+    links: [
+      { label: "Constituição Federal", href: "https://www.planalto.gov.br/ccivil_03/constituicao/constituicaocompilado.htm" },
+      { label: "LDB compilada", href: ldbOfficialUrl },
+    ],
+  },
+  {
+    day: "D03",
+    title: "PNE, PNED e atualizações da LDB",
+    detail: "PNE, arts. 1º–20º e metas selecionadas; PNED, núcleo dos arts. 1º–4º; conferir apenas os dispositivos alterados e a redação consolidada.",
+    status: "Leitura obrigatória + atualização",
+    tone: "violet",
+    links: [
+      { label: "PNE — Lei 15.388/2026", href: "https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2026/lei/l15388.htm" },
+      { label: "PNED — Lei 14.533/2023", href: "https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2023/lei/l14533.htm" },
+      { label: "Lei 14.644/2023", href: "https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2023/lei/l14644.htm" },
+      { label: "Lei 14.945/2024", href: "https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2024/lei/l14945.htm" },
+      { label: "Lei 15.231/2025", href: "https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2025/lei/l15231.htm" },
+      { label: "Lei 15.369/2026", href: "https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2026/lei/l15369.htm" },
+      { label: "Lei 15.468/2026", href: "https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2026/lei/l15468.htm" },
+    ],
+  },
+  {
+    day: "D04",
+    title: "Administração Geral/Pública",
+    detail: "CF, art. 37, caput; Decreto-Lei 200, arts. 6º–10º. Portaria SEEDF 167/2026 entra como atualização institucional complementar.",
+    status: "Questões primeiro",
+    tone: "teal",
+    links: [
+      { label: "Constituição Federal", href: "https://www.planalto.gov.br/ccivil_03/constituicao/constituicaocompilado.htm" },
+      { label: "Decreto-Lei 200/1967", href: "https://www.planalto.gov.br/ccivil_03/decreto-lei/del0200.htm" },
+      { label: "Portaria SEEDF 167/2026", href: "https://www.sinj.df.gov.br/sinj/Norma/1ff2ce3031664ac8a9f1b499bf904ab9/Portaria_167_24_02_2026.html" },
+    ],
+  },
+  {
+    day: "D05",
+    title: "LC 840 e atos administrativos",
+    detail: "LC 840, arts. 22–40, com atenção aos pontos reincidentes; Decreto 48.806/2026 como atualização distrital.",
+    status: "Leitura obrigatória",
+    tone: "coral",
+    links: [
+      { label: "LC 840/2011", href: "https://www.sinj.df.gov.br/sinj/Norma/70196/LC_840.html" },
+      { label: "Decreto 48.806/2026", href: "https://www.sinj.df.gov.br/sinj/Norma/1ea7112d3ff24d658213638f263d87bf/Decreto_48806_18_06_2026.html" },
+    ],
+  },
+  {
+    day: "D06",
+    title: "Informática atualizada",
+    detail: "Não há lei seca nuclear no material fixo. Priorizar Windows 11, Microsoft 365, internet e segurança; LGPD e Marco Civil ficam condicionados ao edital.",
+    status: "Fonte técnica",
+    tone: "violet",
+    links: [],
+  },
+  {
+    day: "D07",
+    title: "Revisão adaptativa D01–D06",
+    detail: "Nenhuma lei nova. Reabrir somente artigos, dúvidas e erros produzidos nos seis primeiros dias.",
+    status: "Revisão pelos dados",
+    tone: "violet",
+    links: [],
+  },
+  {
+    day: "D08",
+    title: "Arquivologia e e-ARQ Brasil",
+    detail: "Resoluções CONARQ 48/2021 e 51/2023 entram como complementos; Lei 8.159, arts. 1º–3º e 7º–10º.",
+    status: "Leitura complementar",
+    tone: "teal",
+    links: [
+      { label: "Resolução CONARQ 50/2022", href: "https://www.gov.br/conarq/pt-br/legislacao-arquivistica/resolucoes-do-conarq/resolucao-no-50-de-06-de-maio-de-2022" },
+      { label: "Lei 8.159/1991", href: "https://www.planalto.gov.br/ccivil_03/leis/l8159.htm" },
+    ],
+  },
+  {
+    day: "D09",
+    title: "Qualidade, processos e projetos",
+    detail: "Não há lei seca nuclear. Estudar conceitos, aplicações e questões do material.",
+    status: "Conceitos + questões",
+    tone: "teal",
+    links: [],
+  },
+  {
+    day: "D10",
+    title: "Gestão de Pessoas",
+    detail: "Não há lei seca nuclear. Estudar teoria, comportamento organizacional e casos curtos.",
+    status: "Teoria + questões",
+    tone: "coral",
+    links: [],
+  },
+  {
+    day: "D11",
+    title: "AFO e orçamento público",
+    detail: "CF, arts. 165–169; Lei 4.320; LRF; MTO 2026 e MCASP 11ª edição conforme o material.",
+    status: "Leitura obrigatória",
+    tone: "gold",
+    links: [
+      { label: "Constituição Federal", href: "https://www.planalto.gov.br/ccivil_03/constituicao/constituicaocompilado.htm" },
+      { label: "Lei 4.320/1964", href: "https://www.planalto.gov.br/ccivil_03/leis/l4320.htm" },
+      { label: "LRF — LC 101/2000", href: "https://www.planalto.gov.br/ccivil_03/leis/lcp/lcp101.htm" },
+    ],
+  },
+  {
+    day: "D12",
+    title: "Materiais, patrimônio e LAI",
+    detail: "Lei seca de transparência em reforço pontual; materiais e patrimônio permanecem em manutenção por questões.",
+    status: "Reforço pontual",
+    tone: "teal",
+    links: [
+      { label: "LAI — Lei 12.527/2011", href: "https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2011/lei/l12527.htm" },
+      { label: "Lei Distrital 4.990/2012", href: "https://www.sinj.df.gov.br/sinj/Norma/72983/Lei_4990.html" },
+      { label: "Decreto Distrital 34.276/2013", href: "https://www.sinj.df.gov.br/sinj/Norma/74029/decreto_34276_11_04_2013.html" },
+    ],
+  },
+  {
+    day: "D13",
+    title: "ECA, LBI e Educação Especial Inclusiva",
+    detail: "ECA, arts. 1º–6º, 53–59, 98–102 e 131–136; LBI, arts. 1º–4º e 27–30. A Lei 15.450/2026 fica no radar por ainda não estar vigente na auditoria.",
+    status: "Leitura + radar normativo",
+    tone: "coral",
+    links: [
+      { label: "ECA — Lei 8.069/1990", href: "https://www.planalto.gov.br/ccivil_03/leis/l8069.htm" },
+      { label: "LBI — Lei 13.146/2015", href: "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2015/lei/l13146.htm" },
+      { label: "Decreto 12.686/2025", href: "https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2025/decreto/d12686.htm" },
+      { label: "Decreto 12.773/2025", href: "https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2025/decreto/d12773.htm" },
+      { label: "Lei 15.450/2026 — radar", href: "https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2026/lei/l15450.htm" },
+    ],
+  },
+  {
+    day: "D14",
+    title: "Revisão integrada",
+    detail: "Nenhuma leitura nova. A seleção nasce do Caderno de Erros, dúvidas, reincidências e desempenho real do C01.",
+    status: "Checkpoint adaptativo",
+    tone: "violet",
+    links: [],
+  },
+] as const;
+
+const futureMaterials = [
+  { label: "MS03/MS07", detail: "PDE-DF e LODF — transição posterior, sem antecipar novo ciclo." },
+  { label: "MS05/MS06", detail: "Direito Administrativo e LC 840 — aprofundar conforme lacunas reais." },
+  { label: "MS13", detail: "Lei 14.133/2021 — licitações e contratos." },
+  { label: "MS15/MS16", detail: "Tecnologia, segurança, arquivologia e preservação digital." },
+];
+
 function StatusPill({ children, tone = "neutral" }: { children: React.ReactNode; tone?: "neutral" | "gold" | "teal" | "violet" | "coral" }) {
   return <span className={`status-pill status-${tone}`}>{children}</span>;
 }
@@ -268,7 +446,7 @@ function StudyToday() {
     { id: "fechamento", label: "Fechar o D01", detail: "Só avançar quando todas as linhas estiverem corrigidas" },
   ];
   const progress = Math.round((checked.length / checklist.length) * 100);
-  return <div className="inner-page"><section className="page-intro"><div><p className="eyebrow">EXECUÇÃO DIÁRIA · SEEDF</p><h1>D01 · Português fino + LDB</h1><p>O primeiro dia não precisa ser perfeito. Precisa ser registrado.</p></div><StatusPill tone="gold">Próximo</StatusPill></section><section className="content-grid two-thirds study-layout"><div className="panel study-main-panel"><div className="study-progress-head"><div><p className="eyebrow">CHECKLIST DE EXECUÇÃO</p><h2>Feche o dia na ordem certa</h2></div><strong>{progress}%</strong></div><div className="progress-track"><span style={{ width: `${progress}%` }} /></div><div className="checklist">{checklist.map((item) => { const isChecked = checked.includes(item.id); return <button className={`check-row ${isChecked ? "is-checked" : ""}`} key={item.id} onClick={() => setChecked((current) => isChecked ? current.filter((id) => id !== item.id) : [...current, item.id])}><span className="checkbox">{isChecked && <Check size={14} />}</span><span className="check-copy"><strong>{item.label}</strong><small>{item.detail}</small></span><ChevronRight size={17} /></button>; })}</div><div className="study-actions"><button className="primary-button" onClick={() => setSessionStarted((value) => !value)}>{sessionStarted ? "Pausar sessão" : "Iniciar sessão"}<TimerReset size={16} /></button><span>{sessionStarted ? "Sessão em andamento neste dispositivo" : "O cronômetro real entra na execução"}</span></div></div><aside className="panel day-rule-panel"><div className="day-badge">D01</div><p className="eyebrow">REGRA DO DIA</p><h3>Estude, registre, feche.</h3><p>O Banco de Dias agrega os números a partir das linhas detalhadas do Banco de Controle de Questões. Não lance os totais duas vezes.</p><div className="rule-list"><div><Check size={15} /> Dias não estudados não viram atraso.</div><div><Check size={15} /> D07 só nasce dos resultados de D01–D06.</div><div><Check size={15} /> O site não cria desempenho sem dado real.</div></div></aside></section><section className="panel next-days-panel"><SectionHeading eyebrow="SEQUÊNCIA" title="O C01 já está preparado" description="Os próximos dias permanecem não iniciados até a execução real." /><div className="day-strip">{dayRows.slice(0, 7).map((row) => <DayCard row={row} key={row.day} />)}</div></section></div>;
+  return <div className="inner-page"><section className="page-intro"><div><p className="eyebrow">EXECUÇÃO DIÁRIA · SEEDF</p><h1>D01 · Português fino + LDB</h1><p>O primeiro dia não precisa ser perfeito. Precisa ser registrado.</p></div><StatusPill tone="gold">Próximo</StatusPill></section><section className="content-grid two-thirds study-layout"><div className="panel study-main-panel"><div className="study-progress-head"><div><p className="eyebrow">CHECKLIST DE EXECUÇÃO</p><h2>Feche o dia na ordem certa</h2></div><strong>{progress}%</strong></div><div className="progress-track"><span style={{ width: `${progress}%` }} /></div><div className="checklist">{checklist.map((item) => { const isChecked = checked.includes(item.id); return <button className={`check-row ${isChecked ? "is-checked" : ""}`} key={item.id} onClick={() => setChecked((current) => isChecked ? current.filter((id) => id !== item.id) : [...current, item.id])}><span className="checkbox">{isChecked && <Check size={14} />}</span><span className="check-copy"><strong>{item.label}</strong><small>{item.detail}</small></span><ChevronRight size={17} /></button>; })}</div><div className="study-actions"><button className="primary-button" onClick={() => setSessionStarted((value) => !value)}>{sessionStarted ? "Pausar sessão" : "Iniciar sessão"}<TimerReset size={16} /></button><span>{sessionStarted ? "Sessão em andamento neste dispositivo" : "O cronômetro real entra na execução"}</span></div><div className="study-source-links"><p className="eyebrow">MATERIAL DO DIA</p><div><a className="resource-link" href={d01NotionPage} target="_blank" rel="noreferrer">Abrir D01 completo no Notion <ArrowRight size={15} /></a><a className="resource-link" href={ldbOfficialUrl} target="_blank" rel="noreferrer">Abrir LDB compilada <ArrowRight size={15} /></a></div></div></div><aside className="panel day-rule-panel"><div className="day-badge">D01</div><p className="eyebrow">REGRA DO DIA</p><h3>Estude, registre, feche.</h3><p>O Banco de Dias agrega os números a partir das linhas detalhadas do Banco de Controle de Questões. Não lance os totais duas vezes.</p><div className="rule-list"><div><Check size={15} /> Dias não estudados não viram atraso.</div><div><Check size={15} /> D07 só nasce dos resultados de D01–D06.</div><div><Check size={15} /> O site não cria desempenho sem dado real.</div></div></aside></section><section className="panel next-days-panel"><SectionHeading eyebrow="SEQUÊNCIA" title="O C01 já está preparado" description="Os próximos dias permanecem não iniciados até a execução real." /><div className="day-strip">{dayRows.slice(0, 7).map((row) => <DayCard row={row} key={row.day} />)}</div></section></div>;
 }
 
 function DayCard({ row }: { row: typeof dayRows[number] }) {
@@ -290,7 +468,7 @@ function Progress() {
 }
 
 function Materials() {
-  return <div className="inner-page"><section className="page-intro"><div><p className="eyebrow">BIBLIOTECA SEEDF</p><h1>Fontes que alimentam a preparação</h1><p>O site organiza o acesso. A verdade continua no material oficial e no Notion operacional.</p></div><StatusPill tone="teal">Fonte: Notion SEEDF</StatusPill></section><section className="source-grid">{sources.map((source) => <article className="panel source-card" key={source.title}><div className="source-card-top"><span className="source-icon"><FileCheck2 size={18} /></span><StatusPill>{source.tag}</StatusPill></div><h3>{source.title}</h3><p>{source.detail}</p><a className="text-button" href={source.href} target="_blank" rel="noreferrer">Abrir no Notion <ChevronRight size={16} /></a></article>)}</section><section className="panel materials-note"><div className="note-icon"><CircleAlert size={19} /></div><div><p className="eyebrow">REGRA-MÃE</p><h3>Último edital + legislação vigente + atualização provável + histórico real de domínio.</h3><p>Quando sair o edital novo, ele passa a ser a fonte superior e o edital projetado é auditado imediatamente.</p></div></section></div>;
+  return <div className="inner-page"><section className="page-intro"><div><p className="eyebrow">BIBLIOTECA SEEDF</p><h1>Fontes que alimentam a preparação</h1><p>O site organiza o acesso. A verdade continua no material oficial e no Notion operacional.</p></div><StatusPill tone="teal">Fonte: Notion SEEDF</StatusPill></section><section className="source-grid">{sources.map((source) => <article className="panel source-card" key={source.title}><div className="source-card-top"><span className="source-icon"><FileCheck2 size={18} /></span><StatusPill>{source.tag}</StatusPill></div><h3>{source.title}</h3><p>{source.detail}</p><a className="text-button" href={source.href} target="_blank" rel="noreferrer">Abrir no Notion <ChevronRight size={16} /></a></article>)}</section><section className="panel materials-roadmap"><SectionHeading eyebrow="CICLO 01 · MATERIAL COMPLETO" title="Materiais do D01 ao D14" description="Cada cartão abre a página correspondente no Notion. A meta e o estado seguem a sequência operacional do C01." action={<a className="text-button" href={notionMaterialsPage} target="_blank" rel="noreferrer">Abrir biblioteca no Notion <ChevronRight size={16} /></a>} /><div className="material-grid">{studyMaterials.map((material) => <article className={`material-card material-${material.tone}`} key={material.day}><div className="material-card-top"><span className="material-day">{material.day}</span><StatusPill tone={material.tone === "coral" ? "coral" : material.tone === "gold" ? "gold" : material.tone === "violet" ? "violet" : "teal"}>{material.meta}</StatusPill></div><h3>{material.title}</h3><p>{material.detail}</p><a className="text-button" href={material.href} target="_blank" rel="noreferrer">Abrir material <ArrowRight size={15} /></a></article>)}</div></section><section className="panel legislation-panel"><SectionHeading eyebrow="LEITURA LEGISLATIVA · AUDITORIA 08/09/2026" title="Leis e fontes oficiais por dia" description="O roteiro abaixo foi organizado a partir da página de materiais do Notion. “Sem lei seca nuclear” significa que o dia prioriza material técnico, conceitos ou revisão adaptativa." action={<a className="text-button" href={notionMaterialsPage} target="_blank" rel="noreferrer">Ver roteiro no Notion <ChevronRight size={16} /></a>} /><div className="legislation-list">{legislationPlan.map((item) => <article className={`legislation-item legislation-${item.tone}`} key={item.day}><div className="legislation-day">{item.day}</div><div className="legislation-body"><div className="legislation-title-row"><h3>{item.title}</h3><StatusPill tone={item.tone === "coral" ? "coral" : item.tone === "gold" ? "gold" : item.tone === "violet" ? "violet" : "teal"}>{item.status}</StatusPill></div><p>{item.detail}</p>{item.links.length > 0 ? <div className="law-links">{item.links.map((link) => <a href={link.href} target="_blank" rel="noreferrer" key={link.href}>{link.label} <ArrowRight size={13} /></a>)}</div> : <span className="law-empty">Sem lei seca nuclear neste recorte</span>}</div></article>)}</div></section><section className="panel future-materials"><SectionHeading eyebrow="FILA POSTERIOR · NOTION" title="Materiais já previstos para depois do C01" description="Eles permanecem no repositório, mas não deslocam o D01 nem antecipam um novo ciclo." action={<a className="text-button" href={notionMaterialsPage} target="_blank" rel="noreferrer">Abrir materiais sequenciais <ChevronRight size={16} /></a>} /><div className="future-material-grid">{futureMaterials.map((material) => <div className="future-material" key={material.label}><strong>{material.label}</strong><span>{material.detail}</span></div>)}</div></section><section className="panel materials-note"><div className="note-icon"><CircleAlert size={19} /></div><div><p className="eyebrow">REGRA-MÃE</p><h3>Fonte oficial atualizada prevalece sobre resumo antigo.</h3><p>O Notion mantém o material completo; o site oferece uma visão rápida, com links para a fonte oficial e para cada página do C01.</p></div></section></div>;
 }
 
 export default function Home() {
