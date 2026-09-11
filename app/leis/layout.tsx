@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import "./status.css";
 
 export const metadata: Metadata = {
   title: "Leis Primeiro | SEEDF PPGE",
