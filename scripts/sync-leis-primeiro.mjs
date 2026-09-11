@@ -42,14 +42,21 @@ const childPages = pageBlocks
   .sort((a, b) => Number(a.code.slice(1)) - Number(b.code.slice(1)));
 
 const bankRows = databasePages.map(parseBankRow).filter(Boolean).sort((a, b) => a.operational_order - b.operational_order);
-const operationalRows = bankRows.filter((row) => row.operational_order < 900);
+const mappedRows = bankRows.filter((row) => row.operational_order < 900);
 const radarRows = bankRows.filter((row) => row.operational_order >= 900);
+const rowsByOrder = new Map(mappedRows.map((row) => [row.operational_order, row]));
 
 if (childPages.length !== 34) {
   throw new Error(`Expected 34 L pages, found ${childPages.length}.`);
 }
-if (operationalRows.length !== 32) {
-  throw new Error(`Expected 32 mapped operational records, found ${operationalRows.length}.`);
+
+const expectedOrders = Array.from(new Set(childPages.map((child) => operationalOrderForCode(child.code))));
+const missingOrders = expectedOrders.filter((order) => !rowsByOrder.has(order));
+if (missingOrders.length) {
+  throw new Error(`Missing legislation records for operational orders: ${missingOrders.join(", ")}.`);
+}
+if (expectedOrders.length !== 32) {
+  throw new Error(`Expected 32 unique records mapped to L01-L34, found ${expectedOrders.length}.`);
 }
 
 const sharedSourceOverrides = {
@@ -61,8 +68,9 @@ const sharedTargets = { L30: 3, L31: 4, L32: 3 };
 
 const laws = childPages.map((child) => {
   const number = Number(child.code.slice(1));
-  const slotIndex = number <= 29 ? number - 1 : number <= 32 ? 29 : number === 33 ? 30 : 31;
-  const row = operationalRows[slotIndex];
+  const operationalOrder = operationalOrderForCode(child.code);
+  const row = rowsByOrder.get(operationalOrder);
+  if (!row) throw new Error(`No mapped row for ${child.code} (order ${operationalOrder}).`);
   const sharedBlock = number >= 30 && number <= 32;
   return {
     code: child.code,
@@ -98,7 +106,7 @@ const priorities = bankRows.reduce((acc, row) => {
 }, {});
 
 const snapshot = {
-  schema_version: 1,
+  schema_version: 2,
   source: {
     kind: "notion",
     title: pageTitle(page) || "Leis Primeiro | SEEDF",
@@ -111,7 +119,8 @@ const snapshot = {
   summary: {
     pages: childPages.length,
     bank_records: bankRows.length,
-    mapped_operational_records: operationalRows.length,
+    mapped_law_records: expectedOrders.length,
+    radar_records: radarRows.length,
     priorities,
   },
   study_sequence: [
@@ -126,7 +135,8 @@ const snapshot = {
   laws,
   radars: radarRows,
   audit_notes: [
-    "L30 + L31 + L32 formam um único bloco M5 de acessibilidade: 10 questões no total, distribuídas 3 + 4 + 3.",
+    "34 páginas L01–L34 usam 32 registros diretamente mapeados; L30 + L31 + L32 compartilham o registro M5 de acessibilidade.",
+    "O 33º registro do banco é o Radar 901 do novo PDE/DF, fora da numeração L01–L34.",
     "L11 permanece com meta operacional 0 enquanto o edital não fechar cargos e escolaridade.",
     "L33 é Radar forte com 10 questões de familiarização.",
     "L34 permanece com meta operacional 0 durante a vacatio legis; vigência em 28/12/2026.",
@@ -136,7 +146,19 @@ const snapshot = {
 
 await mkdir(path.dirname(outputPath), { recursive: true });
 await writeFile(outputPath, `${JSON.stringify(snapshot, null, 2)}\n`, "utf8");
-console.log(`Leis Primeiro atualizado em ${outputPath}: ${laws.length} páginas, ${bankRows.length} registros.`);
+console.log(`Leis Primeiro atualizado em ${outputPath}: ${laws.length} páginas, ${expectedOrders.length} registros mapeados, ${radarRows.length} radar(es).`);
+
+function operationalOrderForCode(code) {
+  const number = Number(String(code).replace(/^L/i, ""));
+  if (!Number.isInteger(number) || number < 1 || number > 34) throw new Error(`Invalid law code: ${code}`);
+  if (number <= 11) return number;
+  if (number <= 18) return 100 + (number - 11);
+  if (number <= 24) return 200 + (number - 18);
+  if (number <= 29) return 300 + (number - 24);
+  if (number <= 32) return 306;
+  if (number === 33) return 307;
+  return 308;
+}
 
 async function getAllChildren(blockId) {
   const results = [];
