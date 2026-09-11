@@ -243,8 +243,11 @@ function renderBlocks(blocks, lawMap) {
 function renderBlock(block, lawMap) {
   const type = block.type;
   const data = block[type] || {};
+  const plainText = (data.rich_text || []).map((item) => item.plain_text || item.text?.content || "").join("").trim();
   const text = richTextHtml(data.rich_text, lawMap);
   const children = renderBlocks(block.__children || [], lawMap);
+  if (type === "callout" && (/^Navegação:/i.test(plainText) || /^Fim da L\d{2}:/i.test(plainText) || /CONTROLE OPERACIONAL/i.test(plainText))) return "";
+  if (type === "toggle" && /Navegar por seções/i.test(plainText)) return "";
   if (type === "paragraph") return text ? `<p>${text}</p>${children}` : children;
   if (type === "heading_1") return `<h2>${text}</h2>${children}`;
   if (type === "heading_2") return `<h2>${text}</h2>${children}`;
