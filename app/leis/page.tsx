@@ -60,6 +60,7 @@ type Radar = {
 };
 
 type Snapshot = {
+  schema_version?: number;
   source: {
     title: string;
     page_url: string;
@@ -69,7 +70,9 @@ type Snapshot = {
   summary: {
     pages: number;
     bank_records: number;
+    mapped_law_records?: number;
     mapped_operational_records?: number;
+    radar_records?: number;
     priorities?: Record<string, number>;
   };
   study_sequence: string[];
@@ -92,10 +95,17 @@ function slug(value = "") {
 }
 
 function formatDate(value: string | null | undefined) {
-  if (!value) return "11/09/2026";
+  if (!value) return "aguardando sincronização";
   const date = new Date(value);
-  if (Number.isNaN(date.valueOf())) return "11/09/2026";
+  if (Number.isNaN(date.valueOf())) return "aguardando sincronização";
   return new Intl.DateTimeFormat("pt-BR", { dateStyle: "short", timeStyle: "short" }).format(date);
+}
+
+function formatAuditDate(value: string | null | undefined) {
+  if (!value) return null;
+  const date = new Date(`${value.slice(0, 10)}T12:00:00`);
+  if (Number.isNaN(date.valueOf())) return value;
+  return new Intl.DateTimeFormat("pt-BR", { dateStyle: "short" }).format(date);
 }
 
 function priorityShort(value?: string) {
@@ -133,7 +143,7 @@ export default function LeisPrimeiroPage() {
       if (group !== "Todos" && law.group !== group) return false;
       if (priority !== "Todas" && law.priority !== priority) return false;
       if (!needle) return true;
-      const haystack = [law.code, law.title, law.group, law.priority, law.action, law.cut, law.alert, ...(law.cargos || [])]
+      const haystack = [law.code, law.title, law.group, law.priority, law.action, law.cut, law.alert, law.block, law.observations, ...(law.cargos || [])]
         .filter(Boolean)
         .join(" ")
         .toLocaleLowerCase("pt-BR");
@@ -141,8 +151,16 @@ export default function LeisPrimeiroPage() {
     });
   }, [snapshot, query, group, priority]);
 
-  const grouped = groups.slice(1).map((name) => ({ name, laws: filtered.filter((law) => law.group === name) })).filter((item) => item.laws.length);
-  const totalQuestions = (snapshot?.laws || []).reduce((sum, law) => sum + (law.shared_block ? (law.code === "L30" ? 10 : 0) : law.question_target || 0), 0);
+  const grouped = groups
+    .slice(1)
+    .map((name) => ({ name, laws: filtered.filter((law) => law.group === name) }))
+    .filter((item) => item.laws.length);
+  const totalQuestions = (snapshot?.laws || []).reduce(
+    (sum, law) => sum + (law.shared_block ? (law.code === "L30" ? 10 : 0) : law.question_target || 0),
+    0,
+  );
+  const mappedRecords = snapshot?.summary.mapped_law_records ?? snapshot?.summary.mapped_operational_records ?? 32;
+  const radarRecords = snapshot?.summary.radar_records ?? snapshot?.radars?.length ?? 1;
 
   return (
     <main className="laws-page">
@@ -163,13 +181,13 @@ export default function LeisPrimeiroPage() {
         </div>
         <div className="laws-hero-card">
           <div className="laws-seal"><ShieldCheck size={22} /></div>
-          <div><span>Auditoria jurídica</span><strong>11/09/2026</strong><small>34 páginas · 33 registros no banco</small></div>
+          <div><span>Auditoria jurídica</span><strong>11/09/2026</strong><small>{snapshot?.summary.pages ?? 34} páginas · {snapshot?.summary.bank_records ?? 33} registros no banco</small></div>
         </div>
       </section>
 
       <section className="laws-stats" aria-label="Resumo da trilha">
         <article><FileText size={19} /><span>Páginas L01–L34</span><strong>{snapshot?.summary.pages ?? 34}</strong></article>
-        <article><Layers3 size={19} /><span>Registros operacionais</span><strong>{snapshot?.summary.bank_records ?? 33}</strong></article>
+        <article><Layers3 size={19} /><span>Registros no banco · {mappedRecords} mapeados + {radarRecords} radar</span><strong>{snapshot?.summary.bank_records ?? 33}</strong></article>
         <article><Target size={19} /><span>Questões-meta mapeadas</span><strong>{snapshot ? totalQuestions : "—"}</strong></article>
         <article><Sparkles size={19} /><span>Regra de avanço</span><strong>D0 fecha o bloco</strong></article>
       </section>
@@ -198,7 +216,8 @@ export default function LeisPrimeiroPage() {
         <div className="laws-heading"><div><p className="laws-kicker">AUDITORIA INTEGRAL</p><h2>Pontos que não podem ser perdidos</h2></div><CircleAlert size={20} /></div>
         <div className="laws-audit-grid">
           {(snapshot?.audit_notes || [
-            "L30 + L31 + L32 formam um único bloco M5: 10 questões no total, distribuídas 3 + 4 + 3.",
+            "34 páginas L01–L34 usam 32 registros diretamente mapeados; L30 + L31 + L32 compartilham o registro M5 de acessibilidade.",
+            "O 33º registro do banco é o Radar 901 do novo PDE/DF, fora da numeração L01–L34.",
             "L11 tem meta operacional 0 enquanto o edital não fechar cargos e escolaridade.",
             "L33 é Radar forte com 10 questões de familiarização.",
             "L34 permanece com meta 0 durante a vacatio legis; vigência em 28/12/2026.",
@@ -208,7 +227,7 @@ export default function LeisPrimeiroPage() {
 
       <section className="laws-panel" id="leis">
         <div className="laws-heading laws-list-heading">
-          <div><p className="laws-kicker">ORDEM REAL DE ESTUDO</p><h2>L01–L34</h2><p>Busque por lei, tema, cargo ou alerta. Abra o cartão para ver o recorte e a vigência quando disponíveis.</p></div>
+          <div><p className="laws-kicker">ORDEM REAL DE ESTUDO</p><h2>L01–L34</h2><p>Busque por lei, tema, cargo ou alerta. Abra o cartão para ver recorte, vigência, observações e o estado das revisões.</p></div>
           <span className="laws-result-count">{filtered.length} de {snapshot?.laws.length ?? 34}</span>
         </div>
 
@@ -220,6 +239,7 @@ export default function LeisPrimeiroPage() {
 
         {error ? <div className="laws-error"><CircleAlert size={18} /> O snapshot do site não carregou. A trilha original continua disponível no Notion pelo botão acima.</div> : null}
         {!snapshot && !error ? <div className="laws-loading">Carregando a trilha operacional…</div> : null}
+        {snapshot && filtered.length === 0 ? <div className="laws-empty">Nenhuma norma corresponde aos filtros atuais.</div> : null}
 
         <div className="laws-groups">
           {grouped.map((section) => (
@@ -228,6 +248,7 @@ export default function LeisPrimeiroPage() {
               <div className="laws-grid">
                 {section.laws.map((law) => {
                   const isOpen = expanded === law.code;
+                  const auditDate = formatAuditDate(law.last_audit);
                   return (
                     <article className={`law-card law-priority-${slug(law.priority)}`} key={law.code}>
                       <div className="law-card-top">
@@ -238,21 +259,37 @@ export default function LeisPrimeiroPage() {
                         </div>
                       </div>
                       <h4>{law.title}</h4>
-                      <div className="law-meta-row"><span>{law.action || "Estudar"}</span><span>•</span><span>{law.status || "Não iniciado"}</span></div>
+                      <div className="law-meta-row"><span>{law.action || "Estudar"}</span><span>•</span><span>{law.status || "Não iniciado"}</span>{law.operational_order ? <><span>•</span><span>ordem {law.operational_order}</span></> : null}</div>
                       <div className="law-cargos">{(law.cargos || []).map((cargo) => <span key={cargo}>{cargo}</span>)}</div>
-                      {(law.cut || law.alert || law.block) ? (
-                        <button className="law-details-button" type="button" onClick={() => setExpanded(isOpen ? null : law.code)}>{isOpen ? "Ocultar recorte" : "Ver recorte e alertas"} <ArrowUpRight size={14} /></button>
+                      <div className="law-progress" aria-label={`Estado de revisão de ${law.code}`}>
+                        <span className={law.orientation_read ? "is-done" : ""}>Orientação {law.orientation_read ? "✓" : "—"}</span>
+                        <span className={law.d0 ? "is-done" : ""}>D0 {law.d0 ? "✓" : "—"}</span>
+                        <span className={law.d7 ? "is-done" : ""}>D7 {law.d7 ? "✓" : "—"}</span>
+                        <span className={law.d20 ? "is-done" : ""}>D20 {law.d20 ? "✓" : "—"}</span>
+                      </div>
+                      {(law.cut || law.alert || law.block || law.observations) ? (
+                        <button
+                          className="law-details-button"
+                          type="button"
+                          aria-expanded={isOpen}
+                          onClick={() => setExpanded(isOpen ? null : law.code)}
+                        >
+                          {isOpen ? "Ocultar recorte" : "Ver recorte e alertas"} <ArrowUpRight size={14} />
+                        </button>
                       ) : null}
                       {isOpen ? (
                         <div className="law-details">
                           {law.cut ? <div><strong>Recorte prioritário</strong><p>{law.cut}</p></div> : null}
                           {law.alert ? <div className="law-alert"><strong>Vigência / alerta</strong><p>{law.alert}</p></div> : null}
                           {law.block ? <div><strong>Bloco sugerido</strong><p>{law.block}</p></div> : null}
+                          {law.observations ? <div><strong>Observações</strong><p>{law.observations}</p></div> : null}
+                          {auditDate ? <div className="law-audit-date"><strong>Última auditoria no banco</strong><p>{auditDate}</p></div> : null}
                         </div>
                       ) : null}
                       {law.shared_block ? <div className="law-shared-note"><CircleAlert size={14} /> L30–L32 compartilham uma única meta operacional de 10 questões.</div> : null}
                       <div className="law-actions">
                         <a href={law.notion_url} target="_blank" rel="noreferrer">Página da lei <ExternalLink size={14} /></a>
+                        {law.bank_record_url ? <a href={law.bank_record_url} target="_blank" rel="noreferrer">Registro operacional <ExternalLink size={14} /></a> : null}
                         {law.official_url ? <a href={law.official_url} target="_blank" rel="noreferrer">Fonte oficial <ExternalLink size={14} /></a> : null}
                       </div>
                     </article>
@@ -268,7 +305,7 @@ export default function LeisPrimeiroPage() {
         <section className="laws-panel laws-radar">
           <div className="laws-heading"><div><p className="laws-kicker">RADAR FORA DA NUMERAÇÃO L01–L34</p><h2>Monitoramento normativo</h2></div><ShieldCheck size={20} /></div>
           {snapshot.radars.map((radar) => (
-            <article key={radar.operational_order}><div><strong>{radar.title}</strong><span>{radar.priority} · meta {radar.question_target}</span></div><a href={radar.official_url || radar.url} target="_blank" rel="noreferrer">Abrir fonte <ExternalLink size={14} /></a></article>
+            <article key={radar.operational_order}><div><strong>{radar.title}</strong><span>{radar.priority} · meta {radar.question_target} · ordem {radar.operational_order}</span></div><a href={radar.official_url || radar.url} target="_blank" rel="noreferrer">Abrir fonte <ExternalLink size={14} /></a></article>
           ))}
         </section>
       ) : null}
