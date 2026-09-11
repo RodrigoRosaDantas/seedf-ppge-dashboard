@@ -10,7 +10,9 @@ const outputPath = path.resolve("public/data/leis-primeiro.json");
 
 if (!token) throw new Error("NOTION_TOKEN is not configured.");
 
-const request = async (endpoint, init = {}) => {
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+const request = async (endpoint, init = {}, attempt = 0) => {
   const response = await fetch(`${NOTION_API_BASE}${endpoint}`, {
     ...init,
     headers: {
@@ -21,6 +23,11 @@ const request = async (endpoint, init = {}) => {
     },
   });
   const body = await response.text();
+  if (response.status === 429 && attempt < 6) {
+    const retryAfter = Number(response.headers.get("retry-after") || 1);
+    await sleep(Math.max(500, retryAfter * 1000));
+    return request(endpoint, init, attempt + 1);
+  }
   if (!response.ok) throw new Error(`Notion API ${response.status}: ${body.slice(0, 300)}`);
   return JSON.parse(body);
 };
@@ -34,6 +41,7 @@ const [page, pageBlocks, databasePages] = await Promise.all([
 const childPages = pageBlocks
   .filter((block) => block.type === "child_page" && /^L\d{2}\b/i.test(block.child_page?.title || ""))
   .map((block) => ({
+    page_id: block.id,
     code: (block.child_page.title.match(/^(L\d{2})\b/i)?.[1] || "").toUpperCase(),
     title: block.child_page.title.replace(/^L\d{2}\s*[—–-]\s*/i, "").trim(),
     notion_url: notionPageUrl(block.id),
@@ -46,17 +54,21 @@ const mappedRows = bankRows.filter((row) => row.operational_order < 900);
 const radarRows = bankRows.filter((row) => row.operational_order >= 900);
 const rowsByOrder = new Map(mappedRows.map((row) => [row.operational_order, row]));
 
-if (childPages.length !== 34) {
-  throw new Error(`Expected 34 L pages, found ${childPages.length}.`);
-}
+if (childPages.length !== 34) throw new Error(`Expected 34 L pages, found ${childPages.length}.`);
 
 const expectedOrders = Array.from(new Set(childPages.map((child) => operationalOrderForCode(child.code))));
 const missingOrders = expectedOrders.filter((order) => !rowsByOrder.has(order));
-if (missingOrders.length) {
-  throw new Error(`Missing legislation records for operational orders: ${missingOrders.join(", ")}.`);
-}
-if (expectedOrders.length !== 32) {
-  throw new Error(`Expected 32 unique records mapped to L01-L34, found ${expectedOrders.length}.`);
+if (missingOrders.length) throw new Error(`Missing legislation records for operational orders: ${missingOrders.join(", ")}.`);
+if (expectedOrders.length !== 32) throw new Error(`Expected 32 unique records mapped to L01-L34, found ${expectedOrders.length}.`);
+
+const lawCodeByPageId = new Map(childPages.map((child) => [compactId(child.page_id), child.code]));
+const contentByCode = new Map();
+for (const child of childPages) {
+  const tree = await getBlockTree(child.page_id);
+  const html = renderBlocks(tree, lawCodeByPageId).trim();
+  if (html.length < 40) throw new Error(`Study content for ${child.code} is unexpectedly empty.`);
+  contentByCode.set(child.code, html);
+  console.log(`${child.code}: conteúdo interno sincronizado (${html.length} caracteres HTML).`);
 }
 
 const sharedSourceOverrides = {
@@ -74,9 +86,11 @@ const laws = childPages.map((child) => {
   const sharedBlock = number >= 30 && number <= 32;
   return {
     code: child.code,
+    page_id: child.page_id,
     title: child.title,
     group: groupFor(number),
     notion_url: child.notion_url,
+    internal_path: `./${child.code.toLowerCase()}/`,
     bank_record_url: row.url,
     operational_order: row.operational_order,
     priority: row.priority,
@@ -97,6 +111,7 @@ const laws = childPages.map((child) => {
     last_audit: row.last_audit,
     shared_block: sharedBlock,
     shared_codes: sharedBlock ? ["L30", "L31", "L32"] : [],
+    content_html: contentByCode.get(child.code),
   };
 });
 
@@ -106,7 +121,7 @@ const priorities = bankRows.reduce((acc, row) => {
 }, {});
 
 const snapshot = {
-  schema_version: 2,
+  schema_version: 3,
   source: {
     kind: "notion",
     title: pageTitle(page) || "Leis Primeiro | SEEDF",
@@ -115,6 +130,7 @@ const snapshot = {
     last_edited_time: page.last_edited_time || null,
     synced_at: new Date().toISOString(),
     data_source_id: LEGISLATION_DATA_SOURCE_ID,
+    internal_pages: true,
   },
   summary: {
     pages: childPages.length,
@@ -141,12 +157,13 @@ const snapshot = {
     "L33 é Radar forte com 10 questões de familiarização.",
     "L34 permanece com meta operacional 0 durante a vacatio legis; vigência em 28/12/2026.",
     "A propriedade Questões-meta do BANCO — LEGISLAÇÃO SEEDF é a referência operacional.",
+    "As páginas L01–L34 são publicadas também como páginas internas do site; o Notion permanece como fonte operacional.",
   ],
 };
 
 await mkdir(path.dirname(outputPath), { recursive: true });
 await writeFile(outputPath, `${JSON.stringify(snapshot, null, 2)}\n`, "utf8");
-console.log(`Leis Primeiro atualizado em ${outputPath}: ${laws.length} páginas, ${expectedOrders.length} registros mapeados, ${radarRows.length} radar(es).`);
+console.log(`Leis Primeiro atualizado em ${outputPath}: ${laws.length} páginas internas, ${expectedOrders.length} registros mapeados, ${radarRows.length} radar(es).`);
 
 function operationalOrderForCode(code) {
   const number = Number(String(code).replace(/^L/i, ""));
@@ -173,6 +190,18 @@ async function getAllChildren(blockId) {
   return results;
 }
 
+async function getBlockTree(blockId) {
+  const blocks = await getAllChildren(blockId);
+  for (const block of blocks) {
+    if (block.has_children && !["child_page", "child_database"].includes(block.type)) {
+      block.__children = await getBlockTree(block.id);
+    } else {
+      block.__children = [];
+    }
+  }
+  return blocks;
+}
+
 async function queryDataSource(dataSourceId) {
   const results = [];
   let cursor = null;
@@ -187,6 +216,100 @@ async function queryDataSource(dataSourceId) {
     cursor = response.has_more ? response.next_cursor : null;
   } while (cursor);
   return results;
+}
+
+function renderBlocks(blocks, lawMap) {
+  let html = "";
+  for (let index = 0; index < blocks.length; index += 1) {
+    const block = blocks[index];
+    if (["bulleted_list_item", "numbered_list_item"].includes(block.type)) {
+      const type = block.type;
+      const tag = type === "bulleted_list_item" ? "ul" : "ol";
+      const items = [];
+      while (index < blocks.length && blocks[index].type === type) {
+        const item = blocks[index];
+        items.push(`<li>${richTextHtml(item[type]?.rich_text, lawMap)}${renderBlocks(item.__children || [], lawMap)}</li>`);
+        index += 1;
+      }
+      index -= 1;
+      html += `<${tag}>${items.join("")}</${tag}>`;
+      continue;
+    }
+    html += renderBlock(block, lawMap);
+  }
+  return html;
+}
+
+function renderBlock(block, lawMap) {
+  const type = block.type;
+  const data = block[type] || {};
+  const text = richTextHtml(data.rich_text, lawMap);
+  const children = renderBlocks(block.__children || [], lawMap);
+  if (type === "paragraph") return text ? `<p>${text}</p>${children}` : children;
+  if (type === "heading_1") return `<h2>${text}</h2>${children}`;
+  if (type === "heading_2") return `<h2>${text}</h2>${children}`;
+  if (type === "heading_3") return `<h3>${text}</h3>${children}`;
+  if (type === "quote") return `<blockquote>${text}${children}</blockquote>`;
+  if (type === "callout") {
+    const icon = data.icon?.type === "emoji" ? `${escapeHtml(data.icon.emoji)} ` : "";
+    return `<aside class="study-callout">${icon}${text}${children}</aside>`;
+  }
+  if (type === "divider") return "<hr>";
+  if (type === "toggle") return `<details class="study-toggle"><summary>${text || "Ver conteúdo"}</summary>${children}</details>`;
+  if (type === "to_do") return `<div class="study-todo"><span>${data.checked ? "☑" : "☐"}</span><span>${text}</span></div>${children}`;
+  if (type === "code") return `<pre><code>${escapeHtml((data.rich_text || []).map((item) => item.plain_text || "").join(""))}</code></pre>${children}`;
+  if (type === "equation") return `<div class="study-equation">${escapeHtml(data.expression || "")}</div>${children}`;
+  if (type === "table") {
+    const rows = (block.__children || []).filter((item) => item.type === "table_row").map((row, rowIndex) => {
+      const cells = (row.table_row?.cells || []).map((cell) => `${rowIndex === 0 && data.has_column_header ? "<th>" : "<td>"}${richTextHtml(cell, lawMap)}${rowIndex === 0 && data.has_column_header ? "</th>" : "</td>"}`).join("");
+      return `<tr>${cells}</tr>`;
+    }).join("");
+    return `<div class="study-table-wrap"><table>${rows}</table></div>`;
+  }
+  if (type === "bookmark" || type === "link_preview") {
+    const url = data.url || "";
+    return url ? `<p><a href="${escapeHtml(url)}" target="_blank" rel="noreferrer">${escapeHtml(url)} ↗</a></p>` : children;
+  }
+  if (type === "image") {
+    if (data.type === "external" && data.external?.url) {
+      const caption = richTextHtml(data.caption, lawMap);
+      return `<figure><img src="${escapeHtml(data.external.url)}" alt="${escapeHtml((data.caption || []).map((item) => item.plain_text || "").join(""))}" loading="lazy">${caption ? `<figcaption>${caption}</figcaption>` : ""}</figure>`;
+    }
+    return `<div class="study-media-note">🖼️ Imagem anexada no Notion. Use “Abrir no Notion” se precisar consultar o arquivo original.</div>`;
+  }
+  if (type === "child_page") {
+    const code = lawMap.get(compactId(block.id));
+    const href = code ? `../${code.toLowerCase()}/` : notionPageUrl(block.id);
+    return `<p><a href="${escapeHtml(href)}">${escapeHtml(data.title || "Página vinculada")} →</a></p>`;
+  }
+  if (type === "synced_block" || type === "column" || type === "column_list") return children;
+  return children || (text ? `<p>${text}</p>` : "");
+}
+
+function richTextHtml(items = [], lawMap) {
+  return (items || []).map((item) => {
+    let value = item.type === "equation" ? escapeHtml(item.equation?.expression || "") : escapeHtml(item.plain_text || item.text?.content || "");
+    const annotations = item.annotations || {};
+    if (annotations.code) value = `<code>${value}</code>`;
+    if (annotations.bold) value = `<strong>${value}</strong>`;
+    if (annotations.italic) value = `<em>${value}</em>`;
+    if (annotations.underline) value = `<u>${value}</u>`;
+    if (annotations.strikethrough) value = `<s>${value}</s>`;
+    const href = item.href || item.text?.link?.url || "";
+    if (href) {
+      const internal = internalLawHref(href, lawMap);
+      value = internal
+        ? `<a href="${escapeHtml(internal)}">${value}</a>`
+        : `<a href="${escapeHtml(href)}" target="_blank" rel="noreferrer">${value}</a>`;
+    }
+    return value;
+  }).join("");
+}
+
+function internalLawHref(url, lawMap) {
+  const compact = String(url || "").match(/[0-9a-f]{32}/i)?.[0]?.toLowerCase();
+  const code = compact ? lawMap.get(compact) : null;
+  return code ? `../${code.toLowerCase()}/` : "";
 }
 
 function parseBankRow(page) {
@@ -225,22 +348,13 @@ function propertyText(properties, name) {
   if (property.formula?.type === "string") return property.formula.string || "";
   return "";
 }
-function propertyNumber(properties, name) {
-  const value = properties?.[name]?.number;
-  return typeof value === "number" && Number.isFinite(value) ? value : 0;
-}
+function propertyNumber(properties, name) { const value = properties?.[name]?.number; return typeof value === "number" && Number.isFinite(value) ? value : 0; }
 function propertyUrl(properties, name) { return properties?.[name]?.url || ""; }
 function propertyMultiSelect(properties, name) { return (properties?.[name]?.multi_select || []).map((item) => item.name).filter(Boolean); }
 function propertyCheckbox(properties, name) { return Boolean(properties?.[name]?.checkbox); }
 function propertyDate(properties, name) { return properties?.[name]?.date?.start || null; }
-function pageTitle(page) {
-  const title = Object.values(page?.properties || {}).find((property) => property?.type === "title" || property?.title);
-  return title?.title?.map((item) => item.plain_text || item.text?.content || "").join("") || "";
-}
-function notionPageUrl(value) { return `https://app.notion.com/p/${String(value).replaceAll("-", "")}`; }
-function groupFor(number) {
-  if (number <= 11) return "Núcleo comum";
-  if (number <= 18) return "Gestor — Administração";
-  if (number <= 24) return "Apoio Administrativo";
-  return "Monitor";
-}
+function pageTitle(page) { const title = Object.values(page?.properties || {}).find((property) => property?.type === "title" || property?.title); return title?.title?.map((item) => item.plain_text || item.text?.content || "").join("") || ""; }
+function notionPageUrl(value) { return `https://app.notion.com/p/${compactId(value)}`; }
+function compactId(value) { return String(value || "").replaceAll("-", "").toLowerCase(); }
+function escapeHtml(value = "") { return String(value).replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#39;"); }
+function groupFor(number) { if (number <= 11) return "Núcleo comum"; if (number <= 18) return "Gestor — Administração"; if (number <= 24) return "Apoio Administrativo"; return "Monitor"; }
