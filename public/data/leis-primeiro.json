@@ -1,18 +1,19 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "source": {
     "kind": "notion",
     "title": "Leis Primeiro | SEEDF — leitura + questões + flashcards",
     "page_id": "3d8cf5a2-6731-817c-89f4-f4907d14a701",
     "page_url": "https://app.notion.com/p/Leis-Primeiro-SEEDF-leitura-quest-es-flashcards-3d8cf5a26731817c89f4f4907d14a701",
-    "last_edited_time": "2026-09-11T18:30:00.000Z",
-    "synced_at": "2026-09-11T20:32:27.258Z",
+    "last_edited_time": "2026-09-11T20:38:00.000Z",
+    "synced_at": "2026-09-11T20:39:11.629Z",
     "data_source_id": "6b3c940a-a382-419f-9ef6-531a1dc5cad2"
   },
   "summary": {
     "pages": 34,
     "bank_records": 33,
-    "mapped_operational_records": 32,
+    "mapped_law_records": 32,
+    "radar_records": 1,
     "priorities": {
       "P0 - Nuclear": 8,
       "P1 - Alta": 17,
@@ -781,10 +782,10 @@
         "Núcleo comum"
       ],
       "action": "Estudar agora",
-      "cut": "Arts. 1º–4º; conceitos de barreira, acessibilidade, adaptação razoável e desenho universal; arts. 27–30 sobre educação.",
-      "alert": "Texto compilado vigente; eixo transversal com peso especial para Monitor.",
+      "cut": "P0 Monitor/Núcleo comum: arts. 1º–9º; arts. 27–30; art. 3º, XIII e XV; art. 18, §4º, V; conceitos de deficiência, avaliação biopsicossocial, seis barreiras, acessibilidade, desenho universal, adaptação razoável, tecnologia assistiva, profissional de apoio escolar, educação inclusiva/AEE e comunicação aumentativa/alternativa. Atualização 2026: Tourette pode gerar enquadramento como PCD quando houver comprometimento significativo e avaliação biopsicossocial.",
+      "alert": "LBI vigente no texto compilado. Rechecagem em 11/09/2026: Lei nº 15.249/2025 permanece relevante para comunicação aumentativa/alternativa; Lei nº 15.280/2025 atualizou o art. 18, §4º, V; Lei nº 15.492/2026, publicada em 03/09/2026, estabelece que pessoa com síndrome de Tourette será considerada PCD quando os sintomas comprometerem significativamente funcionalidade/participação social, conforme avaliação biopsicossocial da LBI. Não tratar Tourette como enquadramento automático e incondicionado.",
       "block": "M2",
-      "observations": "Não reduzir acessibilidade a barreiras arquitetônicas.",
+      "observations": "L26 auditada operacionalmente em 11/09/2026. Página contém bateria própria de 20 itens C/E: 4 conceito/avaliação biopsicossocial + 5 acessibilidade/desenho universal/adaptação/tecnologia assistiva/barreiras + 2 igualdade/não discriminação + 6 educação inclusiva/art. 28 + 2 profissional de apoio escolar + 1 atualização recente, com gabarito recolhido. Os 20 flashcards foram convertidos em cartões completos Frente/Verso. Nenhum progresso real foi marcado.",
       "orientation_read": false,
       "d0": false,
       "d7": false,
@@ -810,10 +811,10 @@
         "Núcleo comum"
       ],
       "action": "Estudar agora",
-      "cut": "Público da educação especial; diretrizes; organização da modalidade; Rede Nacional; AEE e articulação com escolarização comum.",
-      "alert": "O Decreto nº 12.686/2025 deve ser lido já com as alterações do Decreto nº 12.773/2025. Tratar como atualização obrigatória do eixo Monitor; promover a P0 se o novo edital trouxer cobrança expressa.",
+      "cut": "P1 Monitor/Núcleo comum: arts. 1º–4º-A; arts. 5º–10; art. 11; art. 12; arts. 13–15; arts. 16–21; art. 23. Proteger: deficiência + TEA + altas habilidades; transversalidade; classe comum; AEE complementar × suplementar; estudo de caso; PAEE + PEI; AEE e apoio sem laudo; apoio escolar; professor AEE 360h; apoio nível médio + 180h; Rede Nacional; revogação do Decreto nº 7.611/2011.",
+      "alert": "Decreto nº 12.686/2025 vigente com redação consolidada pelo Decreto nº 12.773/2025. Rechecagem oficial em 11/09/2026: não foi localizado decreto de 2026 alterando ou substituindo esse regime. Usar sempre o texto consolidado; material que traga 80h para professor/Apoio está desatualizado após o Decreto nº 12.773/2025.",
       "block": "M3",
-      "observations": "Norma nova em relação aos editais-base; tratar como atualização obrigatória do eixo Monitor.",
+      "observations": "L27 auditada operacionalmente em 11/09/2026. Página contém bateria própria de 20 itens C/E: 4 público/princípios/diretrizes + 4 AEE/classe comum + 4 estudo de caso/PAEE/PEI + 4 profissional de apoio escolar + 2 formação 360/180h + 2 Rede Nacional/governança, com gabarito recolhido. Os 20 flashcards foram convertidos em cartões completos Frente/Verso. Nenhum progresso real foi marcado.",
       "orientation_read": false,
       "d0": false,
       "d7": false,
@@ -838,10 +839,10 @@
         "Analista - Monitor"
       ],
       "action": "Estudar agora",
-      "cut": "Organização da Educação Especial no Sistema de Ensino do DF; atendimento, matrícula, inclusão, AEE e responsabilidades no âmbito distrital.",
-      "alert": "Norma distrital específica; confrontar com a política nacional de 2025/2026 e eventuais atualizações posteriores.",
+      "cut": "P1 Monitor: arts. 1º–8º; art. 10; arts. 11–21; arts. 22–26. Proteger: modalidade transversal; público; matrícula sem laudo; enturmação 1–3 + Estratégia de Matrícula anual; estudo de caso/CEE; PEI; avaliação biopsicossocial; terminalidade específica; AEE complementar × suplementar; PAEE sem laudo; sala de recursos; apoio escolar; art. 26 com alcance além do público estrito do art. 2º.",
+      "alert": "Resolução CEDF nº 3/2023 vigente e sem revogação expressa. Rechecagem em 11/09/2026: não foi localizada alteração específica posterior; atos da SEEDF de 2026 continuam aplicando expressamente a norma. Deve ser interpretada em compatibilidade com os Decretos nº 12.686/2025 e nº 12.773/2025, sem restringir direitos assegurados pela política nacional vigente.",
       "block": "M4",
-      "observations": "Camada local da Educação Especial, especialmente aderente ao Monitor.",
+      "observations": "L28 auditada operacionalmente em 11/09/2026. Página contém bateria própria de 15 itens C/E: 3 público/transversalidade/garantias + 3 matrícula/enturmação/CEE + 3 PEI/avaliação/terminalidade + 4 AEE/PAEE + 2 profissionais/apoio escolar, com gabarito recolhido. Os 18 flashcards foram convertidos em cartões completos Frente/Verso. Nenhum progresso real foi marcado.",
       "orientation_read": false,
       "d0": false,
       "d7": false,
@@ -1059,7 +1060,8 @@
     }
   ],
   "audit_notes": [
-    "L30 + L31 + L32 formam um único bloco M5 de acessibilidade: 10 questões no total, distribuídas 3 + 4 + 3.",
+    "34 páginas L01–L34 usam 32 registros diretamente mapeados; L30 + L31 + L32 compartilham o registro M5 de acessibilidade.",
+    "O 33º registro do banco é o Radar 901 do novo PDE/DF, fora da numeração L01–L34.",
     "L11 permanece com meta operacional 0 enquanto o edital não fechar cargos e escolaridade.",
     "L33 é Radar forte com 10 questões de familiarização.",
     "L34 permanece com meta operacional 0 durante a vacatio legis; vigência em 28/12/2026.",
