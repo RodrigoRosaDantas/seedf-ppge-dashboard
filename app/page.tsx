@@ -7,7 +7,7 @@ export default function Page() {
     <>
       <DashboardClient />
       <a
-        href="./leis/"
+        href="./leis/index.html"
         aria-label="Abrir Leis Primeiro"
         title="Abrir Leis Primeiro"
         style={{
