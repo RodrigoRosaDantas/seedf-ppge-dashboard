@@ -1,6 +1,11 @@
 name: Sync SEEDF dashboard from Notion
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - "scripts/sync-leis-primeiro.mjs"
+      - ".github/workflows/sync-notion.yml"
   schedule:
     - cron: "*/15 * * * *"
   workflow_dispatch:
@@ -25,7 +30,7 @@ jobs:
           node-version: 22
           cache: npm
 
-      - name: Sync sanitized Notion snapshot
+      - name: Sync sanitized Notion snapshots
         env:
           NOTION_TOKEN: ${{ secrets.SEEDF }}
           NOTION_PAGE_ID: ${{ vars.NOTION_PAGE_ID }}
@@ -36,12 +41,13 @@ jobs:
             exit 1
           fi
           node scripts/sync-notion.mjs
+          node scripts/sync-leis-primeiro.mjs
 
-      - name: Commit snapshot when changed
+      - name: Commit snapshots when changed
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add public/data/seedf-snapshot.json
+          git add public/data/seedf-snapshot.json public/data/leis-primeiro.json
           if git diff --cached --quiet; then
             echo "No public snapshot changes detected."
             exit 0
