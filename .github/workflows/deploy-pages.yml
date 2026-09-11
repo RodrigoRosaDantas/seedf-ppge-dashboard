@@ -46,7 +46,9 @@ jobs:
           GITHUB_PAGES_BASE_PATH: /${{ github.event.repository.name }}
 
       - name: Prepare Pages output
-        run: node scripts/prepare-github-pages.mjs
+        run: |
+          node scripts/prepare-github-pages.mjs
+          node scripts/enhance-leis-pages.mjs
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
