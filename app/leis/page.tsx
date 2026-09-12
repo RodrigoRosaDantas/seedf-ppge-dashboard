@@ -39,6 +39,10 @@ type Law = {
   last_audit?: string | null;
   shared_block?: boolean;
   shared_codes?: string[];
+  questions_done?: number;
+  flashcards_done?: number;
+  flashcards_meta?: number | string | null;
+  next_step?: string;
 };
 
 type Radar = {
@@ -113,9 +117,53 @@ function isRadarLaw(law: Law) {
   return /radar/i.test(`${law.action || ""} ${law.priority || ""}`);
 }
 
+function numberValue(value: number | string | null | undefined) {
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : 0;
+}
+
+function operationalUnits(laws: Law[]) {
+  const seen = new Set<string>();
+  return laws.filter((law) => !isRadarLaw(law)).filter((law) => {
+    const key = law.shared_block ? "M5" : law.code;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
+function studyState(law: Law) {
+  const questionTarget = numberValue(law.shared_block ? (law.operational_target_total ?? 10) : law.question_target);
+  const questionsDone = numberValue(law.questions_done);
+  const flashcardsTarget = numberValue(law.flashcards_meta);
+  const flashcardsDone = numberValue(law.flashcards_done);
+  const orientation = Boolean(law.orientation_read);
+  const d0 = Boolean(law.d0);
+  const complete = !isRadarLaw(law)
+    && orientation
+    && questionsDone >= questionTarget
+    && (!flashcardsTarget || flashcardsDone >= flashcardsTarget)
+    && d0;
+  let nextStep = law.next_step || "1 · Ler orientação";
+  if (isRadarLaw(law)) nextStep = law.action || "Radar / monitorar";
+  else if (!orientation) nextStep = "1 · Ler orientação";
+  else if (questionsDone < questionTarget) nextStep = `3 · Fazer questões (${questionsDone}/${questionTarget})`;
+  else if (flashcardsTarget && flashcardsDone < flashcardsTarget) nextStep = `4 · Revisar flashcards (${flashcardsDone}/${flashcardsTarget})`;
+  else if (!d0) nextStep = "5 · Fechar D0";
+  else nextStep = "Bloco fechado · seguir para a próxima norma";
+  return { complete, questionTarget, questionsDone, flashcardsTarget, flashcardsDone, orientation, d0, nextStep };
+}
+
 function lawComplete(law: Law) {
-  if (isRadarLaw(law)) return false;
-  return Boolean(law.orientation_read && law.d0);
+  return studyState(law).complete;
+}
+
+function studyStageNumber(law: Law) {
+  const state = studyState(law);
+  if (!state.orientation) return 1;
+  if (state.questionsDone < state.questionTarget) return 3;
+  if (state.flashcardsTarget && state.flashcardsDone < state.flashcardsTarget) return 4;
+  return 5;
 }
 
 function completionPercent(done: number, total: number) {
@@ -164,17 +212,12 @@ export default function LeisPrimeiroPage() {
     .slice(1)
     .map((name) => ({ name, laws: filtered.filter((law) => law.group === name) }))
     .filter((item) => item.laws.length);
-  const executableLaws = snapshot?.laws.filter((law) => !isRadarLaw(law)) || [];
+  const executableLaws = operationalUnits(snapshot?.laws || []);
   const currentLaw = executableLaws.find((law) => !lawComplete(law)) || executableLaws[0] || null;
+  const currentState = currentLaw ? studyState(currentLaw) : null;
   const completedBlocks = executableLaws.filter(lawComplete).length;
-  const currentStep = currentLaw
-    ? !currentLaw.orientation_read
-      ? "1 · Ler orientação"
-      : !currentLaw.d0
-        ? "5 · Fechar D0"
-        : "Bloco fechado · seguir para a próxima norma"
-    : "Aguardando sincronização";
-  const currentStage = currentLaw?.orientation_read ? 5 : 1;
+  const currentStep = currentState?.nextStep || "Aguardando sincronização";
+  const currentStage = currentLaw ? studyStageNumber(currentLaw) : 1;
   const flowSteps = [
     ["Orientação", "entender o recorte"],
     ["Lei seca", "ler a fonte oficial"],
@@ -214,10 +257,16 @@ export default function LeisPrimeiroPage() {
         <aside className="laws-next-card">
           <div className="laws-next-top"><div><p className="laws-kicker">PRÓXIMA AÇÃO</p><span>Bloco atual · {currentLaw?.code || "—"}</span></div><span className="laws-next-badge">{String(currentStage).padStart(2, "0")} / 05</span></div>
           <div className="laws-next-law"><span className="laws-next-code">{currentLaw?.code || "—"}</span><h2>{currentLaw?.title || "Aguardando dados"}</h2></div>
-          <div className="laws-next-context"><span>{currentLaw ? `${currentLaw.code} / ${snapshot?.laws.length || 34}` : "—"}</span><span>{currentLaw?.question_target || 0} questões-meta</span><span>{currentLaw?.group || "Aguardando"}</span></div>
+          <div className="laws-next-context"><span>{currentLaw ? `${currentLaw.code} / ${snapshot?.laws.length || 34}` : "—"}</span><span>{currentState?.questionTarget || 0} questões-meta</span><span>{currentLaw?.group || "Aguardando"}</span></div>
           <div className="laws-next-focus"><span>{String(currentStage).padStart(2, "0")}</span><div><small>FAÇA AGORA</small><strong>{currentStep}</strong></div></div>
           <p>Feche orientação, leitura, questões, flashcards e D0 antes de avançar. D7/D20 seguem em paralelo.</p>
-          <div className="laws-checkpoints">{["Orientação", "Questões", "Flashcards", "D0", "D7/D20"].map((label) => <span className={`laws-checkpoint ${label === "Orientação" && currentLaw?.orientation_read ? "is-done" : ""}`} key={label}>{label === "Orientação" && currentLaw?.orientation_read ? "✓" : "○"} {label}</span>)}</div>
+          <div className="laws-checkpoints">{[
+            ["Orientação", Boolean(currentState?.orientation)],
+            ["Questões", Boolean(currentState && currentState.questionTarget > 0 && currentState.questionsDone >= currentState.questionTarget)],
+            ["Flashcards", Boolean(currentState && currentState.flashcardsTarget > 0 && currentState.flashcardsDone >= currentState.flashcardsTarget)],
+            ["D0", Boolean(currentState?.d0)],
+            ["D7/D20", false],
+          ].map(([label, done]) => <span className={`laws-checkpoint ${done ? "is-done" : ""}`} key={label}>{done ? "✓" : "○"} {label}</span>)}</div>
           <a className="laws-next-cta" href={currentLaw ? `./${currentLaw.code.toLowerCase()}/` : "#mapa-detalhado"}>Abrir norma <span aria-hidden="true">↗</span></a>
           <a className="laws-next-notion" href={currentLaw?.notion_url || snapshot?.source.page_url || "#"} target="_blank" rel="noreferrer">Abrir no Notion ↗</a>
         </aside>
@@ -244,11 +293,12 @@ export default function LeisPrimeiroPage() {
       </section>
 
       <section className="laws-panel laws-track-panel" id="trilha">
-        <div className="laws-heading"><div><p className="laws-kicker">MAPA DE DECISÃO</p><h2>Por onde continuar</h2><p>Escolha a trilha pelo cargo. Cada cartão já aponta para a próxima norma pendente.</p></div><span className="laws-heading-note">{executableLaws.length} blocos executáveis</span></div>
+        <div className="laws-heading"><div><p className="laws-kicker">MAPA DE DECISÃO</p><h2>Por onde continuar</h2><p>Escolha a trilha pelo cargo. Cada cartão já aponta para a próxima norma pendente.</p></div><span className="laws-heading-note">{executableLaws.length} blocos operacionais</span></div>
         <div className="laws-track-grid">
           {groupNames.map((name, index) => {
             const groupLaws = snapshot?.laws.filter((law) => law.group === name) || [];
-            const executable = groupLaws.filter((law) => !isRadarLaw(law));
+            const executable = operationalUnits(groupLaws);
+            const radars = groupLaws.filter(isRadarLaw);
             const completed = executable.filter(lawComplete).length;
             const pending = executable.find((law) => !lawComplete(law));
             const range = groupLaws.length ? `${groupLaws[0].code}–${groupLaws[groupLaws.length - 1].code}` : "—";
@@ -257,7 +307,7 @@ export default function LeisPrimeiroPage() {
               <div className="laws-track-head"><div className="laws-track-head-main"><span className="laws-track-number">0{index + 1}</span><span>{name}</span></div><span className="laws-track-range">{range}</span></div>
               <div className="laws-track-status">{pending ? `Próxima: ${pending.code}` : executable.length ? "Trilha concluída" : "Acompanhar"}</div>
               <strong>{pending ? `${pending.code} · ${pending.title}` : executable.length ? "Grupo concluído" : "Somente monitoramento"}</strong>
-              <p>{completed}/{executable.length} blocos fechados por D0{groupLaws.length > executable.length ? ` · ${groupLaws.length - executable.length} radar` : ""}.</p>
+              <p>{completed}/{executable.length} blocos fechados por D0{radars.length ? ` · ${radars.length} radar` : ""}.</p>
               <div className="laws-track-progress" aria-label={`${progress}% concluído`}><span style={{ width: `${progress}%` }} /></div>
               <div className="laws-track-foot"><small>{progress}% do grupo</small><a href={pending ? `./${pending.code.toLowerCase()}/` : "#mapa-detalhado"}><span>{pending ? `Abrir ${pending.code}` : "Ver grupo"}</span><span aria-hidden="true">↗</span></a></div>
             </article>;
