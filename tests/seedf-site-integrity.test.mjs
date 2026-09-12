@@ -42,8 +42,9 @@ test("published shell includes an offline registration path", async () => {
     read("public/sw-register.js"),
     read("app/layout.tsx"),
   ]);
-  assert.match(manifest, /"display":s*"standalone"/);
-  assert.match(manifest, /"orientation":s*"any"/);
+  const manifestValue = JSON.parse(manifest);
+  assert.equal(manifestValue.display, "standalone");
+  assert.equal(manifestValue.orientation, "any");
   assert.match(serviceWorker, /CACHE_NAME/);
   assert.match(registration, /serviceWorker\.register/);
   assert.match(layout, /sw-register\.js/);
