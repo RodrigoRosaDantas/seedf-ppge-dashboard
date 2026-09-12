@@ -33,6 +33,8 @@ test("reader exposes resumable, portable study controls", async () => {
   assert.match(html, /URLSearchParams/);
   assert.match(html, /localStorage/);
   assert.match(html, /data-rating="again"/);
+  assert.match(html, /rel="icon" href="\.\.\/\.\.\/favicon\.svg"/);
+  assert.match(html, /rel="manifest" href="\.\.\/\.\.\/manifest\.webmanifest"/);
   assert.doesNotMatch(html, /rating === "again"\) queue\.push\(doneId\)/);
   assert.match(html, /dueAt: nextDueAt/);
 });
