@@ -30,7 +30,7 @@ function orderForCode(code) {
   const x = Number(String(code).replace(/^L/i,""));
   if (x <= 11) return x; if (x <= 18) return 100 + x - 11; if (x <= 24) return 200 + x - 18; if (x <= 29) return 300 + x - 24; if (x <= 32) return 306; if (x === 33) return 307; return 308;
 }
-function cssLink(prefix) { return `<link rel="stylesheet" href="${prefix}leis-enhanced.css?v=20260912c">`; }
+function cssLink(prefix) { return `<link rel="stylesheet" href="${prefix}leis-enhanced.css?v=20260912d">`; }
 
 function operationalMarkup(law, row) {
   const target = n(law.shared_block ? 10 : (row?.question_target ?? law.question_target));
@@ -54,7 +54,7 @@ function operationalMarkup(law, row) {
 function enhanceLawHtml(html, law) {
   const row = rowByOrder.get(orderForCode(law.code));
   if (!html.includes("leis-enhanced.css")) html = html.replace("</head>", `${cssLink("../../")}</head>`);
-  if (!html.includes("read-progress")) html = html.replace("<body>", `<body><div class="read-progress"><span id="read-progress-bar"></span></div>`);
+  if (!html.includes("laws-reading-body")) html = html.replace("<body>", `<body class="laws-reading-body"><div class="read-progress"><span id="read-progress-bar"></span></div>`);
   const jump = laws.map((item)=>`<option value="${esc(item.code.toLowerCase())}" ${item.code===law.code?"selected":""}>${esc(item.code)} · ${esc(item.title)}</option>`).join("");
   html = html.replace(/<header class="study-topbar">[\s\S]*?<\/header>/, `<header class="study-topbar enhanced"><a href="../">← Leis Primeiro</a><select id="law-jump" class="study-jump" aria-label="Ir para outra lei">${jump}</select><span class="study-progress">${esc(law.code)} · ${laws.findIndex((x)=>x.code===law.code)+1} de ${laws.length}</span></header>`);
   if (!html.includes("study-enhanced-ops")) html = html.replace("<section class=\"study-summary-grid\">", `${operationalMarkup(law,row)}<section class="study-summary-grid">`);

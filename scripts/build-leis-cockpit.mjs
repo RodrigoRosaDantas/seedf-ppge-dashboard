@@ -95,6 +95,34 @@ function checkpoint(label, done) {
   return `<span class="laws-checkpoint ${done ? "is-done" : ""}">${done ? "✓" : "○"} ${escapeHtml(label)}</span>`;
 }
 
+function studyStageNumber(state) {
+  if (!state?.orientation) return 1;
+  if (state.questionsDone < state.questionTarget) return 3;
+  if (state.flashcardsTarget && state.flashcardsDone < state.flashcardsTarget) return 4;
+  return 5;
+}
+
+function buildStudyFlow(state) {
+  const steps = [
+    ["Orientação", "entender o recorte"],
+    ["Lei seca", "ler a fonte oficial"],
+    ["Questões", "responder e registrar"],
+    ["Flashcards", "recuperar o essencial"],
+    ["D0", "fechar o bloco"],
+  ];
+  const active = studyStageNumber(state);
+  return `<section class="laws-study-flow" aria-label="Fluxo para fechar uma norma">
+    <div class="laws-flow-intro"><p class="laws-kicker">MÉTODO DE FECHAMENTO</p><h2>Uma norma, um bloco fechado.</h2><p>O caminho é fixo. A próxima ação muda conforme o que já foi registrado.</p><span class="laws-flow-now">Agora: <strong>${escapeHtml(state?.complete ? "bloco fechado · seguir para a próxima" : (state?.nextStep || "aguardando sincronização"))}</strong></span></div>
+    <ol class="laws-flow-steps">${steps.map(([label, detail], index) => {
+      const step = index + 1;
+      const done = Boolean(state?.complete) || step < active;
+      const current = !state?.complete && step === active;
+      return `<li class="${done ? "is-done" : ""} ${current ? "is-current" : ""}"><span>${String(step).padStart(2, "0")}</span><div><b>${escapeHtml(label)}</b><small>${escapeHtml(detail)}</small></div></li>`;
+    }).join("")}</ol>
+    <div class="laws-flow-review"><span>↗</span><div><small>EM PARALELO</small><b>D7 + D20</b><p>não bloqueiam a próxima norma</p></div></div>
+  </section>`;
+}
+
 function buildTrackCard(group, index, laws, rowsByCode) {
   const groupLaws = laws.filter((law) => law.group === group);
   const executable = groupLaws.filter((law) => !radarLaw(law));
@@ -176,13 +204,15 @@ export async function buildLeisCockpit(sourceHtml) {
   const styles = extractStylesheetLinks(sourceHtml, "../").map((href) => `<link rel="stylesheet" href="${escapeHtml(href)}">`).join("");
   const currentHref = current ? `./${lawSlug(current)}/` : "#mapa-detalhado";
   const currentNotion = current?.notion_url || snapshot.source?.page_url || "#";
+  const currentStage = current ? studyStageNumber(currentState) : 1;
   const currentChecks = current ? `${checkpoint("Orientação", currentState.orientation)}${checkpoint("Questões", currentState.questionsDone >= currentState.questionTarget && currentState.questionTarget > 0)}${checkpoint("Flashcards", currentState.flashcardsTarget > 0 && currentState.flashcardsDone >= currentState.flashcardsTarget)}${checkpoint("D0", currentState.d0)}${checkpoint("D7/D20", false)}` : checkpoint("Sincronização", false);
 
   return `<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Leis Primeiro | SEEDF PPGE</title><meta name="description" content="Central de estudo e acompanhamento da trilha Leis Primeiro do SEEDF"><link rel="icon" href="../favicon.svg"><link rel="manifest" href="../manifest.webmanifest">${styles}<style>
 html,body{margin:0;min-height:100%;background:#07111f}body{font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.laws-map-row a{text-decoration:none}.laws-map-row strong{color:#edf6fd}.laws-map-row p{margin:0}.laws-radar-item a{text-decoration:none}.laws-disclosure>summary{list-style:none}.laws-disclosure>summary::-webkit-details-marker{display:none}
-</style></head><body><main class="laws-page laws-cockpit">
+</style></head><body class="laws-cockpit-body"><main class="laws-page laws-cockpit">
 <header class="laws-topbar"><a class="laws-back" href="../">← Dashboard SEEDF</a><div class="laws-sync"><span class="laws-live-dot"></span> Notion → GitHub · ${escapeHtml(formatDate(snapshot.source?.synced_at))}</div></header>
-<section class="laws-hero laws-cockpit-hero"><div class="laws-hero-copy"><p class="laws-kicker">⚖️ TRILHA OPERACIONAL · SEEDF PPGE</p><h1>Leis Primeiro<span class="laws-hero-dot">.</span></h1><p class="laws-lead">Uma fila clara para estudar, registrar e avançar. A próxima ação fica visível; o conteúdo completo continua dentro de cada norma.</p><div class="laws-hero-meta"><span class="laws-live-dot"></span><span>Fonte operacional: Notion</span><span class="laws-meta-separator">·</span><span>Site: consulta e navegação</span></div><div class="laws-hero-actions"><a class="laws-primary" href="${escapeHtml(currentHref)}">▶️ Continuar ${escapeHtml(current?.code || "a trilha")}</a><a class="laws-secondary" href="#trilha">Ver trilha ↓</a><a class="laws-secondary" href="${escapeHtml(snapshot.source?.page_url || "#")}" target="_blank" rel="noreferrer">Notion ↗</a></div></div><aside class="laws-next-card"><div class="laws-next-top"><div><p class="laws-kicker">PRÓXIMA AÇÃO</p><span>Bloco atual · ${escapeHtml(current?.code || "—")}</span></div><span class="laws-next-badge">01 / 05</span></div><div class="laws-next-law"><span class="laws-next-code">${escapeHtml(current?.code || "—")}</span><h2>${escapeHtml(current?.title || "Aguardando dados")}</h2></div><div class="laws-next-focus"><span>01</span><div><small>FAÇA AGORA</small><strong>${escapeHtml(currentState.nextStep || "Aguardando sincronização")}</strong></div></div><p>Feche orientação, leitura, questões, flashcards e D0 antes de avançar. D7/D20 seguem em paralelo.</p><div class="laws-checkpoints">${currentChecks}</div><a class="laws-next-cta" href="${escapeHtml(currentHref)}">Abrir norma <span aria-hidden="true">↗</span></a><a class="laws-next-notion" href="${escapeHtml(currentNotion)}" target="_blank" rel="noreferrer">Abrir no Notion ↗</a></aside></section>
+<section class="laws-hero laws-cockpit-hero"><div class="laws-hero-copy"><p class="laws-kicker">⚖️ TRILHA OPERACIONAL · SEEDF PPGE</p><h1>Leis Primeiro<span class="laws-hero-dot">.</span></h1><p class="laws-lead">A fila de leitura, questões e revisão do SEEDF. Abra a norma certa, cumpra o bloco e registre o avanço no Notion.</p><div class="laws-hero-thesis"><span>LER</span><i>→</i><span>RESPONDER</span><i>→</i><span>REVISAR</span></div><div class="laws-hero-meta"><span class="laws-live-dot"></span><span>Fonte operacional: Notion</span><span class="laws-meta-separator">·</span><span>Site: consulta e navegação</span></div><div class="laws-hero-actions"><a class="laws-primary" href="${escapeHtml(currentHref)}">▶️ Continuar ${escapeHtml(current?.code || "a trilha")}</a><a class="laws-secondary" href="#trilha">Ver trilha ↓</a><a class="laws-secondary" href="${escapeHtml(snapshot.source?.page_url || "#")}" target="_blank" rel="noreferrer">Notion ↗</a></div></div><aside class="laws-next-card"><div class="laws-next-top"><div><p class="laws-kicker">PRÓXIMA AÇÃO</p><span>Bloco atual · ${escapeHtml(current?.code || "—")}</span></div><span class="laws-next-badge">${String(currentStage).padStart(2, "0")} / 05</span></div><div class="laws-next-law"><span class="laws-next-code">${escapeHtml(current?.code || "—")}</span><h2>${escapeHtml(current?.title || "Aguardando dados")}</h2></div><div class="laws-next-context"><span>${current ? `${current.code} / ${laws.length}` : "—"}</span><span>${currentState.questionTarget || 0} questões-meta</span><span>${escapeHtml(current?.group || "Aguardando")}</span></div><div class="laws-next-focus"><span>${String(currentStage).padStart(2, "0")}</span><div><small>FAÇA AGORA</small><strong>${escapeHtml(currentState.nextStep || "Aguardando sincronização")}</strong></div></div><p>Feche orientação, leitura, questões, flashcards e D0 antes de avançar. D7/D20 seguem em paralelo.</p><div class="laws-checkpoints">${currentChecks}</div><a class="laws-next-cta" href="${escapeHtml(currentHref)}">Abrir norma <span aria-hidden="true">↗</span></a><a class="laws-next-notion" href="${escapeHtml(currentNotion)}" target="_blank" rel="noreferrer">Abrir no Notion ↗</a></aside></section>
+${buildStudyFlow(currentState)}
 <section class="laws-status-strip" aria-label="Estado da trilha"><article class="laws-stat-progress"><div class="laws-stat-top"><span class="laws-stat-icon">01</span><span>BLOCOS FECHADOS</span></div><strong>${completed}/${executable.length}</strong><small>por D0 · D7/D20 não bloqueiam</small></article><article class="laws-stat-questions"><div class="laws-stat-top"><span class="laws-stat-icon">02</span><span>QUESTÕES DE META</span></div><strong>${totalQuestions}</strong><small>na sequência executável</small></article><article class="laws-stat-map"><div class="laws-stat-top"><span class="laws-stat-icon">03</span><span>NORMAS NO MAPA</span></div><strong>${laws.length}</strong><small>L01–L34 · 4 trilhas</small></article><article class="laws-stat-source"><div class="laws-stat-top"><span class="laws-stat-icon">04</span><span>FONTE VIVA</span></div><strong>Notion</strong><small>${mapped} mapeados · ${radarRecords} radar</small></article></section>
 <section class="laws-panel laws-track-panel" id="trilha"><div class="laws-heading"><div><p class="laws-kicker">MAPA DE DECISÃO</p><h2>Por onde continuar</h2><p>Escolha a trilha pelo cargo. Cada cartão já aponta para a próxima norma pendente.</p></div><span class="laws-heading-note">${executable.length} blocos executáveis</span></div><div class="laws-track-grid">${trackMarkup}</div></section>
 <nav class="laws-quick-nav" aria-label="Atalhos da trilha"><a class="laws-quick-link" href="#mapa-detalhado"><span class="laws-quick-icon">⌕</span><span><b>Localizar uma norma</b><small>Mapa detalhado e filtros</small></span><span class="laws-quick-arrow">↗</span></a><a class="laws-quick-link" href="#radar"><span class="laws-quick-icon">◎</span><span><b>Ver Radar</b><small>Atualizações fora da fila</small></span><span class="laws-quick-arrow">↗</span></a><a class="laws-quick-link" href="#banco-legislacao"><span class="laws-quick-icon">▦</span><span><b>Consultar o banco</b><small>Metas, revisões e registros</small></span><span class="laws-quick-arrow">↗</span></a></nav>
