@@ -233,6 +233,13 @@ export default function LeisPrimeiroPage() {
   );
   const mappedRecords = snapshot?.summary.mapped_law_records ?? snapshot?.summary.mapped_operational_records ?? 32;
   const radarRecords = snapshot?.summary.radar_records ?? snapshot?.radars?.length ?? 1;
+  const currentChecks = [
+    { label: "Orientação", done: Boolean(currentState?.orientation) },
+    { label: "Questões", done: Boolean(currentState && currentState.questionTarget > 0 && currentState.questionsDone >= currentState.questionTarget) },
+    { label: "Flashcards", done: Boolean(currentState && currentState.flashcardsTarget > 0 && currentState.flashcardsDone >= currentState.flashcardsTarget) },
+    { label: "D0", done: Boolean(currentState?.d0) },
+    { label: "D7/D20", done: false },
+  ];
 
   return (
     <main className="laws-page laws-cockpit">
@@ -260,13 +267,7 @@ export default function LeisPrimeiroPage() {
           <div className="laws-next-context"><span>{currentLaw ? `${currentLaw.code} / ${snapshot?.laws.length || 34}` : "—"}</span><span>{currentState?.questionTarget || 0} questões-meta</span><span>{currentLaw?.group || "Aguardando"}</span></div>
           <div className="laws-next-focus"><span>{String(currentStage).padStart(2, "0")}</span><div><small>FAÇA AGORA</small><strong>{currentStep}</strong></div></div>
           <p>Feche orientação, leitura, questões, flashcards e D0 antes de avançar. D7/D20 seguem em paralelo.</p>
-          <div className="laws-checkpoints">{[
-            ["Orientação", Boolean(currentState?.orientation)],
-            ["Questões", Boolean(currentState && currentState.questionTarget > 0 && currentState.questionsDone >= currentState.questionTarget)],
-            ["Flashcards", Boolean(currentState && currentState.flashcardsTarget > 0 && currentState.flashcardsDone >= currentState.flashcardsTarget)],
-            ["D0", Boolean(currentState?.d0)],
-            ["D7/D20", false],
-          ].map(([label, done]) => <span className={`laws-checkpoint ${done ? "is-done" : ""}`} key={label}>{done ? "✓" : "○"} {label}</span>)}</div>
+          <div className="laws-checkpoints">{currentChecks.map(({ label, done }) => <span className={`laws-checkpoint ${done ? "is-done" : ""}`} key={label}>{done ? "✓" : "○"} {label}</span>)}</div>
           <a className="laws-next-cta" href={currentLaw ? `./${currentLaw.code.toLowerCase()}/` : "#mapa-detalhado"}>Abrir norma <span aria-hidden="true">↗</span></a>
           <a className="laws-next-notion" href={currentLaw?.notion_url || snapshot?.source.page_url || "#"} target="_blank" rel="noreferrer">Abrir no Notion ↗</a>
         </aside>
