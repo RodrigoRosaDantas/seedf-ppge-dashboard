@@ -64,6 +64,7 @@ test("published shell includes an offline registration path", async () => {
   assert.equal(manifestValue.display, "standalone");
   assert.equal(manifestValue.orientation, "any");
   assert.match(serviceWorker, /seedf-pages-v3/);
+  assert.match(serviceWorker, /fetch\(request, \{ cache: "no-store" \}\)/);
   assert.match(serviceWorker, /cache\.put\(request, copy\)\)\.catch/);
   assert.match(registration, /serviceWorker\.register/);
   assert.match(layout, /sw-register\.js/);
