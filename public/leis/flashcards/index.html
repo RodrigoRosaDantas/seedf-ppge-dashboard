@@ -311,7 +311,7 @@
     if (!focusTimerHydrated) return "Carregando...";
     if (focusTimer.state === "running") return "Em foco";
     if (focusTimer.state === "finished") return "Concluída";
-    return displaySeconds > 0 ? "Pausada" : "Pronta";
+    return focusElapsedMs(focusTimerNow) > 0 ? "Pausada" : "Pronta";
   }
   function renderFocusTimer() {
     const displaySeconds = focusDisplaySeconds(focusTimerNow);
