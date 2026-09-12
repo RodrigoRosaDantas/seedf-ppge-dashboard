@@ -34,7 +34,8 @@ button:focus-visible { outline: 3px solid rgba(25, 184, 173, 0.42); outline-offs
 .brand-block { display: flex; align-items: center; gap: 11px; padding: 3px 10px 23px; }
 .brand-block strong { display: block; letter-spacing: .16em; font-size: 14px; }
 .brand-block span { display: block; color: #88a4b1; font-size: 11px; margin-top: 4px; letter-spacing: .02em; }
-.brand-mark { width: 40px; height: 40px; flex: 0 0 40px; display: grid; place-items: center; overflow: hidden; border-radius: 13px; background: transparent; box-shadow: 0 10px 24px rgba(25, 184, 173, .18); }\n.brand-mark img { display: block; width: 100%; height: 100%; }
+.brand-mark { width: 40px; height: 40px; flex: 0 0 40px; display: grid; place-items: center; overflow: hidden; border-radius: 13px; background: transparent; box-shadow: 0 10px 24px rgba(25, 184, 173, .18); }
+.brand-mark img { display: block; width: 100%; height: 100%; }
 .close-menu { display: none; margin-left: auto; color: #a9c1ca; background: transparent; border: 0; cursor: pointer; }
 .sidebar-context { display: flex; align-items: center; gap: 8px; margin: 0 8px 22px; padding: 9px 11px; color: #a5c1c9; border: 1px solid rgba(145, 196, 203, .14); border-radius: 10px; font-size: 12px; }
 .live-dot, .source-dot { width: 7px; height: 7px; display: inline-block; flex: 0 0 auto; border-radius: 999px; background: var(--teal); box-shadow: 0 0 0 4px rgba(25,184,173,.14); }
