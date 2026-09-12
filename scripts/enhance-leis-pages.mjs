@@ -30,7 +30,7 @@ function orderForCode(code) {
   const x = Number(String(code).replace(/^L/i,""));
   if (x <= 11) return x; if (x <= 18) return 100 + x - 11; if (x <= 24) return 200 + x - 18; if (x <= 29) return 300 + x - 24; if (x <= 32) return 306; if (x === 33) return 307; return 308;
 }
-function cssLink(prefix) { return `<link rel="stylesheet" href="${prefix}leis-enhanced.css?v=20260912e">`; }
+function cssLink(prefix) { return `<link rel="stylesheet" href="${prefix}leis-enhanced.css?v=20260912f">`; }
 
 function operationalMarkup(law, row) {
   const target = n(law.shared_block ? 10 : (row?.question_target ?? law.question_target));
