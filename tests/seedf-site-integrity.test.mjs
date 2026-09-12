@@ -33,6 +33,15 @@ test("reader exposes resumable, portable study controls", async () => {
   assert.match(html, /URLSearchParams/);
   assert.match(html, /localStorage/);
   assert.match(html, /data-rating="again"/);
+  assert.doesNotMatch(html, /rating === "again"\) queue\.push\(doneId\)/);
+  assert.match(html, /dueAt: nextDueAt/);
+});
+
+test("keeps dashboard deep links hydration-safe and dates deterministic", async () => {
+  const source = await read("app/dashboard-client.tsx");
+  assert.match(source, /useState<SectionId>\("inicio"\)/);
+  assert.doesNotMatch(source, /useState<SectionId>\(\(\) => sectionFromLocation\(\)\)/);
+  assert.match(source, /timeZone: "America\/Sao_Paulo"/);
 });
 
 test("published shell includes an offline registration path", async () => {
@@ -45,7 +54,8 @@ test("published shell includes an offline registration path", async () => {
   const manifestValue = JSON.parse(manifest);
   assert.equal(manifestValue.display, "standalone");
   assert.equal(manifestValue.orientation, "any");
-  assert.match(serviceWorker, /CACHE_NAME/);
+  assert.match(serviceWorker, /seedf-pages-v3/);
+  assert.match(serviceWorker, /cache\.put\(request, copy\)\)\.catch/);
   assert.match(registration, /serviceWorker\.register/);
   assert.match(layout, /sw-register\.js/);
 });

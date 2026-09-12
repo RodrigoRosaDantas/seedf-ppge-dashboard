@@ -1,4 +1,4 @@
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 const LEIS_PAGE_ID = "3d8cf5a2-6731-817c-89f4-f4907d14a701";
@@ -171,8 +171,25 @@ const snapshot = {
 };
 
 await mkdir(path.dirname(outputPath), { recursive: true });
+const previousSnapshot = await readPreviousSnapshot(outputPath);
+if (previousSnapshot?.source?.synced_at && snapshotContent(previousSnapshot) === snapshotContent(snapshot)) {
+  snapshot.source.synced_at = previousSnapshot.source.synced_at;
+}
 await writeFile(outputPath, `${JSON.stringify(snapshot, null, 2)}\n`, "utf8");
 console.log(`Leis Primeiro atualizado em ${outputPath}: ${laws.length} páginas internas, ${expectedOrders.length} registros mapeados, ${radarRows.length} radar(es).`);
+
+async function readPreviousSnapshot(filePath) {
+  try {
+    return JSON.parse(await readFile(filePath, "utf8"));
+  } catch (error) {
+    if (error?.code === "ENOENT") return null;
+    throw error;
+  }
+}
+
+function snapshotContent(value) {
+  return JSON.stringify(value, (key, nested) => key === "synced_at" ? undefined : nested);
+}
 
 function operationalOrderForCode(code) {
   const number = Number(String(code).replace(/^L/i, ""));
