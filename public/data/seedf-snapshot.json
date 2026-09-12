@@ -5,9 +5,9 @@
     "title": "SEEDF — PPGE | Gestor + Analista + Monitor | Dashboard PRO",
     "page_id": "3d4cf5a2-6731-8106-a2c9-c97816aa6cf5",
     "page_url": "https://app.notion.com/p/SEEDF-PPGE-Gestor-Analista-Monitor-Dashboard-PRO-3d4cf5a267318106a2c9c97816aa6cf5",
-    "last_edited_time": "2026-09-09T13:12:00.000Z",
-    "synced_at": "2026-09-11T13:59:11.676Z",
-    "content_hash": "37967974c31a490c3cc2ec71468e14e3fbd3a226a8e3fa36989056d1b59add73",
+    "last_edited_time": "2026-09-12T11:38:00.000Z",
+    "synced_at": "2026-09-12T11:54:43.217Z",
+    "content_hash": "941319408c4acd3d9a349bbb176102f3632475d60d5be94564097f9b89f69ff4",
     "status": "synced"
   },
   "dashboard": {
@@ -586,7 +586,7 @@
     ]
   },
   "execution": {
-    "as_of": "2026-09-12T09:18:25.891Z",
+    "as_of": "2026-09-12T11:54:43.209Z",
     "c01": {
       "days": [
         {

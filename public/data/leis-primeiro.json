@@ -5,8 +5,8 @@
     "title": "Leis Primeiro | SEEDF — leitura + questões + flashcards",
     "page_id": "3d8cf5a2-6731-817c-89f4-f4907d14a701",
     "page_url": "https://app.notion.com/p/Leis-Primeiro-SEEDF-leitura-quest-es-flashcards-3d8cf5a26731817c89f4f4907d14a701",
-    "last_edited_time": "2026-09-12T00:00:00.000Z",
-    "synced_at": "2026-09-12T09:20:25.040Z",
+    "last_edited_time": "2026-09-12T11:37:00.000Z",
+    "synced_at": "2026-09-12T11:56:30.701Z",
     "data_source_id": "6b3c940a-a382-419f-9ef6-531a1dc5cad2",
     "internal_pages": true
   },
@@ -47,6 +47,10 @@
       "status": "Não iniciado",
       "question_target": 30,
       "operational_target_total": 30,
+      "questions_done": 0,
+      "flashcards_done": 0,
+      "flashcards_meta": 20,
+      "next_step": "1 · Ler orientação",
       "cargos": [
         "Núcleo comum",
         "Gestor - Administração",
@@ -81,6 +85,10 @@
       "status": "Não iniciado",
       "question_target": 30,
       "operational_target_total": 30,
+      "questions_done": 0,
+      "flashcards_done": 0,
+      "flashcards_meta": 20,
+      "next_step": "1 · Ler orientação",
       "cargos": [
         "Núcleo comum",
         "Gestor - Administração",
@@ -115,6 +123,10 @@
       "status": "Não iniciado",
       "question_target": 25,
       "operational_target_total": 25,
+      "questions_done": 0,
+      "flashcards_done": 0,
+      "flashcards_meta": 20,
+      "next_step": "1 · Ler orientação",
       "cargos": [
         "Núcleo comum",
         "Gestor - Administração",
@@ -149,6 +161,10 @@
       "status": "Não iniciado",
       "question_target": 20,
       "operational_target_total": 20,
+      "questions_done": 0,
+      "flashcards_done": 0,
+      "flashcards_meta": 20,
+      "next_step": "1 · Ler orientação",
       "cargos": [
         "Núcleo comum",
         "Gestor - Administração",
@@ -183,6 +199,10 @@
       "status": "Não iniciado",
       "question_target": 30,
       "operational_target_total": 30,
+      "questions_done": 0,
+      "flashcards_done": 0,
+      "flashcards_meta": 20,
+      "next_step": "1 · Ler orientação",
       "cargos": [
         "Núcleo comum",
         "Gestor - Administração",
@@ -217,6 +237,10 @@
       "status": "Não iniciado",
       "question_target": 20,
       "operational_target_total": 20,
+      "questions_done": 0,
+      "flashcards_done": 0,
+      "flashcards_meta": 12,
+      "next_step": "1 · Ler orientação",
       "cargos": [
         "Núcleo comum",
         "Gestor - Administração",
@@ -251,6 +275,10 @@
       "status": "Não iniciado",
       "question_target": 15,
       "operational_target_total": 15,
+      "questions_done": 0,
+      "flashcards_done": 0,
+      "flashcards_meta": 12,
+      "next_step": "1 · Ler orientação",
       "cargos": [
         "Núcleo comum",
         "Gestor - Administração",
@@ -285,6 +313,10 @@
       "status": "Não iniciado",
       "question_target": 15,
       "operational_target_total": 15,
+      "questions_done": 0,
+      "flashcards_done": 0,
+      "flashcards_meta": 12,
+      "next_step": "1 · Ler orientação",
       "cargos": [
         "Núcleo comum",
         "Gestor - Administração",
@@ -319,6 +351,10 @@
       "status": "Não iniciado",
       "question_target": 12,
       "operational_target_total": 12,
+      "questions_done": 0,
+      "flashcards_done": 0,
+      "flashcards_meta": 12,
+      "next_step": "1 · Ler orientação",
       "cargos": [
         "Núcleo comum",
         "Gestor - Administração",
@@ -353,6 +389,10 @@
       "status": "Não iniciado",
       "question_target": 10,
       "operational_target_total": 10,
+      "questions_done": 0,
+      "flashcards_done": 0,
+      "flashcards_meta": 8,
+      "next_step": "1 · Ler orientação",
       "cargos": [
         "Núcleo comum",
         "Gestor - Administração",
@@ -387,6 +427,10 @@
       "status": "Monitorar",
       "question_target": 0,
       "operational_target_total": 0,
+      "questions_done": 0,
+      "flashcards_done": 0,
+      "flashcards_meta": 0,
+      "next_step": "1 · Ler orientação",
       "cargos": [
         "Núcleo comum",
         "Gestor - Administração",
@@ -421,6 +465,10 @@
       "status": "Não iniciado",
       "question_target": 30,
       "operational_target_total": 30,
+      "questions_done": 0,
+      "flashcards_done": 0,
+      "flashcards_meta": 20,
+      "next_step": "1 · Ler orientação",
       "cargos": [
         "Gestor - Administração"
       ],
@@ -452,6 +500,10 @@
       "status": "Não iniciado",
       "question_target": 20,
       "operational_target_total": 20,
+      "questions_done": 0,
+      "flashcards_done": 0,
+      "flashcards_meta": 12,
+      "next_step": "1 · Ler orientação",
       "cargos": [
         "Gestor - Administração"
       ],
@@ -483,6 +535,10 @@
       "status": "Não iniciado",
       "question_target": 15,
       "operational_target_total": 15,
+      "questions_done": 0,
+      "flashcards_done": 0,
+      "flashcards_meta": 12,
+      "next_step": "1 · Ler orientação",
       "cargos": [
         "Gestor - Administração"
       ],
@@ -514,6 +570,10 @@
       "status": "Não iniciado",
       "question_target": 20,
       "operational_target_total": 20,
+      "questions_done": 0,
+      "flashcards_done": 0,
+      "flashcards_meta": 12,
+      "next_step": "1 · Ler orientação",
       "cargos": [
         "Gestor - Administração"
       ],
@@ -545,6 +605,10 @@
       "status": "Não iniciado",
       "question_target": 20,
       "operational_target_total": 20,
+      "questions_done": 0,
+      "flashcards_done": 0,
+      "flashcards_meta": 12,
+      "next_step": "1 · Ler orientação",
       "cargos": [
         "Gestor - Administração"
       ],
@@ -576,6 +640,10 @@
       "status": "Não iniciado",
       "question_target": 20,
       "operational_target_total": 20,
+      "questions_done": 0,
+      "flashcards_done": 0,
+      "flashcards_meta": 12,
+      "next_step": "1 · Ler orientação",
       "cargos": [
         "Gestor - Administração"
       ],
@@ -607,6 +675,10 @@
       "status": "Não iniciado",
       "question_target": 15,
       "operational_target_total": 15,
+      "questions_done": 0,
+      "flashcards_done": 0,
+      "flashcards_meta": 8,
+      "next_step": "1 · Ler orientação",
       "cargos": [
         "Gestor - Administração"
       ],
@@ -638,6 +710,10 @@
       "status": "Não iniciado",
       "question_target": 20,
       "operational_target_total": 20,
+      "questions_done": 0,
+      "flashcards_done": 0,
+      "flashcards_meta": 12,
+      "next_step": "1 · Ler orientação",
       "cargos": [
         "Analista - Apoio Administrativo"
       ],
@@ -669,6 +745,10 @@
       "status": "Não iniciado",
       "question_target": 15,
       "operational_target_total": 15,
+      "questions_done": 0,
+      "flashcards_done": 0,
+      "flashcards_meta": 12,
+      "next_step": "1 · Ler orientação",
       "cargos": [
         "Analista - Apoio Administrativo"
       ],
@@ -700,6 +780,10 @@
       "status": "Não iniciado",
       "question_target": 10,
       "operational_target_total": 10,
+      "questions_done": 0,
+      "flashcards_done": 0,
+      "flashcards_meta": 12,
+      "next_step": "1 · Ler orientação",
       "cargos": [
         "Analista - Apoio Administrativo"
       ],
@@ -731,6 +815,10 @@
       "status": "Não iniciado",
       "question_target": 20,
       "operational_target_total": 20,
+      "questions_done": 0,
+      "flashcards_done": 0,
+      "flashcards_meta": 12,
+      "next_step": "1 · Ler orientação",
       "cargos": [
         "Analista - Apoio Administrativo"
       ],
@@ -762,6 +850,10 @@
       "status": "Não iniciado",
       "question_target": 15,
       "operational_target_total": 15,
+      "questions_done": 0,
+      "flashcards_done": 0,
+      "flashcards_meta": 12,
+      "next_step": "1 · Ler orientação",
       "cargos": [
         "Analista - Apoio Administrativo"
       ],
@@ -793,6 +885,10 @@
       "status": "Não iniciado",
       "question_target": 15,
       "operational_target_total": 15,
+      "questions_done": 0,
+      "flashcards_done": 0,
+      "flashcards_meta": 8,
+      "next_step": "1 · Ler orientação",
       "cargos": [
         "Analista - Apoio Administrativo"
       ],
@@ -824,6 +920,10 @@
       "status": "Não iniciado",
       "question_target": 25,
       "operational_target_total": 25,
+      "questions_done": 0,
+      "flashcards_done": 0,
+      "flashcards_meta": 20,
+      "next_step": "1 · Ler orientação",
       "cargos": [
         "Analista - Monitor"
       ],
@@ -855,6 +955,10 @@
       "status": "Não iniciado",
       "question_target": 20,
       "operational_target_total": 20,
+      "questions_done": 0,
+      "flashcards_done": 0,
+      "flashcards_meta": 20,
+      "next_step": "1 · Ler orientação",
       "cargos": [
         "Analista - Monitor",
         "Núcleo comum"
@@ -887,6 +991,10 @@
       "status": "Não iniciado",
       "question_target": 20,
       "operational_target_total": 20,
+      "questions_done": 0,
+      "flashcards_done": 0,
+      "flashcards_meta": 12,
+      "next_step": "1 · Ler orientação",
       "cargos": [
         "Analista - Monitor",
         "Núcleo comum"
@@ -919,6 +1027,10 @@
       "status": "Não iniciado",
       "question_target": 15,
       "operational_target_total": 15,
+      "questions_done": 0,
+      "flashcards_done": 0,
+      "flashcards_meta": 12,
+      "next_step": "1 · Ler orientação",
       "cargos": [
         "Analista - Monitor"
       ],
@@ -950,6 +1062,10 @@
       "status": "Não iniciado",
       "question_target": 15,
       "operational_target_total": 15,
+      "questions_done": 0,
+      "flashcards_done": 0,
+      "flashcards_meta": 12,
+      "next_step": "1 · Ler orientação",
       "cargos": [
         "Analista - Monitor"
       ],
@@ -981,6 +1097,10 @@
       "status": "Não iniciado",
       "question_target": 3,
       "operational_target_total": 10,
+      "questions_done": 0,
+      "flashcards_done": 0,
+      "flashcards_meta": 8,
+      "next_step": "1 · Ler orientação",
       "cargos": [
         "Analista - Monitor"
       ],
@@ -1016,6 +1136,10 @@
       "status": "Não iniciado",
       "question_target": 4,
       "operational_target_total": 10,
+      "questions_done": 0,
+      "flashcards_done": 0,
+      "flashcards_meta": 8,
+      "next_step": "1 · Ler orientação",
       "cargos": [
         "Analista - Monitor"
       ],
@@ -1051,6 +1175,10 @@
       "status": "Não iniciado",
       "question_target": 3,
       "operational_target_total": 10,
+      "questions_done": 0,
+      "flashcards_done": 0,
+      "flashcards_meta": 8,
+      "next_step": "1 · Ler orientação",
       "cargos": [
         "Analista - Monitor"
       ],
@@ -1086,6 +1214,10 @@
       "status": "Monitorar",
       "question_target": 10,
       "operational_target_total": 10,
+      "questions_done": 0,
+      "flashcards_done": 0,
+      "flashcards_meta": 0,
+      "next_step": "1 · Ler orientação",
       "cargos": [
         "Analista - Monitor"
       ],
@@ -1117,6 +1249,10 @@
       "status": "Monitorar",
       "question_target": 0,
       "operational_target_total": 0,
+      "questions_done": 0,
+      "flashcards_done": 0,
+      "flashcards_meta": 0,
+      "next_step": "1 · Ler orientação",
       "cargos": [
         "Analista - Monitor"
       ],
@@ -1144,6 +1280,10 @@
       "official_url": "https://www.educacao.df.gov.br/pde-2/",
       "status": "Monitorar",
       "question_target": 0,
+      "questions_done": 0,
+      "flashcards_done": 0,
+      "flashcards_meta": 0,
+      "next_step": "1 · Ler orientação",
       "cargos": [
         "Núcleo comum",
         "Gestor - Administração",
