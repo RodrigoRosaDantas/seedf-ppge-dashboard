@@ -51,6 +51,7 @@ test("keeps the active study focus timer local and resumable", async () => {
   assert.match(source, /visibilitychange/);
   assert.match(source, /pagehide/);
   assert.match(source, /function StudyFocusTimer/);
+  assert.match(source, /focusElapsedMs\\(timer, now\\) > 0/);
 });
 
 test("keeps dashboard deep links hydration-safe and dates deterministic", async () => {
