@@ -853,14 +853,14 @@ function StudyFocusTimer() {
       ? "Em foco"
       : timer.state === "finished"
         ? "Concluída"
-        : displaySeconds > 0
+        : focusElapsedMs(timer, now) > 0
           ? "Pausada"
           : "Pronta";
   const primaryLabel = timer.state === "running"
     ? "Pausar"
     : timer.state === "finished"
       ? "Nova sessão"
-      : displaySeconds > 0
+      : focusElapsedMs(timer, now) > 0
         ? "Retomar"
         : "Iniciar foco";
   const modeLabel = timer.mode === "countup"
