@@ -69,6 +69,16 @@ function radarLaw(law) {
   return action.includes("radar") || priority.includes("radar");
 }
 
+function operationalUnits(laws = []) {
+  const seen = new Set();
+  return laws.filter((law) => !radarLaw(law)).filter((law) => {
+    const key = law.shared_block ? "M5" : law.code;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
 function rowForLaw(law, rowsByCode) {
   return rowsByCode.get(law.code) || null;
 }
@@ -125,7 +135,7 @@ function buildStudyFlow(state) {
 
 function buildTrackCard(group, index, laws, rowsByCode) {
   const groupLaws = laws.filter((law) => law.group === group);
-  const executable = groupLaws.filter((law) => !radarLaw(law));
+  const executable = operationalUnits(groupLaws);
   const radars = groupLaws.filter(radarLaw);
   const completed = executable.filter((law) => stateFor(law, rowForLaw(law, rowsByCode)).complete).length;
   const pending = executable.find((law) => !stateFor(law, rowForLaw(law, rowsByCode)).complete);
@@ -187,11 +197,11 @@ export async function buildLeisCockpit(sourceHtml) {
     for (const code of row.codes || []) rowsByCode.set(code, row);
   }
   const groups = ["Núcleo comum", "Gestor — Administração", "Apoio Administrativo", "Monitor"];
-  const executable = laws.filter((law) => !radarLaw(law));
+  const executable = operationalUnits(laws);
   const current = executable.find((law) => !stateFor(law, rowForLaw(law, rowsByCode)).complete) || executable[0] || laws[0];
   const currentState = current ? stateFor(current, rowForLaw(current, rowsByCode)) : { nextStep: "Aguardando sincronização" };
   const completed = executable.filter((law) => stateFor(law, rowForLaw(law, rowsByCode)).complete).length;
-  const totalQuestions = executable.reduce((sum, law) => sum + number(law.question_target), 0);
+  const totalQuestions = laws.filter((law) => !radarLaw(law)).reduce((sum, law) => sum + number(law.question_target), 0);
   const mapped = snapshot.summary?.mapped_law_records ?? snapshot.summary?.mapped_operational_records ?? 32;
   const radarRecords = snapshot.summary?.radar_records ?? (Array.isArray(snapshot.radars) ? snapshot.radars.length : 1);
   const radarLaws = laws.filter(radarLaw);
@@ -214,7 +224,7 @@ html,body{margin:0;min-height:100%;background:#07111f}body{font-family:ui-sans-s
 <section class="laws-hero laws-cockpit-hero"><div class="laws-hero-copy"><p class="laws-kicker">⚖️ TRILHA OPERACIONAL · SEEDF PPGE</p><h1>Leis Primeiro<span class="laws-hero-dot">.</span></h1><p class="laws-lead">A fila de leitura, questões e revisão do SEEDF. Abra a norma certa, cumpra o bloco e registre o avanço no Notion.</p><div class="laws-hero-thesis"><span>LER</span><i>→</i><span>RESPONDER</span><i>→</i><span>REVISAR</span></div><div class="laws-hero-meta"><span class="laws-live-dot"></span><span>Fonte operacional: Notion</span><span class="laws-meta-separator">·</span><span>Site: consulta e navegação</span></div><div class="laws-hero-actions"><a class="laws-primary" href="${escapeHtml(currentHref)}">▶️ Continuar ${escapeHtml(current?.code || "a trilha")}</a><a class="laws-secondary" href="#trilha">Ver trilha ↓</a><a class="laws-secondary" href="${escapeHtml(snapshot.source?.page_url || "#")}" target="_blank" rel="noreferrer">Notion ↗</a></div></div><aside class="laws-next-card"><div class="laws-next-top"><div><p class="laws-kicker">PRÓXIMA AÇÃO</p><span>Bloco atual · ${escapeHtml(current?.code || "—")}</span></div><span class="laws-next-badge">${String(currentStage).padStart(2, "0")} / 05</span></div><div class="laws-next-law"><span class="laws-next-code">${escapeHtml(current?.code || "—")}</span><h2>${escapeHtml(current?.title || "Aguardando dados")}</h2></div><div class="laws-next-context"><span>${current ? `${current.code} / ${laws.length}` : "—"}</span><span>${currentState.questionTarget || 0} questões-meta</span><span>${escapeHtml(current?.group || "Aguardando")}</span></div><div class="laws-next-focus"><span>${String(currentStage).padStart(2, "0")}</span><div><small>FAÇA AGORA</small><strong>${escapeHtml(currentState.nextStep || "Aguardando sincronização")}</strong></div></div><p>Feche orientação, leitura, questões, flashcards e D0 antes de avançar. D7/D20 seguem em paralelo.</p><div class="laws-checkpoints">${currentChecks}</div><a class="laws-next-cta" href="${escapeHtml(currentHref)}">Abrir norma <span aria-hidden="true">↗</span></a><a class="laws-next-notion" href="${escapeHtml(currentNotion)}" target="_blank" rel="noreferrer">Abrir no Notion ↗</a></aside></section>
 ${buildStudyFlow(currentState)}
 <section class="laws-status-strip" aria-label="Estado da trilha"><article class="laws-stat-progress"><div class="laws-stat-top"><span class="laws-stat-icon">01</span><span>BLOCOS FECHADOS</span></div><strong>${completed}/${executable.length}</strong><small>por D0 · D7/D20 não bloqueiam</small></article><article class="laws-stat-questions"><div class="laws-stat-top"><span class="laws-stat-icon">02</span><span>QUESTÕES DE META</span></div><strong>${totalQuestions}</strong><small>na sequência executável</small></article><article class="laws-stat-map"><div class="laws-stat-top"><span class="laws-stat-icon">03</span><span>NORMAS NO MAPA</span></div><strong>${laws.length}</strong><small>L01–L34 · 4 trilhas</small></article><article class="laws-stat-source"><div class="laws-stat-top"><span class="laws-stat-icon">04</span><span>FONTE VIVA</span></div><strong>Notion</strong><small>${mapped} mapeados · ${radarRecords} radar</small></article></section>
-<section class="laws-panel laws-track-panel" id="trilha"><div class="laws-heading"><div><p class="laws-kicker">MAPA DE DECISÃO</p><h2>Por onde continuar</h2><p>Escolha a trilha pelo cargo. Cada cartão já aponta para a próxima norma pendente.</p></div><span class="laws-heading-note">${executable.length} blocos executáveis</span></div><div class="laws-track-grid">${trackMarkup}</div></section>
+<section class="laws-panel laws-track-panel" id="trilha"><div class="laws-heading"><div><p class="laws-kicker">MAPA DE DECISÃO</p><h2>Por onde continuar</h2><p>Escolha a trilha pelo cargo. Cada cartão já aponta para a próxima norma pendente.</p></div><span class="laws-heading-note">${executable.length} blocos operacionais</span></div><div class="laws-track-grid">${trackMarkup}</div></section>
 <nav class="laws-quick-nav" aria-label="Atalhos da trilha"><a class="laws-quick-link" href="#mapa-detalhado"><span class="laws-quick-icon">⌕</span><span><b>Localizar uma norma</b><small>Mapa detalhado e filtros</small></span><span class="laws-quick-arrow">↗</span></a><a class="laws-quick-link" href="#radar"><span class="laws-quick-icon">◎</span><span><b>Ver Radar</b><small>Atualizações fora da fila</small></span><span class="laws-quick-arrow">↗</span></a><a class="laws-quick-link" href="#banco-legislacao"><span class="laws-quick-icon">▦</span><span><b>Consultar o banco</b><small>Metas, revisões e registros</small></span><span class="laws-quick-arrow">↗</span></a></nav>
 <section class="laws-panel laws-radar" id="radar"><div class="laws-heading"><div><p class="laws-kicker">RADAR · FORA DA FILA DIÁRIA</p><h2>Monitorar sem disputar atenção</h2><p>Itens de vigência, carreira e atualização normativa permanecem separados da execução.</p></div><span class="laws-chip priority-radar">${radarLaws.length + externalRadars.length} itens</span></div><div class="laws-radar-list">${radarMarkup}</div></section>
 <details class="laws-panel laws-disclosure laws-method-disclosure"><summary><span><b>📖 COMO ESTUDAR</b><strong>Fluxo de uma norma</strong></span><span>abrir método + regras</span></summary><div class="laws-disclosure-body"><ol>${sequence}</ol><p class="laws-rule"><strong>Regra de avanço:</strong> ${escapeHtml(snapshot.advance_rule || "orientação + 1ª leitura + questões + flashcards + D0; D7/D20 seguem em paralelo.")}</p><p class="laws-rule"><strong>Exceções preservadas:</strong> L30–L32 são o Bloco M5 (10 questões totais); L11 e L34 têm meta 0 nas condições registradas; L33 é Radar forte com 10 questões de familiarização.</p></div></details>
