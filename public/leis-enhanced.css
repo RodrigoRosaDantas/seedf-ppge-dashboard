@@ -1235,3 +1235,79 @@
   .laws-reading-body .study-hero { border-radius: 19px; }
   .laws-reading-body .study-content { padding: 21px 16px !important; }
 }
+/* Final structural polish: keep the identity bar and primary actions legible
+   when this progressive-enhancement stylesheet is loaded on its own. */
+.laws-cockpit .laws-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  box-sizing: border-box;
+}
+.laws-cockpit .laws-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  flex: 0 0 auto;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.laws-cockpit .laws-sync {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  width: max-content;
+  max-width: 100%;
+  box-sizing: border-box;
+  white-space: nowrap;
+}
+.laws-cockpit-hero .laws-hero-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 21px;
+}
+.laws-cockpit-hero .laws-primary,
+.laws-cockpit-hero .laws-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 41px;
+  padding: 0 14px;
+  box-sizing: border-box;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  line-height: 1;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.laws-cockpit-hero .laws-secondary {
+  border-color: rgba(207, 235, 226, .20);
+}
+
+@media (max-width: 700px) {
+  .laws-cockpit .laws-topbar {
+    min-height: 60px;
+    height: auto;
+    padding: 10px 0;
+    align-items: flex-start;
+  }
+  .laws-cockpit .laws-sync {
+    max-width: 56%;
+    white-space: normal;
+    text-align: right;
+    line-height: 1.25;
+  }
+  .laws-cockpit-hero .laws-hero-actions {
+    align-items: stretch;
+    gap: 7px;
+  }
+  .laws-cockpit-hero .laws-hero-actions a {
+    width: auto;
+    flex: 1 1 100%;
+  }
+}
