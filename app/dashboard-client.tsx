@@ -219,6 +219,14 @@ const navigation: Array<{ id: SectionId; label: string; icon: LucideIcon }> = [
   { id: "materiais", label: "Materiais", icon: FileText },
 ];
 
+const sectionIds: SectionId[] = navigation.map((item) => item.id);
+
+function sectionFromLocation(): SectionId {
+  if (typeof window === "undefined") return "inicio";
+  const candidate = window.location.hash.replace(/^#/, "") as SectionId;
+  return sectionIds.includes(candidate) ? candidate : "inicio";
+}
+
 const jobs = [
   {
     code: "A",
@@ -1155,14 +1163,21 @@ function Materials({ snapshot = activeDashboardSnapshot }: { snapshot?: Dashboar
 }
 
 export default function Home() {
-  const [section, setSection] = useState<SectionId>("inicio");
+  const [section, setSection] = useState<SectionId>(() => sectionFromLocation());
   const [menuOpen, setMenuOpen] = useState(false);
   const [snapshot, setSnapshot] = useState<DashboardSnapshot | null>(null);
   const [lastUpdated, setLastUpdated] = useState("Notion · carregando...");
   const [refreshing, setRefreshing] = useState(false);
   const [syncError, setSyncError] = useState(false);
   const [syncMode, setSyncMode] = useState<"live" | "fallback" | "error">("error");
-  const handleNavigate = (next: SectionId) => { setSection(next); setMenuOpen(false); window.scrollTo({ top: 0, behavior: "smooth" }); };
+  const handleNavigate = (next: SectionId) => {
+    setSection(next);
+    setMenuOpen(false);
+    const url = new URL(window.location.href);
+    url.hash = next;
+    window.history.replaceState(null, "", `${url.pathname}${url.search}${url.hash}`);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
   const readSnapshot = async (url: string, options: RequestInit = {}) => {
     const separator = url.includes("?") ? "&" : "?";
     const response = await fetch(`${url}${separator}ts=${Date.now()}`, { ...options, cache: "no-store" });
@@ -1201,6 +1216,20 @@ export default function Home() {
     }
   };
   useEffect(() => {
+    const syncSectionFromHash = () => setSection(sectionFromLocation());
+    window.addEventListener("hashchange", syncSectionFromHash);
+    return () => window.removeEventListener("hashchange", syncSectionFromHash);
+  }, []);
+
+  useEffect(() => {
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setMenuOpen(false);
+    };
+    document.addEventListener("keydown", closeOnEscape);
+    return () => document.removeEventListener("keydown", closeOnEscape);
+  }, []);
+
+  useEffect(() => {
     let cancelled = false;
 
     const initialize = async () => {
@@ -1224,5 +1253,5 @@ export default function Home() {
   const activeLabel = navigation.find((item) => item.id === section)?.label ?? "Visão geral";
   const nextAction = snapshot?.dashboard.next_action ?? "D01 · Português fino + LDB";
   activeDashboardSnapshot = snapshot;
-  return <main className="site-shell"><aside className={`sidebar ${menuOpen ? "sidebar-open" : ""}`}><div className="brand-block"><div className="brand-mark">S</div><div><strong>SEEDF</strong><span>PPGE · Dashboard PRO</span></div><button className="close-menu" onClick={() => setMenuOpen(false)} aria-label="Fechar menu"><X size={18} /></button></div><div className="sidebar-context"><span className="live-dot" /> Pré-edital 2026/2027</div><nav className="main-nav" aria-label="Navegação principal">{navigation.map((item) => { const Icon = item.icon; const active = section === item.id; return <button className={`nav-item ${active ? "nav-active" : ""}`} key={item.id} onClick={() => handleNavigate(item.id)}><Icon size={18} /><span>{item.label}</span>{active && <span className="nav-indicator" />}</button>; })}</nav><div className="sidebar-bottom"><div className="sidebar-card"><p className="eyebrow">PRÓXIMA AÇÃO</p><strong>{nextAction}</strong><button onClick={() => handleNavigate("estudar")}>Abrir execução <ArrowRight size={15} /></button></div><div className="sidebar-footer"><span className="source-dot" /> Notion como fonte operacional</div></div></aside>{menuOpen && <button className="scrim" onClick={() => setMenuOpen(false)} aria-label="Fechar menu" />}<div className="main-column"><header className="topbar"><div className="topbar-left"><button className="menu-button" onClick={() => setMenuOpen(true)} aria-label="Abrir menu"><Menu size={20} /></button><div><span className="breadcrumb">SEEDF PPGE</span><strong>{activeLabel}</strong></div></div><div className="topbar-actions"><span className={`sync-label ${syncError ? "sync-error" : syncMode === "fallback" ? "sync-fallback" : ""}`}><span className="source-dot" /> {lastUpdated}</span><button className={`refresh-button ${refreshing ? "is-refreshing" : ""}`} onClick={refreshSnapshot} disabled={refreshing} aria-label="Atualizar dados do Notion" title="Consultar a API do Notion agora"><RefreshCw size={17} /></button></div></header><div className="page-content">{section === "inicio" && <Overview onNavigate={handleNavigate} snapshot={snapshot} />}{section === "estudar" && <StudyToday />}{section === "fases" && <Phases />}{section === "cargos" && <Jobs />}{section === "progresso" && <Progress />}{section === "materiais" && <Materials />}</div><footer className="site-footer"><span>SEEDF PPGE · Projeto exclusivo</span><span>{syncMode === "live" ? `Notion ao vivo · ${formatSnapshotDate(snapshot?.source?.synced_at ?? null)}` : syncMode === "fallback" ? `Backup do GitHub · ${formatSnapshotDate(snapshot?.source?.synced_at ?? null)}` : "Notion · indisponível"}</span></footer></div></main>;
+  return <main className="site-shell"><aside id="seedf-sidebar" className={`sidebar ${menuOpen ? "sidebar-open" : ""}`}><div className="brand-block"><div className="brand-mark">S</div><div><strong>SEEDF</strong><span>PPGE · Dashboard PRO</span></div><button type="button" className="close-menu" onClick={() => setMenuOpen(false)} aria-label="Fechar menu" aria-controls="seedf-sidebar"><X size={18} /></button></div><div className="sidebar-context"><span className="live-dot" /> Pré-edital 2026/2027</div><nav className="main-nav" aria-label="Navegação principal">{navigation.map((item) => { const Icon = item.icon; const active = section === item.id; return <button type="button" className={`nav-item ${active ? "nav-active" : ""}`} key={item.id} onClick={() => handleNavigate(item.id)} aria-current={active ? "page" : undefined} aria-controls="dashboard-section"><Icon size={18} /><span>{item.label}</span>{active && <span className="nav-indicator" />}</button>; })}</nav><div className="sidebar-bottom"><div className="sidebar-card"><p className="eyebrow">PRÓXIMA AÇÃO</p><strong>{nextAction}</strong><button onClick={() => handleNavigate("estudar")}>Abrir execução <ArrowRight size={15} /></button></div><div className="sidebar-footer"><span className="source-dot" /> Notion como fonte operacional</div></div></aside>{menuOpen && <button className="scrim" onClick={() => setMenuOpen(false)} aria-label="Fechar menu" />}<div className="main-column"><header className="topbar"><div className="topbar-left"><button type="button" className="menu-button" onClick={() => setMenuOpen(true)} aria-label="Abrir menu" aria-expanded={menuOpen} aria-controls="seedf-sidebar"><Menu size={20} /></button><div><span className="breadcrumb">SEEDF PPGE</span><strong>{activeLabel}</strong></div></div><div className="topbar-actions"><span className={`sync-label ${syncError ? "sync-error" : syncMode === "fallback" ? "sync-fallback" : ""}`}><span className="source-dot" /> {lastUpdated}</span><button className={`refresh-button ${refreshing ? "is-refreshing" : ""}`} onClick={refreshSnapshot} disabled={refreshing} aria-label="Atualizar dados do Notion" title="Consultar a API do Notion agora"><RefreshCw size={17} /></button></div></header><div className="page-content" id="dashboard-section" tabIndex={-1}>{section === "inicio" && <Overview onNavigate={handleNavigate} snapshot={snapshot} />}{section === "estudar" && <StudyToday />}{section === "fases" && <Phases />}{section === "cargos" && <Jobs />}{section === "progresso" && <Progress />}{section === "materiais" && <Materials />}</div><footer className="site-footer"><span>SEEDF PPGE · Projeto exclusivo</span><span>{syncMode === "live" ? `Notion ao vivo · ${formatSnapshotDate(snapshot?.source?.synced_at ?? null)}` : syncMode === "fallback" ? `Backup do GitHub · ${formatSnapshotDate(snapshot?.source?.synced_at ?? null)}` : "Notion · indisponível"}</span></footer></div></main>;
 }

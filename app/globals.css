@@ -242,3 +242,49 @@ h3 { margin-bottom: 8px; font-size: 16px; line-height: 1.25; }
     border-left: 0;
   }
 }
+
+
+/* Persistent quick access to the legislation track */
+.law-fab {
+  position: fixed;
+  right: 18px;
+  bottom: calc(18px + env(safe-area-inset-bottom));
+  z-index: 90;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 46px;
+  padding: 0 16px;
+  border: 1px solid rgba(246, 199, 90, .32);
+  border-radius: 999px;
+  background: rgba(12, 25, 42, .96);
+  color: #f7d477;
+  box-shadow: 0 14px 38px rgba(0, 0, 0, .28);
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .01em;
+  backdrop-filter: blur(14px);
+  transition: transform .16s ease, border-color .16s ease, background .16s ease;
+}
+.law-fab:hover {
+  transform: translateY(-2px);
+  border-color: rgba(246, 199, 90, .65);
+  background: rgba(17, 39, 59, .98);
+}
+.law-fab:focus-visible {
+  outline: 3px solid rgba(243, 180, 76, .46);
+  outline-offset: 3px;
+}
+@media (max-width: 760px) {
+  .main-column {
+    padding-bottom: calc(78px + env(safe-area-inset-bottom));
+  }
+  .law-fab {
+    right: 12px;
+    left: 12px;
+    bottom: calc(12px + env(safe-area-inset-bottom));
+    min-height: 48px;
+  }
+}

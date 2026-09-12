@@ -22,7 +22,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="pt-BR">
-      <body>{children}</body>
+      <body>{children}<script src={`${siteBasePath}/sw-register.js`} defer /></body>
     </html>
   );
 }
