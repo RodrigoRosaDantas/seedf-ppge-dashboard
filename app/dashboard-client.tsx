@@ -589,19 +589,118 @@ function JobCard({ job, compact = false }: { job: typeof jobs[number]; compact?:
   return <article className={`job-card job-${job.tone} ${compact ? "job-compact" : ""}`}><div className="job-code">{job.code}</div><div className="job-content"><div className="job-title-row"><h3>{job.title}</h3><StatusPill tone={job.tone === "gold" ? "gold" : job.tone === "teal" ? "teal" : "violet"}>{job.priority}</StatusPill></div><strong>{job.subtitle}</strong><p>{job.source}</p></div>{!compact && <div className="job-metrics"><span>Domínio inicial</span><strong>Em diagnóstico</strong></div>}</article>;
 }
 
-function StudyToday() {
-  const [checked, setChecked] = useState<string[]>([]);
-  const [sessionStarted, setSessionStarted] = useState(false);
-  const checklist = [
-    { id: "portugues", label: "Executar Português fino", detail: "Revisão objetiva + resolução orientada" },
-    { id: "ldb", label: "Ler LDB no recorte do dia", detail: "Leitura seca com marcação de conceitos" },
-    { id: "questoes", label: "Registrar questões e resultado", detail: "Feitas, acertos, erros e acertos com dúvida" },
-    { id: "fechamento", label: "Fechar o D01", detail: "Só avançar quando todas as linhas estiverem corrigidas" },
-  ];
-  const progress = Math.round((checked.length / checklist.length) * 100);
-  return <div className="inner-page"><section className="page-intro"><div><p className="eyebrow">EXECUÇÃO DIÁRIA · SEEDF</p><h1>D01 · Português fino + LDB</h1><p>O primeiro dia não precisa ser perfeito. Precisa ser registrado.</p></div><StatusPill tone="gold">Próximo</StatusPill></section><section className="content-grid two-thirds study-layout"><div className="panel study-main-panel"><div className="study-progress-head"><div><p className="eyebrow">CHECKLIST DE EXECUÇÃO</p><h2>Feche o dia na ordem certa</h2></div><strong>{progress}%</strong></div><div className="progress-track"><span style={{ width: `${progress}%` }} /></div><div className="checklist">{checklist.map((item) => { const isChecked = checked.includes(item.id); return <button className={`check-row ${isChecked ? "is-checked" : ""}`} key={item.id} onClick={() => setChecked((current) => isChecked ? current.filter((id) => id !== item.id) : [...current, item.id])}><span className="checkbox">{isChecked && <Check size={14} />}</span><span className="check-copy"><strong>{item.label}</strong><small>{item.detail}</small></span><ChevronRight size={17} /></button>; })}</div><div className="study-actions"><button className="primary-button" onClick={() => setSessionStarted((value) => !value)}>{sessionStarted ? "Pausar sessão" : "Iniciar sessão"}<TimerReset size={16} /></button><span>{sessionStarted ? "Sessão em andamento neste dispositivo" : "O cronômetro real entra na execução"}</span></div><div className="study-source-links"><p className="eyebrow">MATERIAL DO DIA</p><div><a className="resource-link" href={d01NotionPage} target="_blank" rel="noreferrer">Abrir D01 completo no Notion <ArrowRight size={15} /></a><a className="resource-link" href={ldbOfficialUrl} target="_blank" rel="noreferrer">Abrir LDB compilada <ArrowRight size={15} /></a></div></div></div><aside className="panel day-rule-panel"><div className="day-badge">D01</div><p className="eyebrow">REGRA DO DIA</p><h3>Estude, registre, feche.</h3><p>O Banco de Dias agrega os números a partir das linhas detalhadas do Banco de Controle de Questões. Não lance os totais duas vezes.</p><div className="rule-list"><div><Check size={15} /> Dias não estudados não viram atraso.</div><div><Check size={15} /> D07 só nasce dos resultados de D01–D06.</div><div><Check size={15} /> O site não cria desempenho sem dado real.</div></div></aside></section><section className="panel next-days-panel"><SectionHeading eyebrow="SEQUÊNCIA" title="O C01 já está preparado" description="Os próximos dias permanecem não iniciados até a execução real." /><div className="day-strip">{dayRows.slice(0, 7).map((row) => <DayCard row={row} key={row.day} />)}</div></section></div>;
+const D01_CHECKLIST = [
+  { id: "portugues", label: "Executar Português fino", detail: "Revisão objetiva + resolução orientada" },
+  { id: "ldb", label: "Ler LDB no recorte do dia", detail: "Leitura seca com marcação de conceitos" },
+  { id: "questoes", label: "Registrar questões e resultado", detail: "Feitas, acertos, erros e acertos com dúvida" },
+  { id: "fechamento", label: "Fechar o D01", detail: "Só avançar quando todas as linhas estiverem corrigidas" },
+] as const;
+
+const D01_CHECKLIST_STORAGE_KEY = "seedf-ppge-dashboard:d01-checklist:v1";
+const D01_SESSION_STORAGE_KEY = "seedf-ppge-dashboard:d01-session:v1";
+
+type D01SessionState = {
+  startedAt: number | null;
+  elapsedSeconds: number;
+};
+
+function formatStudyDuration(totalSeconds: number) {
+  const seconds = Math.max(0, Math.floor(totalSeconds));
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  const remainder = seconds % 60;
+  if (hours > 0) return [hours, minutes, remainder].map((part) => String(part).padStart(2, "0")).join(":");
+  return [minutes, remainder].map((part) => String(part).padStart(2, "0")).join(":");
 }
 
+function StudyToday() {
+  const [checked, setChecked] = useState<string[]>([]);
+  const [checklistHydrated, setChecklistHydrated] = useState(false);
+  const [sessionStartedAt, setSessionStartedAt] = useState<number | null>(null);
+  const [sessionBaseElapsed, setSessionBaseElapsed] = useState(0);
+  const [sessionNow, setSessionNow] = useState(0);
+  const [sessionHydrated, setSessionHydrated] = useState(false);
+
+  useEffect(() => {
+    try {
+      const raw = window.localStorage.getItem(D01_CHECKLIST_STORAGE_KEY);
+      const saved = raw ? JSON.parse(raw) as unknown : [];
+      if (Array.isArray(saved)) {
+        const validIds = saved.filter(
+          (id) => typeof id === "string" && D01_CHECKLIST.some((item) => item.id === id),
+        ) as string[];
+        setChecked(validIds);
+      }
+    } catch {
+      // A private browsing context can deny local storage; the checklist still works in memory.
+    } finally {
+      setChecklistHydrated(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!checklistHydrated) return;
+    try {
+      window.localStorage.setItem(D01_CHECKLIST_STORAGE_KEY, JSON.stringify(checked));
+    } catch {
+      // Keep the current session usable when local storage is unavailable.
+    }
+  }, [checked, checklistHydrated]);
+
+  useEffect(() => {
+    try {
+      const raw = window.localStorage.getItem(D01_SESSION_STORAGE_KEY);
+      const saved = raw ? JSON.parse(raw) as Partial<D01SessionState> : {};
+      const startedAt = typeof saved?.startedAt === "number" && Number.isFinite(saved.startedAt) && saved.startedAt > 0
+        ? saved.startedAt
+        : null;
+      const elapsedSeconds = typeof saved?.elapsedSeconds === "number" && Number.isFinite(saved.elapsedSeconds)
+        ? Math.max(0, Math.floor(saved.elapsedSeconds))
+        : 0;
+      setSessionStartedAt(startedAt);
+      setSessionBaseElapsed(elapsedSeconds);
+    } catch {
+      // A private browsing context can deny local storage; the session still works in memory.
+    } finally {
+      setSessionHydrated(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (sessionStartedAt === null) return;
+    const updateNow = () => setSessionNow(Date.now());
+    updateNow();
+    const timer = window.setInterval(updateNow, 1000);
+    return () => window.clearInterval(timer);
+  }, [sessionStartedAt]);
+
+  useEffect(() => {
+    if (!sessionHydrated) return;
+    try {
+      const state: D01SessionState = {
+        startedAt: sessionStartedAt,
+        elapsedSeconds: sessionBaseElapsed,
+      };
+      window.localStorage.setItem(D01_SESSION_STORAGE_KEY, JSON.stringify(state));
+    } catch {
+      // Keep the current session usable when local storage is unavailable.
+    }
+  }, [sessionBaseElapsed, sessionHydrated, sessionStartedAt]);
+
+  const progress = Math.round((checked.length / D01_CHECKLIST.length) * 100);
+  const sessionSeconds = sessionStartedAt !== null && sessionNow > 0
+    ? sessionBaseElapsed + Math.max(0, Math.floor((sessionNow - sessionStartedAt) / 1000))
+    : sessionBaseElapsed;
+  const sessionLabel = !sessionHydrated
+    ? "Carregando sessão..."
+    : sessionStartedAt !== null
+      ? "Sessão em andamento · " + formatStudyDuration(sessionSeconds)
+      : sessionBaseElapsed > 0
+        ? "Sessão pausada · " + formatStudyDuration(sessionSeconds) + " · salvo neste dispositivo"
+        : "Sessão pronta · salvo neste dispositivo";
+
+  return <div className="inner-page"><section className="page-intro"><div><p className="eyebrow">EXECUÇÃO DIÁRIA · SEEDF</p><h1>D01 · Português fino + LDB</h1><p>O primeiro dia não precisa ser perfeito. Precisa ser registrado.</p></div><StatusPill tone="gold">Próximo</StatusPill></section><section className="content-grid two-thirds study-layout"><div className="panel study-main-panel"><div className="study-progress-head"><div><p className="eyebrow">CHECKLIST DE EXECUÇÃO</p><h2>Feche o dia na ordem certa</h2></div><strong>{progress}%</strong></div><div className="progress-track"><span style={{ width: String(progress) + "%" }} /></div><div className="checklist">{D01_CHECKLIST.map((item) => { const isChecked = checked.includes(item.id); return <button type="button" className={"check-row " + (isChecked ? "is-checked" : "")} key={item.id} aria-pressed={isChecked} onClick={() => setChecked((current) => isChecked ? current.filter((id) => id !== item.id) : [...current, item.id])}><span className="checkbox">{isChecked && <Check size={14} />}</span><span className="check-copy"><strong>{item.label}</strong><small>{item.detail}</small></span><ChevronRight size={17} /></button>; })}</div><div className="study-actions"><button type="button" className="primary-button" onClick={() => { const now = Date.now(); if (sessionStartedAt !== null) { const elapsed = sessionBaseElapsed + Math.max(0, Math.floor((now - sessionStartedAt) / 1000)); setSessionBaseElapsed(elapsed); setSessionStartedAt(null); setSessionNow(0); } else { setSessionStartedAt(now); setSessionNow(now); } }}>{sessionStartedAt !== null ? "Pausar sessão" : sessionBaseElapsed > 0 ? "Retomar sessão" : "Iniciar sessão"}<TimerReset size={16} /></button><span className="session-status" aria-live="polite">{sessionLabel}</span></div><div className="study-source-links"><p className="eyebrow">MATERIAL DO DIA</p><div><a className="resource-link" href={d01NotionPage} target="_blank" rel="noreferrer">Abrir D01 completo no Notion <ArrowRight size={15} /></a><a className="resource-link" href={ldbOfficialUrl} target="_blank" rel="noreferrer">Abrir LDB compilada <ArrowRight size={15} /></a></div></div></div><aside className="panel day-rule-panel"><div className="day-badge">D01</div><p className="eyebrow">REGRA DO DIA</p><h3>Estude, registre, feche.</h3><p>O Banco de Dias agrega os números a partir das linhas detalhadas do Banco de Controle de Questões. Não lance os totais duas vezes.</p><div className="rule-list"><div><Check size={15} /> Dias não estudados não viram atraso.</div><div><Check size={15} /> D07 só nasce dos resultados de D01–D06.</div><div><Check size={15} /> O site não cria desempenho sem dado real.</div></div></aside></section><section className="panel next-days-panel"><SectionHeading eyebrow="SEQUÊNCIA" title="O C01 já está preparado" description="Os próximos dias permanecem não iniciados até a execução real." /><div className="day-strip">{dayRows.slice(0, 7).map((row) => <DayCard row={row} key={row.day} />)}</div></section></div>;
+}
 function DayCard({ row }: { row: typeof dayRows[number] }) {
   return <article className={`day-card day-${row.state}`}><div className="day-card-top"><strong>{row.day}</strong><span className="day-state-dot" /></div><h3>{row.label}</h3><p>{row.detail}</p><span>{row.meta}</span></article>;
 }
