@@ -394,3 +394,4 @@ function notionPageUrl(value) { return `https://app.notion.com/p/${compactId(val
 function compactId(value) { return String(value || "").replaceAll("-", "").toLowerCase(); }
 function escapeHtml(value = "") { return String(value).replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#39;"); }
 function groupFor(number) { if (number <= 11) return "Núcleo comum"; if (number <= 18) return "Gestor — Administração"; if (number <= 24) return "Apoio Administrativo"; return "Monitor"; }
+// Notion sync trigger: audit L01-L34 completed 2026-09-12.
