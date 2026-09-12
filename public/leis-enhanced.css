@@ -1169,6 +1169,9 @@
 .laws-reading-body .study-kicker { color: #8fe8c8 !important; }
 .laws-reading-body .study-chip { color: #cce8e1; border-color: rgba(207,235,226,.18); background: rgba(255,255,255,.06) !important; }
 .laws-reading-body .study-summary-card, .laws-reading-body .study-ops-card { border-color: #d5e2df !important; background: #fff !important; box-shadow: 0 9px 20px rgba(16,42,53,.05); }
+.laws-reading-body .study-summary-card strong { color: #1c414b !important; }
+.laws-reading-body .study-summary-card p { color: #61777b !important; }
+.laws-reading-body .study-summary-card.study-alert { border-color: #ead9ae !important; background: #fffaf0 !important; }
 .laws-reading-body .study-ops-card::before { background: #74cdbb; }
 .laws-reading-body .study-ops-card:nth-child(3)::before { background: #efbd5a; }
 .laws-reading-body .study-ops-card .eyebrow { color: #668084; }
