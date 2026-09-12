@@ -289,3 +289,111 @@ h3 { margin-bottom: 8px; font-size: 16px; line-height: 1.25; }
     min-height: 48px;
   }
 }
+
+
+/* Active study focus timer */
+.focus-timer-panel {
+  margin-top: 25px;
+  padding: 19px;
+  border: 1px solid #cce8e4;
+  border-radius: 16px;
+  background: linear-gradient(145deg, #fbfffe, #effaf8);
+}
+.focus-timer-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+.focus-timer-top .eyebrow { margin-bottom: 5px; color: var(--teal-dark); }
+.focus-timer-top h3 { margin: 0; color: var(--ink); font-size: 18px; }
+.focus-timer-state {
+  display: inline-flex;
+  align-items: center;
+  min-height: 26px;
+  padding: 0 9px;
+  border: 1px solid #cbdfe1;
+  border-radius: 999px;
+  color: #69808a;
+  background: #fff;
+  font-size: 10px;
+  font-weight: 900;
+  white-space: nowrap;
+}
+.focus-timer-state.running { border-color: #9bded5; color: #087d75; background: #eafaf7; }
+.focus-timer-state.finished { border-color: #f0d29a; color: #8e611b; background: #fff8e9; }
+.focus-timer-display {
+  margin: 19px 0 13px;
+  color: var(--ink);
+  font-size: clamp(38px, 6vw, 58px);
+  font-variant-numeric: tabular-nums;
+  font-weight: 850;
+  letter-spacing: -.06em;
+  line-height: 1;
+}
+.focus-timer-track {
+  height: 8px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #dcefeb;
+}
+.focus-timer-track span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--teal), #76d9cc);
+  transition: width .3s ease;
+}
+.focus-timer-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 9px;
+  color: #6c858d;
+  font-size: 10px;
+  line-height: 1.4;
+}
+.focus-timer-actions {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 72px;
+  gap: 8px;
+  margin-top: 15px;
+}
+.focus-timer-actions button { min-height: 40px; }
+.focus-timer-primary { width: 100%; }
+.focus-timer-reset { padding-inline: 8px; }
+.focus-timer-actions button:disabled,
+.focus-timer-preset:disabled { cursor: not-allowed; opacity: .58; transform: none; }
+.focus-timer-presets {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+  margin-top: 9px;
+}
+.focus-timer-preset {
+  min-height: 32px;
+  padding: 0 5px;
+  border: 1px solid #d4e5e5;
+  border-radius: 8px;
+  color: #5f767e;
+  background: rgba(255,255,255,.72);
+  cursor: pointer;
+  font-size: 10px;
+  font-weight: 850;
+  transition: .16s ease;
+}
+.focus-timer-preset:hover:not(:disabled) { border-color: #89d5cc; color: var(--teal-dark); background: #fff; }
+.focus-timer-preset.is-active { border-color: #8ed8cf; color: #087d75; background: #dff6f2; }
+.focus-timer-note {
+  margin: 12px 0 0;
+  color: #789098;
+  font-size: 10px;
+  line-height: 1.5;
+}
+@media (max-width: 760px) {
+  .focus-timer-top { display: block; }
+  .focus-timer-state { margin-top: 9px; }
+  .focus-timer-meta { display: grid; }
+  .focus-timer-presets { gap: 5px; }
+  .focus-timer-preset { font-size: 9px; }
+}
