@@ -44,6 +44,13 @@ test("keeps dashboard deep links hydration-safe and dates deterministic", async 
   assert.match(source, /timeZone: "America\/Sao_Paulo"/);
 });
 
+test("keeps unchanged Notion sync snapshots stable", async () => {
+  const source = await read("scripts/sync-notion.mjs");
+  assert.match(source, /previous\?\.source\?\.content_hash === contentHash/);
+  assert.match(source, /previous\.execution\?\.as_of/);
+  assert.match(source, /snapshot\.execution\.as_of = previous\.execution\.as_of/);
+});
+
 test("published shell includes an offline registration path", async () => {
   const [manifest, serviceWorker, registration, layout] = await Promise.all([
     read("public/manifest.webmanifest"),
