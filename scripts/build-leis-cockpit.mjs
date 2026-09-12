@@ -201,7 +201,7 @@ export async function buildLeisCockpit(sourceHtml) {
   const current = executable.find((law) => !stateFor(law, rowForLaw(law, rowsByCode)).complete) || executable[0] || laws[0];
   const currentState = current ? stateFor(current, rowForLaw(current, rowsByCode)) : { nextStep: "Aguardando sincronização" };
   const completed = executable.filter((law) => stateFor(law, rowForLaw(law, rowsByCode)).complete).length;
-  const totalQuestions = executable.reduce((sum, law) => sum + number(law.question_target), 0);
+  const totalQuestions = laws.filter((law) => !radarLaw(law)).reduce((sum, law) => sum + number(law.question_target), 0);
   const mapped = snapshot.summary?.mapped_law_records ?? snapshot.summary?.mapped_operational_records ?? 32;
   const radarRecords = snapshot.summary?.radar_records ?? (Array.isArray(snapshot.radars) ? snapshot.radars.length : 1);
   const radarLaws = laws.filter(radarLaw);
