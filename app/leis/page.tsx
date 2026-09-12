@@ -174,6 +174,14 @@ export default function LeisPrimeiroPage() {
         ? "5 · Fechar D0"
         : "Bloco fechado · seguir para a próxima norma"
     : "Aguardando sincronização";
+  const currentStage = currentLaw?.orientation_read ? 5 : 1;
+  const flowSteps = [
+    ["Orientação", "entender o recorte"],
+    ["Lei seca", "ler a fonte oficial"],
+    ["Questões", "responder e registrar"],
+    ["Flashcards", "recuperar o essencial"],
+    ["D0", "fechar o bloco"],
+  ];
   const radarLaws = snapshot?.laws.filter(isRadarLaw) || [];
   const groupNames = groups.slice(1);
   const totalQuestions = (snapshot?.laws || []).reduce(
@@ -194,7 +202,8 @@ export default function LeisPrimeiroPage() {
         <div className="laws-hero-copy">
           <p className="laws-kicker">⚖️ TRILHA OPERACIONAL · SEEDF PPGE</p>
           <h1>Leis Primeiro<span className="laws-hero-dot">.</span></h1>
-          <p className="laws-lead">Uma fila clara para estudar, registrar e avançar. A próxima ação fica visível; o conteúdo completo continua dentro de cada norma.</p>
+          <p className="laws-lead">A fila de leitura, questões e revisão do SEEDF. Abra a norma certa, cumpra o bloco e registre o avanço no Notion.</p>
+          <div className="laws-hero-thesis"><span>LER</span><i>→</i><span>RESPONDER</span><i>→</i><span>REVISAR</span></div>
           <div className="laws-hero-meta"><span className="laws-live-dot" /><span>Fonte operacional: Notion</span><span className="laws-meta-separator">·</span><span>Site: consulta e navegação</span></div>
           <div className="laws-hero-actions">
             <a className="laws-primary" href={currentLaw ? `./${currentLaw.code.toLowerCase()}/` : "#mapa-detalhado"}>▶️ Continuar {currentLaw?.code || "a trilha"}</a>
@@ -203,14 +212,28 @@ export default function LeisPrimeiroPage() {
           </div>
         </div>
         <aside className="laws-next-card">
-          <div className="laws-next-top"><div><p className="laws-kicker">PRÓXIMA AÇÃO</p><span>Bloco atual · {currentLaw?.code || "—"}</span></div><span className="laws-next-badge">01 / 05</span></div>
+          <div className="laws-next-top"><div><p className="laws-kicker">PRÓXIMA AÇÃO</p><span>Bloco atual · {currentLaw?.code || "—"}</span></div><span className="laws-next-badge">{String(currentStage).padStart(2, "0")} / 05</span></div>
           <div className="laws-next-law"><span className="laws-next-code">{currentLaw?.code || "—"}</span><h2>{currentLaw?.title || "Aguardando dados"}</h2></div>
-          <div className="laws-next-focus"><span>01</span><div><small>FAÇA AGORA</small><strong>{currentStep}</strong></div></div>
+          <div className="laws-next-context"><span>{currentLaw ? `${currentLaw.code} / ${snapshot?.laws.length || 34}` : "—"}</span><span>{currentLaw?.question_target || 0} questões-meta</span><span>{currentLaw?.group || "Aguardando"}</span></div>
+          <div className="laws-next-focus"><span>{String(currentStage).padStart(2, "0")}</span><div><small>FAÇA AGORA</small><strong>{currentStep}</strong></div></div>
           <p>Feche orientação, leitura, questões, flashcards e D0 antes de avançar. D7/D20 seguem em paralelo.</p>
           <div className="laws-checkpoints">{["Orientação", "Questões", "Flashcards", "D0", "D7/D20"].map((label) => <span className={`laws-checkpoint ${label === "Orientação" && currentLaw?.orientation_read ? "is-done" : ""}`} key={label}>{label === "Orientação" && currentLaw?.orientation_read ? "✓" : "○"} {label}</span>)}</div>
           <a className="laws-next-cta" href={currentLaw ? `./${currentLaw.code.toLowerCase()}/` : "#mapa-detalhado"}>Abrir norma <span aria-hidden="true">↗</span></a>
           <a className="laws-next-notion" href={currentLaw?.notion_url || snapshot?.source.page_url || "#"} target="_blank" rel="noreferrer">Abrir no Notion ↗</a>
         </aside>
+      </section>
+
+      <section className="laws-study-flow" aria-label="Fluxo para fechar uma norma">
+        <div className="laws-flow-intro"><p className="laws-kicker">MÉTODO DE FECHAMENTO</p><h2>Uma norma, um bloco fechado.</h2><p>O caminho é fixo. A próxima ação muda conforme o que já foi registrado.</p><span className="laws-flow-now">Agora: <strong>{currentStep}</strong></span></div>
+        <ol className="laws-flow-steps">
+          {flowSteps.map(([label, detail], index) => {
+            const step = index + 1;
+            const done = Boolean(currentLaw && lawComplete(currentLaw)) || step < currentStage;
+            const active = !currentLaw || !lawComplete(currentLaw) ? step === currentStage : false;
+            return <li className={`${done ? "is-done" : ""} ${active ? "is-current" : ""}`} key={label}><span>{String(step).padStart(2, "0")}</span><div><b>{label}</b><small>{detail}</small></div></li>;
+          })}
+        </ol>
+        <div className="laws-flow-review"><span>↗</span><div><small>EM PARALELO</small><b>D7 + D20</b><p>não bloqueiam a próxima norma</p></div></div>
       </section>
 
       <section className="laws-status-strip" aria-label="Estado da trilha">
