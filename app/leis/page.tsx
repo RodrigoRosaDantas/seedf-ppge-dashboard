@@ -8,13 +8,9 @@ import {
   CheckCircle2,
   CircleAlert,
   ExternalLink,
-  FileText,
   Filter,
-  Layers3,
   Search,
   ShieldCheck,
-  Sparkles,
-  Target,
 } from "lucide-react";
 import "./leis.css";
 
@@ -113,6 +109,19 @@ function priorityShort(value?: string) {
   return value.replace(" - ", " · ");
 }
 
+function isRadarLaw(law: Law) {
+  return /radar/i.test(`${law.action || ""} ${law.priority || ""}`);
+}
+
+function lawComplete(law: Law) {
+  if (isRadarLaw(law)) return false;
+  return Boolean(law.orientation_read && law.d0);
+}
+
+function completionPercent(done: number, total: number) {
+  return total > 0 ? Math.max(0, Math.min(100, Math.round((done / total) * 100))) : 0;
+}
+
 export default function LeisPrimeiroPage() {
   const [snapshot, setSnapshot] = useState<Snapshot | null>(null);
   const [error, setError] = useState(false);
@@ -155,6 +164,18 @@ export default function LeisPrimeiroPage() {
     .slice(1)
     .map((name) => ({ name, laws: filtered.filter((law) => law.group === name) }))
     .filter((item) => item.laws.length);
+  const executableLaws = snapshot?.laws.filter((law) => !isRadarLaw(law)) || [];
+  const currentLaw = executableLaws.find((law) => !lawComplete(law)) || executableLaws[0] || null;
+  const completedBlocks = executableLaws.filter(lawComplete).length;
+  const currentStep = currentLaw
+    ? !currentLaw.orientation_read
+      ? "1 · Ler orientação"
+      : !currentLaw.d0
+        ? "5 · Fechar D0"
+        : "Bloco fechado · seguir para a próxima norma"
+    : "Aguardando sincronização";
+  const radarLaws = snapshot?.laws.filter(isRadarLaw) || [];
+  const groupNames = groups.slice(1);
   const totalQuestions = (snapshot?.laws || []).reduce(
     (sum, law) => sum + (law.shared_block ? (law.code === "L30" ? 10 : 0) : law.question_target || 0),
     0,
@@ -163,40 +184,69 @@ export default function LeisPrimeiroPage() {
   const radarRecords = snapshot?.summary.radar_records ?? snapshot?.radars?.length ?? 1;
 
   return (
-    <main className="laws-page">
+    <main className="laws-page laws-cockpit">
       <header className="laws-topbar">
         <a className="laws-back" href="../"><ArrowLeft size={17} /> Dashboard SEEDF</a>
         <div className="laws-sync"><span className="laws-live-dot" /> Notion → GitHub · {formatDate(snapshot?.source.synced_at)}</div>
       </header>
 
-      <section className="laws-hero">
+      <section className="laws-hero laws-cockpit-hero">
         <div className="laws-hero-copy">
           <p className="laws-kicker">⚖️ TRILHA OPERACIONAL · SEEDF PPGE</p>
-          <h1>Leis Primeiro</h1>
-          <p className="laws-lead">Leitura + questões + flashcards em uma sequência única. A página organiza o que estudar; o Notion continua sendo a fonte operacional e as fontes oficiais continuam prevalecendo sobre qualquer resumo.</p>
+          <h1>Leis Primeiro<span className="laws-hero-dot">.</span></h1>
+          <p className="laws-lead">Uma fila clara para estudar, registrar e avançar. A próxima ação fica visível; o conteúdo completo continua dentro de cada norma.</p>
+          <div className="laws-hero-meta"><span className="laws-live-dot" /><span>Fonte operacional: Notion</span><span className="laws-meta-separator">·</span><span>Site: consulta e navegação</span></div>
           <div className="laws-hero-actions">
-            <a className="laws-primary" href={snapshot?.source.page_url || "https://app.notion.com/p/3d8cf5a26731817c89f4f4907d14a701"} target="_blank" rel="noreferrer">Abrir trilha no Notion <ExternalLink size={15} /></a>
-            <a className="laws-secondary" href="#leis">Ir para L01–L34 <ArrowUpRight size={15} /></a>
+            <a className="laws-primary" href={currentLaw ? `./${currentLaw.code.toLowerCase()}/` : "#mapa-detalhado"}>▶️ Continuar {currentLaw?.code || "a trilha"}</a>
+            <a className="laws-secondary" href="#trilha">Ver trilha ↓</a>
+            <a className="laws-secondary" href={snapshot?.source.page_url || "https://app.notion.com/p/3d8cf5a26731817c89f4f4907d14a701"} target="_blank" rel="noreferrer">Notion ↗</a>
           </div>
         </div>
-        <div className="laws-hero-card">
-          <div className="laws-seal"><ShieldCheck size={22} /></div>
-          <div><span>Auditoria jurídica</span><strong>11/09/2026</strong><small>{snapshot?.summary.pages ?? 34} páginas · {snapshot?.summary.bank_records ?? 33} registros no banco</small></div>
+        <aside className="laws-next-card">
+          <div className="laws-next-top"><div><p className="laws-kicker">PRÓXIMA AÇÃO</p><span>Bloco atual · {currentLaw?.code || "—"}</span></div><span className="laws-next-badge">01 / 05</span></div>
+          <div className="laws-next-law"><span className="laws-next-code">{currentLaw?.code || "—"}</span><h2>{currentLaw?.title || "Aguardando dados"}</h2></div>
+          <div className="laws-next-focus"><span>01</span><div><small>FAÇA AGORA</small><strong>{currentStep}</strong></div></div>
+          <p>Feche orientação, leitura, questões, flashcards e D0 antes de avançar. D7/D20 seguem em paralelo.</p>
+          <div className="laws-checkpoints">{["Orientação", "Questões", "Flashcards", "D0", "D7/D20"].map((label) => <span className={`laws-checkpoint ${label === "Orientação" && currentLaw?.orientation_read ? "is-done" : ""}`} key={label}>{label === "Orientação" && currentLaw?.orientation_read ? "✓" : "○"} {label}</span>)}</div>
+          <a className="laws-next-cta" href={currentLaw ? `./${currentLaw.code.toLowerCase()}/` : "#mapa-detalhado"}>Abrir norma <span aria-hidden="true">↗</span></a>
+          <a className="laws-next-notion" href={currentLaw?.notion_url || snapshot?.source.page_url || "#"} target="_blank" rel="noreferrer">Abrir no Notion ↗</a>
+        </aside>
+      </section>
+
+      <section className="laws-status-strip" aria-label="Estado da trilha">
+        <article className="laws-stat-progress"><div className="laws-stat-top"><span className="laws-stat-icon">01</span><span>BLOCOS FECHADOS</span></div><strong>{completedBlocks}/{executableLaws.length}</strong><small>por D0 · D7/D20 não bloqueiam</small></article>
+        <article className="laws-stat-questions"><div className="laws-stat-top"><span className="laws-stat-icon">02</span><span>QUESTÕES DE META</span></div><strong>{snapshot ? totalQuestions : "—"}</strong><small>na sequência executável</small></article>
+        <article className="laws-stat-map"><div className="laws-stat-top"><span className="laws-stat-icon">03</span><span>NORMAS NO MAPA</span></div><strong>{snapshot?.summary.pages ?? 34}</strong><small>L01–L34 · 4 trilhas</small></article>
+        <article className="laws-stat-source"><div className="laws-stat-top"><span className="laws-stat-icon">04</span><span>FONTE VIVA</span></div><strong>Notion</strong><small>{mappedRecords} mapeados · {radarRecords} radar</small></article>
+      </section>
+
+      <section className="laws-panel laws-track-panel" id="trilha">
+        <div className="laws-heading"><div><p className="laws-kicker">MAPA DE DECISÃO</p><h2>Por onde continuar</h2><p>Escolha a trilha pelo cargo. Cada cartão já aponta para a próxima norma pendente.</p></div><span className="laws-heading-note">{executableLaws.length} blocos executáveis</span></div>
+        <div className="laws-track-grid">
+          {groupNames.map((name, index) => {
+            const groupLaws = snapshot?.laws.filter((law) => law.group === name) || [];
+            const executable = groupLaws.filter((law) => !isRadarLaw(law));
+            const completed = executable.filter(lawComplete).length;
+            const pending = executable.find((law) => !lawComplete(law));
+            const range = groupLaws.length ? `${groupLaws[0].code}–${groupLaws[groupLaws.length - 1].code}` : "—";
+            const progress = completionPercent(completed, executable.length);
+            return <article className="laws-track-card" data-track-group={name} key={name}>
+              <div className="laws-track-head"><div className="laws-track-head-main"><span className="laws-track-number">0{index + 1}</span><span>{name}</span></div><span className="laws-track-range">{range}</span></div>
+              <div className="laws-track-status">{pending ? `Próxima: ${pending.code}` : executable.length ? "Trilha concluída" : "Acompanhar"}</div>
+              <strong>{pending ? `${pending.code} · ${pending.title}` : executable.length ? "Grupo concluído" : "Somente monitoramento"}</strong>
+              <p>{completed}/{executable.length} blocos fechados por D0{groupLaws.length > executable.length ? ` · ${groupLaws.length - executable.length} radar` : ""}.</p>
+              <div className="laws-track-progress" aria-label={`${progress}% concluído`}><span style={{ width: `${progress}%` }} /></div>
+              <div className="laws-track-foot"><small>{progress}% do grupo</small><a href={pending ? `./${pending.code.toLowerCase()}/` : "#mapa-detalhado"}><span>{pending ? `Abrir ${pending.code}` : "Ver grupo"}</span><span aria-hidden="true">↗</span></a></div>
+            </article>;
+          })}
         </div>
       </section>
 
-      <section className="laws-stats" aria-label="Resumo da trilha">
-        <article><FileText size={19} /><span>Páginas L01–L34</span><strong>{snapshot?.summary.pages ?? 34}</strong></article>
-        <article><Layers3 size={19} /><span>Registros no banco · {mappedRecords} mapeados + {radarRecords} radar</span><strong>{snapshot?.summary.bank_records ?? 33}</strong></article>
-        <article><Target size={19} /><span>Questões-meta mapeadas</span><strong>{snapshot ? totalQuestions : "—"}</strong></article>
-        <article><Sparkles size={19} /><span>Regra de avanço</span><strong>D0 fecha o bloco</strong></article>
-      </section>
+      <nav className="laws-quick-nav" aria-label="Atalhos da trilha"><a className="laws-quick-link" href="#mapa-detalhado"><span className="laws-quick-icon">⌕</span><span><b>Localizar uma norma</b><small>Mapa detalhado e filtros</small></span><span className="laws-quick-arrow">↗</span></a><a className="laws-quick-link" href="#radar"><span className="laws-quick-icon">◎</span><span><b>Ver Radar</b><small>Atualizações fora da fila</small></span><span className="laws-quick-arrow">↗</span></a><a className="laws-quick-link" href={snapshot?.source.page_url || "#"} target="_blank" rel="noreferrer"><span className="laws-quick-icon">▦</span><span><b>Consultar o banco</b><small>Metas, revisões e registros no Notion</small></span><span className="laws-quick-arrow">↗</span></a></nav>
 
-      <section className="laws-panel laws-method">
-        <div className="laws-heading">
-          <div><p className="laws-kicker">SEQUÊNCIA OBRIGATÓRIA</p><h2>Como executar cada norma</h2></div>
-          <span className="laws-chip laws-chip-green"><CheckCircle2 size={14} /> sem esperar D7/D20</span>
-        </div>
+      <details className="laws-panel laws-disclosure laws-method-disclosure">
+        <summary><span><b>📖 COMO ESTUDAR</b><strong>Fluxo de uma norma</strong></span><span>abrir método + regras</span></summary>
+        <div className="laws-disclosure-body">
         <div className="laws-steps">
           {(snapshot?.study_sequence || [
             "Orientação — leia Como estudar, Marcar, Pegadinhas, Recorte prioritário e Vigência / alerta.",
@@ -210,10 +260,12 @@ export default function LeisPrimeiroPage() {
           ))}
         </div>
         <div className="laws-rule"><BookOpenCheck size={18} /><strong>Critério para avançar:</strong><span>{snapshot?.advance_rule || "orientação + 1ª leitura + questões + flashcards + D0; D7/D20 seguem em paralelo."}</span></div>
-      </section>
+        </div>
+      </details>
 
-      <section className="laws-panel laws-audit">
-        <div className="laws-heading"><div><p className="laws-kicker">AUDITORIA INTEGRAL</p><h2>Pontos que não podem ser perdidos</h2></div><CircleAlert size={20} /></div>
+      <details className="laws-panel laws-disclosure laws-audit">
+        <summary><span><b>🔎 AUDITORIA E INTEGRIDADE</b><strong>O que está preservado</strong></span><span>abrir conferência</span></summary>
+        <div className="laws-disclosure-body">
         <div className="laws-audit-grid">
           {(snapshot?.audit_notes || [
             "34 páginas L01–L34 usam 32 registros diretamente mapeados; L30 + L31 + L32 compartilham o registro M5 de acessibilidade.",
@@ -223,9 +275,12 @@ export default function LeisPrimeiroPage() {
             "L34 permanece com meta 0 durante a vacatio legis; vigência em 28/12/2026.",
           ]).map((note) => <div key={note}><CheckCircle2 size={16} /><span>{note}</span></div>)}
         </div>
-      </section>
+        </div>
+      </details>
 
-      <section className="laws-panel" id="leis">
+      <details className="laws-panel laws-disclosure laws-map-panel" id="mapa-detalhado">
+        <summary><span><b>📚 CONSULTA RÁPIDA</b><strong>Mapa detalhado L01–L34</strong><small>Uma linha por norma: ação, prioridade, meta e revisões.</small></span><span>abrir mapa</span></summary>
+        <div className="laws-disclosure-body">
         <div className="laws-heading laws-list-heading">
           <div><p className="laws-kicker">ORDEM REAL DE ESTUDO</p><h2>L01–L34</h2><p>Busque por lei, tema, cargo ou alerta. Abra o cartão para ver recorte, vigência, observações e o estado das revisões.</p></div>
           <span className="laws-result-count">{filtered.length} de {snapshot?.laws.length ?? 34}</span>
@@ -299,14 +354,14 @@ export default function LeisPrimeiroPage() {
             </section>
           ))}
         </div>
-      </section>
+        </div>
+      </details>
 
-      {snapshot?.radars?.length ? (
-        <section className="laws-panel laws-radar">
-          <div className="laws-heading"><div><p className="laws-kicker">RADAR FORA DA NUMERAÇÃO L01–L34</p><h2>Monitoramento normativo</h2></div><ShieldCheck size={20} /></div>
-          {snapshot.radars.map((radar) => (
-            <article key={radar.operational_order}><div><strong>{radar.title}</strong><span>{radar.priority} · meta {radar.question_target} · ordem {radar.operational_order}</span></div><a href={radar.official_url || radar.url} target="_blank" rel="noreferrer">Abrir fonte <ExternalLink size={14} /></a></article>
-          ))}
+      {(radarLaws.length || snapshot?.radars?.length) ? (
+        <section className="laws-panel laws-radar" id="radar">
+          <div className="laws-heading"><div><p className="laws-kicker">RADAR · FORA DA FILA DIÁRIA</p><h2>Monitorar sem disputar atenção</h2><p>Itens de vigência, carreira e atualização normativa permanecem separados da execução.</p></div><span className="laws-chip priority-radar">{radarLaws.length + (snapshot?.radars?.length || 0)} itens</span></div>
+          {radarLaws.map((law) => <article key={law.code}><div><strong>{law.code} · {law.title}</strong><span>{law.priority || "Radar"} · meta {law.question_target || 0}</span></div><a href={`./${law.code.toLowerCase()}/`}>Abrir página <ExternalLink size={14} /></a></article>)}
+          {(snapshot?.radars || []).map((radar) => <article key={radar.operational_order}><div><strong>R{radar.operational_order} · {radar.title}</strong><span>{radar.priority} · fora da sequência L01–L34</span></div><a href={radar.official_url || radar.url} target="_blank" rel="noreferrer">Abrir fonte <ExternalLink size={14} /></a></article>)}
         </section>
       ) : null}
 
