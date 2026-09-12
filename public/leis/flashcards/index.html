@@ -57,6 +57,12 @@
     .sidebar-note{margin:14px 0 0;color:#7f98a5;font-size:10px;line-height:1.5}
     .danger-link{width:100%;margin-top:13px;border:0;background:transparent;color:#c49b9b;font-size:10px;font-weight:800;cursor:pointer;text-align:left}
     .danger-link:hover{color:var(--danger)}
+    .progress-tools{margin-top:16px;padding-top:14px;border-top:1px solid var(--line)}
+    .progress-tools-title{display:block;margin-bottom:8px;color:#7f98a5;font-size:9px;font-weight:950;letter-spacing:.12em;text-transform:uppercase}
+    .progress-tool-row{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+    .progress-tool{min-height:38px;padding:0 8px;border:1px solid rgba(172,210,225,.16);border-radius:10px;background:rgba(255,255,255,.04);color:#cde1e5;font-size:10px;font-weight:850;cursor:pointer}
+    .progress-tool:hover{border-color:rgba(66,212,189,.45);background:rgba(66,212,189,.1)}
+    .progress-tools-note{display:block;margin-top:8px;color:#718d9a;font-size:9px;line-height:1.45}
     .study-main{display:flex;flex-direction:column;gap:14px}
     .session-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:3px 3px 0}
     .session-title{min-width:0}
@@ -110,12 +116,13 @@
     @media(max-width:640px){.study-shell{padding:0 13px 38px}.study-topbar{min-height:58px;font-size:10px}.study-top-status{max-width:52%;font-size:9px;line-height:1.25}.study-hero{display:block;padding:31px 0 22px}.study-lead{font-size:13px}.download-link{margin-top:14px;width:100%}.study-sidebar .panel{display:block;padding:14px}.stats-grid{margin:0 0 14px}.day-list{max-height:155px}.session-head{align-items:flex-start}.session-title strong{font-size:15px;white-space:normal}.session-counter{font-size:9px}.flashcard,.empty-state{min-height:440px;padding:23px 18px;border-radius:18px}.card-top{margin-bottom:31px}.card-front{font-size:25px}.choice-list{grid-template-columns:1fr}.answer-panel{margin-top:28px}.card-footer{margin-top:26px;flex-direction:column;gap:4px}.show-button{width:100%}.rating-panel{grid-template-columns:1fr 1fr}.rating{min-height:63px}.keyboard-note{display:none}}
     @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important}}
   </style>
+  <script src="../../sw-register.js" defer></script>
 </head>
 <body>
 <main class="study-shell">
   <header class="study-topbar">
     <a href="../">← Voltar para Leis Primeiro</a>
-    <div class="study-top-status"><span class="live-dot" aria-hidden="true"></span><span>progresso salvo neste navegador</span></div>
+    <div class="study-top-status"><span class="live-dot" aria-hidden="true"></span><span>progresso local · filtro no link</span></div>
   </header>
 
   <section class="study-hero">
@@ -138,7 +145,16 @@
         <div class="queue-summary" id="queue-summary"></div>
         <div class="day-list" id="day-list" aria-label="Atalhos por dia"></div>
         <p class="sidebar-note">O progresso é local, neste navegador. O Notion continua sendo o registro operacional da trilha; esta ferramenta é a camada de execução e revisão.</p>
-        <button class="danger-link" id="reset-button">↺ Limpar progresso do filtro atual</button>
+        <button class="danger-link" id="reset-button" type="button">↺ Limpar progresso do filtro atual</button>
+        <div class="progress-tools" aria-label="Transportar progresso">
+          <span class="progress-tools-title">Levar progresso para outro dispositivo</span>
+          <div class="progress-tool-row">
+            <button class="progress-tool" id="export-button" type="button">↓ Exportar</button>
+            <button class="progress-tool" id="import-button" type="button">↑ Importar</button>
+          </div>
+          <input id="import-input" type="file" accept="application/json" hidden>
+          <small class="progress-tools-note">O arquivo é local e não altera o Notion.</small>
+        </div>
       </div>
     </aside>
 
@@ -156,7 +172,7 @@
       <div class="toast" id="toast" role="status"></div>
     </section>
   </section>
-  <p class="study-disclaimer">Cartões autorais baseados nas normas da trilha. Para a redação jurídica, consulte a <a href="https://www.planalto.gov.br/" target="_blank" rel="noreferrer">fonte oficial vigente</a>. <a href="../">Voltar ao painel Leis Primeiro</a>.</p>
+  <p class="study-disclaimer">Cartões autorais baseados nas normas da trilha. O filtro de dia e modo fica no link para você retomar a sessão; exporte o progresso quando quiser levar a revisão para outro dispositivo. Para a redação jurídica, consulte a <a href="https://www.planalto.gov.br/" target="_blank" rel="noreferrer">fonte oficial vigente</a>. <a href="../">Voltar ao painel Leis Primeiro</a>.</p>
 </main>
 <script>
 (() => {
@@ -166,6 +182,9 @@
   const modeSelect = document.getElementById("mode-select");
   const shuffleButton = document.getElementById("shuffle-button");
   const resetButton = document.getElementById("reset-button");
+  const exportButton = document.getElementById("export-button");
+  const importButton = document.getElementById("import-button");
+  const importInput = document.getElementById("import-input");
   const dayList = document.getElementById("day-list");
   const statsGrid = document.getElementById("stats-grid");
   const queueSummary = document.getElementById("queue-summary");
@@ -185,8 +204,9 @@
   let dataset = null;
   let cardsById = new Map();
   let progress = loadProgress();
-  let selectedDay = "all";
-  let mode = "due";
+  const initialUrlState = readUrlState();
+  let selectedDay = initialUrlState.day;
+  let mode = initialUrlState.mode;
   let queue = [];
   let current = null;
   let revealed = false;
@@ -197,6 +217,22 @@
     try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}"); } catch { return {}; }
   }
   function saveProgress() { localStorage.setItem(STORAGE_KEY, JSON.stringify(progress)); }
+  function readUrlState() {
+    const params = new URLSearchParams(window.location.search);
+    const requestedDay = String(params.get("dia") || "").toUpperCase();
+    const dayNumber = Number(requestedDay.replace(/^L/, ""));
+    const day = /^L\d{2}$/.test(requestedDay) && dayNumber >= 1 && dayNumber <= 34 ? requestedDay : "all";
+    return { day, mode: params.get("modo") === "all" ? "all" : "due" };
+  }
+  function syncUrlState() {
+    const url = new URL(window.location.href);
+    if (selectedDay === "all") url.searchParams.delete("dia");
+    else url.searchParams.set("dia", selectedDay.toLowerCase());
+    if (mode === "due") url.searchParams.delete("modo");
+    else url.searchParams.set("modo", "all");
+    window.history.replaceState(null, "", `${url.pathname}${url.search}${url.hash}`);
+  }
+
   function allCards() { return dataset ? dataset.days.flatMap((day) => day.cards) : []; }
   function dayInfo(code) { return dataset.days.find((day) => day.code === code); }
   function selectedCards() {
@@ -243,9 +279,11 @@
     dataset.days.forEach((day) => {
       const option = document.createElement("option"); option.value = day.code; option.textContent = `${day.code} · ${day.title}`; daySelect.append(option);
     });
+    daySelect.value = selectedDay;
+    modeSelect.value = mode;
     dayList.replaceChildren();
-    const all = element("button", "day-pill is-active", "Todos"); all.type = "button"; all.dataset.day = "all"; dayList.append(all);
-    dataset.days.forEach((day) => { const button = element("button", "day-pill", day.code); button.type = "button"; button.dataset.day = day.code; dayList.append(button); });
+    const all = element("button", "day-pill", "Todos"); all.type = "button"; all.dataset.day = "all"; all.classList.toggle("is-active", selectedDay === "all"); all.title = "Estudar todos os dias"; all.setAttribute("aria-label", "Estudar todos os dias"); dayList.append(all);
+    dataset.days.forEach((day) => { const button = element("button", "day-pill", day.code); button.type = "button"; button.dataset.day = day.code; button.classList.toggle("is-active", day.code === selectedDay); button.title = day.title; button.setAttribute("aria-label", `Estudar ${day.code} · ${day.title}`); dayList.append(button); });
     dayList.addEventListener("click", (event) => { const button = event.target.closest("[data-day]"); if (button) selectDay(button.dataset.day); });
   }
 
@@ -315,18 +353,89 @@
     const doneId = current.id; queue.shift(); if (rating === "again") queue.push(doneId); current = queue.length ? cardsById.get(queue[0]) : null; revealed = false; selectedOption = null; typedDraft = ""; toast.textContent = `Registrado: ${rating === "again" ? "rever em 1 min" : `próxima revisão em ${nextLabel}`}.`;
     renderAll();
   }
-  function selectDay(code) { selectedDay = code; daySelect.value = code; buildQueue(false); }
+  function selectDay(code) { selectedDay = code; daySelect.value = code; syncUrlState(); buildQueue(false); }
+  function exportProgress() {
+    const payload = {
+      schema_version: 1,
+      app: "seedf-leis-primeiro",
+      exported_at: new Date().toISOString(),
+      progress,
+    };
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "SEEDF_Leis_Primeiro_progresso.json";
+    document.body.append(link);
+    link.click();
+    link.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 0);
+    toast.textContent = "Progresso exportado para um arquivo local.";
+  }
+
+  function sanitizeImportedProgress(value) {
+    const source = value?.progress && typeof value.progress === "object" ? value.progress : value;
+    const allowedRatings = new Set(["again", "hard", "good", "easy"]);
+    const sanitized = {};
+    Object.entries(source || {}).forEach(([id, item]) => {
+      if (!cardsById.has(id) || !item || typeof item !== "object") return;
+      const finite = (candidate, fallback = 0) => {
+        const number = Number(candidate);
+        return Number.isFinite(number) ? number : fallback;
+      };
+      const rating = allowedRatings.has(item.lastRating) ? item.lastRating : undefined;
+      sanitized[id] = {
+        interval: Math.max(0, finite(item.interval)),
+        ease: Math.max(1.3, finite(item.ease, 2.5)),
+        reps: Math.max(0, finite(item.reps)),
+        lapses: Math.max(0, finite(item.lapses)),
+        dueAt: Math.max(0, finite(item.dueAt)),
+        lastReviewed: Math.max(0, finite(item.lastReviewed)),
+        ...(rating ? { lastRating: rating } : {}),
+      };
+    });
+    return sanitized;
+  }
+
+  async function importProgressFile(event) {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    if (!file) return;
+    if (!dataset) {
+      toast.textContent = "Aguarde o carregamento dos cartões.";
+      return;
+    }
+    try {
+      const imported = sanitizeImportedProgress(JSON.parse(await file.text()));
+      const entries = Object.keys(imported).length;
+      if (!entries) {
+        toast.textContent = "O arquivo não contém progresso compatível com L01–L34.";
+        return;
+      }
+      if (!window.confirm(`Substituir o progresso atual por ${entries} cartões importados?`)) return;
+      progress = imported;
+      saveProgress();
+      buildQueue(false);
+      toast.textContent = `Progresso importado: ${entries} cartões.`;
+    } catch {
+      toast.textContent = "Não foi possível ler esse arquivo de progresso.";
+    }
+  }
+
   function resetProgress() { const cards = selectedCards(); const label = selectedDay === "all" ? "todos os dias" : selectedDay; if (!window.confirm(`Limpar o progresso de ${label}?`)) return; cards.forEach((card) => delete progress[card.id]); saveProgress(); toast.textContent = `Progresso de ${label} limpo.`; buildQueue(false); }
 
   daySelect.addEventListener("change", () => selectDay(daySelect.value));
-  modeSelect.addEventListener("change", () => { mode = modeSelect.value; buildQueue(false); });
+  modeSelect.addEventListener("change", () => { mode = modeSelect.value; syncUrlState(); buildQueue(false); });
   shuffleButton.addEventListener("click", () => buildQueue(true));
   resetButton.addEventListener("click", resetProgress);
+  exportButton.addEventListener("click", exportProgress);
+  importButton.addEventListener("click", () => importInput.click());
+  importInput.addEventListener("change", importProgressFile);
   showButton.addEventListener("click", reveal);
   ratings.forEach((button) => button.addEventListener("click", () => rate(button.dataset.rating)));
   document.addEventListener("keydown", (event) => { if (event.target.matches("input,select,textarea")) return; if (event.code === "Space") { event.preventDefault(); reveal(); } if (revealed && ["1","2","3","4"].includes(event.key)) rate(({1:"again",2:"hard",3:"good",4:"easy"})[event.key]); });
 
-  fetch(`${DATA_URL}?v=1`, { cache: "no-store" }).then((response) => { if (!response.ok) throw new Error("dataset unavailable"); return response.json(); }).then((value) => { dataset = value; allCards().forEach((card) => cardsById.set(card.id, card)); populateSelectors(); buildQueue(false); }).catch(() => { cardStage.innerHTML = '<div class="empty-state"><div><strong>Não foi possível carregar os cartões</strong><p>Verifique a conexão e atualize a página. O APKG continua disponível pelo botão de download.</p></div></div>'; sessionKicker.textContent = "ERRO DE LEITURA"; sessionTitle.textContent = "Dataset indisponível"; });
+  fetch(`${DATA_URL}?v=1`, { cache: "no-store" }).then((response) => { if (!response.ok) throw new Error("dataset unavailable"); return response.json(); }).then((value) => { dataset = value; const requested = readUrlState(); selectedDay = dataset.days.some((day) => day.code === requested.day) ? requested.day : "all"; mode = requested.mode; allCards().forEach((card) => cardsById.set(card.id, card)); populateSelectors(); syncUrlState(); buildQueue(false); }).catch(() => { cardStage.innerHTML = '<div class="empty-state"><div><strong>Não foi possível carregar os cartões</strong><p>Verifique a conexão e atualize a página. O APKG continua disponível pelo botão de download.</p></div></div>'; sessionKicker.textContent = "ERRO DE LEITURA"; sessionTitle.textContent = "Dataset indisponível"; });
 })();
 </script>
 </body>
