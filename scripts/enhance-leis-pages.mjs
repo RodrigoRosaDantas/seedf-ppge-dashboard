@@ -30,6 +30,12 @@ function orderForCode(code) {
   const x = Number(String(code).replace(/^L/i,""));
   if (x <= 11) return x; if (x <= 18) return 100 + x - 11; if (x <= 24) return 200 + x - 18; if (x <= 29) return 300 + x - 24; if (x <= 32) return 306; if (x === 33) return 307; return 308;
 }
+function ensureThemeColor(html) {
+  return html.includes('name="theme-color"')
+    ? html
+    : html.replace("</head>", '<meta name="theme-color" content="#071824"></head>');
+}
+
 function cssLink(prefix) { return `<link rel="stylesheet" href="${prefix}leis-enhanced.css?v=20260912h">`; }
 
 function operationalMarkup(law, row) {
@@ -52,6 +58,7 @@ function operationalMarkup(law, row) {
 }
 
 function enhanceLawHtml(html, law) {
+  html = ensureThemeColor(html);
   const row = rowByOrder.get(orderForCode(law.code));
   if (!html.includes("leis-enhanced.css")) html = html.replace("</head>", `${cssLink("../../")}</head>`);
   if (!html.includes("laws-reading-body")) html = html.replace("<body>", `<body class="laws-reading-body"><div class="read-progress"><span id="read-progress-bar"></span></div>`);
@@ -93,6 +100,7 @@ function bankSection() {
 let indexPath = path.join(out,"index.html");
 await access(indexPath);
 let index = await readFile(indexPath,"utf8");
+index = ensureThemeColor(index);
 if (!index.includes("leis-enhanced.css")) index = index.replace("</head>", `${cssLink("../")}</head>`);
 if (rows.length && !index.includes('id="banco-legislacao"')) index = index.replace('<div class="static-note">', `${bankSection()}<div class="static-note">`);
 if (rows.length && !index.includes('id="bank-mobile-list"')) index = index.replace('<p class="bank-note">', `<div class="bank-mobile-list" id="bank-mobile-list" aria-label="Registros da legislação para celular">${rows.map(bankMobileRow).join("")}<div id="bank-mobile-empty" class="bank-empty">Nenhum registro corresponde aos filtros.</div></div><p class="bank-note">`);

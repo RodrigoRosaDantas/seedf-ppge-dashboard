@@ -68,6 +68,7 @@ test("published shell includes an offline registration path", async () => {
   assert.match(serviceWorker, /cache\.put\(request, copy\)\)\.catch/);
   assert.match(registration, /serviceWorker\.register/);
   assert.match(layout, /sw-register\.js/);
+  assert.match(layout, /theme-color/);
 });
 
 test("uses the SEEDF PPGE brand mark across the shell", async () => {
@@ -80,6 +81,12 @@ test("uses the SEEDF PPGE brand mark across the shell", async () => {
   assert.match(favicon, /id="panel"/);
   assert.match(dashboard, /className="brand-mark"><img src="\.\/favicon\.svg"/);
   assert.match(manifest, /favicon\.svg/);
+});
+
+test("law page enhancement keeps the brand theme metadata", async () => {
+  const source = await read("scripts/enhance-leis-pages.mjs");
+  assert.match(source, /function ensureThemeColor/);
+  assert.match(source, /name="theme-color"/);
 });
 
 test("the Pages workflow runs tests before publishing", async () => {

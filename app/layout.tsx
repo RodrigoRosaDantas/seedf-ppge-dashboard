@@ -11,6 +11,7 @@ export const metadata: Metadata = {
   description: "Central de comando da preparação pré-edital para Gestor PPGE, Analista PPGE — Apoio Administrativo e Analista PPGE — Monitor.",
   other: {
     "codex-preview": "development",
+    "theme-color": "#071824",
   },
   icons: {
     icon: `${siteBasePath}/favicon.svg`,
