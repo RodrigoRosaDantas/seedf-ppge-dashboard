@@ -4,6 +4,7 @@ on:
   push:
     branches: [main]
     paths:
+      - "scripts/sync-notion.mjs"
       - "scripts/sync-leis-primeiro.mjs"
       - "scripts/sync-legislation-bank.mjs"
       - ".github/workflows/sync-notion.yml"

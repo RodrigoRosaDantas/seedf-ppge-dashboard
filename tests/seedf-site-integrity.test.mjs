@@ -71,3 +71,10 @@ test("the Pages workflow runs tests before publishing", async () => {
   const workflow = await read(".github/workflows/deploy-pages.yml");
   assert.match(workflow, /npm test/);
 });
+
+test("the Notion workflow reacts to every snapshot synchronizer", async () => {
+  const workflow = await read(".github/workflows/sync-notion.yml");
+  assert.match(workflow, /"scripts\/sync-notion\.mjs"/);
+  assert.match(workflow, /"scripts\/sync-leis-primeiro\.mjs"/);
+  assert.match(workflow, /"scripts\/sync-legislation-bank\.mjs"/);
+});
