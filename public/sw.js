@@ -1,4 +1,4 @@
-const CACHE_NAME = "seedf-pages-v2";
+const CACHE_NAME = "seedf-pages-v3";
 const CORE_ASSETS = [
   "./",
   "./manifest.webmanifest",
@@ -37,7 +37,7 @@ function isSameOrigin(request) {
 function cacheResponse(request, response) {
   if (!response || !response.ok) return response;
   const copy = response.clone();
-  void caches.open(CACHE_NAME).then((cache) => cache.put(request, copy));
+  void caches.open(CACHE_NAME).then((cache) => cache.put(request, copy)).catch(() => undefined);
   return response;
 }
 

@@ -1,3 +1,6 @@
+/* Notion's schema-dependent property bags stay untyped at this adapter boundary. */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 const NOTION_API_BASE = "https://api.notion.com/v1";
 const NOTION_VERSION = "2026-03-11";
 const PAGE_ID = "3d4cf5a2-6731-8106-a2c9-c97816aa6cf5";
@@ -7,6 +10,7 @@ const DAYS_DATA_SOURCE_ID = "60966f0a-b3eb-416b-8995-64253ed26a45";
 const QUESTIONS_DATA_SOURCE_ID = "8a241986-94e7-4340-b898-dc905b19fd58";
 const ERRORS_DATA_SOURCE_ID = "68d7c880-165b-4e44-988b-cb9e3c38d8b2";
 const CACHE_TTL_MS = 60_000;
+const FORCE_REFRESH_COOLDOWN_MS = 15_000;
 const MAX_NOTION_CONCURRENCY = 4;
 
 const allowedOrigins = new Set([
@@ -18,6 +22,8 @@ const allowedOrigins = new Set([
 ]);
 
 let cachedSnapshot: { expiresAt: number; value: DashboardSnapshot } | null = null;
+let refreshPromise: Promise<DashboardSnapshot> | null = null;
+let lastForcedRefreshAt = 0;
 
 Deno.serve(async (request) => {
   const headers = corsHeaders(request);
@@ -37,7 +43,8 @@ Deno.serve(async (request) => {
     return json({ error: "API temporariamente indisponível." }, 503, headers);
   }
 
-  if (!forceRefresh && cachedSnapshot && cachedSnapshot.expiresAt > Date.now()) {
+  const now = Date.now();
+  if (!forceRefresh && cachedSnapshot && cachedSnapshot.expiresAt > now) {
     return json(cachedSnapshot.value, 200, {
       ...headers,
       "X-SEEDF-Cache": "hit",
@@ -45,8 +52,40 @@ Deno.serve(async (request) => {
     });
   }
 
+  if (forceRefresh && cachedSnapshot && now - lastForcedRefreshAt < FORCE_REFRESH_COOLDOWN_MS) {
+    return json(cachedSnapshot.value, 200, {
+      ...headers,
+      "X-SEEDF-Cache": "throttled",
+      "Cache-Control": "public, max-age=15",
+    });
+  }
+
+  if (refreshPromise) {
+    try {
+      const snapshot = await refreshPromise;
+      return json(snapshot, 200, {
+        ...headers,
+        "X-SEEDF-Cache": "coalesced",
+        "Cache-Control": "public, max-age=30",
+      });
+    } catch (error) {
+      console.error("SEEDF Notion sync failed while coalescing:", error instanceof Error ? error.message : "unknown error");
+      if (cachedSnapshot) {
+        return json(cachedSnapshot.value, 200, {
+          ...headers,
+          "X-SEEDF-Cache": "stale",
+          "Cache-Control": "public, max-age=30, stale-while-revalidate=60",
+        });
+      }
+      return json({ error: "Não foi possível consultar os dados do Notion." }, 502, headers);
+    }
+  }
+
+  if (forceRefresh) lastForcedRefreshAt = now;
+  const currentRefresh = buildSnapshot(token);
+  refreshPromise = currentRefresh;
   try {
-    const snapshot = await buildSnapshot(token);
+    const snapshot = await currentRefresh;
     cachedSnapshot = { expiresAt: Date.now() + CACHE_TTL_MS, value: snapshot };
     return json(snapshot, 200, {
       ...headers,
@@ -55,7 +94,16 @@ Deno.serve(async (request) => {
     });
   } catch (error) {
     console.error("SEEDF Notion sync failed:", error instanceof Error ? error.message : "unknown error");
+    if (cachedSnapshot) {
+      return json(cachedSnapshot.value, 200, {
+        ...headers,
+        "X-SEEDF-Cache": "stale",
+        "Cache-Control": "public, max-age=30, stale-while-revalidate=60",
+      });
+    }
     return json({ error: "Não foi possível consultar os dados do Notion." }, 502, headers);
+  } finally {
+    if (refreshPromise === currentRefresh) refreshPromise = null;
   }
 });
 

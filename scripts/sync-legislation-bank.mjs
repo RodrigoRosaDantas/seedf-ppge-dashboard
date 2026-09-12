@@ -1,4 +1,4 @@
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 const DATABASE_ID = "49157e87d33a4fa590edfdb4b84dbc46";
@@ -134,5 +134,22 @@ const snapshot = {
 };
 if (rows.length !== 33) throw new Error(`Expected 33 legislation bank rows, found ${rows.length}.`);
 await mkdir(path.dirname(output), { recursive: true });
+const previousSnapshot = await readPreviousSnapshot(output);
+if (previousSnapshot?.source?.synced_at && snapshotContent(previousSnapshot) === snapshotContent(snapshot)) {
+  snapshot.source.synced_at = previousSnapshot.source.synced_at;
+}
 await writeFile(output, `${JSON.stringify(snapshot, null, 2)}\n`, "utf8");
 console.log(`BANCO — LEGISLAÇÃO SEEDF: ${rows.length} registros sincronizados em ${output}.`);
+
+async function readPreviousSnapshot(filePath) {
+  try {
+    return JSON.parse(await readFile(filePath, "utf8"));
+  } catch (error) {
+    if (error?.code === "ENOENT") return null;
+    throw error;
+  }
+}
+
+function snapshotContent(value) {
+  return JSON.stringify(value, (key, nested) => key === "synced_at" ? undefined : nested);
+}

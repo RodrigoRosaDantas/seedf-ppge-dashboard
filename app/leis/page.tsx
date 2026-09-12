@@ -98,7 +98,7 @@ function formatDate(value: string | null | undefined) {
   if (!value) return "aguardando sincronização";
   const date = new Date(value);
   if (Number.isNaN(date.valueOf())) return "aguardando sincronização";
-  return new Intl.DateTimeFormat("pt-BR", { dateStyle: "short", timeStyle: "short" }).format(date);
+  return new Intl.DateTimeFormat("pt-BR", { dateStyle: "short", timeStyle: "short", timeZone: "America/Sao_Paulo" }).format(date);
 }
 
 function formatAuditDate(value: string | null | undefined) {

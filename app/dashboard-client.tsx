@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   ArrowRight,
   BarChart3,
@@ -9,7 +9,6 @@ import {
   ChevronRight,
   CircleAlert,
   Clock3,
-  FileCheck2,
   FileText,
   GraduationCap,
   Layers3,
@@ -163,7 +162,6 @@ type DashboardSnapshot = {
 const LIVE_NOTION_API_URL = "https://fqqkkyusnzhuuizahkww.supabase.co/functions/v1/seedf-notion";
 // Public Supabase anon key: it gates the read-only function; the Notion token never reaches the browser.
 const LIVE_NOTION_API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZxcWtreXVzbnpodXVpemFoa3d3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU3MjIwNTksImV4cCI6MjEwMTI5ODA1OX0.YZd0d4XsFHFT6uETemPZdcDc9t0pQUn8_XmNFHx7hJ0";
-let activeDashboardSnapshot: DashboardSnapshot | null = null;
 
 function isDashboardSnapshot(value: unknown): value is DashboardSnapshot {
   if (!value || typeof value !== "object") return false;
@@ -191,14 +189,14 @@ function formatSnapshotDate(value: string | null) {
   if (!value) return "aguardando sincronização";
   const date = new Date(value);
   if (Number.isNaN(date.valueOf())) return "aguardando sincronização";
-  return new Intl.DateTimeFormat("pt-BR", { dateStyle: "short", timeStyle: "short" }).format(date);
+  return new Intl.DateTimeFormat("pt-BR", { dateStyle: "short", timeStyle: "short", timeZone: "America/Sao_Paulo" }).format(date);
 }
 
 function formatMaterialsAudit(value: string | null) {
   if (!value) return "LEITURA LEGISLATIVA · AUDITORIA 08/09/2026";
   const date = new Date(value);
   if (Number.isNaN(date.valueOf())) return "LEITURA LEGISLATIVA · AUDITORIA 08/09/2026";
-  return `LEITURA LEGISLATIVA · NOTION ATUALIZADO ${new Intl.DateTimeFormat("pt-BR", { dateStyle: "short" }).format(date)}`;
+  return `LEITURA LEGISLATIVA · NOTION ATUALIZADO ${new Intl.DateTimeFormat("pt-BR", { dateStyle: "short", timeZone: "America/Sao_Paulo" }).format(date)}`;
 }
 
 function formatExecutionPercent(value: number | null) {
@@ -637,6 +635,8 @@ function StudyToday() {
         const validIds = saved.filter(
           (id) => typeof id === "string" && D01_CHECKLIST.some((item) => item.id === id),
         ) as string[];
+        // Reconcile persisted device state after hydration; the server render stays deterministic.
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setChecked(validIds);
       }
     } catch {
@@ -665,6 +665,8 @@ function StudyToday() {
       const elapsedSeconds = typeof saved?.elapsedSeconds === "number" && Number.isFinite(saved.elapsedSeconds)
         ? Math.max(0, Math.floor(saved.elapsedSeconds))
         : 0;
+      // Reconcile persisted device state after hydration; the server render stays deterministic.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setSessionStartedAt(startedAt);
       setSessionBaseElapsed(elapsedSeconds);
     } catch {
@@ -722,7 +724,7 @@ function Jobs() {
   return <div className="inner-page"><section className="page-intro"><div><p className="eyebrow">EDITAL PROJETADO · 60 EIXOS</p><h1>Cargos-meta e trilhas de cobrança</h1><p>O núcleo comum conversa com os três cargos; a prioridade e o aprofundamento continuam visíveis.</p></div><StatusPill tone="gold">v0.2 · 07/09/2026</StatusPill></section><section className="job-list">{jobs.map((job) => <JobCard job={job} key={job.code} />)}</section><section className="content-grid three-columns"><div className="panel mini-metric"><p className="eyebrow">MANUTENÇÃO</p><strong>24</strong><span>eixos com base histórica pertinente</span></div><div className="panel mini-metric"><p className="eyebrow">REFORÇO</p><strong>25</strong><span>eixos que pedem teoria + questões</span></div><div className="panel mini-metric"><p className="eyebrow">NOVOS</p><strong>11</strong><span>eixos sem domínio presumido</span></div></section></div>;
 }
 
-function Progress({ snapshot = activeDashboardSnapshot }: { snapshot?: DashboardSnapshot | null } = {}) {
+function Progress({ snapshot }: { snapshot?: DashboardSnapshot | null }) {
   const execution = snapshot?.execution?.c01;
   const totals = execution?.totals;
   const fixedPlanned = totals?.fixed_meta ?? snapshot?.dashboard.planned_questions ?? 385;
@@ -786,9 +788,6 @@ function Progress({ snapshot = activeDashboardSnapshot }: { snapshot?: Dashboard
   );
 }
 
-function MaterialsLegacy() {
-  return <div className="inner-page"><section className="page-intro"><div><p className="eyebrow">BIBLIOTECA SEEDF</p><h1>Fontes que alimentam a preparação</h1><p>O site organiza o acesso. A verdade continua no material oficial e no Notion operacional.</p></div><StatusPill tone="teal">Fonte: Notion SEEDF</StatusPill></section><section className="source-grid">{sources.map((source) => <article className="panel source-card" key={source.title}><div className="source-card-top"><span className="source-icon"><FileCheck2 size={18} /></span><StatusPill>{source.tag}</StatusPill></div><h3>{source.title}</h3><p>{source.detail}</p><a className="text-button" href={source.href} target="_blank" rel="noreferrer">Abrir no Notion <ChevronRight size={16} /></a></article>)}</section><section className="panel materials-roadmap"><SectionHeading eyebrow="CICLO 01 · MATERIAL COMPLETO" title="Materiais do D01 ao D14" description="Cada cartão abre a página correspondente no Notion. A meta e o estado seguem a sequência operacional do C01." action={<a className="text-button" href={notionMaterialsPage} target="_blank" rel="noreferrer">Abrir biblioteca no Notion <ChevronRight size={16} /></a>} /><div className="material-grid">{studyMaterials.map((material) => <article className={`material-card material-${material.tone}`} key={material.day}><div className="material-card-top"><span className="material-day">{material.day}</span><StatusPill tone={material.tone === "coral" ? "coral" : material.tone === "gold" ? "gold" : material.tone === "violet" ? "violet" : "teal"}>{material.meta}</StatusPill></div><h3>{material.title}</h3><p>{material.detail}</p><a className="text-button" href={material.href} target="_blank" rel="noreferrer">Abrir material <ArrowRight size={15} /></a></article>)}</div></section><section className="panel legislation-panel"><SectionHeading eyebrow="LEITURA LEGISLATIVA · AUDITORIA 08/09/2026" title="Leis e fontes oficiais por dia" description="O roteiro abaixo foi organizado a partir da página de materiais do Notion. “Sem lei seca nuclear” significa que o dia prioriza material técnico, conceitos ou revisão adaptativa." action={<a className="text-button" href={notionMaterialsPage} target="_blank" rel="noreferrer">Ver roteiro no Notion <ChevronRight size={16} /></a>} /><div className="legislation-list">{legislationPlan.map((item) => <article className={`legislation-item legislation-${item.tone}`} key={item.day}><div className="legislation-day">{item.day}</div><div className="legislation-body"><div className="legislation-title-row"><h3>{item.title}</h3><StatusPill tone={item.tone === "coral" ? "coral" : item.tone === "gold" ? "gold" : item.tone === "violet" ? "violet" : "teal"}>{item.status}</StatusPill></div><p>{item.detail}</p>{item.links.length > 0 ? <div className="law-links">{item.links.map((link) => <a href={link.href} target="_blank" rel="noreferrer" key={link.href}>{link.label} <ArrowRight size={13} /></a>)}</div> : <span className="law-empty">Sem lei seca nuclear neste recorte</span>}</div></article>)}</div></section><section className="panel future-materials"><SectionHeading eyebrow="FILA POSTERIOR · NOTION" title="Materiais já previstos para depois do C01" description="Eles permanecem no repositório, mas não deslocam o D01 nem antecipam um novo ciclo." action={<a className="text-button" href={notionMaterialsPage} target="_blank" rel="noreferrer">Abrir materiais sequenciais <ChevronRight size={16} /></a>} /><div className="future-material-grid">{futureMaterials.map((material) => <div className="future-material" key={material.label}><strong>{material.label}</strong><span>{material.detail}</span></div>)}</div></section><section className="panel materials-note"><div className="note-icon"><CircleAlert size={19} /></div><div><p className="eyebrow">REGRA-MÃE</p><h3>Fonte oficial atualizada prevalece sobre resumo antigo.</h3><p>O Notion mantém o material completo; o site oferece uma visão rápida, com links para a fonte oficial e para cada página do C01.</p></div></section></div>;
-}
 
 function normalizeSearch(value: string) {
   return value.normalize("NFD").replace(/\p{Diacritic}/gu, "").toLowerCase();
@@ -802,7 +801,7 @@ function toneForSequence(order: number): MaterialsTone {
   return "teal";
 }
 
-function Materials({ snapshot = activeDashboardSnapshot }: { snapshot?: DashboardSnapshot | null }) {
+function Materials({ snapshot }: { snapshot?: DashboardSnapshot | null }) {
   const [selectedMaterial, setSelectedMaterial] = useState<MaterialPreview | null>(null);
   const [materialsView, setMaterialsView] = useState<MaterialsView>("c01");
 
@@ -1163,7 +1162,7 @@ function Materials({ snapshot = activeDashboardSnapshot }: { snapshot?: Dashboar
 }
 
 export default function Home() {
-  const [section, setSection] = useState<SectionId>(() => sectionFromLocation());
+  const [section, setSection] = useState<SectionId>("inicio");
   const [menuOpen, setMenuOpen] = useState(false);
   const [snapshot, setSnapshot] = useState<DashboardSnapshot | null>(null);
   const [lastUpdated, setLastUpdated] = useState("Notion · carregando...");
@@ -1178,15 +1177,15 @@ export default function Home() {
     window.history.replaceState(null, "", `${url.pathname}${url.search}${url.hash}`);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
-  const readSnapshot = async (url: string, options: RequestInit = {}) => {
+  const readSnapshot = useCallback(async (url: string, options: RequestInit = {}) => {
     const separator = url.includes("?") ? "&" : "?";
     const response = await fetch(`${url}${separator}ts=${Date.now()}`, { ...options, cache: "no-store" });
     if (!response.ok) throw new Error("Snapshot indisponível");
     const candidate: unknown = await response.json();
     if (!isDashboardSnapshot(candidate)) throw new Error("Snapshot inválido");
     return candidate;
-  };
-  const refreshSnapshot = async () => {
+  }, []);
+  const refreshSnapshot = useCallback(async () => {
     setRefreshing(true);
     setSyncError(false);
     try {
@@ -1214,9 +1213,10 @@ export default function Home() {
     } finally {
       setRefreshing(false);
     }
-  };
+  }, [readSnapshot]);
   useEffect(() => {
     const syncSectionFromHash = () => setSection(sectionFromLocation());
+    syncSectionFromHash();
     window.addEventListener("hashchange", syncSectionFromHash);
     return () => window.removeEventListener("hashchange", syncSectionFromHash);
   }, []);
@@ -1249,9 +1249,8 @@ export default function Home() {
 
     void initialize();
     return () => { cancelled = true; };
-  }, []);
+  }, [readSnapshot, refreshSnapshot]);
   const activeLabel = navigation.find((item) => item.id === section)?.label ?? "Visão geral";
   const nextAction = snapshot?.dashboard.next_action ?? "D01 · Português fino + LDB";
-  activeDashboardSnapshot = snapshot;
-  return <main className="site-shell"><aside id="seedf-sidebar" className={`sidebar ${menuOpen ? "sidebar-open" : ""}`}><div className="brand-block"><div className="brand-mark">S</div><div><strong>SEEDF</strong><span>PPGE · Dashboard PRO</span></div><button type="button" className="close-menu" onClick={() => setMenuOpen(false)} aria-label="Fechar menu" aria-controls="seedf-sidebar"><X size={18} /></button></div><div className="sidebar-context"><span className="live-dot" /> Pré-edital 2026/2027</div><nav className="main-nav" aria-label="Navegação principal">{navigation.map((item) => { const Icon = item.icon; const active = section === item.id; return <button type="button" className={`nav-item ${active ? "nav-active" : ""}`} key={item.id} onClick={() => handleNavigate(item.id)} aria-current={active ? "page" : undefined} aria-controls="dashboard-section"><Icon size={18} /><span>{item.label}</span>{active && <span className="nav-indicator" />}</button>; })}</nav><div className="sidebar-bottom"><div className="sidebar-card"><p className="eyebrow">PRÓXIMA AÇÃO</p><strong>{nextAction}</strong><button onClick={() => handleNavigate("estudar")}>Abrir execução <ArrowRight size={15} /></button></div><div className="sidebar-footer"><span className="source-dot" /> Notion como fonte operacional</div></div></aside>{menuOpen && <button className="scrim" onClick={() => setMenuOpen(false)} aria-label="Fechar menu" />}<div className="main-column"><header className="topbar"><div className="topbar-left"><button type="button" className="menu-button" onClick={() => setMenuOpen(true)} aria-label="Abrir menu" aria-expanded={menuOpen} aria-controls="seedf-sidebar"><Menu size={20} /></button><div><span className="breadcrumb">SEEDF PPGE</span><strong>{activeLabel}</strong></div></div><div className="topbar-actions"><span className={`sync-label ${syncError ? "sync-error" : syncMode === "fallback" ? "sync-fallback" : ""}`}><span className="source-dot" /> {lastUpdated}</span><button className={`refresh-button ${refreshing ? "is-refreshing" : ""}`} onClick={refreshSnapshot} disabled={refreshing} aria-label="Atualizar dados do Notion" title="Consultar a API do Notion agora"><RefreshCw size={17} /></button></div></header><div className="page-content" id="dashboard-section" tabIndex={-1}>{section === "inicio" && <Overview onNavigate={handleNavigate} snapshot={snapshot} />}{section === "estudar" && <StudyToday />}{section === "fases" && <Phases />}{section === "cargos" && <Jobs />}{section === "progresso" && <Progress />}{section === "materiais" && <Materials />}</div><footer className="site-footer"><span>SEEDF PPGE · Projeto exclusivo</span><span>{syncMode === "live" ? `Notion ao vivo · ${formatSnapshotDate(snapshot?.source?.synced_at ?? null)}` : syncMode === "fallback" ? `Backup do GitHub · ${formatSnapshotDate(snapshot?.source?.synced_at ?? null)}` : "Notion · indisponível"}</span></footer></div></main>;
+  return <main className="site-shell"><aside id="seedf-sidebar" className={`sidebar ${menuOpen ? "sidebar-open" : ""}`}><div className="brand-block"><div className="brand-mark">S</div><div><strong>SEEDF</strong><span>PPGE · Dashboard PRO</span></div><button type="button" className="close-menu" onClick={() => setMenuOpen(false)} aria-label="Fechar menu" aria-controls="seedf-sidebar"><X size={18} /></button></div><div className="sidebar-context"><span className="live-dot" /> Pré-edital 2026/2027</div><nav className="main-nav" aria-label="Navegação principal">{navigation.map((item) => { const Icon = item.icon; const active = section === item.id; return <button type="button" className={`nav-item ${active ? "nav-active" : ""}`} key={item.id} onClick={() => handleNavigate(item.id)} aria-current={active ? "page" : undefined} aria-controls="dashboard-section"><Icon size={18} /><span>{item.label}</span>{active && <span className="nav-indicator" />}</button>; })}</nav><div className="sidebar-bottom"><div className="sidebar-card"><p className="eyebrow">PRÓXIMA AÇÃO</p><strong>{nextAction}</strong><button onClick={() => handleNavigate("estudar")}>Abrir execução <ArrowRight size={15} /></button></div><div className="sidebar-footer"><span className="source-dot" /> Notion como fonte operacional</div></div></aside>{menuOpen && <button className="scrim" onClick={() => setMenuOpen(false)} aria-label="Fechar menu" />}<div className="main-column"><header className="topbar"><div className="topbar-left"><button type="button" className="menu-button" onClick={() => setMenuOpen(true)} aria-label="Abrir menu" aria-expanded={menuOpen} aria-controls="seedf-sidebar"><Menu size={20} /></button><div><span className="breadcrumb">SEEDF PPGE</span><strong>{activeLabel}</strong></div></div><div className="topbar-actions"><span className={`sync-label ${syncError ? "sync-error" : syncMode === "fallback" ? "sync-fallback" : ""}`}><span className="source-dot" /> {lastUpdated}</span><button className={`refresh-button ${refreshing ? "is-refreshing" : ""}`} onClick={refreshSnapshot} disabled={refreshing} aria-label="Atualizar dados do Notion" title="Consultar a API do Notion agora"><RefreshCw size={17} /></button></div></header><div className="page-content" id="dashboard-section" tabIndex={-1}>{section === "inicio" && <Overview onNavigate={handleNavigate} snapshot={snapshot} />}{section === "estudar" && <StudyToday />}{section === "fases" && <Phases />}{section === "cargos" && <Jobs />}{section === "progresso" && <Progress snapshot={snapshot} />}{section === "materiais" && <Materials snapshot={snapshot} />}</div><footer className="site-footer"><span>SEEDF PPGE · Projeto exclusivo</span><span>{syncMode === "live" ? `Notion ao vivo · ${formatSnapshotDate(snapshot?.source?.synced_at ?? null)}` : syncMode === "fallback" ? `Backup do GitHub · ${formatSnapshotDate(snapshot?.source?.synced_at ?? null)}` : "Notion · indisponível"}</span></footer></div></main>;
 }
