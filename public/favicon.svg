@@ -1,6 +1,40 @@
-<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M22 19.2727C22 20.779 20.779 22 19.2727 22H14.7273C13.221 22 12 20.779 12 19.2727V12H19.2727C20.779 12 22 13.221 22 14.7273V19.2727Z" fill="#68C4FF"/>
-<path d="M20 2C21.1046 2 22 2.89543 22 4V7C22 8.10457 21.1046 9 20 9H17C15.8954 9 15 8.10457 15 7V4C15 2.89543 15.8954 2 17 2H20Z" fill="#0C79D8"/>
-<path d="M7 15C8.10457 15 9 15.8954 9 17V20C9 21.1046 8.10457 22 7 22H4C2.89543 22 2 21.1046 2 20V17C2 15.8954 2.89543 15 4 15H7Z" fill="#0C79D8"/>
-<path d="M12 12H4.72727C3.22104 12 2 10.779 2 9.27273V4.72727C2 3.22104 3.22104 2 4.72727 2H9.27273C10.779 2 12 3.22104 12 4.72727V12Z" fill="#2E9EFF"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128" fill="none">
+  <title>SEEDF PPGE — Dashboard PRO</title>
+  <defs>
+    <linearGradient id="panel" x1="17" y1="13" x2="111" y2="116" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0D4050"/>
+      <stop offset="0.55" stop-color="#083044"/>
+      <stop offset="1" stop-color="#071824"/>
+    </linearGradient>
+    <linearGradient id="edge" x1="28" y1="22" x2="99" y2="108" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#70E3D4"/>
+      <stop offset="0.52" stop-color="#F7D477"/>
+      <stop offset="1" stop-color="#E79C45"/>
+    </linearGradient>
+    <linearGradient id="tealBook" x1="33" y1="54" x2="63" y2="92" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#8AF0E2"/>
+      <stop offset="1" stop-color="#2EBBAE"/>
+    </linearGradient>
+    <linearGradient id="goldBook" x1="65" y1="56" x2="96" y2="92" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFE6A0"/>
+      <stop offset="1" stop-color="#E9A548"/>
+    </linearGradient>
+    <filter id="softShadow" x="24" y="47" width="80" height="54" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="5" stdDeviation="4" flood-color="#020A10" flood-opacity="0.42"/>
+    </filter>
+  </defs>
+  <rect x="4" y="4" width="120" height="120" rx="30" fill="#071824"/>
+  <rect x="5.5" y="5.5" width="117" height="117" rx="28.5" fill="url(#panel)" stroke="#7AE1D5" stroke-opacity="0.22" stroke-width="3"/>
+  <path d="M64 17L101 30.5V60.2C101 83.6 86.6 99.4 64 110.8C41.4 99.4 27 83.6 27 60.2V30.5L64 17Z" fill="#061722" fill-opacity="0.58" stroke="url(#edge)" stroke-width="3"/>
+  <circle cx="52" cy="31.5" r="2.7" fill="#61D9CD"/>
+  <circle cx="64" cy="27.5" r="3.8" fill="#F7D477"/>
+  <circle cx="76" cy="31.5" r="2.7" fill="#61D9CD"/>
+  <path d="M64 32L66.5 37H72L67.6 40.2L69.2 45.5L64 42.3L58.8 45.5L60.4 40.2L56 37H61.5L64 32Z" fill="#F7D477" fill-opacity="0.9"/>
+  <g filter="url(#softShadow)">
+    <path d="M34 59.5C44.1 53.8 54.2 54.1 64 62.1V92.2C54.2 84.7 44.1 83.9 34 88.8V59.5Z" fill="url(#tealBook)"/>
+    <path d="M94 59.5C83.9 53.8 73.8 54.1 64 62.1V92.2C73.8 84.7 83.9 83.9 94 88.8V59.5Z" fill="url(#goldBook)"/>
+    <path d="M64 62V92.2" stroke="#FFF9E8" stroke-width="2.5" stroke-linecap="round"/>
+    <path d="M40 66.5C46.8 63.6 53.6 64.3 59.5 68.5M40 74.5C46.8 71.6 53.6 72.3 59.5 76.5M88 66.5C81.2 63.6 74.4 64.3 68.5 68.5M88 74.5C81.2 71.6 74.4 72.3 68.5 76.5" stroke="#FFF9E8" stroke-opacity="0.72" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <path d="M43 96H85" stroke="#F7D477" stroke-opacity="0.78" stroke-width="2.5" stroke-linecap="round"/>
 </svg>

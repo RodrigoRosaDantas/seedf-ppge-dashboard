@@ -67,6 +67,18 @@ test("published shell includes an offline registration path", async () => {
   assert.match(layout, /sw-register\.js/);
 });
 
+test("uses the SEEDF PPGE brand mark across the shell", async () => {
+  const [favicon, dashboard, manifest] = await Promise.all([
+    read("public/favicon.svg"),
+    read("app/dashboard-client.tsx"),
+    read("public/manifest.webmanifest"),
+  ]);
+  assert.match(favicon, /SEEDF PPGE/);
+  assert.match(favicon, /id="panel"/);
+  assert.match(dashboard, /className="brand-mark"><img src="\.\/favicon\.svg"/);
+  assert.match(manifest, /favicon\.svg/);
+});
+
 test("the Pages workflow runs tests before publishing", async () => {
   const workflow = await read(".github/workflows/deploy-pages.yml");
   assert.match(workflow, /npm test/);
