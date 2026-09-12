@@ -39,8 +39,8 @@ jobs:
       - name: Make build scripts executable
         run: chmod +x scripts/sites-env.sh scripts/build-verified.sh
 
-      - name: Build static export
-        run: npm run build
+      - name: Build and test static export
+        run: npm test
         env:
           GITHUB_PAGES: "1"
           GITHUB_PAGES_BASE_PATH: /${{ github.event.repository.name }}
