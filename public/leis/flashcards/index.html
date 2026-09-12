@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#081827">
+  <meta name="description" content="Leitor de flashcards das normas L01–L34 da trilha Leis Primeiro — SEEDF.">
+  <title>Flashcards | Leis Primeiro — SEEDF</title>
+  <style>
+    :root{--bg:#071421;--panel:#0c2031;--panel-2:#102a3f;--line:rgba(172,210,225,.16);--text:#eff8fb;--muted:#9ab1bd;--teal:#42d4bd;--teal-2:#9af0da;--amber:#f3c568;--danger:#ff9b9b;--shadow:0 24px 70px rgba(0,0,0,.27)}
+    *{box-sizing:border-box}
+    html{background:var(--bg);scroll-behavior:smooth}
+    body{margin:0;min-width:320px;background:radial-gradient(circle at 9% 0%,rgba(66,212,189,.1),transparent 28%),radial-gradient(circle at 95% 18%,rgba(243,197,104,.1),transparent 24%),var(--bg);color:var(--text);font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    button,select,input{font:inherit}
+    a{color:inherit}
+    button,a,select,input{outline-color:var(--teal)}
+    button:focus-visible,a:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid rgba(66,212,189,.45);outline-offset:3px}
+    .study-shell{width:min(1320px,100%);margin:0 auto;padding:0 24px 56px}
+    .study-topbar{display:flex;align-items:center;justify-content:space-between;gap:18px;min-height:68px;border-bottom:1px solid var(--line);color:var(--muted);font-size:12px;font-weight:800}
+    .study-topbar a{text-decoration:none;color:#d8ebf0;white-space:nowrap}
+    .study-topbar a:hover{color:var(--teal-2)}
+    .study-top-status{display:flex;align-items:center;gap:8px;text-align:right}
+    .live-dot{width:8px;height:8px;border-radius:50%;background:var(--teal);box-shadow:0 0 0 5px rgba(66,212,189,.1)}
+    .study-hero{display:flex;align-items:flex-end;justify-content:space-between;gap:26px;padding:42px 0 28px}
+    .study-kicker{margin:0 0 11px;color:var(--teal-2);font-size:10px;font-weight:950;letter-spacing:.15em;text-transform:uppercase}
+    h1{max-width:760px;margin:0;color:#f7fdff;font-size:clamp(34px,5vw,68px);line-height:.98;letter-spacing:-.055em}
+    h1 span{color:var(--amber)}
+    .study-lead{max-width:760px;margin:18px 0 0;color:#b3c8d0;font-size:15px;line-height:1.62}
+    .hero-actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:22px}
+    .button,.download-link{display:inline-flex;align-items:center;justify-content:center;min-height:43px;padding:0 15px;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.045);color:#eaf6f8;font-size:12px;font-weight:900;text-decoration:none;cursor:pointer;transition:transform .16s ease,border-color .16s ease,background .16s ease}
+    .button:hover,.download-link:hover{transform:translateY(-1px);border-color:rgba(66,212,189,.5);background:rgba(66,212,189,.1)}
+    .button-primary,.download-link{border-color:rgba(243,197,104,.5);background:var(--amber);color:#17231f}
+    .button-primary:hover,.download-link:hover{border-color:var(--amber);background:#ffda7e}
+    .download-link{align-self:flex-end;white-space:nowrap}
+    .study-layout{display:grid;grid-template-columns:285px minmax(0,1fr);align-items:start;gap:18px}
+    .study-sidebar,.study-main{min-width:0}
+    .panel{border:1px solid var(--line);border-radius:20px;background:linear-gradient(145deg,rgba(16,42,63,.94),rgba(9,27,42,.94));box-shadow:var(--shadow)}
+    .study-sidebar .panel{position:sticky;top:16px;padding:17px}
+    .panel-label{display:block;margin:0 0 9px;color:#7f9ba9;font-size:9px;font-weight:950;letter-spacing:.15em;text-transform:uppercase}
+    .select-wrap{position:relative;margin-bottom:12px}
+    select,input{width:100%;min-height:44px;padding:0 12px;border:1px solid var(--line);border-radius:11px;background:#0a1b2b;color:var(--text);font-size:12px}
+    select{cursor:pointer}
+    .mode-row{display:grid;grid-template-columns:1fr 42px;gap:7px;margin-bottom:16px}
+    .icon-button{display:grid;place-items:center;min-height:44px;padding:0;border:1px solid var(--line);border-radius:11px;background:rgba(255,255,255,.04);color:var(--teal-2);cursor:pointer;font-size:18px}
+    .icon-button:hover{background:rgba(66,212,189,.1)}
+    .stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0 0 16px}
+    .stat{padding:11px;border:1px solid rgba(172,210,225,.11);border-radius:13px;background:rgba(255,255,255,.035)}
+    .stat strong,.stat small{display:block}
+    .stat strong{color:#f9fcfd;font-size:22px;letter-spacing:-.05em}
+    .stat small{margin-top:3px;color:#89a6b2;font-size:9px;font-weight:800;line-height:1.3}
+    .queue-summary{padding:12px 0 0;border-top:1px solid var(--line);color:var(--muted);font-size:11px;line-height:1.5}
+    .queue-summary strong{color:#e9f6f7}
+    .day-list{display:grid;grid-template-columns:1fr 1fr;gap:5px;max-height:300px;margin:14px 0 0;padding-right:2px;overflow:auto}
+    .day-pill{min-height:32px;border:1px solid transparent;border-radius:9px;background:rgba(255,255,255,.035);color:#a9c0c8;font-size:10px;font-weight:900;cursor:pointer}
+    .day-pill:hover{border-color:rgba(66,212,189,.35);color:var(--teal-2)}
+    .day-pill.is-active{border-color:rgba(66,212,189,.45);background:rgba(66,212,189,.14);color:#d8fff5}
+    .sidebar-note{margin:14px 0 0;color:#7f98a5;font-size:10px;line-height:1.5}
+    .danger-link{width:100%;margin-top:13px;border:0;background:transparent;color:#c49b9b;font-size:10px;font-weight:800;cursor:pointer;text-align:left}
+    .danger-link:hover{color:var(--danger)}
+    .study-main{display:flex;flex-direction:column;gap:14px}
+    .session-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:3px 3px 0}
+    .session-title{min-width:0}
+    .session-title small{display:block;margin-bottom:4px;color:#7894a1;font-size:9px;font-weight:950;letter-spacing:.14em;text-transform:uppercase}
+    .session-title strong{display:block;overflow:hidden;color:#edf9fa;font-size:17px;text-overflow:ellipsis;white-space:nowrap}
+    .session-counter{flex:0 0 auto;padding:8px 10px;border:1px solid rgba(66,212,189,.2);border-radius:999px;background:rgba(66,212,189,.07);color:var(--teal-2);font-size:10px;font-weight:950}
+    .card-stage{padding:0 3px}
+    .flashcard{min-height:410px;padding:clamp(24px,5vw,54px);border:1px solid rgba(178,218,226,.16);border-radius:25px;background:linear-gradient(150deg,#12334a,#0d2539 64%,#102a3e);box-shadow:0 30px 80px rgba(0,0,0,.3);display:flex;flex-direction:column;justify-content:center}
+    .card-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:34px}
+    .card-code,.card-type{color:#8eb1bd;font-size:10px;font-weight:950;letter-spacing:.12em;text-transform:uppercase}
+    .card-type{padding:6px 8px;border:1px solid rgba(243,197,104,.3);border-radius:999px;color:#f7d994;background:rgba(243,197,104,.08);font-size:8px;letter-spacing:.08em}
+    .card-topic{margin:0 0 13px;color:var(--teal-2);font-size:11px;font-weight:900}
+    .card-front{margin:0;color:#fbffff;font-size:clamp(22px,3.3vw,39px);font-weight:760;line-height:1.22;letter-spacing:-.035em}
+    .card-hint{margin:26px 0 0;color:#8fa9b5;font-size:11px;line-height:1.5}
+    .choice-list{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:26px}
+    .choice{min-height:48px;padding:12px 13px;border:1px solid rgba(178,218,226,.16);border-radius:12px;background:rgba(255,255,255,.045);color:#d9e9ed;font-size:12px;line-height:1.35;text-align:left;cursor:pointer}
+    .choice:hover{border-color:rgba(66,212,189,.45);background:rgba(66,212,189,.09)}
+    .choice.is-selected{border-color:var(--teal);background:rgba(66,212,189,.16);color:#f0fffb}
+    .choice.is-correct{border-color:#62dfae;background:rgba(98,223,174,.17);color:#effff9}
+    .choice.is-wrong{border-color:#f28f8f;background:rgba(242,143,143,.12);color:#ffecec}
+    .typed-answer{margin-top:22px;max-width:530px}
+    .typed-answer input{background:rgba(1,12,22,.35);color:#fff}
+    .answer-panel{margin-top:34px;padding-top:27px;border-top:1px solid rgba(178,218,226,.15)}
+    .answer-label{margin:0 0 9px;color:var(--amber);font-size:9px;font-weight:950;letter-spacing:.15em;text-transform:uppercase}
+    .card-back{margin:0;color:#f5fbfc;font-size:clamp(17px,2.2vw,25px);font-weight:650;line-height:1.45}
+    .card-explanation{margin:19px 0 0;padding:13px 15px;border-left:3px solid var(--teal);border-radius:0 11px 11px 0;background:rgba(66,212,189,.07);color:#b8cbd1;font-size:12px;line-height:1.55}
+    .typed-result{margin:13px 0 0;color:#9bb5bf;font-size:11px}
+    .card-footer{display:flex;justify-content:space-between;gap:12px;margin-top:33px;color:#72909d;font-size:9px;font-weight:850}
+    .show-row{display:flex;justify-content:center;margin-top:15px}
+    .show-button{min-width:210px;min-height:48px;border:1px solid rgba(66,212,189,.45);border-radius:13px;background:rgba(66,212,189,.11);color:#dffff7;font-size:12px;font-weight:950;cursor:pointer}
+    .show-button:hover{background:rgba(66,212,189,.2)}
+    .rating-panel{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+    .rating{min-height:56px;padding:8px;border:1px solid var(--line);border-radius:13px;background:#0c2234;color:#daeef0;cursor:pointer;text-align:left}
+    .rating:hover{transform:translateY(-1px);border-color:rgba(255,255,255,.35)}
+    .rating b,.rating small{display:block}
+    .rating b{font-size:12px}
+    .rating small{margin-top:4px;color:#8ea8b1;font-size:9px}
+    .rating-again{border-color:rgba(241,132,132,.28)}.rating-again b{color:#ffb0b0}
+    .rating-hard{border-color:rgba(244,194,102,.28)}.rating-hard b{color:#f6d28a}
+    .rating-good{border-color:rgba(66,212,189,.25)}.rating-good b{color:#91f0d9}
+    .rating-easy{border-color:rgba(137,174,255,.3)}.rating-easy b{color:#a9c9ff}
+    .keyboard-note{text-align:center;color:#718d9a;font-size:10px}
+    .empty-state{min-height:410px;padding:40px 25px;border:1px dashed rgba(178,218,226,.24);border-radius:25px;background:rgba(13,37,57,.7);display:flex;align-items:center;justify-content:center;text-align:center}
+    .empty-state strong,.empty-state p{display:block}.empty-state strong{color:#f5fcfd;font-size:21px}.empty-state p{max-width:440px;margin:10px auto 0;color:#a0b8c0;font-size:13px;line-height:1.55}
+    .toast{min-height:19px;color:#9df1dc;font-size:11px;text-align:center}
+    .loading{min-height:410px;display:grid;place-items:center;color:var(--muted);font-size:13px}
+    .study-disclaimer{margin-top:28px;color:#6d8997;font-size:10px;line-height:1.5;text-align:center}
+    .study-disclaimer a{color:#8fcfc6;text-underline-offset:3px}
+    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+    @media(max-width:980px){.study-layout{grid-template-columns:1fr}.study-sidebar .panel{position:static}.study-sidebar .panel{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}.study-sidebar .panel> .panel-label,.study-sidebar .panel>.sidebar-note,.study-sidebar .panel>.danger-link{grid-column:1/-1}.study-sidebar .panel>.select-wrap{margin-bottom:10px}.stats-grid{margin-bottom:0}.queue-summary{grid-column:1/-1}.day-list{grid-column:1/-1;max-height:120px}}
+    @media(max-width:640px){.study-shell{padding:0 13px 38px}.study-topbar{min-height:58px;font-size:10px}.study-top-status{max-width:52%;font-size:9px;line-height:1.25}.study-hero{display:block;padding:31px 0 22px}.study-lead{font-size:13px}.download-link{margin-top:14px;width:100%}.study-sidebar .panel{display:block;padding:14px}.stats-grid{margin:0 0 14px}.day-list{max-height:155px}.session-head{align-items:flex-start}.session-title strong{font-size:15px;white-space:normal}.session-counter{font-size:9px}.flashcard,.empty-state{min-height:440px;padding:23px 18px;border-radius:18px}.card-top{margin-bottom:31px}.card-front{font-size:25px}.choice-list{grid-template-columns:1fr}.answer-panel{margin-top:28px}.card-footer{margin-top:26px;flex-direction:column;gap:4px}.show-button{width:100%}.rating-panel{grid-template-columns:1fr 1fr}.rating{min-height:63px}.keyboard-note{display:none}}
+    @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important}}
+  </style>
+</head>
+<body>
+<main class="study-shell">
+  <header class="study-topbar">
+    <a href="../">← Voltar para Leis Primeiro</a>
+    <div class="study-top-status"><span class="live-dot" aria-hidden="true"></span><span>progresso salvo neste navegador</span></div>
+  </header>
+
+  <section class="study-hero">
+    <div>
+      <p class="study-kicker">⚖️ LEITOR DE REVISÃO · SEEDF PPGE</p>
+      <h1>Leis Primeiro <span>cards</span>.</h1>
+      <p class="study-lead">Uma sessão de recuperação ativa para as normas L01–L34. Veja a pergunta, revele a resposta, classifique sua dificuldade e deixe o próximo intervalo ser calculado automaticamente.</p>
+      <div class="hero-actions"><a class="button button-primary" href="#sessao">▶ Começar revisão</a><a class="button" href="../">Mapa das leis</a></div>
+    </div>
+    <a class="download-link" href="../../data/SEEDF_Leis_Primeiro_L01-L34_Flashcards.apkg" download>↓ Baixar APKG completo</a>
+  </section>
+
+  <section class="study-layout" id="sessao">
+    <aside class="study-sidebar" aria-label="Configuração da sessão">
+      <div class="panel">
+        <span class="panel-label">Sessão de estudo</span>
+        <div class="select-wrap"><label class="sr-only" for="day-select">Escolher dia</label><select id="day-select"><option value="all">Todos os dias · L01–L34</option></select></div>
+        <div class="mode-row"><div class="select-wrap"><label class="sr-only" for="mode-select">Escolher modo</label><select id="mode-select"><option value="due">Revisão de hoje</option><option value="all">Estudar todos</option></select></div><button class="icon-button" id="shuffle-button" title="Embaralhar sessão" aria-label="Embaralhar sessão">⤨</button></div>
+        <div class="stats-grid" id="stats-grid"></div>
+        <div class="queue-summary" id="queue-summary"></div>
+        <div class="day-list" id="day-list" aria-label="Atalhos por dia"></div>
+        <p class="sidebar-note">O progresso é local, neste navegador. O Notion continua sendo o registro operacional da trilha; esta ferramenta é a camada de execução e revisão.</p>
+        <button class="danger-link" id="reset-button">↺ Limpar progresso do filtro atual</button>
+      </div>
+    </aside>
+
+    <section class="study-main" aria-live="polite">
+      <div class="session-head"><div class="session-title"><small id="session-kicker">CARREGANDO CARTÕES</small><strong id="session-title">Leis Primeiro</strong></div><span class="session-counter" id="session-counter">—</span></div>
+      <div class="card-stage" id="card-stage"><div class="loading">Carregando os cartões…</div></div>
+      <div class="show-row" id="show-row" hidden><button class="show-button" id="show-button">Mostrar resposta <span aria-hidden="true">↵</span></button></div>
+      <div class="rating-panel" id="rating-panel" hidden>
+        <button class="rating rating-again" data-rating="again"><b>1 · Errei</b><small>rever em 1 min</small></button>
+        <button class="rating rating-hard" data-rating="hard"><b>2 · Difícil</b><small id="hard-time">intervalo curto</small></button>
+        <button class="rating rating-good" data-rating="good"><b>3 · Bom</b><small id="good-time">próximo intervalo</small></button>
+        <button class="rating rating-easy" data-rating="easy"><b>4 · Fácil</b><small id="easy-time">intervalo ampliado</small></button>
+      </div>
+      <div class="keyboard-note">Espaço revela a resposta · teclas 1–4 classificam · no celular, use os botões</div>
+      <div class="toast" id="toast" role="status"></div>
+    </section>
+  </section>
+  <p class="study-disclaimer">Cartões autorais baseados nas normas da trilha. Para a redação jurídica, consulte a <a href="https://www.planalto.gov.br/" target="_blank" rel="noreferrer">fonte oficial vigente</a>. <a href="../">Voltar ao painel Leis Primeiro</a>.</p>
+</main>
+<script>
+(() => {
+  const DATA_URL = "../../data/leis-primeiro-flashcards.json";
+  const STORAGE_KEY = "seedf-leis-primeiro-review-v1";
+  const daySelect = document.getElementById("day-select");
+  const modeSelect = document.getElementById("mode-select");
+  const shuffleButton = document.getElementById("shuffle-button");
+  const resetButton = document.getElementById("reset-button");
+  const dayList = document.getElementById("day-list");
+  const statsGrid = document.getElementById("stats-grid");
+  const queueSummary = document.getElementById("queue-summary");
+  const cardStage = document.getElementById("card-stage");
+  const showRow = document.getElementById("show-row");
+  const showButton = document.getElementById("show-button");
+  const ratingPanel = document.getElementById("rating-panel");
+  const sessionKicker = document.getElementById("session-kicker");
+  const sessionTitle = document.getElementById("session-title");
+  const sessionCounter = document.getElementById("session-counter");
+  const toast = document.getElementById("toast");
+  const hardTime = document.getElementById("hard-time");
+  const goodTime = document.getElementById("good-time");
+  const easyTime = document.getElementById("easy-time");
+  const ratings = [...ratingPanel.querySelectorAll("[data-rating]")];
+
+  let dataset = null;
+  let cardsById = new Map();
+  let progress = loadProgress();
+  let selectedDay = "all";
+  let mode = "due";
+  let queue = [];
+  let current = null;
+  let revealed = false;
+  let selectedOption = null;
+  let typedDraft = "";
+
+  function loadProgress() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}"); } catch { return {}; }
+  }
+  function saveProgress() { localStorage.setItem(STORAGE_KEY, JSON.stringify(progress)); }
+  function allCards() { return dataset ? dataset.days.flatMap((day) => day.cards) : []; }
+  function dayInfo(code) { return dataset.days.find((day) => day.code === code); }
+  function selectedCards() {
+    if (selectedDay === "all") return allCards();
+    return dayInfo(selectedDay)?.cards || [];
+  }
+  function isDue(card) {
+    return !progress[card.id] || !progress[card.id].dueAt || Number(progress[card.id].dueAt) <= Date.now();
+  }
+  function intervalText(days) {
+    if (days < 1) return "agora";
+    if (days < 2) return "1 dia";
+    if (days < 30) return `${Math.round(days)} dias`;
+    if (days < 365) return `${Math.round(days / 30)} meses`;
+    return `${Math.round(days / 365)} ano(s)`;
+  }
+  function estimate(card, rating) {
+    const old = progress[card.id] || { interval: 0, ease: 2.5, reps: 0 };
+    const interval = Number(old.interval || 0);
+    const ease = Number(old.ease || 2.5);
+    if (rating === "again") return "1 min";
+    if (rating === "hard") return intervalText(Math.max(1, Math.round((interval || 1) * 1.2)));
+    if (rating === "easy") return intervalText(interval ? Math.max(2, Math.round(interval * (ease + .3) * 1.3)) : 4);
+    return intervalText(interval ? Math.max(2, Math.round(interval * ease)) : 1);
+  }
+  function nextDueAt(card, rating) {
+    if (rating === "again") return Date.now() + 60 * 1000;
+    const old = progress[card.id] || { interval: 0, ease: 2.5, reps: 0 };
+    const interval = Number(old.interval || 0);
+    const ease = Number(old.ease || 2.5);
+    let days = 1;
+    if (rating === "hard") days = Math.max(1, Math.round((interval || 1) * 1.2));
+    if (rating === "good") days = interval ? Math.max(2, Math.round(interval * ease)) : 1;
+    if (rating === "easy") days = interval ? Math.max(2, Math.round(interval * (ease + .3) * 1.3)) : 4;
+    return Date.now() + days * 24 * 60 * 60 * 1000;
+  }
+  function normalize(value) { return String(value || "").toLocaleLowerCase("pt-BR").normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, " ").trim(); }
+  function escapeHtml(value) { return String(value ?? "").replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#39;"); }
+  function cardType(value) { return ({open:"Pergunta aberta",cloze:"Lacuna",typed:"Lacuna digitada",mc:"Múltipla escolha"})[value] || "Flashcard"; }
+  function element(tag, className, text) { const node = document.createElement(tag); if (className) node.className = className; if (text !== undefined) node.textContent = text; return node; }
+  function shuffle(items) { const copy = [...items]; for (let i = copy.length - 1; i > 0; i -= 1) { const j = Math.floor(Math.random() * (i + 1)); [copy[i], copy[j]] = [copy[j], copy[i]]; } return copy; }
+
+  function populateSelectors() {
+    dataset.days.forEach((day) => {
+      const option = document.createElement("option"); option.value = day.code; option.textContent = `${day.code} · ${day.title}`; daySelect.append(option);
+    });
+    dayList.replaceChildren();
+    const all = element("button", "day-pill is-active", "Todos"); all.type = "button"; all.dataset.day = "all"; dayList.append(all);
+    dataset.days.forEach((day) => { const button = element("button", "day-pill", day.code); button.type = "button"; button.dataset.day = day.code; dayList.append(button); });
+    dayList.addEventListener("click", (event) => { const button = event.target.closest("[data-day]"); if (button) selectDay(button.dataset.day); });
+  }
+
+  function renderStats() {
+    const cards = selectedCards();
+    const due = cards.filter(isDue).length;
+    const reviewed = cards.filter((card) => progress[card.id]).length;
+    const mature = cards.filter((card) => Number(progress[card.id]?.interval || 0) >= 7).length;
+    statsGrid.innerHTML = `<div class="stat"><strong>${due}</strong><small>disponíveis agora</small></div><div class="stat"><strong>${cards.length}</strong><small>cartões no filtro</small></div><div class="stat"><strong>${reviewed}</strong><small>já revisados</small></div><div class="stat"><strong>${mature}</strong><small>intervalo ≥ 7 dias</small></div>`;
+    const label = selectedDay === "all" ? "L01–L34" : selectedDay;
+    queueSummary.innerHTML = `<strong>${label}</strong> · ${mode === "due" ? `${due} para revisar` : `${cards.length} para estudar`}<br>${dataset.source.cards} cartões autorais disponíveis na trilha.`;
+    [...dayList.querySelectorAll("[data-day]")].forEach((button) => button.classList.toggle("is-active", button.dataset.day === selectedDay));
+  }
+
+  function buildQueue(shouldShuffle = false) {
+    let cards = selectedCards();
+    if (mode === "due") cards = cards.filter(isDue);
+    cards = shouldShuffle ? shuffle(cards) : cards.sort((a, b) => Number(progress[a.id]?.dueAt || 0) - Number(progress[b.id]?.dueAt || 0));
+    queue = cards.map((card) => card.id);
+    current = queue.length ? cardsById.get(queue[0]) : null;
+    revealed = false; selectedOption = null; typedDraft = "";
+    renderAll();
+  }
+
+  function renderCard() {
+    cardStage.replaceChildren();
+    if (!current) {
+      showRow.hidden = true;
+      ratingPanel.hidden = true;
+      const empty = element("div", "empty-state");
+      const box = element("div");
+      const title = selectedDay === "all" ? "Sessão concluída" : `${selectedDay} concluído`;
+      box.append(element("strong", "", title));
+      box.append(element("p", "", mode === "due" ? "Não há cartões vencidos neste filtro. Você pode estudar todos os cartões ou voltar mais tarde para a próxima revisão." : "Você percorreu todos os cartões deste filtro. Escolha outro dia ou reinicie a sessão."));
+      const action = element("button", "button button-primary", mode === "due" ? "Estudar todos agora" : "Embaralhar novamente"); action.type = "button"; action.addEventListener("click", () => { if (mode === "due") { mode = "all"; modeSelect.value = "all"; } buildQueue(true); });
+      box.append(action); empty.append(box); cardStage.append(empty); return;
+    }
+    const card = element("article", "flashcard");
+    const top = element("div", "card-top"); top.append(element("span", "card-code", `${current.day} · ${queue.indexOf(current.id) + 1} de ${queue.length}`)); top.append(element("span", "card-type", cardType(current.type))); card.append(top);
+    card.append(element("p", "card-topic", current.topic || "Revisão da norma"));
+    card.append(element("p", "card-front", current.front));
+    if (current.type === "mc") {
+      const choices = element("div", "choice-list");
+      current.options.forEach((option) => { const choice = element("button", "choice", option); choice.type = "button"; choice.classList.toggle("is-selected", selectedOption === option); if (revealed) { choice.classList.toggle("is-correct", option === current.correct); choice.classList.toggle("is-wrong", selectedOption === option && option !== current.correct); } choice.addEventListener("click", () => { if (!revealed) { selectedOption = option; renderCard(); } }); choices.append(choice); });
+      card.append(choices);
+    }
+    if (current.type === "typed" && !revealed) { const wrap = element("div", "typed-answer"); const input = document.createElement("input"); input.type = "text"; input.placeholder = "Digite o que você lembra (opcional)"; input.value = typedDraft; input.addEventListener("input", () => { typedDraft = input.value; }); wrap.append(input); card.append(wrap); }
+    if (!revealed) card.append(element("p", "card-hint", current.type === "mc" ? "Escolha uma alternativa se quiser e depois revele o gabarito." : "Recupere a resposta antes de revelar o verso."));
+    if (revealed) {
+      const answer = element("div", "answer-panel"); answer.append(element("p", "answer-label", "Resposta")); answer.append(element("p", "card-back", current.back)); if (current.type === "typed" && typedDraft) answer.append(element("p", "typed-result", `Sua tentativa: ${typedDraft}`)); if (current.explanation) answer.append(element("p", "card-explanation", current.explanation)); card.append(answer);
+    }
+    const footer = element("div", "card-footer"); footer.append(element("span", "", current.source || "SEEDF — Leis Primeiro")); footer.append(element("span", "", revealed ? "Classifique sua resposta" : "Frente do cartão")); card.append(footer); cardStage.append(card);
+    showRow.hidden = revealed; ratingPanel.hidden = !revealed; updateEstimates();
+  }
+
+  function updateEstimates() { if (!current) return; hardTime.textContent = estimate(current, "hard"); goodTime.textContent = estimate(current, "good"); easyTime.textContent = estimate(current, "easy"); }
+  function renderAll() { renderStats(); renderCard(); sessionKicker.textContent = current ? `${mode === "due" ? "REVISÃO DE HOJE" : "ESTUDO LIVRE"} · ${current.day}` : "FIM DA FILA"; sessionTitle.textContent = current ? (dayInfo(current.day)?.title || "Leis Primeiro") : "Nenhum cartão pendente"; sessionCounter.textContent = current ? `${queue.length} na fila` : "concluído"; }
+  function reveal() { if (!current || revealed) return; revealed = true; renderCard(); }
+  function rate(rating) {
+    if (!current || !revealed) return;
+    const nextLabel = rating === "again" ? "1 min" : estimate(current, rating);
+    const old = progress[current.id] || { interval: 0, ease: 2.5, reps: 0, lapses: 0 };
+    const nextEase = rating === "again" ? Math.max(1.3, Number(old.ease || 2.5) - .2) : rating === "easy" ? Number(old.ease || 2.5) + .15 : rating === "hard" ? Math.max(1.3, Number(old.ease || 2.5) - .15) : Number(old.ease || 2.5);
+    const interval = rating === "again" ? 0 : rating === "hard" ? Math.max(1, Math.round((Number(old.interval || 0) || 1) * 1.2)) : rating === "easy" ? (Number(old.interval || 0) ? Math.max(2, Math.round(Number(old.interval) * (Number(old.ease || 2.5) + .3) * 1.3)) : 4) : (Number(old.interval || 0) ? Math.max(2, Math.round(Number(old.interval) * Number(old.ease || 2.5))) : 1);
+    progress[current.id] = { interval, ease: nextEase, reps: Number(old.reps || 0) + 1, lapses: Number(old.lapses || 0) + (rating === "again" ? 1 : 0), dueAt: nextDueAt(current, rating), lastReviewed: Date.now(), lastRating: rating };
+    saveProgress();
+    const doneId = current.id; queue.shift(); if (rating === "again") queue.push(doneId); current = queue.length ? cardsById.get(queue[0]) : null; revealed = false; selectedOption = null; typedDraft = ""; toast.textContent = `Registrado: ${rating === "again" ? "rever em 1 min" : `próxima revisão em ${nextLabel}`}.`;
+    renderAll();
+  }
+  function selectDay(code) { selectedDay = code; daySelect.value = code; buildQueue(false); }
+  function resetProgress() { const cards = selectedCards(); const label = selectedDay === "all" ? "todos os dias" : selectedDay; if (!window.confirm(`Limpar o progresso de ${label}?`)) return; cards.forEach((card) => delete progress[card.id]); saveProgress(); toast.textContent = `Progresso de ${label} limpo.`; buildQueue(false); }
+
+  daySelect.addEventListener("change", () => selectDay(daySelect.value));
+  modeSelect.addEventListener("change", () => { mode = modeSelect.value; buildQueue(false); });
+  shuffleButton.addEventListener("click", () => buildQueue(true));
+  resetButton.addEventListener("click", resetProgress);
+  showButton.addEventListener("click", reveal);
+  ratings.forEach((button) => button.addEventListener("click", () => rate(button.dataset.rating)));
+  document.addEventListener("keydown", (event) => { if (event.target.matches("input,select,textarea")) return; if (event.code === "Space") { event.preventDefault(); reveal(); } if (revealed && ["1","2","3","4"].includes(event.key)) rate(({1:"again",2:"hard",3:"good",4:"easy"})[event.key]); });
+
+  fetch(`${DATA_URL}?v=1`, { cache: "no-store" }).then((response) => { if (!response.ok) throw new Error("dataset unavailable"); return response.json(); }).then((value) => { dataset = value; allCards().forEach((card) => cardsById.set(card.id, card)); populateSelectors(); buildQueue(false); }).catch(() => { cardStage.innerHTML = '<div class="empty-state"><div><strong>Não foi possível carregar os cartões</strong><p>Verifique a conexão e atualize a página. O APKG continua disponível pelo botão de download.</p></div></div>'; sessionKicker.textContent = "ERRO DE LEITURA"; sessionTitle.textContent = "Dataset indisponível"; });
+})();
+</script>
+</body>
+</html>
