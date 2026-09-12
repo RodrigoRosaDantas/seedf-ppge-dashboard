@@ -51,7 +51,7 @@ self.addEventListener("fetch", (event) => {
 
   if (acceptsHtml) {
     event.respondWith(
-      fetch(request)
+      fetch(request, { cache: "no-store" })
         .then((response) => cacheResponse(request, response))
         .catch(() => caches.match(request).then((cached) => cached || caches.match(new URL("./", self.registration.scope).href))),
     );
