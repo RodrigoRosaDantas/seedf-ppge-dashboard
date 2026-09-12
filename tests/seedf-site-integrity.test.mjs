@@ -68,6 +68,7 @@ test("published shell includes an offline registration path", async () => {
   assert.match(serviceWorker, /cache\.put\(request, copy\)\)\.catch/);
   assert.match(registration, /serviceWorker\.register/);
   assert.match(layout, /sw-register\.js/);
+  assert.match(layout, /theme-color/);
 });
 
 test("uses the SEEDF PPGE brand mark across the shell", async () => {
