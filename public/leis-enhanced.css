@@ -1049,7 +1049,7 @@
 .laws-hero-thesis i { color: #7ed9c0; font-style: normal; }
 .laws-cockpit-hero .laws-primary { color: #1f2b25; background: #f5c15b; box-shadow: 0 10px 20px rgba(244,184,77,.20); }
 .laws-cockpit-hero .laws-secondary { color: #d7e9e5; border-color: rgba(207,235,226,.20); background: rgba(255,255,255,.045); }
-.laws-next-card { min-height: 360px; padding: 26px 27px !important; border: 1px solid #eadcc1 !important; border-radius: 27px !important; color: var(--laws-ink); background: #fff8e9 !important; box-shadow: 0 22px 46px rgba(132,101,48,.12), inset 0 1px rgba(255,255,255,.75) !important; }
+.laws-next-card { min-height: 360px; overflow: hidden; padding: 26px 27px !important; border: 1px solid #eadcc1 !important; border-radius: 27px !important; color: var(--laws-ink); background: #fff8e9 !important; box-shadow: 0 22px 46px rgba(132,101,48,.12), inset 0 1px rgba(255,255,255,.75) !important; }
 .laws-next-card::after { content: ""; position: absolute; width: 180px; height: 180px; right: -75px; bottom: -80px; border: 1px solid rgba(31,183,161,.18); border-radius: 50%; pointer-events: none; }
 .laws-next-card .laws-kicker { color: #9b7b3f !important; }
 .laws-next-top > div > span { color: #7e786b; }
