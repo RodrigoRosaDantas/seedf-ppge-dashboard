@@ -169,6 +169,10 @@ const snapshot = {
   notice: "Snapshot público sanitizado. O conteúdo completo continua no Notion; materiais, fontes e execução do C01 são indexados para consulta.",
 };
 
+if (previous?.source?.content_hash === contentHash && previous.execution?.as_of && snapshot.execution) {
+  snapshot.execution.as_of = previous.execution.as_of;
+}
+
 await mkdir(path.dirname(outputPath), { recursive: true });
 await writeFile(outputPath, `${JSON.stringify(snapshot, null, 2)}\n`, "utf8");
 console.log(`Snapshot do Notion atualizado em ${outputPath}`);
