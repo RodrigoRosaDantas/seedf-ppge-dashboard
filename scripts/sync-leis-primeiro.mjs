@@ -2,6 +2,7 @@ import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 const LEIS_PAGE_ID = "3d8cf5a2-6731-817c-89f4-f4907d14a701";
+const EXECUTION_PAGE_ID = "3d4cf5a2-6731-8150-87fc-c1ec3783f65c";
 const LEGISLATION_DATA_SOURCE_ID = "6b3c940a-a382-419f-9ef6-531a1dc5cad2";
 const NOTION_API_BASE = "https://api.notion.com/v1";
 const NOTION_VERSION = process.env.NOTION_VERSION || "2026-03-11";
@@ -37,6 +38,10 @@ const [page, pageBlocks, databasePages] = await Promise.all([
   getAllChildren(LEIS_PAGE_ID),
   queryDataSource(LEGISLATION_DATA_SOURCE_ID),
 ]);
+
+if (compactId(page.parent?.page_id) !== compactId(EXECUTION_PAGE_ID)) {
+  throw new Error("Leis Primeiro must remain a direct child of Execução diária | SEEDF PPGE.");
+}
 
 const childPages = pageBlocks
   .filter((block) => block.type === "child_page" && /^L\d{2}\b/i.test(block.child_page?.title || ""))
@@ -98,6 +103,10 @@ const laws = childPages.map((child) => {
     status: row.status,
     question_target: sharedBlock ? sharedTargets[child.code] : row.question_target,
     operational_target_total: sharedBlock ? 10 : row.question_target,
+    questions_done: row.questions_done,
+    flashcards_done: row.flashcards_done,
+    flashcards_meta: row.flashcards_meta,
+    next_step: row.next_step,
     cargos: row.cargos,
     action: row.action,
     cut: row.cut,
@@ -327,6 +336,10 @@ function parseBankRow(page) {
     official_url: propertyUrl(properties, "Fonte oficial"),
     status: propertyText(properties, "Status"),
     question_target: propertyNumber(properties, "Questões-meta"),
+    questions_done: propertyRollupNumber(properties, "Questões feitas"),
+    flashcards_done: propertyNumber(properties, "Flashcards feitos"),
+    flashcards_meta: propertyFormula(properties, "Flashcards-meta"),
+    next_step: propertyFormula(properties, "Próximo passo"),
     cargos: propertyMultiSelect(properties, "Cargos"),
     action: propertyText(properties, "Ação atual"),
     cut: propertyText(properties, "Recorte prioritário"),
@@ -352,6 +365,26 @@ function propertyText(properties, name) {
   return "";
 }
 function propertyNumber(properties, name) { const value = properties?.[name]?.number; return typeof value === "number" && Number.isFinite(value) ? value : 0; }
+function propertyRollupNumber(properties, name) {
+  const rollup = properties?.[name]?.rollup;
+  if (!rollup) return 0;
+  if (rollup.type === "number" && typeof rollup.number === "number") return rollup.number;
+  if (Array.isArray(rollup.array)) return rollup.array.reduce((sum, item) => {
+    if (item?.type === "number" && typeof item.number === "number") return sum + item.number;
+    if (item?.type === "formula" && typeof item.formula?.number === "number") return sum + item.formula.number;
+    return sum;
+  }, 0);
+  return 0;
+}
+function propertyFormula(properties, name) {
+  const formula = properties?.[name]?.formula;
+  if (!formula) return null;
+  if (formula.type === "number") return typeof formula.number === "number" ? formula.number : null;
+  if (formula.type === "string") return formula.string || "";
+  if (formula.type === "boolean") return Boolean(formula.boolean);
+  if (formula.type === "date") return formula.date?.start || null;
+  return null;
+}
 function propertyUrl(properties, name) { return properties?.[name]?.url || ""; }
 function propertyMultiSelect(properties, name) { return (properties?.[name]?.multi_select || []).map((item) => item.name).filter(Boolean); }
 function propertyCheckbox(properties, name) { return Boolean(properties?.[name]?.checkbox); }
