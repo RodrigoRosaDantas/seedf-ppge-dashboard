@@ -82,7 +82,12 @@ test("uses the SEEDF PPGE brand mark across the shell", async () => {
   assert.match(manifest, /favicon\.svg/);
 });
 
-test("law page enhancement keeps the brand theme metadata", async () => {\n  const source = await read("scripts/enhance-leis-pages.mjs");\n  assert.match(source, /function ensureThemeColor/);\n  assert.match(source, /name="theme-color"/);\n});\n
+test("law page enhancement keeps the brand theme metadata", async () => {
+  const source = await read("scripts/enhance-leis-pages.mjs");
+  assert.match(source, /function ensureThemeColor/);
+  assert.match(source, /name="theme-color"/);
+});
+
 test("the Pages workflow runs tests before publishing", async () => {
   const workflow = await read(".github/workflows/deploy-pages.yml");
   assert.match(workflow, /npm test/);
