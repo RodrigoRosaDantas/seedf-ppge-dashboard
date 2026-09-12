@@ -117,6 +117,31 @@
     @media(max-width:980px){.study-layout{grid-template-columns:1fr}.study-sidebar .panel{position:static}.study-sidebar .panel{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}.study-sidebar .panel> .panel-label,.study-sidebar .panel>.sidebar-note,.study-sidebar .panel>.danger-link{grid-column:1/-1}.study-sidebar .panel>.select-wrap{margin-bottom:10px}.stats-grid{margin-bottom:0}.queue-summary{grid-column:1/-1}.day-list{grid-column:1/-1;max-height:120px}}
     @media(max-width:640px){.study-shell{padding:0 13px 38px}.study-topbar{min-height:58px;font-size:10px}.study-top-status{max-width:52%;font-size:9px;line-height:1.25}.study-hero{display:block;padding:31px 0 22px}.study-lead{font-size:13px}.download-link{margin-top:14px;width:100%}.study-sidebar .panel{display:block;padding:14px}.stats-grid{margin:0 0 14px}.day-list{max-height:155px}.session-head{align-items:flex-start}.session-title strong{font-size:15px;white-space:normal}.session-counter{font-size:9px}.flashcard,.empty-state{min-height:440px;padding:23px 18px;border-radius:18px}.card-top{margin-bottom:31px}.card-front{font-size:25px}.choice-list{grid-template-columns:1fr}.answer-panel{margin-top:28px}.card-footer{margin-top:26px;flex-direction:column;gap:4px}.show-button{width:100%}.rating-panel{grid-template-columns:1fr 1fr}.rating{min-height:63px}.keyboard-note{display:none}}
     @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important}}
+  
+    /* Shared active study focus timer */
+    .focus-timer-panel{margin-top:16px;padding:14px;border:1px solid rgba(66,212,189,.24);border-radius:15px;background:linear-gradient(145deg,rgba(66,212,189,.08),rgba(243,197,104,.06))}
+    .focus-timer-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+    .focus-timer-kicker{display:block;margin-bottom:4px;color:var(--teal-2);font-size:9px;font-weight:950;letter-spacing:.14em;text-transform:uppercase}
+    .focus-timer-head strong{display:block;color:#f2fbfc;font-size:14px}
+    .focus-timer-state{display:inline-flex;align-items:center;min-height:23px;padding:0 8px;border:1px solid rgba(178,218,226,.18);border-radius:999px;color:#9db6be;background:rgba(255,255,255,.04);font-size:9px;font-weight:900;white-space:nowrap}
+    .focus-timer-state.running{border-color:rgba(66,212,189,.45);color:#9af0da;background:rgba(66,212,189,.12)}
+    .focus-timer-state.finished{border-color:rgba(243,197,104,.45);color:#f7d994;background:rgba(243,197,104,.1)}
+    .focus-timer-display{margin:16px 0 9px;color:#f8ffff;font-size:35px;font-variant-numeric:tabular-nums;font-weight:850;letter-spacing:-.06em;line-height:1}
+    .focus-timer-track{height:6px;overflow:hidden;border-radius:999px;background:rgba(178,218,226,.14)}
+    .focus-timer-track span{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--teal),var(--amber));transition:width .3s ease}
+    .focus-timer-meta{display:flex;justify-content:space-between;gap:8px;margin-top:8px;color:#86a2ad;font-size:9px;line-height:1.35}
+    .focus-timer-presets{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-top:12px}
+    .focus-timer-preset{min-height:30px;padding:0 4px;border:1px solid rgba(178,218,226,.16);border-radius:8px;color:#abc0c7;background:rgba(255,255,255,.035);cursor:pointer;font-size:9px;font-weight:900}
+    .focus-timer-preset:hover:not(:disabled),.focus-timer-preset.is-active{border-color:rgba(66,212,189,.48);color:#dffff7;background:rgba(66,212,189,.12)}
+    .focus-timer-preset:disabled{cursor:not-allowed;opacity:.48}
+    .focus-timer-actions{display:grid;grid-template-columns:minmax(0,1fr) 58px;gap:6px;margin-top:8px}
+    .focus-timer-actions button{min-height:36px;padding:0 8px;border:1px solid rgba(66,212,189,.4);border-radius:9px;color:#dffff7;background:rgba(66,212,189,.13);cursor:pointer;font-size:10px;font-weight:900}
+    .focus-timer-actions button:hover:not(:disabled){background:rgba(66,212,189,.22)}
+    .focus-timer-actions button:last-child{border-color:rgba(178,218,226,.16);color:#aac1c8;background:rgba(255,255,255,.035)}
+    .focus-timer-actions button:disabled{cursor:not-allowed;opacity:.48}
+    .focus-timer-note{display:block;margin-top:10px;color:#718d9a;font-size:9px;line-height:1.45}
+    @media(max-width:980px){.focus-timer-panel{grid-column:1/-1}}
+    @media(max-width:640px){.focus-timer-head{display:block}.focus-timer-state{margin-top:8px}.focus-timer-meta{display:grid}.focus-timer-display{font-size:34px}}
   </style>
   <script src="../../sw-register.js" defer></script>
 </head>
@@ -143,6 +168,15 @@
         <span class="panel-label">Sessão de estudo</span>
         <div class="select-wrap"><label class="sr-only" for="day-select">Escolher dia</label><select id="day-select"><option value="all">Todos os dias · L01–L34</option></select></div>
         <div class="mode-row"><div class="select-wrap"><label class="sr-only" for="mode-select">Escolher modo</label><select id="mode-select"><option value="due">Revisão de hoje</option><option value="all">Estudar todos</option></select></div><button class="icon-button" id="shuffle-button" title="Embaralhar sessão" aria-label="Embaralhar sessão">⤨</button></div>
+        <section class="focus-timer-panel" id="focus-timer" aria-labelledby="focus-timer-title">
+          <div class="focus-timer-head"><div><span class="focus-timer-kicker">TEMPO DE FOCO</span><strong id="focus-timer-title">Controlar sessão</strong></div><span class="focus-timer-state" id="focus-timer-state" aria-live="polite">Pronta</span></div>
+          <div class="focus-timer-display" id="focus-timer-display" aria-live="polite">00:00</div>
+          <div class="focus-timer-track" aria-hidden="true"><span id="focus-timer-progress"></span></div>
+          <div class="focus-timer-meta"><span id="focus-timer-mode-label">Crescente · tempo ativo</span><span>salvo neste aparelho</span></div>
+          <div class="focus-timer-presets" role="group" aria-label="Escolher modo ou duração"><button class="focus-timer-preset" id="focus-timer-free" type="button" aria-pressed="true">Livre</button><button class="focus-timer-preset" id="focus-timer-25" type="button" aria-pressed="false">25 min</button><button class="focus-timer-preset" id="focus-timer-50" type="button" aria-pressed="false">50 min</button><button class="focus-timer-preset" id="focus-timer-90" type="button" aria-pressed="false">90 min</button></div>
+          <div class="focus-timer-actions"><button id="focus-timer-toggle" type="button">Iniciar foco</button><button id="focus-timer-reset" type="button">Zerar</button></div>
+          <small class="focus-timer-note">Conta apenas o tempo ativo e pausa automaticamente quando você sai da página.</small>
+        </section>
         <div class="stats-grid" id="stats-grid"></div>
         <div class="queue-summary" id="queue-summary"></div>
         <div class="day-list" id="day-list" aria-label="Atalhos por dia"></div>
@@ -202,6 +236,152 @@
   const goodTime = document.getElementById("good-time");
   const easyTime = document.getElementById("easy-time");
   const ratings = [...ratingPanel.querySelectorAll("[data-rating]")];
+  const FOCUS_TIMER_STORAGE_KEY = "seedf-ppge-dashboard:focus-timer:v1";
+  const LEGACY_D01_SESSION_STORAGE_KEY = "seedf-ppge-dashboard:d01-session:v1";
+  const focusTimerDisplayNode = document.getElementById("focus-timer-display");
+  const focusTimerStateNode = document.getElementById("focus-timer-state");
+  const focusTimerProgressNode = document.getElementById("focus-timer-progress");
+  const focusTimerModeNode = document.getElementById("focus-timer-mode-label");
+  const focusTimerToggleNode = document.getElementById("focus-timer-toggle");
+  const focusTimerResetNode = document.getElementById("focus-timer-reset");
+  const focusTimerPresets = [
+    { node: document.getElementById("focus-timer-free"), mode: "countup", targetSeconds: 0 },
+    { node: document.getElementById("focus-timer-25"), mode: "countdown", targetSeconds: 25 * 60 },
+    { node: document.getElementById("focus-timer-50"), mode: "countdown", targetSeconds: 50 * 60 },
+    { node: document.getElementById("focus-timer-90"), mode: "countdown", targetSeconds: 90 * 60 },
+  ];
+  let focusTimer = newFocusTimer("countup", 0);
+  let focusTimerNow = 0;
+  let focusTimerHydrated = false;
+
+  function newFocusTimer(mode, targetSeconds) {
+    return { mode, targetSeconds: mode === "countdown" ? Math.max(60, Math.floor(targetSeconds)) : 0, activeElapsedMs: 0, lastResumedAt: null, pausedAt: null, state: "paused" };
+  }
+  function focusFiniteNumber(value, fallback = 0) { return typeof value === "number" && Number.isFinite(value) ? value : fallback; }
+  function normalizeFocusTimer(value, now = Date.now()) {
+    if (!value || typeof value !== "object") return newFocusTimer("countup", 0);
+    const raw = value;
+    if (typeof raw.activeElapsedMs === "number" || typeof raw.mode === "string") {
+      const mode = raw.mode === "countdown" ? "countdown" : "countup";
+      const targetSeconds = mode === "countdown" ? Math.max(60, Math.floor(focusFiniteNumber(raw.targetSeconds, 25 * 60))) : 0;
+      const state = raw.state === "running" || raw.state === "finished" ? raw.state : "paused";
+      const lastResumedAt = focusFiniteNumber(raw.lastResumedAt, 0) || null;
+      return { mode, targetSeconds, activeElapsedMs: Math.max(0, Math.floor(focusFiniteNumber(raw.activeElapsedMs))), lastResumedAt: state === "running" ? lastResumedAt : null, pausedAt: focusFiniteNumber(raw.pausedAt, 0) || (state === "paused" ? now : null), state: state === "running" && !lastResumedAt ? "paused" : state };
+    }
+    if ("elapsedSeconds" in raw) {
+      const elapsedSeconds = Math.max(0, Math.floor(focusFiniteNumber(raw.elapsedSeconds)));
+      const startedAt = focusFiniteNumber(raw.startedAt, 0);
+      const activeElapsedMs = (elapsedSeconds + (startedAt ? Math.max(0, Math.floor((now - startedAt) / 1000)) : 0)) * 1000;
+      return { mode: "countup", targetSeconds: 0, activeElapsedMs, lastResumedAt: null, pausedAt: now, state: "paused" };
+    }
+    return newFocusTimer("countup", 0);
+  }
+  function readStoredFocusTimer() {
+    try {
+      const current = localStorage.getItem(FOCUS_TIMER_STORAGE_KEY);
+      if (current) return normalizeFocusTimer(JSON.parse(current));
+      const legacy = localStorage.getItem(LEGACY_D01_SESSION_STORAGE_KEY);
+      return legacy ? normalizeFocusTimer(JSON.parse(legacy)) : newFocusTimer("countup", 0);
+    } catch { return newFocusTimer("countup", 0); }
+  }
+  function persistFocusTimer() {
+    try { localStorage.setItem(FOCUS_TIMER_STORAGE_KEY, JSON.stringify(focusTimer)); } catch {}
+  }
+  function focusElapsedMs(now) {
+    const runningMs = focusTimer.state === "running" && focusTimer.lastResumedAt !== null && now > 0 ? Math.max(0, now - focusTimer.lastResumedAt) : 0;
+    return Math.max(0, focusTimer.activeElapsedMs + runningMs);
+  }
+  function focusDisplaySeconds(now) {
+    const elapsed = focusElapsedMs(now);
+    return focusTimer.mode === "countdown" ? Math.max(0, Math.ceil((focusTimer.targetSeconds * 1000 - elapsed) / 1000)) : Math.floor(elapsed / 1000);
+  }
+  function focusFormatDuration(totalSeconds) {
+    const seconds = Math.max(0, Math.floor(totalSeconds));
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const remainder = seconds % 60;
+    if (hours > 0) return [hours, minutes, remainder].map((part) => String(part).padStart(2, "0")).join(":");
+    return [minutes, remainder].map((part) => String(part).padStart(2, "0")).join(":");
+  }
+  function focusProgress(now) {
+    if (focusTimer.mode !== "countdown" || focusTimer.targetSeconds <= 0) return 0;
+    return Math.min(100, Math.max(0, Math.round((focusElapsedMs(now) / (focusTimer.targetSeconds * 1000)) * 100)));
+  }
+  function focusStatusLabel(displaySeconds) {
+    if (!focusTimerHydrated) return "Carregando...";
+    if (focusTimer.state === "running") return "Em foco";
+    if (focusTimer.state === "finished") return "Concluída";
+    return displaySeconds > 0 ? "Pausada" : "Pronta";
+  }
+  function renderFocusTimer() {
+    const displaySeconds = focusDisplaySeconds(focusTimerNow);
+    const status = focusStatusLabel(displaySeconds);
+    const modeLabel = focusTimer.mode === "countup" ? "Crescente · tempo ativo" : "Regressivo · " + String(Math.round(focusTimer.targetSeconds / 60)) + " min";
+    if (focusTimerDisplayNode) focusTimerDisplayNode.textContent = focusTimerHydrated ? focusFormatDuration(displaySeconds) : "00:00";
+    if (focusTimerStateNode) { focusTimerStateNode.textContent = status; focusTimerStateNode.className = "focus-timer-state " + focusTimer.state; }
+    if (focusTimerProgressNode) focusTimerProgressNode.style.width = String(focusProgress(focusTimerNow)) + "%";
+    if (focusTimerModeNode) focusTimerModeNode.textContent = modeLabel;
+    if (focusTimerToggleNode) focusTimerToggleNode.textContent = focusTimer.state === "running" ? "Pausar" : focusTimer.state === "finished" ? "Nova sessão" : displaySeconds > 0 ? "Retomar" : "Iniciar foco";
+    if (focusTimerResetNode) focusTimerResetNode.disabled = !focusTimerHydrated;
+    focusTimerPresets.forEach((preset) => { if (!preset.node) return; const active = focusTimer.mode === preset.mode && focusTimer.targetSeconds === preset.targetSeconds; preset.node.classList.toggle("is-active", active); preset.node.setAttribute("aria-pressed", active ? "true" : "false"); preset.node.disabled = !focusTimerHydrated || focusTimer.state === "running"; });
+  }
+  function pauseFocusTimer(at = Date.now()) {
+    if (focusTimer.state !== "running") return;
+    focusTimer = { ...focusTimer, activeElapsedMs: focusElapsedMs(at), lastResumedAt: null, pausedAt: at, state: "paused" };
+    focusTimerNow = at;
+    persistFocusTimer();
+    renderFocusTimer();
+  }
+  function toggleFocusTimer() {
+    const now = Date.now();
+    const elapsed = focusElapsedMs(now);
+    if (focusTimer.state === "running") {
+      focusTimer = { ...focusTimer, activeElapsedMs: elapsed, lastResumedAt: null, pausedAt: now, state: "paused" };
+    } else if (focusTimer.state === "finished") {
+      focusTimer = { ...newFocusTimer(focusTimer.mode, focusTimer.targetSeconds), state: "running", lastResumedAt: now };
+    } else {
+      focusTimer = { ...focusTimer, activeElapsedMs: elapsed, lastResumedAt: now, pausedAt: null, state: "running" };
+    }
+    focusTimerNow = now;
+    persistFocusTimer();
+    renderFocusTimer();
+  }
+  function resetFocusTimer() {
+    focusTimer = newFocusTimer(focusTimer.mode, focusTimer.targetSeconds);
+    focusTimerNow = Date.now();
+    persistFocusTimer();
+    renderFocusTimer();
+  }
+  function chooseFocusPreset(preset) {
+    if (focusTimer.state === "running") return;
+    focusTimer = newFocusTimer(preset.mode, preset.targetSeconds);
+    focusTimerNow = Date.now();
+    persistFocusTimer();
+    renderFocusTimer();
+  }
+  focusTimer = readStoredFocusTimer();
+  focusTimerNow = Date.now();
+  focusTimerHydrated = true;
+  renderFocusTimer();
+  focusTimerToggleNode?.addEventListener("click", toggleFocusTimer);
+  focusTimerResetNode?.addEventListener("click", resetFocusTimer);
+  focusTimerPresets.forEach((preset) => preset.node?.addEventListener("click", () => chooseFocusPreset(preset)));
+  document.addEventListener("visibilitychange", () => { if (document.visibilityState !== "visible") pauseFocusTimer(); });
+  window.addEventListener("pagehide", () => pauseFocusTimer());
+  window.addEventListener("storage", (event) => {
+    if (event.key !== FOCUS_TIMER_STORAGE_KEY) return;
+    try { focusTimer = event.newValue ? normalizeFocusTimer(JSON.parse(event.newValue)) : newFocusTimer("countup", 0); focusTimerNow = Date.now(); renderFocusTimer(); } catch {}
+  });
+  window.setInterval(() => {
+    if (!focusTimerHydrated || focusTimer.state !== "running") return;
+    focusTimerNow = Date.now();
+    if (focusTimer.mode === "countdown" && focusElapsedMs(focusTimerNow) >= focusTimer.targetSeconds * 1000) {
+      focusTimer = { ...focusTimer, activeElapsedMs: focusTimer.targetSeconds * 1000, lastResumedAt: null, pausedAt: focusTimerNow, state: "finished" };
+      persistFocusTimer();
+    }
+    renderFocusTimer();
+  }, 1000);
+
 
   let dataset = null;
   let cardsById = new Map();

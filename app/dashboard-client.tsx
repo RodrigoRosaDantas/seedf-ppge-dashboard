@@ -603,12 +603,104 @@ const D01_CHECKLIST = [
 ] as const;
 
 const D01_CHECKLIST_STORAGE_KEY = "seedf-ppge-dashboard:d01-checklist:v1";
-const D01_SESSION_STORAGE_KEY = "seedf-ppge-dashboard:d01-session:v1";
+const FOCUS_TIMER_STORAGE_KEY = "seedf-ppge-dashboard:focus-timer:v1";
+const LEGACY_D01_SESSION_STORAGE_KEY = "seedf-ppge-dashboard:d01-session:v1";
 
-type D01SessionState = {
-  startedAt: number | null;
-  elapsedSeconds: number;
+type FocusTimerMode = "countup" | "countdown";
+type FocusTimerState = "running" | "paused" | "finished";
+type FocusTimerSnapshot = {
+  mode: FocusTimerMode;
+  targetSeconds: number;
+  activeElapsedMs: number;
+  lastResumedAt: number | null;
+  pausedAt: number | null;
+  state: FocusTimerState;
 };
+
+const FOCUS_TIMER_PRESETS = [
+  { mode: "countup", targetSeconds: 0, label: "Livre" },
+  { mode: "countdown", targetSeconds: 25 * 60, label: "25 min" },
+  { mode: "countdown", targetSeconds: 50 * 60, label: "50 min" },
+  { mode: "countdown", targetSeconds: 90 * 60, label: "90 min" },
+] as const;
+
+function newFocusTimer(mode: FocusTimerMode, targetSeconds: number): FocusTimerSnapshot {
+  return {
+    mode,
+    targetSeconds: mode === "countdown" ? Math.max(60, Math.floor(targetSeconds)) : 0,
+    activeElapsedMs: 0,
+    lastResumedAt: null,
+    pausedAt: null,
+    state: "paused",
+  };
+}
+
+function finiteNumber(value: unknown, fallback = 0) {
+  return typeof value === "number" && Number.isFinite(value) ? value : fallback;
+}
+
+function normalizeFocusTimer(value: unknown, now = Date.now()): FocusTimerSnapshot {
+  if (!value || typeof value !== "object") return newFocusTimer("countup", 0);
+  const raw = value as Record<string, unknown>;
+
+  if (typeof raw.activeElapsedMs === "number" || typeof raw.mode === "string") {
+    const mode: FocusTimerMode = raw.mode === "countdown" ? "countdown" : "countup";
+    const targetSeconds = mode === "countdown" ? Math.max(60, Math.floor(finiteNumber(raw.targetSeconds, 25 * 60))) : 0;
+    const state: FocusTimerState = raw.state === "running" || raw.state === "finished" ? raw.state : "paused";
+    const lastResumedAt = finiteNumber(raw.lastResumedAt, 0) || null;
+    return {
+      mode,
+      targetSeconds,
+      activeElapsedMs: Math.max(0, Math.floor(finiteNumber(raw.activeElapsedMs))),
+      lastResumedAt: state === "running" ? lastResumedAt : null,
+      pausedAt: finiteNumber(raw.pausedAt, 0) || (state === "paused" ? now : null),
+      state: state === "running" && !lastResumedAt ? "paused" : state,
+    };
+  }
+
+  // Migrate the former D01 count-up session without losing local study time.
+  if ("elapsedSeconds" in raw) {
+    const elapsedSeconds = Math.max(0, Math.floor(finiteNumber(raw.elapsedSeconds)));
+    const startedAt = finiteNumber(raw.startedAt, 0);
+    const activeElapsedMs = (elapsedSeconds + (startedAt ? Math.max(0, Math.floor((now - startedAt) / 1000)) : 0)) * 1000;
+    return {
+      mode: "countup",
+      targetSeconds: 0,
+      activeElapsedMs,
+      lastResumedAt: null,
+      pausedAt: now,
+      state: "paused",
+    };
+  }
+
+  return newFocusTimer("countup", 0);
+}
+
+function readStoredFocusTimer() {
+  try {
+    const current = window.localStorage.getItem(FOCUS_TIMER_STORAGE_KEY);
+    if (current) return normalizeFocusTimer(JSON.parse(current));
+    const legacy = window.localStorage.getItem(LEGACY_D01_SESSION_STORAGE_KEY);
+    return legacy ? normalizeFocusTimer(JSON.parse(legacy)) : newFocusTimer("countup", 0);
+  } catch {
+    return newFocusTimer("countup", 0);
+  }
+}
+
+function persistFocusTimer(snapshot: FocusTimerSnapshot) {
+  try {
+    window.localStorage.setItem(FOCUS_TIMER_STORAGE_KEY, JSON.stringify(snapshot));
+  } catch {
+    // Private browsing can deny local storage; the timer still works in memory.
+  }
+}
+
+function focusElapsedMs(snapshot: FocusTimerSnapshot, now: number) {
+  const runningMs = snapshot.state === "running" && snapshot.lastResumedAt !== null && now > 0
+    ? Math.max(0, now - snapshot.lastResumedAt)
+    : 0;
+  return Math.max(0, snapshot.activeElapsedMs + runningMs);
+}
 
 function formatStudyDuration(totalSeconds: number) {
   const seconds = Math.max(0, Math.floor(totalSeconds));
@@ -619,13 +711,176 @@ function formatStudyDuration(totalSeconds: number) {
   return [minutes, remainder].map((part) => String(part).padStart(2, "0")).join(":");
 }
 
+function focusDisplaySeconds(snapshot: FocusTimerSnapshot, now: number) {
+  const elapsed = focusElapsedMs(snapshot, now);
+  return snapshot.mode === "countdown"
+    ? Math.max(0, Math.ceil((snapshot.targetSeconds * 1000 - elapsed) / 1000))
+    : Math.floor(elapsed / 1000);
+}
+
+function focusProgress(snapshot: FocusTimerSnapshot, now: number) {
+  if (snapshot.mode !== "countdown" || snapshot.targetSeconds <= 0) return 0;
+  return Math.min(100, Math.max(0, Math.round((focusElapsedMs(snapshot, now) / (snapshot.targetSeconds * 1000)) * 100)));
+}
+
+function StudyFocusTimer() {
+  const [timer, setTimer] = useState<FocusTimerSnapshot>(() => newFocusTimer("countup", 0));
+  const [timerNow, setTimerNow] = useState(0);
+  const [timerHydrated, setTimerHydrated] = useState(false);
+
+  useEffect(() => {
+    const saved = readStoredFocusTimer();
+    // Reconcile persisted device state after hydration; the server render stays deterministic.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setTimer(saved);
+    setTimerNow(Date.now());
+    setTimerHydrated(true);
+  }, []);
+
+  useEffect(() => {
+    if (timerHydrated) persistFocusTimer(timer);
+  }, [timer, timerHydrated]);
+
+  const pauseFocusTimer = useCallback((at = Date.now()) => {
+    setTimer((current) => {
+      if (current.state !== "running") return current;
+      const next: FocusTimerSnapshot = {
+        ...current,
+        activeElapsedMs: focusElapsedMs(current, at),
+        lastResumedAt: null,
+        pausedAt: at,
+        state: "paused",
+      };
+      persistFocusTimer(next);
+      return next;
+    });
+    setTimerNow(at);
+  }, []);
+
+  useEffect(() => {
+    const pauseWhenHidden = () => {
+      if (document.visibilityState !== "visible") pauseFocusTimer();
+    };
+    const pauseOnPageHide = () => pauseFocusTimer();
+    document.addEventListener("visibilitychange", pauseWhenHidden);
+    window.addEventListener("pagehide", pauseOnPageHide);
+    return () => {
+      document.removeEventListener("visibilitychange", pauseWhenHidden);
+      window.removeEventListener("pagehide", pauseOnPageHide);
+    };
+  }, [pauseFocusTimer]);
+
+  useEffect(() => {
+    const syncFromAnotherTab = (event: StorageEvent) => {
+      if (event.key !== FOCUS_TIMER_STORAGE_KEY || !event.newValue) return;
+      try {
+        setTimer(normalizeFocusTimer(JSON.parse(event.newValue)));
+        setTimerNow(Date.now());
+      } catch {
+        // Ignore malformed local state from another tab.
+      }
+    };
+    window.addEventListener("storage", syncFromAnotherTab);
+    return () => window.removeEventListener("storage", syncFromAnotherTab);
+  }, []);
+
+  useEffect(() => {
+    if (!timerHydrated || timer.state !== "running") return;
+    const tick = () => {
+      const now = Date.now();
+      setTimerNow(now);
+      setTimer((current) => {
+        if (current.state !== "running") return current;
+        const elapsed = focusElapsedMs(current, now);
+        if (current.mode === "countdown" && elapsed >= current.targetSeconds * 1000) {
+          const next: FocusTimerSnapshot = {
+            ...current,
+            activeElapsedMs: current.targetSeconds * 1000,
+            lastResumedAt: null,
+            pausedAt: now,
+            state: "finished",
+          };
+          persistFocusTimer(next);
+          return next;
+        }
+        return current;
+      });
+    };
+    tick();
+    const interval = window.setInterval(tick, 1000);
+    return () => window.clearInterval(interval);
+  }, [timerHydrated, timer.state, timer.mode, timer.targetSeconds]);
+
+  const toggleFocusTimer = () => {
+    const now = Date.now();
+    setTimer((current) => {
+      const elapsed = focusElapsedMs(current, now);
+      let next: FocusTimerSnapshot;
+      if (current.state === "running") {
+        next = { ...current, activeElapsedMs: elapsed, lastResumedAt: null, pausedAt: now, state: "paused" };
+      } else if (current.state === "finished") {
+        next = { ...newFocusTimer(current.mode, current.targetSeconds), state: "running", lastResumedAt: now };
+      } else {
+        next = { ...current, activeElapsedMs: elapsed, lastResumedAt: now, pausedAt: null, state: "running" };
+      }
+      persistFocusTimer(next);
+      return next;
+    });
+    setTimerNow(now);
+  };
+
+  const resetFocusTimer = () => {
+    const next = newFocusTimer(timer.mode, timer.targetSeconds);
+    persistFocusTimer(next);
+    setTimer(next);
+    setTimerNow(Date.now());
+  };
+
+  const chooseFocusPreset = (preset: (typeof FOCUS_TIMER_PRESETS)[number]) => {
+    if (timer.state === "running") return;
+    const next = newFocusTimer(preset.mode, preset.targetSeconds);
+    persistFocusTimer(next);
+    setTimer(next);
+    setTimerNow(Date.now());
+  };
+
+  const now = timerNow;
+  const displaySeconds = focusDisplaySeconds(timer, now);
+  const progress = focusProgress(timer, now);
+  const statusLabel = !timerHydrated
+    ? "Carregando..."
+    : timer.state === "running"
+      ? "Em foco"
+      : timer.state === "finished"
+        ? "Concluída"
+        : displaySeconds > 0
+          ? "Pausada"
+          : "Pronta";
+  const primaryLabel = timer.state === "running"
+    ? "Pausar"
+    : timer.state === "finished"
+      ? "Nova sessão"
+      : displaySeconds > 0
+        ? "Retomar"
+        : "Iniciar foco";
+  const modeLabel = timer.mode === "countup"
+    ? "Crescente · tempo ativo"
+    : "Regressivo · " + String(Math.round(timer.targetSeconds / 60)) + " min";
+
+  return <section className={"focus-timer-panel " + (timer.state === "running" ? "is-running" : timer.state === "finished" ? "is-finished" : "")} aria-labelledby="focus-timer-title">
+    <div className="focus-timer-top"><div><p className="eyebrow">TEMPO DE FOCO</p><h3 id="focus-timer-title">Controlar sessão</h3></div><span className={"focus-timer-state " + timer.state}>{statusLabel}</span></div>
+    <div className="focus-timer-display" aria-live="polite">{timerHydrated ? formatStudyDuration(displaySeconds) : "00:00"}</div>
+    <div className="focus-timer-track" aria-hidden="true"><span style={{ width: String(progress) + "%" }} /></div>
+    <div className="focus-timer-meta"><span>{modeLabel}</span><span>{timer.state === "running" ? "Pausa ao sair da página" : "Salvo neste dispositivo"}</span></div>
+    <div className="focus-timer-actions"><button type="button" className="primary-button focus-timer-primary" onClick={toggleFocusTimer} disabled={!timerHydrated}>{primaryLabel}<TimerReset size={16} /></button><button type="button" className="secondary-button focus-timer-reset" onClick={resetFocusTimer} disabled={!timerHydrated}>Zerar</button></div>
+    <div className="focus-timer-presets" role="group" aria-label="Escolher modo ou duração">{FOCUS_TIMER_PRESETS.map((preset) => <button type="button" className={"focus-timer-preset " + (timer.mode === preset.mode && timer.targetSeconds === preset.targetSeconds ? "is-active" : "")} aria-pressed={timer.mode === preset.mode && timer.targetSeconds === preset.targetSeconds} disabled={!timerHydrated || timer.state === "running"} onClick={() => chooseFocusPreset(preset)} key={preset.label}>{preset.label}</button>)}</div>
+    <p className="focus-timer-note">{timer.state === "finished" ? "Sessão concluída. Zere ou inicie uma nova." : "Conta apenas o tempo ativo e pausa automaticamente quando você sai da página."}</p>
+  </section>;
+}
+
 function StudyToday() {
   const [checked, setChecked] = useState<string[]>([]);
   const [checklistHydrated, setChecklistHydrated] = useState(false);
-  const [sessionStartedAt, setSessionStartedAt] = useState<number | null>(null);
-  const [sessionBaseElapsed, setSessionBaseElapsed] = useState(0);
-  const [sessionNow, setSessionNow] = useState(0);
-  const [sessionHydrated, setSessionHydrated] = useState(false);
 
   useEffect(() => {
     try {
@@ -651,65 +906,13 @@ function StudyToday() {
     try {
       window.localStorage.setItem(D01_CHECKLIST_STORAGE_KEY, JSON.stringify(checked));
     } catch {
-      // Keep the current session usable when local storage is unavailable.
+      // Keep the current checklist usable when local storage is unavailable.
     }
   }, [checked, checklistHydrated]);
 
-  useEffect(() => {
-    try {
-      const raw = window.localStorage.getItem(D01_SESSION_STORAGE_KEY);
-      const saved = raw ? JSON.parse(raw) as Partial<D01SessionState> : {};
-      const startedAt = typeof saved?.startedAt === "number" && Number.isFinite(saved.startedAt) && saved.startedAt > 0
-        ? saved.startedAt
-        : null;
-      const elapsedSeconds = typeof saved?.elapsedSeconds === "number" && Number.isFinite(saved.elapsedSeconds)
-        ? Math.max(0, Math.floor(saved.elapsedSeconds))
-        : 0;
-      // Reconcile persisted device state after hydration; the server render stays deterministic.
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setSessionStartedAt(startedAt);
-      setSessionBaseElapsed(elapsedSeconds);
-    } catch {
-      // A private browsing context can deny local storage; the session still works in memory.
-    } finally {
-      setSessionHydrated(true);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (sessionStartedAt === null) return;
-    const updateNow = () => setSessionNow(Date.now());
-    updateNow();
-    const timer = window.setInterval(updateNow, 1000);
-    return () => window.clearInterval(timer);
-  }, [sessionStartedAt]);
-
-  useEffect(() => {
-    if (!sessionHydrated) return;
-    try {
-      const state: D01SessionState = {
-        startedAt: sessionStartedAt,
-        elapsedSeconds: sessionBaseElapsed,
-      };
-      window.localStorage.setItem(D01_SESSION_STORAGE_KEY, JSON.stringify(state));
-    } catch {
-      // Keep the current session usable when local storage is unavailable.
-    }
-  }, [sessionBaseElapsed, sessionHydrated, sessionStartedAt]);
-
   const progress = Math.round((checked.length / D01_CHECKLIST.length) * 100);
-  const sessionSeconds = sessionStartedAt !== null && sessionNow > 0
-    ? sessionBaseElapsed + Math.max(0, Math.floor((sessionNow - sessionStartedAt) / 1000))
-    : sessionBaseElapsed;
-  const sessionLabel = !sessionHydrated
-    ? "Carregando sessão..."
-    : sessionStartedAt !== null
-      ? "Sessão em andamento · " + formatStudyDuration(sessionSeconds)
-      : sessionBaseElapsed > 0
-        ? "Sessão pausada · " + formatStudyDuration(sessionSeconds) + " · salvo neste dispositivo"
-        : "Sessão pronta · salvo neste dispositivo";
 
-  return <div className="inner-page"><section className="page-intro"><div><p className="eyebrow">EXECUÇÃO DIÁRIA · SEEDF</p><h1>D01 · Português fino + LDB</h1><p>O primeiro dia não precisa ser perfeito. Precisa ser registrado.</p></div><StatusPill tone="gold">Próximo</StatusPill></section><section className="content-grid two-thirds study-layout"><div className="panel study-main-panel"><div className="study-progress-head"><div><p className="eyebrow">CHECKLIST DE EXECUÇÃO</p><h2>Feche o dia na ordem certa</h2></div><strong>{progress}%</strong></div><div className="progress-track"><span style={{ width: String(progress) + "%" }} /></div><div className="checklist">{D01_CHECKLIST.map((item) => { const isChecked = checked.includes(item.id); return <button type="button" className={"check-row " + (isChecked ? "is-checked" : "")} key={item.id} aria-pressed={isChecked} onClick={() => setChecked((current) => isChecked ? current.filter((id) => id !== item.id) : [...current, item.id])}><span className="checkbox">{isChecked && <Check size={14} />}</span><span className="check-copy"><strong>{item.label}</strong><small>{item.detail}</small></span><ChevronRight size={17} /></button>; })}</div><div className="study-actions"><button type="button" className="primary-button" onClick={() => { const now = Date.now(); if (sessionStartedAt !== null) { const elapsed = sessionBaseElapsed + Math.max(0, Math.floor((now - sessionStartedAt) / 1000)); setSessionBaseElapsed(elapsed); setSessionStartedAt(null); setSessionNow(0); } else { setSessionStartedAt(now); setSessionNow(now); } }}>{sessionStartedAt !== null ? "Pausar sessão" : sessionBaseElapsed > 0 ? "Retomar sessão" : "Iniciar sessão"}<TimerReset size={16} /></button><span className="session-status" aria-live="polite">{sessionLabel}</span></div><div className="study-source-links"><p className="eyebrow">MATERIAL DO DIA</p><div><a className="resource-link" href={d01NotionPage} target="_blank" rel="noreferrer">Abrir D01 completo no Notion <ArrowRight size={15} /></a><a className="resource-link" href={ldbOfficialUrl} target="_blank" rel="noreferrer">Abrir LDB compilada <ArrowRight size={15} /></a></div></div></div><aside className="panel day-rule-panel"><div className="day-badge">D01</div><p className="eyebrow">REGRA DO DIA</p><h3>Estude, registre, feche.</h3><p>O Banco de Dias agrega os números a partir das linhas detalhadas do Banco de Controle de Questões. Não lance os totais duas vezes.</p><div className="rule-list"><div><Check size={15} /> Dias não estudados não viram atraso.</div><div><Check size={15} /> D07 só nasce dos resultados de D01–D06.</div><div><Check size={15} /> O site não cria desempenho sem dado real.</div></div></aside></section><section className="panel next-days-panel"><SectionHeading eyebrow="SEQUÊNCIA" title="O C01 já está preparado" description="Os próximos dias permanecem não iniciados até a execução real." /><div className="day-strip">{dayRows.slice(0, 7).map((row) => <DayCard row={row} key={row.day} />)}</div></section></div>;
+  return <div className="inner-page"><section className="page-intro"><div><p className="eyebrow">EXECUÇÃO DIÁRIA · SEEDF</p><h1>D01 · Português fino + LDB</h1><p>O primeiro dia não precisa ser perfeito. Precisa ser registrado.</p></div><StatusPill tone="gold">Próximo</StatusPill></section><section className="content-grid two-thirds study-layout"><div className="panel study-main-panel"><div className="study-progress-head"><div><p className="eyebrow">CHECKLIST DE EXECUÇÃO</p><h2>Feche o dia na ordem certa</h2></div><strong>{progress}%</strong></div><div className="progress-track"><span style={{ width: String(progress) + "%" }} /></div><div className="checklist">{D01_CHECKLIST.map((item) => { const isChecked = checked.includes(item.id); return <button type="button" className={"check-row " + (isChecked ? "is-checked" : "")} key={item.id} aria-pressed={isChecked} onClick={() => setChecked((current) => isChecked ? current.filter((id) => id !== item.id) : [...current, item.id])}><span className="checkbox">{isChecked && <Check size={14} />}</span><span className="check-copy"><strong>{item.label}</strong><small>{item.detail}</small></span><ChevronRight size={17} /></button>; })}</div><StudyFocusTimer /><div className="study-source-links"><p className="eyebrow">MATERIAL DO DIA</p><div><a className="resource-link" href={d01NotionPage} target="_blank" rel="noreferrer">Abrir D01 completo no Notion <ArrowRight size={15} /></a><a className="resource-link" href={ldbOfficialUrl} target="_blank" rel="noreferrer">Abrir LDB compilada <ArrowRight size={15} /></a></div></div></div><aside className="panel day-rule-panel"><div className="day-badge">D01</div><p className="eyebrow">REGRA DO DIA</p><h3>Estude, registre, feche.</h3><p>O Banco de Dias agrega os números a partir das linhas detalhadas do Banco de Controle de Questões. Não lance os totais duas vezes.</p><div className="rule-list"><div><Check size={15} /> Dias não estudados não viram atraso.</div><div><Check size={15} /> D07 só nasce dos resultados de D01–D06.</div><div><Check size={15} /> O site não cria desempenho sem dado real.</div></div></aside></section><section className="panel next-days-panel"><SectionHeading eyebrow="SEQUÊNCIA" title="O C01 já está preparado" description="Os próximos dias permanecem não iniciados até a execução real." /><div className="day-strip">{dayRows.slice(0, 7).map((row) => <DayCard row={row} key={row.day} />)}</div></section></div>;
 }
 function DayCard({ row }: { row: typeof dayRows[number] }) {
   return <article className={`day-card day-${row.state}`}><div className="day-card-top"><strong>{row.day}</strong><span className="day-state-dot" /></div><h3>{row.label}</h3><p>{row.detail}</p><span>{row.meta}</span></article>;

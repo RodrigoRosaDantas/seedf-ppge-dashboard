@@ -35,8 +35,22 @@ test("reader exposes resumable, portable study controls", async () => {
   assert.match(html, /data-rating="again"/);
   assert.match(html, /rel="icon" href="\.\.\/\.\.\/favicon\.svg"/);
   assert.match(html, /rel="manifest" href="\.\.\/\.\.\/manifest\.webmanifest"/);
+  assert.match(html, /id="focus-timer"/);
+  assert.match(html, /activeElapsedMs/);
+  assert.match(html, /visibilitychange/);
+  assert.match(html, /pagehide/);
+  assert.match(html, /id="focus-timer-25"/);
   assert.doesNotMatch(html, /rating === "again"\) queue\.push\(doneId\)/);
   assert.match(html, /dueAt: nextDueAt/);
+});
+
+test("keeps the active study focus timer local and resumable", async () => {
+  const source = await read("app/dashboard-client.tsx");
+  assert.match(source, /FOCUS_TIMER_STORAGE_KEY/);
+  assert.match(source, /activeElapsedMs/);
+  assert.match(source, /visibilitychange/);
+  assert.match(source, /pagehide/);
+  assert.match(source, /function StudyFocusTimer/);
 });
 
 test("keeps dashboard deep links hydration-safe and dates deterministic", async () => {
