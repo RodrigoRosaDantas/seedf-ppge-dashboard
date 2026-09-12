@@ -1,5 +1,6 @@
 import { access, mkdir, readFile, readdir, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { buildLeisCockpit } from "./build-leis-cockpit.mjs";
 
 const outputDirectory = path.resolve("dist/client");
 await mkdir(outputDirectory, { recursive: true });
@@ -149,7 +150,10 @@ for (const filename of routeHtmlFiles) {
   const nestedIndexPath = path.join(routeDirectory, "index.html");
   const source = await readFile(sourcePath, "utf8");
   await mkdir(routeDirectory, { recursive: true });
-  if (routeName === "leis") await writeFile(nestedIndexPath, await buildLeisStandalone(source), "utf8");
+  if (routeName === "leis") {
+    await buildLeisStandalone(source);
+    await writeFile(nestedIndexPath, await buildLeisCockpit(source), "utf8");
+  }
   else await writeFile(nestedIndexPath, rewriteAssets(source, "../"), "utf8");
 
   const matchingRsc = `${routeName}.rsc`;
