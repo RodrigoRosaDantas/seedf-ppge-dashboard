@@ -1035,7 +1035,7 @@
 .laws-cockpit .laws-topbar { height: 70px; border-bottom: 1px solid rgba(16,42,53,.10); }
 .laws-cockpit .laws-back { color: #25444d; font-weight: 800; }
 .laws-cockpit .laws-sync { color: #60777a; border-color: rgba(31,183,161,.22); background: rgba(255,255,255,.72); box-shadow: 0 4px 15px rgba(16,42,53,.04); }
-.laws-cockpit-hero { max-width: 1220px !important; margin: 25px auto 16px !important; padding: 0 !important; gap: 16px !important; border: 0 !important; border-radius: 0 !important; background: transparent !important; box-shadow: none !important; }
+.laws-cockpit-hero { display: grid; grid-template-columns: minmax(0,1.15fr) minmax(340px,.85fr); align-items: stretch; max-width: 1220px !important; margin: 25px auto 16px !important; padding: 0 !important; gap: 16px !important; border: 0 !important; border-radius: 0 !important; background: transparent !important; box-shadow: none !important; }
 .laws-cockpit-hero .laws-hero-copy { position: relative; min-height: 360px; overflow: hidden; justify-content: center; padding: 39px 43px !important; border-radius: 27px; background: #0b2a38; box-shadow: 0 22px 46px rgba(11,42,56,.16); }
 .laws-cockpit-hero .laws-hero-copy::before, .laws-cockpit-hero .laws-hero-copy::after { content: ""; position: absolute; pointer-events: none; border: 1px solid rgba(143,232,200,.15); border-radius: 50%; }
 .laws-cockpit-hero .laws-hero-copy::before { width: 470px; height: 470px; right: -250px; top: -275px; }
