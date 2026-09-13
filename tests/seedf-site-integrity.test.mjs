@@ -24,6 +24,28 @@ test("preserves the 34-day law flashcard catalog", async () => {
   assert.doesNotMatch(JSON.stringify(dataset), /TJDFT|RICD|C01|TDAS|EDAS/i);
 });
 
+test("keeps local law reading payload with a Notion fallback", async () => {
+  const [snapshot, publisher, cockpit, enhancer, appPage] = await Promise.all([
+    read("public/data/leis-primeiro.json"),
+    read("scripts/prepare-github-pages.mjs"),
+    read("scripts/build-leis-cockpit.mjs"),
+    read("scripts/enhance-leis-pages.mjs"),
+    read("app/leis/page.tsx"),
+  ]);
+  const dataset = JSON.parse(snapshot);
+  assert.equal(dataset.laws.length, 34);
+  assert.equal(
+    dataset.laws.filter((law) => typeof law.content_html === "string" && law.content_html.trim()).length,
+    34,
+  );
+  assert.match(publisher, /const content = law\.content_html/);
+  assert.match(publisher, /Ler no site/);
+  assert.match(publisher, /Plano B · Notion/);
+  assert.match(cockpit, /Leitura principal: site/);
+  assert.match(cockpit, /Fallback: Notion/);
+  assert.match(enhancer, /Leitura principal: site/);
+  assert.match(appPage, /Fallback: Notion/);
+});
 test("reader exposes resumable, portable study controls", async () => {
   const html = await read("public/leis/flashcards/index.html");
   assert.match(html, /id="day-select"/);

@@ -252,14 +252,14 @@ export default function LeisPrimeiroPage() {
         <div className="laws-hero-copy">
           <p className="laws-kicker">⚖️ TRILHA OPERACIONAL · SEEDF PPGE</p>
           <h1>Leis Primeiro<span className="laws-hero-dot">.</span></h1>
-          <p className="laws-lead">A fila de leitura, questões e revisão do SEEDF. Abra a norma certa, cumpra o bloco e registre o avanço no Notion.</p>
+          <p className="laws-lead">A fila de leitura, questões e revisão do SEEDF. Abra a norma e leia o material local no próprio site. Se o site estiver indisponível, use o Notion como plano B.</p>
           <div className="laws-hero-thesis"><span>LER</span><i>→</i><span>RESPONDER</span><i>→</i><span>REVISAR</span></div>
-          <div className="laws-hero-meta"><span className="laws-live-dot" /><span>Fonte operacional: Notion</span><span className="laws-meta-separator">·</span><span>Site: consulta e navegação</span></div>
+          <div className="laws-hero-meta"><span className="laws-live-dot" /><span>Leitura principal: site</span><span className="laws-meta-separator">·</span><span>Fallback: Notion</span></div>
           <div className="laws-hero-actions">
             <a className="laws-primary" href={currentLaw ? `./${currentLaw.code.toLowerCase()}/` : "#mapa-detalhado"}>▶️ Continuar {currentLaw?.code || "a trilha"}</a>
             <a className="laws-secondary" href="#trilha">Ver trilha ↓</a>
             <a className="laws-secondary" href="./flashcards/">🧠 Abrir flashcards</a>
-            <a className="laws-secondary" href={snapshot?.source.page_url || "https://app.notion.com/p/3d8cf5a26731817c89f4f4907d14a701"} target="_blank" rel="noreferrer">Notion ↗</a>
+            <a className="laws-secondary" href={snapshot?.source.page_url || "https://app.notion.com/p/3d8cf5a26731817c89f4f4907d14a701"} target="_blank" rel="noreferrer">Plano B · Notion ↗</a>
           </div>
         </div>
         <aside className="laws-next-card">
@@ -270,7 +270,7 @@ export default function LeisPrimeiroPage() {
           <p>Feche orientação, leitura, questões, flashcards e D0 antes de avançar. D7/D20 seguem em paralelo.</p>
           <div className="laws-checkpoints">{currentChecks.map(({ label, done }) => <span className={`laws-checkpoint ${done ? "is-done" : ""}`} key={label}>{done ? "✓" : "○"} {label}</span>)}</div>
           <a className="laws-next-cta" href={currentLaw ? `./${currentLaw.code.toLowerCase()}/` : "#mapa-detalhado"}>Abrir norma <span aria-hidden="true">↗</span></a>
-          <a className="laws-next-notion" href={currentLaw?.notion_url || snapshot?.source.page_url || "#"} target="_blank" rel="noreferrer">Abrir no Notion ↗</a>
+          <a className="laws-next-notion" href={currentLaw?.notion_url || snapshot?.source.page_url || "#"} target="_blank" rel="noreferrer">Plano B · abrir no Notion ↗</a>
         </aside>
       </section>
 
@@ -367,7 +367,7 @@ export default function LeisPrimeiroPage() {
           <label className="laws-select"><ShieldCheck size={16} /><select value={priority} onChange={(event) => setPriority(event.target.value)} aria-label="Filtrar por prioridade">{priorities.map((item) => <option key={item}>{item}</option>)}</select></label>
         </div>
 
-        {error ? <div className="laws-error"><CircleAlert size={18} /> O snapshot do site não carregou. A trilha original continua disponível no Notion pelo botão acima.</div> : null}
+        {error ? <div className="laws-error"><CircleAlert size={18} /> O snapshot do site não carregou. O Notion continua disponível como plano B pelo botão acima.</div> : null}
         {!snapshot && !error ? <div className="laws-loading">Carregando a trilha operacional…</div> : null}
         {snapshot && filtered.length === 0 ? <div className="laws-empty">Nenhuma norma corresponde aos filtros atuais.</div> : null}
 
@@ -440,7 +440,7 @@ export default function LeisPrimeiroPage() {
         </section>
       ) : null}
 
-      <footer className="laws-footer"><span>SEEDF PPGE · Leis Primeiro</span><span>Fonte operacional: Notion · Fonte jurídica: texto oficial vigente</span></footer>
+      <footer className="laws-footer"><span>SEEDF PPGE · Leis Primeiro</span><span>Leitura principal: site · Fallback: Notion · Fonte jurídica: texto oficial vigente</span></footer>
     </main>
   );
 }
