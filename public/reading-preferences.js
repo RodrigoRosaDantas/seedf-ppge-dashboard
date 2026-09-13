@@ -16,6 +16,7 @@
     light: "#f4f8fa",
     system: "#f4f8fa",
   };
+  let memoryPreferences = { ...DEFAULTS };
 
   function normalize(value) {
     const candidate = value && typeof value === "object" ? value : {};
@@ -30,15 +31,17 @@
   function read() {
     try {
       const raw = window.localStorage.getItem(STORAGE_KEY);
-      return normalize(raw ? JSON.parse(raw) : DEFAULTS);
+      const next = normalize(raw ? JSON.parse(raw) : DEFAULTS);
+      memoryPreferences = next;
+      return { ...next };
     } catch {
-      return { ...DEFAULTS };
+      return { ...memoryPreferences };
     }
   }
 
   function resolvedAppearance(appearance) {
     if (appearance !== "system") return appearance;
-    return window.matchMedia?.("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    return window.matchMedia?.("(prefers-color-scheme: dark)")?.matches ? "dark" : "light";
   }
 
   function updateThemeColor(appearance) {
@@ -66,6 +69,7 @@
 
   function write(value) {
     const next = apply(value);
+    memoryPreferences = next;
     try {
       window.localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
     } catch {
