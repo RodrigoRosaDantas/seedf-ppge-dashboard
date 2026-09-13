@@ -8,6 +8,7 @@
   <link rel="manifest" href="../../manifest.webmanifest">
   <meta name="description" content="Leitor de flashcards das normas L01–L34 da trilha Leis Primeiro — SEEDF.">
   <title>Flashcards | Leis Primeiro — SEEDF</title>
+  <script src="../../reading-preferences.js"></script>
   <style>
     :root{--bg:#071421;--panel:#0c2031;--panel-2:#102a3f;--line:rgba(172,210,225,.16);--text:#eff8fb;--muted:#9ab1bd;--teal:#42d4bd;--teal-2:#9af0da;--amber:#f3c568;--danger:#ff9b9b;--shadow:0 24px 70px rgba(0,0,0,.27)}
     *{box-sizing:border-box}
@@ -143,13 +144,14 @@
     @media(max-width:980px){.focus-timer-panel{grid-column:1/-1}}
     @media(max-width:640px){.focus-timer-head{display:block}.focus-timer-state{margin-top:8px}.focus-timer-meta{display:grid}.focus-timer-display{font-size:34px}}
   </style>
+  <link rel="stylesheet" href="../../reading-preferences.css?v=20260913a">
   <script src="../../sw-register.js" defer></script>
 </head>
 <body>
 <main class="study-shell">
   <header class="study-topbar">
     <a href="../">← Voltar para Leis Primeiro</a>
-    <div class="study-top-status"><span class="live-dot" aria-hidden="true"></span><span>progresso local · filtro no link</span></div>
+    <div class="study-top-tools"><div class="reading-settings-host" data-reading-settings></div><div class="study-top-status"><span class="live-dot" aria-hidden="true"></span><span>progresso local · filtro no link</span></div></div>
   </header>
 
   <section class="study-hero">

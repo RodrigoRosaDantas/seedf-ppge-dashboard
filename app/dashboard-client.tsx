@@ -16,6 +16,7 @@ import {
   Menu,
   RefreshCw,
   Route,
+  Settings2,
   Target,
   TimerReset,
   TrendingUp,
@@ -26,6 +27,30 @@ import type { LucideIcon } from "lucide-react";
 type SectionId = "inicio" | "estudar" | "fases" | "cargos" | "progresso" | "materiais";
 type MaterialsTone = "gold" | "teal" | "violet" | "coral";
 type MaterialsView = "c01" | "legislation" | "sequence" | "future";
+type ReadingAppearance = "system" | "light" | "dark" | "sepia";
+type ReadingTextScale = "small" | "normal" | "large";
+type ReadingPreferences = {
+  appearance: ReadingAppearance;
+  readingMode: boolean;
+  textScale: ReadingTextScale;
+  reduceMotion: boolean;
+};
+
+declare global {
+  interface Window {
+    SEEDFReadingPreferences?: {
+      read: () => ReadingPreferences;
+      write: (value: ReadingPreferences) => ReadingPreferences;
+    };
+  }
+}
+
+const DEFAULT_READING_PREFERENCES: ReadingPreferences = {
+  appearance: "light",
+  readingMode: false,
+  textScale: "normal",
+  reduceMotion: false,
+};
 
 type StudyMaterial = {
   day: string;
@@ -488,6 +513,122 @@ const futureMaterials: FutureMaterial[] = [
   { label: "MS15/MS16", detail: "Tecnologia, segurança, arquivologia e preservação digital." },
 ];
 
+function normalizeReadingPreferences(value: unknown): ReadingPreferences {
+  const candidate = value && typeof value === "object" ? value as Record<string, unknown> : {};
+  const appearance = ["system", "light", "dark", "sepia"].includes(String(candidate.appearance))
+    ? candidate.appearance as ReadingAppearance
+    : DEFAULT_READING_PREFERENCES.appearance;
+  const textScale = ["small", "normal", "large"].includes(String(candidate.textScale))
+    ? candidate.textScale as ReadingTextScale
+    : DEFAULT_READING_PREFERENCES.textScale;
+  return {
+    appearance,
+    readingMode: candidate.readingMode === true,
+    textScale,
+    reduceMotion: candidate.reduceMotion === true,
+  };
+}
+
+function readStoredReadingPreferences() {
+  if (typeof window === "undefined") return DEFAULT_READING_PREFERENCES;
+  try {
+    const apiValue = window.SEEDFReadingPreferences?.read();
+    if (apiValue) return normalizeReadingPreferences(apiValue);
+    const raw = window.localStorage.getItem("seedf-ppge-dashboard:reading-preferences:v1");
+    return normalizeReadingPreferences(raw ? JSON.parse(raw) : DEFAULT_READING_PREFERENCES);
+  } catch {
+    return DEFAULT_READING_PREFERENCES;
+  }
+}
+
+function writeStoredReadingPreferences(value: ReadingPreferences) {
+  const next = normalizeReadingPreferences(value);
+  if (typeof window === "undefined") return next;
+  if (window.SEEDFReadingPreferences) return window.SEEDFReadingPreferences.write(next);
+  try {
+    window.localStorage.setItem("seedf-ppge-dashboard:reading-preferences:v1", JSON.stringify(next));
+  } catch {
+    // The settings remain usable in memory when local storage is unavailable.
+  }
+  document.documentElement.dataset.appearance = next.appearance;
+  document.documentElement.dataset.colorMode = next.appearance === "system"
+    ? (window.matchMedia?.("(prefers-color-scheme: dark)")?.matches ? "dark" : "light")
+    : next.appearance;
+  document.documentElement.dataset.readingMode = String(next.readingMode);
+  document.documentElement.dataset.textScale = next.textScale;
+  document.documentElement.dataset.reduceMotion = String(next.reduceMotion);
+  window.dispatchEvent(new CustomEvent("seedf-reading-preferences-change", { detail: next }));
+  return next;
+}
+
+function ReadingSettings() {
+  const [open, setOpen] = useState(false);
+  const [preferences, setPreferences] = useState<ReadingPreferences>(DEFAULT_READING_PREFERENCES);
+
+  useEffect(() => {
+    const sync = () => setPreferences(readStoredReadingPreferences());
+    const handleChange = (event: Event) => {
+      const detail = (event as CustomEvent<ReadingPreferences>).detail;
+      setPreferences(normalizeReadingPreferences(detail || readStoredReadingPreferences()));
+    };
+    sync();
+    window.addEventListener("seedf-reading-preferences-change", handleChange);
+    window.addEventListener("storage", sync);
+    return () => {
+      window.removeEventListener("seedf-reading-preferences-change", handleChange);
+      window.removeEventListener("storage", sync);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!open) return;
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setOpen(false);
+    };
+    const closeOnOutsideClick = (event: MouseEvent) => {
+      const target = event.target;
+      if (target instanceof Element && !target.closest(".reading-settings")) setOpen(false);
+    };
+    document.addEventListener("keydown", closeOnEscape);
+    document.addEventListener("mousedown", closeOnOutsideClick);
+    return () => {
+      document.removeEventListener("keydown", closeOnEscape);
+      document.removeEventListener("mousedown", closeOnOutsideClick);
+    };
+  }, [open]);
+
+  const update = (patch: Partial<ReadingPreferences>) => {
+    const next = writeStoredReadingPreferences({ ...readStoredReadingPreferences(), ...patch });
+    setPreferences(next);
+  };
+
+  return (
+    <div className="reading-settings">
+      <button
+        type="button"
+        className="reading-settings-trigger"
+        aria-expanded={open}
+        aria-controls="dashboard-reading-settings"
+        title="Abrir configurações de conforto"
+        onClick={() => setOpen((current) => !current)}
+      >
+        <Settings2 size={15} aria-hidden="true" />
+        <span>Conforto</span>
+      </button>
+      {open ? (
+        <div className="reading-settings-panel" id="dashboard-reading-settings" role="dialog" aria-label="Conforto de leitura">
+          <div className="reading-settings-heading"><strong>Conforto de leitura</strong><small>Salvo neste aparelho</small></div>
+          <label className="reading-settings-field"><span>Aparência</span><select value={preferences.appearance} onChange={(event) => update({ appearance: event.target.value as ReadingAppearance })}><option value="system">Sistema</option><option value="light">Clara</option><option value="dark">Escura</option><option value="sepia">Conforto (sépia)</option></select></label>
+          <label className="reading-settings-field"><span>Tamanho do texto</span><select value={preferences.textScale} onChange={(event) => update({ textScale: event.target.value as ReadingTextScale })}><option value="small">Menor</option><option value="normal">Normal</option><option value="large">Maior</option></select></label>
+          <label className="reading-settings-check"><input type="checkbox" checked={preferences.readingMode} onChange={(event) => update({ readingMode: event.target.checked })} /><span>Modo leitura <small>menos distrações</small></span></label>
+          <label className="reading-settings-check"><input type="checkbox" checked={preferences.reduceMotion} onChange={(event) => update({ reduceMotion: event.target.checked })} /><span>Reduzir animações <small>mais estabilidade visual</small></span></label>
+          <button type="button" className="reading-settings-reset" onClick={() => update(DEFAULT_READING_PREFERENCES)}>Restaurar padrão</button>
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
 function StatusPill({ children, tone = "neutral" }: { children: React.ReactNode; tone?: "neutral" | "gold" | "teal" | "violet" | "coral" }) {
   return <span className={`status-pill status-${tone}`}>{children}</span>;
 }
@@ -833,7 +974,7 @@ function StudyFocusTimer() {
     const next = newFocusTimer(timer.mode, timer.targetSeconds);
     persistFocusTimer(next);
     setTimer(next);
-    setTimerNow(Date.now());
+    setTimerNow(0);
   };
 
   const chooseFocusPreset = (preset: (typeof FOCUS_TIMER_PRESETS)[number]) => {
@@ -841,7 +982,7 @@ function StudyFocusTimer() {
     const next = newFocusTimer(preset.mode, preset.targetSeconds);
     persistFocusTimer(next);
     setTimer(next);
-    setTimerNow(Date.now());
+    setTimerNow(0);
   };
 
   const now = timerNow;
@@ -1455,5 +1596,5 @@ export default function Home() {
   }, [readSnapshot, refreshSnapshot]);
   const activeLabel = navigation.find((item) => item.id === section)?.label ?? "Visão geral";
   const nextAction = snapshot?.dashboard.next_action ?? "D01 · Português fino + LDB";
-  return <main className="site-shell"><aside id="seedf-sidebar" className={`sidebar ${menuOpen ? "sidebar-open" : ""}`}><div className="brand-block"><div className="brand-mark"><img src="./favicon.svg" alt="" aria-hidden="true" /></div><div><strong>SEEDF</strong><span>PPGE · Dashboard PRO</span></div><button type="button" className="close-menu" onClick={() => setMenuOpen(false)} aria-label="Fechar menu" aria-controls="seedf-sidebar"><X size={18} /></button></div><div className="sidebar-context"><span className="live-dot" /> Pré-edital 2026/2027</div><nav className="main-nav" aria-label="Navegação principal">{navigation.map((item) => { const Icon = item.icon; const active = section === item.id; return <button type="button" className={`nav-item ${active ? "nav-active" : ""}`} key={item.id} onClick={() => handleNavigate(item.id)} aria-current={active ? "page" : undefined} aria-controls="dashboard-section"><Icon size={18} /><span>{item.label}</span>{active && <span className="nav-indicator" />}</button>; })}</nav><div className="sidebar-bottom"><div className="sidebar-card"><p className="eyebrow">PRÓXIMA AÇÃO</p><strong>{nextAction}</strong><button onClick={() => handleNavigate("estudar")}>Abrir execução <ArrowRight size={15} /></button></div><div className="sidebar-footer"><span className="source-dot" /> Notion como fonte operacional</div></div></aside>{menuOpen && <button className="scrim" onClick={() => setMenuOpen(false)} aria-label="Fechar menu" />}<div className="main-column"><header className="topbar"><div className="topbar-left"><button type="button" className="menu-button" onClick={() => setMenuOpen(true)} aria-label="Abrir menu" aria-expanded={menuOpen} aria-controls="seedf-sidebar"><Menu size={20} /></button><div><span className="breadcrumb">SEEDF PPGE</span><strong>{activeLabel}</strong></div></div><div className="topbar-actions"><span className={`sync-label ${syncError ? "sync-error" : syncMode === "fallback" ? "sync-fallback" : ""}`}><span className="source-dot" /> {lastUpdated}</span><button className={`refresh-button ${refreshing ? "is-refreshing" : ""}`} onClick={refreshSnapshot} disabled={refreshing} aria-label="Atualizar dados do Notion" title="Consultar a API do Notion agora"><RefreshCw size={17} /></button></div></header><div className="page-content" id="dashboard-section" tabIndex={-1}>{section === "inicio" && <Overview onNavigate={handleNavigate} snapshot={snapshot} />}{section === "estudar" && <StudyToday />}{section === "fases" && <Phases />}{section === "cargos" && <Jobs />}{section === "progresso" && <Progress snapshot={snapshot} />}{section === "materiais" && <Materials snapshot={snapshot} />}</div><footer className="site-footer"><span>SEEDF PPGE · Projeto exclusivo</span><span>{syncMode === "live" ? `Notion ao vivo · ${formatSnapshotDate(snapshot?.source?.synced_at ?? null)}` : syncMode === "fallback" ? `Backup do GitHub · ${formatSnapshotDate(snapshot?.source?.synced_at ?? null)}` : "Notion · indisponível"}</span></footer></div></main>;
+  return <main className="site-shell"><aside id="seedf-sidebar" className={`sidebar ${menuOpen ? "sidebar-open" : ""}`}><div className="brand-block"><div className="brand-mark"><img src="./favicon.svg" alt="" aria-hidden="true" /></div><div><strong>SEEDF</strong><span>PPGE · Dashboard PRO</span></div><button type="button" className="close-menu" onClick={() => setMenuOpen(false)} aria-label="Fechar menu" aria-controls="seedf-sidebar"><X size={18} /></button></div><div className="sidebar-context"><span className="live-dot" /> Pré-edital 2026/2027</div><nav className="main-nav" aria-label="Navegação principal">{navigation.map((item) => { const Icon = item.icon; const active = section === item.id; return <button type="button" className={`nav-item ${active ? "nav-active" : ""}`} key={item.id} onClick={() => handleNavigate(item.id)} aria-current={active ? "page" : undefined} aria-controls="dashboard-section"><Icon size={18} /><span>{item.label}</span>{active && <span className="nav-indicator" />}</button>; })}</nav><div className="sidebar-bottom"><div className="sidebar-card"><p className="eyebrow">PRÓXIMA AÇÃO</p><strong>{nextAction}</strong><button onClick={() => handleNavigate("estudar")}>Abrir execução <ArrowRight size={15} /></button></div><div className="sidebar-footer"><span className="source-dot" /> Notion como plano B e registro</div></div></aside>{menuOpen && <button className="scrim" onClick={() => setMenuOpen(false)} aria-label="Fechar menu" />}<div className="main-column"><header className="topbar"><div className="topbar-left"><button type="button" className="menu-button" onClick={() => setMenuOpen(true)} aria-label="Abrir menu" aria-expanded={menuOpen} aria-controls="seedf-sidebar"><Menu size={20} /></button><div><span className="breadcrumb">SEEDF PPGE</span><strong>{activeLabel}</strong></div></div><div className="topbar-actions"><span className={`sync-label ${syncError ? "sync-error" : syncMode === "fallback" ? "sync-fallback" : ""}`}><span className="source-dot" /> {lastUpdated}</span><ReadingSettings /><button className={`refresh-button ${refreshing ? "is-refreshing" : ""}`} onClick={refreshSnapshot} disabled={refreshing} aria-label="Atualizar dados do Notion" title="Consultar a API do Notion agora"><RefreshCw size={17} /></button></div></header><div className="page-content" id="dashboard-section" tabIndex={-1}>{section === "inicio" && <Overview onNavigate={handleNavigate} snapshot={snapshot} />}{section === "estudar" && <StudyToday />}{section === "fases" && <Phases />}{section === "cargos" && <Jobs />}{section === "progresso" && <Progress snapshot={snapshot} />}{section === "materiais" && <Materials snapshot={snapshot} />}</div><footer className="site-footer"><span>SEEDF PPGE · Projeto exclusivo</span><span>{syncMode === "live" ? `Notion ao vivo · ${formatSnapshotDate(snapshot?.source?.synced_at ?? null)}` : syncMode === "fallback" ? `Backup do GitHub · ${formatSnapshotDate(snapshot?.source?.synced_at ?? null)}` : "Notion · indisponível"}</span></footer></div></main>;
 }

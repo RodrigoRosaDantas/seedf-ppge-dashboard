@@ -23,6 +23,9 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="pt-BR">
+      <head>
+        <script src={`${siteBasePath}/reading-preferences.js`} defer />
+      </head>
       <body>{children}<script src={`${siteBasePath}/sw-register.js`} defer /></body>
     </html>
   );
