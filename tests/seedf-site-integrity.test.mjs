@@ -3,6 +3,7 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
+import * as vm from "node:vm";
 
 const root = fileURLToPath(new URL("..", import.meta.url));
 
@@ -91,6 +92,38 @@ test("shares local reading comfort settings across the SEEDF readers", async () 
   assert.match(preferencesCss, /data-text-scale="large"/);
   assert.match(flashcards, /reading-preferences\.js/);
   assert.match(flashcards, /data-reading-settings/);
+});
+
+test("keeps reading comfort settings in memory when browser storage is unavailable", async () => {
+  const source = await read("public/reading-preferences.js");
+  const documentElement = { dataset: {}, style: {} };
+  const window = {
+    localStorage: {
+      getItem() { throw new Error("storage blocked"); },
+      setItem() { throw new Error("storage blocked"); },
+    },
+    addEventListener() {},
+    dispatchEvent() {},
+  };
+  const document = {
+    documentElement,
+    readyState: "complete",
+    querySelector() { return null; },
+    querySelectorAll() { return []; },
+    addEventListener() {},
+  };
+  class CustomEvent {
+    constructor(type, init = {}) {
+      this.type = type;
+      this.detail = init.detail;
+    }
+  }
+
+  vm.runInNewContext(source, { window, document, CustomEvent, Element: class {} });
+  assert.equal(window.SEEDFReadingPreferences.read().appearance, "light");
+  assert.doesNotThrow(() => window.SEEDFReadingPreferences.write({ appearance: "dark" }));
+  assert.equal(window.SEEDFReadingPreferences.read().appearance, "dark");
+  assert.equal(documentElement.dataset.colorMode, "dark");
 });
 
 test("keeps the active study focus timer local and resumable", async () => {
