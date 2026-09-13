@@ -51,6 +51,7 @@ const DEFAULT_READING_PREFERENCES: ReadingPreferences = {
   textScale: "normal",
   reduceMotion: false,
 };
+let fallbackReadingPreferences: ReadingPreferences = { ...DEFAULT_READING_PREFERENCES };
 
 type StudyMaterial = {
   day: string;
@@ -533,18 +534,27 @@ function readStoredReadingPreferences() {
   if (typeof window === "undefined") return DEFAULT_READING_PREFERENCES;
   try {
     const apiValue = window.SEEDFReadingPreferences?.read();
-    if (apiValue) return normalizeReadingPreferences(apiValue);
+    if (apiValue) {
+      fallbackReadingPreferences = normalizeReadingPreferences(apiValue);
+      return fallbackReadingPreferences;
+    }
     const raw = window.localStorage.getItem("seedf-ppge-dashboard:reading-preferences:v1");
-    return normalizeReadingPreferences(raw ? JSON.parse(raw) : DEFAULT_READING_PREFERENCES);
+    fallbackReadingPreferences = normalizeReadingPreferences(raw ? JSON.parse(raw) : DEFAULT_READING_PREFERENCES);
+    return fallbackReadingPreferences;
   } catch {
-    return DEFAULT_READING_PREFERENCES;
+    return { ...fallbackReadingPreferences };
   }
 }
 
 function writeStoredReadingPreferences(value: ReadingPreferences) {
   const next = normalizeReadingPreferences(value);
+  fallbackReadingPreferences = next;
   if (typeof window === "undefined") return next;
-  if (window.SEEDFReadingPreferences) return window.SEEDFReadingPreferences.write(next);
+  if (window.SEEDFReadingPreferences) {
+    const stored = window.SEEDFReadingPreferences.write(next);
+    fallbackReadingPreferences = normalizeReadingPreferences(stored);
+    return fallbackReadingPreferences;
+  }
   try {
     window.localStorage.setItem("seedf-ppge-dashboard:reading-preferences:v1", JSON.stringify(next));
   } catch {
