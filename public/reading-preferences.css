@@ -1,0 +1,293 @@
+/* Shared visual comfort layer for the static GitHub Pages readers. */
+html[data-color-mode="light"],
+html[data-color-mode="system"] {
+  --reader-bg: #f4f8fa;
+  --reader-panel: #ffffff;
+  --reader-panel-soft: #f7fbfa;
+  --reader-line: #d6e3df;
+  --reader-text: #1c414b;
+  --reader-muted: #6a7e81;
+  --reader-accent: #187c72;
+  --reader-shadow: 0 14px 34px rgba(16, 42, 53, .07);
+}
+html[data-color-mode="dark"] {
+  --reader-bg: #0b1620;
+  --reader-panel: #12242f;
+  --reader-panel-soft: #172d38;
+  --reader-line: #2a414b;
+  --reader-text: #e7f1f3;
+  --reader-muted: #98afb5;
+  --reader-accent: #75e3d3;
+  --reader-shadow: 0 18px 48px rgba(0, 0, 0, .26);
+}
+html[data-color-mode="sepia"] {
+  --reader-bg: #f3ede2;
+  --reader-panel: #fffaf0;
+  --reader-panel-soft: #fff5e4;
+  --reader-line: #dfd1bb;
+  --reader-text: #40362c;
+  --reader-muted: #806f5f;
+  --reader-accent: #5f8379;
+  --reader-shadow: 0 14px 34px rgba(82, 62, 38, .10);
+}
+html[data-color-mode] { background: var(--reader-bg) !important; }
+
+/* Settings widget */
+.reading-settings-host { position: relative; z-index: 90; display: inline-flex; flex: 0 0 auto; }
+.reading-settings-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 34px;
+  padding: 0 10px;
+  border: 1px solid var(--reader-line);
+  border-radius: 9px;
+  color: var(--reader-muted);
+  background: var(--reader-panel);
+  cursor: pointer;
+  font: inherit;
+  font-size: 10px;
+  font-weight: 900;
+  transition: .18s ease;
+}
+.reading-settings-trigger:hover { color: var(--reader-accent); border-color: var(--reader-accent); transform: translateY(-1px); }
+.reading-settings-trigger-icon { font-size: 15px; line-height: 1; }
+.reading-settings-panel {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  width: min(320px, calc(100vw - 24px));
+  padding: 16px;
+  border: 1px solid var(--reader-line);
+  border-radius: 15px;
+  color: var(--reader-text);
+  background: var(--reader-panel);
+  box-shadow: var(--reader-shadow);
+  text-align: left;
+}
+.reading-settings-panel[hidden] { display: none; }
+.reading-settings-heading { display: grid; gap: 3px; margin-bottom: 13px; padding-bottom: 11px; border-bottom: 1px solid var(--reader-line); }
+.reading-settings-heading strong { font-size: 13px; }
+.reading-settings-heading small { color: var(--reader-muted); font-size: 10px; }
+.reading-settings-field { display: grid; grid-template-columns: 1fr 145px; align-items: center; gap: 10px; margin-top: 10px; color: var(--reader-muted); font-size: 11px; font-weight: 800; }
+.reading-settings-field select { width: 100%; min-height: 34px; padding: 0 8px; border: 1px solid var(--reader-line); border-radius: 8px; color: var(--reader-text); background: var(--reader-bg); font: inherit; font-size: 11px; }
+.reading-settings-check { display: flex; align-items: flex-start; gap: 9px; margin-top: 13px; color: var(--reader-muted); font-size: 11px; font-weight: 800; line-height: 1.35; cursor: pointer; }
+.reading-settings-check input { width: 16px; height: 16px; flex: 0 0 auto; margin: 0; accent-color: var(--reader-accent); }
+.reading-settings-check span { display: grid; gap: 2px; }
+.reading-settings-check small { color: var(--reader-muted); font-size: 9px; font-weight: 600; }
+.reading-settings-reset { margin-top: 15px; padding: 0; border: 0; color: var(--reader-accent); background: transparent; cursor: pointer; font: inherit; font-size: 10px; font-weight: 900; }
+.reading-settings-reset:hover { text-decoration: underline; text-underline-offset: 3px; }
+.laws-topbar-tools,
+.study-top-tools { display: flex; align-items: center; justify-content: flex-end; gap: 8px; min-width: 0; }
+.study-topbar.enhanced .study-topbar-tools { display: flex; align-items: center; justify-content: flex-end; gap: 8px; min-width: 0; }
+
+/* The flashcard reader used to be dark-only. Its variables now follow the
+   same preference without changing the local progress model. */
+html[data-color-mode] body {
+  --bg: var(--reader-bg);
+  --panel: var(--reader-panel);
+  --panel-2: var(--reader-panel-soft);
+  --line: var(--reader-line);
+  --text: var(--reader-text);
+  --muted: var(--reader-muted);
+}
+html[data-color-mode] .study-shell { color: var(--reader-text); }
+html[data-color-mode] .study-shell .study-topbar { color: var(--reader-muted); border-color: var(--reader-line); }
+html[data-color-mode] .study-shell .study-topbar a { color: var(--reader-text); }
+html[data-color-mode] .study-shell .study-topbar a:hover { color: var(--reader-accent); }
+html[data-color-mode] .study-shell h1 { color: var(--reader-text); }
+html[data-color-mode] .study-shell .study-lead { color: var(--reader-muted); }
+html[data-color-mode] .study-shell .button,
+html[data-color-mode] .study-shell .download-link,
+html[data-color-mode] .study-shell .panel,
+html[data-color-mode] .study-shell .stat,
+html[data-color-mode] .study-shell .flashcard,
+html[data-color-mode] .study-shell .empty-state,
+html[data-color-mode] .study-shell .choice,
+html[data-color-mode] .study-shell .progress-tool,
+html[data-color-mode] .study-shell .icon-button,
+html[data-color-mode] .study-shell .rating,
+html[data-color-mode] .study-shell .focus-timer-panel,
+html[data-color-mode] .study-shell .focus-timer-state,
+html[data-color-mode] .study-shell .focus-timer-preset {
+  color: var(--reader-text);
+  border-color: var(--reader-line);
+  background: var(--reader-panel);
+}
+html[data-color-mode] .study-shell .study-hero { background: transparent; }
+html[data-color-mode] .study-shell .button-primary,
+html[data-color-mode] .study-shell .download-link { color: #17231f; background: #f3c568; border-color: #f3c568; }
+html[data-color-mode] .study-shell .study-kicker,
+html[data-color-mode] .study-shell .answer-label { color: var(--reader-accent); }
+html[data-color-mode] .study-shell .session-head,
+html[data-color-mode] .study-shell .session-title strong,
+html[data-color-mode] .study-shell .card-front,
+html[data-color-mode] .study-shell .answer-panel,
+html[data-color-mode] .study-shell .choice,
+html[data-color-mode] .study-shell .rating b { color: var(--reader-text); }
+html[data-color-mode] .study-shell .session-counter,
+html[data-color-mode] .study-shell .card-back,
+html[data-color-mode] .study-shell .card-footer,
+html[data-color-mode] .study-shell .sidebar-note,
+html[data-color-mode] .study-shell .progress-tools-title,
+html[data-color-mode] .study-shell .progress-tools-note,
+html[data-color-mode] .study-shell .keyboard-note,
+html[data-color-mode] .study-shell .study-disclaimer,
+html[data-color-mode] .study-shell .rating small { color: var(--reader-muted); }
+html[data-color-mode] .study-shell input,
+html[data-color-mode] .study-shell select { color: var(--reader-text); border-color: var(--reader-line); background: var(--reader-bg); }
+html[data-color-mode] .study-shell .focus-timer-panel { background: var(--reader-panel-soft); }
+html[data-color-mode] .study-shell .focus-timer-track { background: color-mix(in srgb, var(--reader-line) 75%, transparent); }
+html[data-color-mode] .study-shell .focus-timer-actions button:last-child,
+html[data-color-mode] .study-shell .show-button { color: var(--reader-text); border-color: var(--reader-line); background: var(--reader-panel-soft); }
+html[data-color-mode] .study-shell .choice:hover,
+html[data-color-mode] .study-shell .progress-tool:hover,
+html[data-color-mode] .study-shell .button:hover { border-color: var(--reader-accent); background: var(--reader-panel-soft); }
+html[data-color-mode] .study-shell .rating-again { border-color: #c77d70; }
+html[data-color-mode] .study-shell .rating-hard { border-color: #c9a76a; }
+html[data-color-mode] .study-shell .rating-good { border-color: #77bba7; }
+html[data-color-mode] .study-shell .rating-easy { border-color: #8d9ed0; }
+
+/* Warm and dark law reading surfaces. The branded action cards remain
+   identifiable while the long legal text uses a calmer reading canvas. */
+html[data-color-mode="dark"] .laws-cockpit-body,
+html[data-color-mode="dark"] .laws-reading-body { background: var(--reader-bg) !important; color: var(--reader-text) !important; }
+html[data-color-mode="dark"] .laws-cockpit { color: var(--reader-text); background: var(--reader-bg) !important; }
+html[data-color-mode="dark"] .laws-cockpit::before { opacity: .12; }
+html[data-color-mode="dark"] .laws-cockpit .laws-topbar,
+html[data-color-mode="dark"] .laws-reading-body .study-topbar.enhanced { border-color: var(--reader-line) !important; background: rgba(11, 22, 32, .92) !important; }
+html[data-color-mode="dark"] .laws-cockpit .laws-back,
+html[data-color-mode="dark"] .laws-reading-body .study-topbar.enhanced > a,
+html[data-color-mode="dark"] .laws-reading-body .study-progress { color: var(--reader-text) !important; }
+html[data-color-mode="dark"] .laws-cockpit .laws-sync { color: var(--reader-muted); background: var(--reader-panel-soft); border-color: var(--reader-line); }
+html[data-color-mode="dark"] .laws-cockpit > .laws-radar,
+html[data-color-mode="dark"] .laws-cockpit > .laws-disclosure,
+html[data-color-mode="dark"] .laws-cockpit > .bank-disclosure,
+html[data-color-mode="dark"] .laws-cockpit .laws-status-strip article,
+html[data-color-mode="dark"] .laws-cockpit .laws-track-panel,
+html[data-color-mode="dark"] .laws-cockpit .laws-track-card,
+html[data-color-mode="dark"] .laws-cockpit .laws-quick-link,
+html[data-color-mode="dark"] .laws-cockpit .laws-map-row { border-color: var(--reader-line) !important; background: var(--reader-panel) !important; box-shadow: var(--reader-shadow); }
+html[data-color-mode="dark"] .laws-cockpit .laws-track-panel { background: var(--reader-panel-soft) !important; }
+html[data-color-mode="dark"] .laws-cockpit .laws-heading h2,
+html[data-color-mode="dark"] .laws-cockpit .laws-group-title h3,
+html[data-color-mode="dark"] .laws-cockpit .laws-disclosure strong,
+html[data-color-mode="dark"] .laws-cockpit .laws-statistics strong,
+html[data-color-mode="dark"] .laws-cockpit .laws-map-main strong { color: var(--reader-text) !important; }
+html[data-color-mode="dark"] .laws-cockpit .laws-heading p,
+html[data-color-mode="dark"] .laws-cockpit .laws-map-meta,
+html[data-color-mode="dark"] .laws-cockpit .laws-map-next,
+html[data-color-mode="dark"] .laws-cockpit .laws-track-card > p,
+html[data-color-mode="dark"] .laws-cockpit .laws-footer,
+html[data-color-mode="dark"] .laws-cockpit .static-note { color: var(--reader-muted) !important; }
+html[data-color-mode="dark"] .laws-reading-body .study-jump,
+html[data-color-mode="dark"] .laws-reading-body .study-summary-card,
+html[data-color-mode="dark"] .laws-reading-body .study-ops-card,
+html[data-color-mode="dark"] .laws-reading-body .study-rail,
+html[data-color-mode="dark"] .laws-reading-body .study-mobile-toc,
+html[data-color-mode="dark"] .laws-reading-body .study-nav-card { color: var(--reader-text); border-color: var(--reader-line) !important; background: var(--reader-panel) !important; }
+html[data-color-mode="dark"] .laws-reading-body .study-hero { border-color: #27515b !important; background: linear-gradient(145deg, #12313b, #0e222c) !important; box-shadow: var(--reader-shadow); }
+html[data-color-mode="dark"] .laws-reading-body .study-hero h1 { color: #f0fbf9 !important; }
+html[data-color-mode="dark"] .laws-reading-body .study-content { color: var(--reader-text) !important; border-color: var(--reader-line) !important; background: #10232e !important; box-shadow: var(--reader-shadow); }
+html[data-color-mode="dark"] .laws-reading-body .study-content h2,
+html[data-color-mode="dark"] .laws-reading-body .study-content h3,
+html[data-color-mode="dark"] .laws-reading-body .study-content strong { color: #eff8f8 !important; }
+html[data-color-mode="dark"] .laws-reading-body .study-content p,
+html[data-color-mode="dark"] .laws-reading-body .study-content li,
+html[data-color-mode="dark"] .laws-reading-body .study-content td,
+html[data-color-mode="dark"] .laws-reading-body .study-content blockquote { color: #b9cdd0 !important; }
+html[data-color-mode="dark"] .laws-reading-body .study-content a { color: #83e4d1 !important; }
+html[data-color-mode="dark"] .laws-reading-body .study-content th { background: #164450 !important; }
+html[data-color-mode="dark"] .laws-reading-body .study-content td { background: #122a34 !important; border-color: var(--reader-line) !important; }
+html[data-color-mode="dark"] .laws-reading-body .study-actions a { color: #a8eee0 !important; border-color: var(--reader-line) !important; background: var(--reader-panel-soft) !important; }
+
+html[data-color-mode="sepia"] .laws-cockpit-body,
+html[data-color-mode="sepia"] .laws-reading-body { background: var(--reader-bg) !important; color: var(--reader-text) !important; }
+html[data-color-mode="sepia"] .laws-cockpit { color: var(--reader-text); background: var(--reader-bg) !important; }
+html[data-color-mode="sepia"] .laws-cockpit::before { opacity: .16; }
+html[data-color-mode="sepia"] .laws-cockpit .laws-topbar,
+html[data-color-mode="sepia"] .laws-reading-body .study-topbar.enhanced { border-color: var(--reader-line) !important; background: rgba(255, 250, 240, .94) !important; }
+html[data-color-mode="sepia"] .laws-cockpit .laws-back,
+html[data-color-mode="sepia"] .laws-reading-body .study-topbar.enhanced > a,
+html[data-color-mode="sepia"] .laws-reading-body .study-progress { color: var(--reader-text) !important; }
+html[data-color-mode="sepia"] .laws-cockpit .laws-sync { color: var(--reader-muted); background: var(--reader-panel-soft); border-color: var(--reader-line); }
+html[data-color-mode="sepia"] .laws-cockpit > .laws-radar,
+html[data-color-mode="sepia"] .laws-cockpit > .laws-disclosure,
+html[data-color-mode="sepia"] .laws-cockpit > .bank-disclosure,
+html[data-color-mode="sepia"] .laws-cockpit .laws-status-strip article,
+html[data-color-mode="sepia"] .laws-cockpit .laws-track-panel,
+html[data-color-mode="sepia"] .laws-cockpit .laws-track-card,
+html[data-color-mode="sepia"] .laws-cockpit .laws-quick-link,
+html[data-color-mode="sepia"] .laws-cockpit .laws-map-row { border-color: var(--reader-line) !important; background: var(--reader-panel) !important; box-shadow: var(--reader-shadow); }
+html[data-color-mode="sepia"] .laws-cockpit .laws-track-panel { background: var(--reader-panel-soft) !important; }
+html[data-color-mode="sepia"] .laws-cockpit .laws-heading h2,
+html[data-color-mode="sepia"] .laws-cockpit .laws-group-title h3,
+html[data-color-mode="sepia"] .laws-cockpit .laws-disclosure strong,
+html[data-color-mode="sepia"] .laws-cockpit .laws-map-main strong { color: var(--reader-text) !important; }
+html[data-color-mode="sepia"] .laws-cockpit .laws-heading p,
+html[data-color-mode="sepia"] .laws-cockpit .laws-map-meta,
+html[data-color-mode="sepia"] .laws-cockpit .laws-map-next,
+html[data-color-mode="sepia"] .laws-cockpit .laws-track-card > p,
+html[data-color-mode="sepia"] .laws-cockpit .laws-footer,
+html[data-color-mode="sepia"] .laws-cockpit .static-note { color: var(--reader-muted) !important; }
+html[data-color-mode="sepia"] .laws-reading-body .study-jump,
+html[data-color-mode="sepia"] .laws-reading-body .study-summary-card,
+html[data-color-mode="sepia"] .laws-reading-body .study-ops-card,
+html[data-color-mode="sepia"] .laws-reading-body .study-rail,
+html[data-color-mode="sepia"] .laws-reading-body .study-mobile-toc,
+html[data-color-mode="sepia"] .laws-reading-body .study-nav-card { color: var(--reader-text); border-color: var(--reader-line) !important; background: var(--reader-panel) !important; }
+html[data-color-mode="sepia"] .laws-reading-body .study-hero { border-color: #c7b28c !important; background: linear-gradient(145deg, #5b4b3c, #40362e) !important; }
+html[data-color-mode="sepia"] .laws-reading-body .study-content { color: var(--reader-text) !important; border-color: var(--reader-line) !important; background: var(--reader-panel) !important; box-shadow: var(--reader-shadow); }
+html[data-color-mode="sepia"] .laws-reading-body .study-content h2,
+html[data-color-mode="sepia"] .laws-reading-body .study-content h3,
+html[data-color-mode="sepia"] .laws-reading-body .study-content strong { color: #40362c !important; }
+html[data-color-mode="sepia"] .laws-reading-body .study-content p,
+html[data-color-mode="sepia"] .laws-reading-body .study-content li,
+html[data-color-mode="sepia"] .laws-reading-body .study-content td,
+html[data-color-mode="sepia"] .laws-reading-body .study-content blockquote { color: #655748 !important; }
+html[data-color-mode="sepia"] .laws-reading-body .study-content a { color: #4f776f !important; }
+html[data-color-mode="sepia"] .laws-reading-body .study-content th { color: #fffaf0 !important; background: #665545 !important; }
+html[data-color-mode="sepia"] .laws-reading-body .study-content td { background: #fffaf0 !important; border-color: var(--reader-line) !important; }
+html[data-color-mode="sepia"] .laws-reading-body .study-actions a { color: #4f776f !important; border-color: var(--reader-line) !important; background: var(--reader-panel-soft) !important; }
+
+/* Reading mode removes decorative rails and widens the legal text. */
+html[data-reading-mode="true"] .laws-cockpit::before,
+html[data-reading-mode="true"] .laws-cockpit-hero .laws-hero-copy::before,
+html[data-reading-mode="true"] .laws-cockpit-hero .laws-hero-copy::after { display: none !important; }
+html[data-reading-mode="true"] .laws-cockpit-hero { grid-template-columns: minmax(0, 900px) !important; justify-content: center; }
+html[data-reading-mode="true"] .laws-cockpit-hero .laws-hero-copy,
+html[data-reading-mode="true"] .laws-cockpit-hero .laws-next-card { min-height: 0; }
+html[data-reading-mode="true"] .laws-reading-body .study-reading-layout { grid-template-columns: minmax(0, 860px); max-width: 860px; margin-inline: auto; }
+html[data-reading-mode="true"] .laws-reading-body .study-rail { display: none !important; }
+html[data-reading-mode="true"] .laws-reading-body .study-nav.enhanced-nav,
+html[data-reading-mode="true"] .laws-reading-body .study-footer.enhanced-footer { margin-left: 0 !important; }
+html[data-reading-mode="true"] .laws-reading-body .study-content { line-height: 1.9; }
+html[data-reading-mode="true"] .laws-reading-body .study-content p,
+html[data-reading-mode="true"] .laws-reading-body .study-content li { line-height: 1.9; }
+html[data-reading-mode="true"] .study-shell .download-link { display: none; }
+html[data-reading-mode="true"] .study-shell .study-hero { max-width: 900px; margin-inline: auto; }
+
+html[data-text-scale="small"] .laws-reading-body .study-content,
+html[data-text-scale="small"] .laws-reading-body .study-content p,
+html[data-text-scale="small"] .laws-reading-body .study-content li { font-size: 13px !important; }
+html[data-text-scale="large"] .laws-reading-body .study-content,
+html[data-text-scale="large"] .laws-reading-body .study-content p,
+html[data-text-scale="large"] .laws-reading-body .study-content li { font-size: 16px !important; line-height: 1.9; }
+html[data-text-scale="large"] .study-shell .study-lead,
+html[data-text-scale="large"] .study-shell .card-front { font-size: 1.08em; }
+html[data-reduce-motion="true"] *,
+html[data-reduce-motion="true"] *::before,
+html[data-reduce-motion="true"] *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+
+@media (max-width: 700px) {
+  .reading-settings-trigger { min-width: 34px; padding-inline: 8px; }
+  .reading-settings-trigger-text { display: none; }
+  .reading-settings-panel { position: fixed; top: 70px; right: 12px; }
+  .laws-topbar-tools,
+  .study-top-tools { max-width: 68%; align-items: flex-start; }
+  .laws-topbar-tools .laws-sync,
+  .study-top-tools .study-top-status { max-width: 100%; }
+  .study-topbar.enhanced { grid-template-columns: minmax(0, auto) minmax(0, 1fr) auto !important; }
+  .study-topbar.enhanced .study-topbar-tools { display: contents; }
+}

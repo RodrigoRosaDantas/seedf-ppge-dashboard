@@ -66,6 +66,33 @@ test("reader exposes resumable, portable study controls", async () => {
   assert.match(html, /dueAt: nextDueAt/);
 });
 
+test("shares local reading comfort settings across the SEEDF readers", async () => {
+  const [layout, dashboard, appPage, cockpit, enhancer, preferences, preferencesCss, flashcards] = await Promise.all([
+    read("app/layout.tsx"),
+    read("app/dashboard-client.tsx"),
+    read("app/leis/page.tsx"),
+    read("scripts/build-leis-cockpit.mjs"),
+    read("scripts/enhance-leis-pages.mjs"),
+    read("public/reading-preferences.js"),
+    read("public/reading-preferences.css"),
+    read("public/leis/flashcards/index.html"),
+  ]);
+  assert.match(layout, /reading-preferences\.js/);
+  assert.match(dashboard, /function ReadingSettings/);
+  assert.match(appPage, /data-reading-settings/);
+  assert.match(cockpit, /data-reading-settings/);
+  assert.match(enhancer, /reading-preferences\.css/);
+  assert.match(enhancer, /reading-preferences\.js/);
+  assert.match(preferences, /seedf-ppge-dashboard:reading-preferences:v1/);
+  assert.match(preferences, /localStorage/);
+  assert.match(preferences, /data-reading-settings/);
+  assert.match(preferencesCss, /data-color-mode="dark"/);
+  assert.match(preferencesCss, /data-reading-mode="true"/);
+  assert.match(preferencesCss, /data-text-scale="large"/);
+  assert.match(flashcards, /reading-preferences\.js/);
+  assert.match(flashcards, /data-reading-settings/);
+});
+
 test("keeps the active study focus timer local and resumable", async () => {
   const source = await read("app/dashboard-client.tsx");
   assert.match(source, /FOCUS_TIMER_STORAGE_KEY/);
@@ -100,6 +127,8 @@ test("published shell includes an offline registration path", async () => {
   assert.equal(manifestValue.display, "standalone");
   assert.equal(manifestValue.orientation, "any");
   assert.match(serviceWorker, /seedf-pages-v3/);
+  assert.match(serviceWorker, /reading-preferences\.js/);
+  assert.match(serviceWorker, /reading-preferences\.css/);
   assert.match(serviceWorker, /fetch\(request, \{ cache: "no-store" \}\)/);
   assert.match(serviceWorker, /cache\.put\(request, copy\)\)\.catch/);
   assert.match(registration, /serviceWorker\.register/);

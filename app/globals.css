@@ -397,3 +397,250 @@ h3 { margin-bottom: 8px; font-size: 16px; line-height: 1.25; }
   .focus-timer-presets { gap: 5px; }
   .focus-timer-preset { font-size: 9px; }
 }
+
+/* Local reading comfort settings. They are intentionally device-only and do
+   not change the Notion snapshot or any operational record. */
+html[data-color-mode="dark"] {
+  --ink: #e7f1f3;
+  --ink-soft: #b4c8cd;
+  --muted: #8fa8b0;
+  --line: #2a414b;
+  --canvas: #0b1620;
+  --paper: #12242f;
+  --navy: #06121c;
+  --teal: #42d4bd;
+  --teal-dark: #75e3d3;
+  --gold: #f3c568;
+  --coral: #ff9b83;
+  --violet: #b59cff;
+  --shadow: 0 18px 50px rgba(0, 0, 0, .26);
+}
+html[data-color-mode="sepia"] {
+  --ink: #40362c;
+  --ink-soft: #6c5b4d;
+  --muted: #8b7865;
+  --line: #dfd1bb;
+  --canvas: #f3ede2;
+  --paper: #fffaf0;
+  --navy: #3a3028;
+  --teal: #6f9a91;
+  --teal-dark: #4f776f;
+  --gold: #c38d38;
+  --coral: #b86654;
+  --violet: #806ca9;
+  --shadow: 0 18px 50px rgba(82, 62, 38, .10);
+}
+html[data-color-mode] { background: var(--canvas); }
+
+html[data-color-mode="dark"] body,
+html[data-color-mode="sepia"] body { background: var(--canvas); color: var(--ink); }
+html[data-color-mode="dark"] .topbar,
+html[data-color-mode="sepia"] .topbar { background: color-mix(in srgb, var(--canvas) 94%, transparent); border-color: var(--line); }
+html[data-color-mode="dark"] .secondary-button,
+html[data-color-mode="dark"] .stat-card,
+html[data-color-mode="dark"] .panel,
+html[data-color-mode="dark"] .job-card,
+html[data-color-mode="dark"] .material-card,
+html[data-color-mode="dark"] .legislation-item,
+html[data-color-mode="dark"] .future-material,
+html[data-color-mode="dark"] .day-card,
+html[data-color-mode="dark"] .phase-table-row,
+html[data-color-mode="dark"] .source-card,
+html[data-color-mode="dark"] .focus-card,
+html[data-color-mode="dark"] .no-data-panel,
+html[data-color-mode="dark"] .empty-chart-message,
+html[data-color-mode="dark"] .material-modal,
+html[data-color-mode="dark"] .sequence-search input,
+html[data-color-mode="dark"] .sequence-filter,
+html[data-color-mode="dark"] .legislation-search input,
+html[data-color-mode="dark"] .legislation-filter {
+  color: var(--ink);
+  border-color: var(--line);
+  background: var(--paper);
+}
+html[data-color-mode="sepia"] .secondary-button,
+html[data-color-mode="sepia"] .stat-card,
+html[data-color-mode="sepia"] .panel,
+html[data-color-mode="sepia"] .job-card,
+html[data-color-mode="sepia"] .material-card,
+html[data-color-mode="sepia"] .legislation-item,
+html[data-color-mode="sepia"] .future-material,
+html[data-color-mode="sepia"] .day-card,
+html[data-color-mode="sepia"] .phase-table-row,
+html[data-color-mode="sepia"] .source-card,
+html[data-color-mode="sepia"] .focus-card,
+html[data-color-mode="sepia"] .no-data-panel,
+html[data-color-mode="sepia"] .empty-chart-message,
+html[data-color-mode="sepia"] .material-modal,
+html[data-color-mode="sepia"] .sequence-search input,
+html[data-color-mode="sepia"] .sequence-filter,
+html[data-color-mode="sepia"] .legislation-search input,
+html[data-color-mode="sepia"] .legislation-filter {
+  color: var(--ink);
+  border-color: var(--line);
+  background: var(--paper);
+}
+html[data-color-mode="dark"] .integrity-panel,
+html[data-color-mode="dark"] .day-rule-panel,
+html[data-color-mode="dark"] .materials-note,
+html[data-color-mode="dark"] .check-row,
+html[data-color-mode="dark"] .material-modal-note,
+html[data-color-mode="dark"] .focus-timer-panel,
+html[data-color-mode="dark"] .focus-timer-state,
+html[data-color-mode="dark"] .focus-timer-preset,
+html[data-color-mode="dark"] .checkbox {
+  color: var(--ink);
+  border-color: var(--line);
+  background: #10232e;
+}
+html[data-color-mode="sepia"] .integrity-panel,
+html[data-color-mode="sepia"] .day-rule-panel,
+html[data-color-mode="sepia"] .materials-note,
+html[data-color-mode="sepia"] .check-row,
+html[data-color-mode="sepia"] .material-modal-note,
+html[data-color-mode="sepia"] .focus-timer-panel,
+html[data-color-mode="sepia"] .focus-timer-state,
+html[data-color-mode="sepia"] .focus-timer-preset,
+html[data-color-mode="sepia"] .checkbox {
+  color: var(--ink);
+  border-color: var(--line);
+  background: #fff7e8;
+}
+html[data-color-mode="dark"] .focus-timer-panel { background: linear-gradient(145deg, #122d35, #10232e); }
+html[data-color-mode="sepia"] .focus-timer-panel { background: linear-gradient(145deg, #fffaf0, #f8eedb); }
+html[data-color-mode="dark"] .focus-timer-track,
+html[data-color-mode="dark"] .workload-track,
+html[data-color-mode="dark"] .progress-track,
+html[data-color-mode="dark"] .execution-progress-track { background: #203944; }
+html[data-color-mode="sepia"] .focus-timer-track,
+html[data-color-mode="sepia"] .workload-track,
+html[data-color-mode="sepia"] .progress-track,
+html[data-color-mode="sepia"] .execution-progress-track { background: #e7dac4; }
+html[data-color-mode="dark"] .panel-footnote,
+html[data-color-mode="dark"] .job-metrics,
+html[data-color-mode="dark"] .study-source-links,
+html[data-color-mode="dark"] .execution-summary-grid,
+html[data-color-mode="dark"] .focus-rule,
+html[data-color-mode="dark"] .rule-list,
+html[data-color-mode="dark"] .materials-overview-foot { border-color: var(--line); }
+html[data-color-mode="sepia"] .panel-footnote,
+html[data-color-mode="sepia"] .job-metrics,
+html[data-color-mode="sepia"] .study-source-links,
+html[data-color-mode="sepia"] .execution-summary-grid,
+html[data-color-mode="sepia"] .focus-rule,
+html[data-color-mode="sepia"] .rule-list,
+html[data-color-mode="sepia"] .materials-overview-foot { border-color: var(--line); }
+html[data-color-mode="dark"] .check-row:hover { background: #18343c; border-color: #397b76; }
+html[data-color-mode="sepia"] .check-row:hover { background: #fff1d8; border-color: #b9a07a; }
+html[data-color-mode="dark"] .day-next,
+html[data-color-mode="dark"] .day-adaptive,
+html[data-color-mode="dark"] .material-gold,
+html[data-color-mode="dark"] .material-teal,
+html[data-color-mode="dark"] .material-violet,
+html[data-color-mode="dark"] .material-coral,
+html[data-color-mode="dark"] .legislation-gold,
+html[data-color-mode="dark"] .legislation-teal,
+html[data-color-mode="dark"] .legislation-violet,
+html[data-color-mode="dark"] .legislation-coral { background: #142a35; border-color: var(--line); }
+html[data-color-mode="sepia"] .day-next,
+html[data-color-mode="sepia"] .day-adaptive,
+html[data-color-mode="sepia"] .material-gold,
+html[data-color-mode="sepia"] .material-teal,
+html[data-color-mode="sepia"] .material-violet,
+html[data-color-mode="sepia"] .material-coral,
+html[data-color-mode="sepia"] .legislation-gold,
+html[data-color-mode="sepia"] .legislation-teal,
+html[data-color-mode="sepia"] .legislation-violet,
+html[data-color-mode="sepia"] .legislation-coral { background: #fff7e8; border-color: var(--line); }
+html[data-color-mode="dark"] .status-pill { color: var(--ink-soft); background: #172d38; border-color: var(--line); }
+html[data-color-mode="sepia"] .status-pill { color: var(--ink-soft); background: #f9efdc; border-color: var(--line); }
+html[data-color-mode="dark"] .status-gold,
+html[data-color-mode="dark"] .status-teal,
+html[data-color-mode="dark"] .status-violet,
+html[data-color-mode="dark"] .status-coral { background: #1a3139; border-color: var(--line); }
+html[data-color-mode="sepia"] .status-gold,
+html[data-color-mode="sepia"] .status-teal,
+html[data-color-mode="sepia"] .status-violet,
+html[data-color-mode="sepia"] .status-coral { background: #fff3dc; border-color: var(--line); }
+
+/* The dashboard keeps its navy identity card and sidebar, but the reading
+   surfaces follow the selected appearance. */
+html[data-color-mode="dark"] .hero-card { box-shadow: 0 18px 50px rgba(0, 0, 0, .32); }
+html[data-color-mode="dark"] .materials-summary-card { background: #142a35; border-color: var(--line); }
+html[data-color-mode="sepia"] .materials-summary-card { background: #fff7e8; border-color: var(--line); }
+html[data-color-mode="dark"] .reading-settings-trigger,
+html[data-color-mode="dark"] .refresh-button { color: var(--ink-soft); background: var(--paper); border-color: var(--line); }
+html[data-color-mode="sepia"] .reading-settings-trigger,
+html[data-color-mode="sepia"] .refresh-button { color: var(--ink-soft); background: var(--paper); border-color: var(--line); }
+
+.reading-settings,
+.reading-settings-host { position: relative; z-index: 30; flex: 0 0 auto; }
+.reading-settings-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 34px;
+  padding: 0 10px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  color: var(--ink-soft);
+  background: var(--paper);
+  cursor: pointer;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: .01em;
+  transition: .18s ease;
+}
+.reading-settings-trigger:hover { color: var(--teal-dark); border-color: var(--teal); transform: translateY(-1px); }
+.reading-settings-panel {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  width: min(320px, calc(100vw - 28px));
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  color: var(--ink);
+  background: var(--paper);
+  box-shadow: 0 20px 55px rgba(8, 33, 42, .20);
+  text-align: left;
+}
+.reading-settings-heading { display: grid; gap: 3px; margin-bottom: 13px; padding-bottom: 11px; border-bottom: 1px solid var(--line); }
+.reading-settings-heading strong { font-size: 13px; }
+.reading-settings-heading small { color: var(--muted); font-size: 10px; }
+.reading-settings-field { display: grid; grid-template-columns: 1fr 145px; align-items: center; gap: 10px; margin-top: 10px; color: var(--ink-soft); font-size: 11px; font-weight: 800; }
+.reading-settings-field select { width: 100%; min-height: 34px; padding: 0 8px; border: 1px solid var(--line); border-radius: 8px; color: var(--ink); background: var(--canvas); font: inherit; font-size: 11px; }
+.reading-settings-check { display: flex; align-items: flex-start; gap: 9px; margin-top: 13px; color: var(--ink-soft); font-size: 11px; font-weight: 800; line-height: 1.35; cursor: pointer; }
+.reading-settings-check input { width: 16px; height: 16px; flex: 0 0 auto; margin: 0; accent-color: var(--teal-dark); }
+.reading-settings-check span { display: grid; gap: 2px; }
+.reading-settings-check small { color: var(--muted); font-size: 9px; font-weight: 600; }
+.reading-settings-reset { margin-top: 15px; padding: 0; border: 0; color: var(--teal-dark); background: transparent; cursor: pointer; font-size: 10px; font-weight: 900; }
+.reading-settings-reset:hover { text-decoration: underline; text-underline-offset: 3px; }
+.laws-topbar-tools { display: flex; align-items: center; justify-content: flex-end; gap: 8px; min-width: 0; }
+
+html[data-reading-mode="true"] .page-content { max-width: 1160px; }
+html[data-reading-mode="true"] .hero-orbit { display: none; }
+html[data-reading-mode="true"] .page-content .panel,
+html[data-reading-mode="true"] .page-content .hero-card,
+html[data-reading-mode="true"] .page-content .focus-card { box-shadow: none; }
+html[data-reading-mode="true"] .page-content .hero-copy,
+html[data-reading-mode="true"] .page-content .section-description,
+html[data-reading-mode="true"] .page-content .page-intro > div > p:last-child { line-height: 1.8; }
+html[data-text-scale="small"] .page-content { font-size: .96rem; }
+html[data-text-scale="large"] .page-content { font-size: 1.08rem; }
+html[data-text-scale="large"] .page-content .hero-copy,
+html[data-text-scale="large"] .page-content .section-description,
+html[data-text-scale="large"] .page-content .page-intro > div > p:last-child,
+html[data-text-scale="large"] .page-content .panel > p:not(.eyebrow) { line-height: 1.78; }
+html[data-reduce-motion="true"] *,
+html[data-reduce-motion="true"] *::before,
+html[data-reduce-motion="true"] *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+
+@media (max-width: 760px) {
+  .reading-settings-trigger { min-width: 34px; padding-inline: 8px; }
+  .reading-settings-trigger span { display: none; }
+  .reading-settings-panel { position: fixed; top: 76px; right: 12px; }
+  .laws-topbar-tools { max-width: 66%; align-items: flex-start; }
+  .laws-topbar-tools .laws-sync { max-width: 100%; }
+}

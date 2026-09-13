@@ -37,6 +37,8 @@ function ensureThemeColor(html) {
 }
 
 function cssLink(prefix) { return `<link rel="stylesheet" href="${prefix}leis-enhanced.css?v=20260912h">`; }
+function readerCssLink(prefix) { return `<link rel="stylesheet" href="${prefix}reading-preferences.css?v=20260913a">`; }
+function readerScript(prefix) { return `<script src="${prefix}reading-preferences.js"></script>`; }
 
 function operationalMarkup(law, row) {
   const target = n(law.shared_block ? 10 : (row?.question_target ?? law.question_target));
@@ -61,9 +63,11 @@ function enhanceLawHtml(html, law) {
   html = ensureThemeColor(html);
   const row = rowByOrder.get(orderForCode(law.code));
   if (!html.includes("leis-enhanced.css")) html = html.replace("</head>", `${cssLink("../../")}</head>`);
+  if (!html.includes("reading-preferences.js")) html = html.replace("</head>", `${readerScript("../../")}</head>`);
+  if (!html.includes("reading-preferences.css")) html = html.replace("</head>", `${readerCssLink("../../")}</head>`);
   if (!html.includes("laws-reading-body")) html = html.replace("<body>", `<body class="laws-reading-body"><div class="read-progress"><span id="read-progress-bar"></span></div>`);
   const jump = laws.map((item)=>`<option value="${esc(item.code.toLowerCase())}" ${item.code===law.code?"selected":""}>${esc(item.code)} · ${esc(item.title)}</option>`).join("");
-  html = html.replace(/<header class="study-topbar">[\s\S]*?<\/header>/, `<header class="study-topbar enhanced"><a href="../">← Leis Primeiro</a><select id="law-jump" class="study-jump" aria-label="Ir para outra lei">${jump}</select><span class="study-progress">${esc(law.code)} · ${laws.findIndex((x)=>x.code===law.code)+1} de ${laws.length}</span></header>`);
+  html = html.replace(/<header class="study-topbar">[\s\S]*?<\/header>/, `<header class="study-topbar enhanced"><a href="../">← Leis Primeiro</a><select id="law-jump" class="study-jump" aria-label="Ir para outra lei">${jump}</select><div class="study-topbar-tools"><div class="reading-settings-host" data-reading-settings></div><span class="study-progress">${esc(law.code)} · ${laws.findIndex((x)=>x.code===law.code)+1} de ${laws.length}</span></div></header>`);
   if (!html.includes("study-enhanced-ops")) html = html.replace("<section class=\"study-summary-grid\">", `${operationalMarkup(law,row)}<section class="study-summary-grid">`);
   if (!html.includes("study-reading-layout")) {
     html = html.replace("<article class=\"study-content\">", `<details class="study-mobile-toc"><summary>Sumário desta lei</summary><nav class="study-toc" data-toc-mobile></nav></details><div class="study-reading-layout"><aside class="study-rail"><div class="study-rail-title">Nesta página</div><nav class="study-toc" data-toc-desktop></nav><div class="study-rail-sync">Leitura principal: site<br>Fallback: Notion<br>Dados: ${esc(bankSnapshot.source?.synced_at ? new Date(bankSnapshot.source.synced_at).toLocaleString("pt-BR",{timeZone:"America/Sao_Paulo"}) : "sincronização automática")}</div></aside><article class="study-content" id="study-content">`);
@@ -102,6 +106,8 @@ await access(indexPath);
 let index = await readFile(indexPath,"utf8");
 index = ensureThemeColor(index);
 if (!index.includes("leis-enhanced.css")) index = index.replace("</head>", `${cssLink("../")}</head>`);
+if (!index.includes("reading-preferences.js")) index = index.replace("</head>", `${readerScript("../")}</head>`);
+if (!index.includes("reading-preferences.css")) index = index.replace("</head>", `${readerCssLink("../")}</head>`);
 if (rows.length && !index.includes('id="banco-legislacao"')) index = index.replace('<div class="static-note">', `${bankSection()}<div class="static-note">`);
 if (rows.length && !index.includes('id="bank-mobile-list"')) index = index.replace('<p class="bank-note">', `<div class="bank-mobile-list" id="bank-mobile-list" aria-label="Registros da legislação para celular">${rows.map(bankMobileRow).join("")}<div id="bank-mobile-empty" class="bank-empty">Nenhum registro corresponde aos filtros.</div></div><p class="bank-note">`);
 if (rows.length && !index.includes("bank-enhance-runtime")) index = index.replace("</body>", `<script id="bank-enhance-runtime">(function(){const q=document.getElementById('bank-search'),p=document.getElementById('bank-priority'),s=document.getElementById('bank-status'),rows=[...document.querySelectorAll('[data-bank-row]')],count=document.getElementById('bank-count'),empty=document.getElementById('bank-empty');function apply(){const needle=(q?.value||'').trim().toLocaleLowerCase('pt-BR');let shown=0;rows.forEach(row=>{const ok=(!needle||row.dataset.search.includes(needle))&&(!p?.value||row.dataset.priority===p.value)&&(!s?.value||row.dataset.status===s.value);row.style.display=ok?'':'none';if(ok)shown++});if(count)count.textContent=shown;if(empty)empty.style.display=shown?'none':'block'}q?.addEventListener('input',apply);p?.addEventListener('change',apply);s?.addEventListener('change',apply);apply()})();</script></body>`);
