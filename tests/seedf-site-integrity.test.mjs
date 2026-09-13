@@ -38,7 +38,7 @@ test("keeps local law reading payload with a Notion fallback", async () => {
     dataset.laws.filter((law) => typeof law.content_html === "string" && law.content_html.trim()).length,
     34,
   );
-  assert.match(publisher, /const content = law\\.content_html/);
+  assert.match(publisher, /const content = law\.content_html/);
   assert.match(publisher, /Ler no site/);
   assert.match(publisher, /Plano B · Notion/);
   assert.match(cockpit, /Leitura principal: site/);
