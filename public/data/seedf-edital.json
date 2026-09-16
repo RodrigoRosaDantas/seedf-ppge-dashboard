@@ -1,0 +1,835 @@
+{
+  "schemaVersion": 1,
+  "competitionId": "seedf",
+  "title": "SEEDF — Edital Projetado + Cargos-meta",
+  "version": "v0.2",
+  "kind": "projected",
+  "generatedAt": "2026-09-16T02:48:40.825Z",
+  "source": {
+    "type": "notion",
+    "dataSourceId": "8ffe0436-8013-4a34-97f9-b9f9ed67b6c3",
+    "pageUrl": "https://app.notion.com/p/3d4cf5a2673181ccb624e95c0759c02d",
+    "apiVersion": "2026-03-11"
+  },
+  "editorialPolicy": {
+    "official": false,
+    "note": "Edital projetado pré-edital. Base histórica, atualização obrigatória e radar provável permanecem identificados separadamente."
+  },
+  "axisCount": 60,
+  "layers": {
+    "Base histórica": 45,
+    "Atualização obrigatória": 14,
+    "Radar provável": 1
+  },
+  "subjects": {
+    "Administração Geral": 8,
+    "Administração Pública": 1,
+    "AFO": 1,
+    "Arquivologia": 1,
+    "Direito Administrativo": 8,
+    "Direito Constitucional": 5,
+    "ECA e Direitos": 3,
+    "Gestão de Pessoas": 3,
+    "Inclusão e Educação Especial": 3,
+    "Informática": 2,
+    "LC 840/2011": 1,
+    "Legislação Educacional": 7,
+    "Licitações e Contratos": 1,
+    "Materiais e Patrimônio": 2,
+    "Outras": 2,
+    "Políticas Públicas": 2,
+    "Português": 10
+  },
+  "axes": [
+    {
+      "id": "3d4cf5a2-6731-815b-b089-ee5e6dd53561",
+      "topic": "Administração Geral — evolução, funções e processo administrativo",
+      "subtopic": "Evolução da administração; abordagens; processo administrativo; planejamento, organização, direção e controle.",
+      "subject": "Administração Geral",
+      "cargos": [
+        "Gestor — Administração"
+      ],
+      "sourceBase": "Edital 2022 — Gestor",
+      "layer": "Base histórica",
+      "sourceUrl": "https://economia.df.gov.br/documents/d/seec/dodf-122-01-07-2022-integra",
+      "sourceLastEditedAt": "2026-09-07T13:25:00.000Z"
+    },
+    {
+      "id": "3d4cf5a2-6731-8155-ad44-e56215f4c607",
+      "topic": "Estrutura organizacional e processo decisório",
+      "subtopic": "Processo decisório; estrutura organizacional; departamentalização; organização formal; cultura; comunicação; descentralização e delegação.",
+      "subject": "Administração Geral",
+      "cargos": [
+        "Gestor — Administração"
+      ],
+      "sourceBase": "Edital 2022 — Gestor",
+      "layer": "Base histórica",
+      "sourceUrl": "https://economia.df.gov.br/documents/d/seec/dodf-122-01-07-2022-integra",
+      "sourceLastEditedAt": "2026-09-07T13:25:00.000Z"
+    },
+    {
+      "id": "3d4cf5a2-6731-8160-9c97-f8d126a24ff0",
+      "topic": "Gestão da qualidade e excelência gerencial",
+      "subtopic": "Princípios históricos; ferramentas; modelo da Fundação Nacional da Qualidade; gestão pública.",
+      "subject": "Administração Geral",
+      "cargos": [
+        "Gestor — Administração"
+      ],
+      "sourceBase": "Edital 2022 — Gestor",
+      "layer": "Base histórica",
+      "sourceUrl": "https://economia.df.gov.br/documents/d/seec/dodf-122-01-07-2022-integra",
+      "sourceLastEditedAt": "2026-09-07T13:25:00.000Z"
+    },
+    {
+      "id": "3d4cf5a2-6731-811e-9a76-e1ba7b94a458",
+      "topic": "Gestão de processos",
+      "subtopic": "Mapeamento, análise e melhoria de processos.",
+      "subject": "Administração Geral",
+      "cargos": [
+        "Analista — Apoio Administrativo"
+      ],
+      "sourceBase": "Edital 2016 — Apoio",
+      "layer": "Base histórica",
+      "sourceUrl": "https://cdn.cebraspe.org.br/concursos/SEE_16_DF/arquivos/ED_1_SEE_DF_2016___ABERTURA.PDF",
+      "sourceLastEditedAt": "2026-09-07T13:51:00.000Z"
+    },
+    {
+      "id": "3d4cf5a2-6731-81fc-ab95-e22d69c0383e",
+      "topic": "Gestão de processos e ISO 9000",
+      "subtopic": "Abordagem por processos; mapeamento, análise e melhoria; processos e certificação ISO 9000.",
+      "subject": "Administração Geral",
+      "cargos": [
+        "Gestor — Administração"
+      ],
+      "sourceBase": "Edital 2022 — Gestor",
+      "layer": "Base histórica",
+      "sourceUrl": "https://economia.df.gov.br/documents/d/seec/dodf-122-01-07-2022-integra",
+      "sourceLastEditedAt": "2026-09-07T13:25:00.000Z"
+    },
+    {
+      "id": "3d4cf5a2-6731-81fb-b346-d592709b7c73",
+      "topic": "Gestão de projetos",
+      "subtopic": "Elaboração, análise e avaliação; modelos; projetos e etapas.",
+      "subject": "Administração Geral",
+      "cargos": [
+        "Gestor — Administração"
+      ],
+      "sourceBase": "Edital 2022 — Gestor",
+      "layer": "Base histórica",
+      "sourceUrl": "https://economia.df.gov.br/documents/d/seec/dodf-122-01-07-2022-integra",
+      "sourceLastEditedAt": "2026-09-07T13:25:00.000Z"
+    },
+    {
+      "id": "3d4cf5a2-6731-8123-aeb8-c47d7da571f8",
+      "topic": "Planejamento estratégico, SWOT e BSC",
+      "subtopic": "Planejamento estratégico; visão, missão; análise SWOT; análise competitiva; BSC e scorecard.",
+      "subject": "Administração Geral",
+      "cargos": [
+        "Gestor — Administração"
+      ],
+      "sourceBase": "Edital 2022 — Gestor",
+      "layer": "Base histórica",
+      "sourceUrl": "https://economia.df.gov.br/documents/d/seec/dodf-122-01-07-2022-integra",
+      "sourceLastEditedAt": "2026-09-07T13:25:00.000Z"
+    },
+    {
+      "id": "3d4cf5a2-6731-8169-af6f-d629415641c0",
+      "topic": "Qualidade, PDCA e ferramentas da qualidade",
+      "subtopic": "Teóricos da qualidade; ciclo PDCA; ferramentas de gestão da qualidade.",
+      "subject": "Administração Geral",
+      "cargos": [
+        "Analista — Apoio Administrativo"
+      ],
+      "sourceBase": "Edital 2016 — Apoio",
+      "layer": "Base histórica",
+      "sourceUrl": "https://cdn.cebraspe.org.br/concursos/SEE_16_DF/arquivos/ED_1_SEE_DF_2016___ABERTURA.PDF",
+      "sourceLastEditedAt": "2026-09-07T13:51:00.000Z"
+    },
+    {
+      "id": "3d4cf5a2-6731-8154-902d-e2c62865e1ea",
+      "topic": "Ética no serviço público",
+      "subtopic": "Ética, comportamento profissional, atitudes no serviço e organização do trabalho.",
+      "subject": "Administração Pública",
+      "cargos": [
+        "Gestor — Administração"
+      ],
+      "sourceBase": "Edital 2022 — Gestor",
+      "layer": "Base histórica",
+      "sourceUrl": "https://economia.df.gov.br/documents/d/seec/dodf-122-01-07-2022-integra",
+      "sourceLastEditedAt": "2026-09-07T13:25:00.000Z"
+    },
+    {
+      "id": "3d4cf5a2-6731-819d-84e7-c3687788710f",
+      "topic": "Orçamento público e execução orçamentária",
+      "subtopic": "Princípios orçamentários; diretrizes; processo; métodos; SIOP/SIAFI; receita, despesa, suprimento de fundos e restos a pagar.",
+      "subject": "AFO",
+      "cargos": [
+        "Gestor — Administração"
+      ],
+      "sourceBase": "Edital 2022 — Gestor",
+      "layer": "Base histórica",
+      "sourceUrl": "https://economia.df.gov.br/documents/d/seec/dodf-122-01-07-2022-integra",
+      "sourceLastEditedAt": "2026-09-07T13:25:00.000Z"
+    },
+    {
+      "id": "3d4cf5a2-6731-81c3-bb6c-c273d8d53963",
+      "topic": "Arquivologia e gestão documental",
+      "subtopic": "Princípios; legislação; gestão de documentos; protocolo; classificação; arquivamento; temporalidade; preservação; eliminação; digitalização.",
+      "subject": "Arquivologia",
+      "cargos": [
+        "Analista — Apoio Administrativo"
+      ],
+      "sourceBase": "Edital 2016 — Apoio",
+      "layer": "Base histórica",
+      "sourceUrl": "https://cdn.cebraspe.org.br/concursos/SEE_16_DF/arquivos/ED_1_SEE_DF_2016___ABERTURA.PDF",
+      "sourceLastEditedAt": "2026-09-07T13:51:00.000Z"
+    },
+    {
+      "id": "3d4cf5a2-6731-814e-bf27-db7a2719f84d",
+      "topic": "Acesso à Informação",
+      "subtopic": "Lei nº 12.527/2011 e regulamentação aplicável.",
+      "subject": "Direito Administrativo",
+      "cargos": [
+        "Analista — Apoio Administrativo"
+      ],
+      "sourceBase": "Edital 2016 — Apoio",
+      "layer": "Atualização obrigatória",
+      "sourceUrl": "https://cdn.cebraspe.org.br/concursos/SEE_16_DF/arquivos/ED_1_SEE_DF_2016___ABERTURA.PDF",
+      "sourceLastEditedAt": "2026-09-07T13:25:00.000Z"
+    },
+    {
+      "id": "3d4cf5a2-6731-81ed-b6f2-d1e41903da7c",
+      "topic": "Direito Administrativo — agentes públicos",
+      "subtopic": "Espécies e classificação; cargo, emprego e função pública; provimento e vacância em articulação com LC 840/2011.",
+      "subject": "Direito Administrativo",
+      "cargos": [
+        "Núcleo comum"
+      ],
+      "sourceBase": "Edital 2016 — Apoio",
+      "layer": "Base histórica",
+      "sourceUrl": "https://cdn.cebraspe.org.br/concursos/SEE_16_DF/arquivos/ED_1_SEE_DF_2016___ABERTURA.PDF",
+      "sourceLastEditedAt": "2026-09-07T13:38:00.000Z"
+    },
+    {
+      "id": "3d4cf5a2-6731-81a9-bde0-c6d7eec6b2dd",
+      "topic": "Direito Administrativo — atos administrativos",
+      "subtopic": "Conceito, requisitos, atributos, classificação, espécies, invalidação, anulação, revogação e convalidação.",
+      "subject": "Direito Administrativo",
+      "cargos": [
+        "Núcleo comum"
+      ],
+      "sourceBase": "Edital 2016 — Apoio",
+      "layer": "Base histórica",
+      "sourceUrl": "https://cdn.cebraspe.org.br/concursos/SEE_16_DF/arquivos/ED_1_SEE_DF_2016___ABERTURA.PDF",
+      "sourceLastEditedAt": "2026-09-07T13:38:00.000Z"
+    },
+    {
+      "id": "3d4cf5a2-6731-81e6-bc10-d693d7011110",
+      "topic": "Direito Administrativo — controle e responsabilidade do Estado",
+      "subtopic": "Controle administrativo, legislativo e judicial; responsabilidade civil do Estado e responsabilidade dos agentes conforme edital-base.",
+      "subject": "Direito Administrativo",
+      "cargos": [
+        "Núcleo comum"
+      ],
+      "sourceBase": "Edital 2016 — Apoio",
+      "layer": "Base histórica",
+      "sourceUrl": "https://cdn.cebraspe.org.br/concursos/SEE_16_DF/arquivos/ED_1_SEE_DF_2016___ABERTURA.PDF",
+      "sourceLastEditedAt": "2026-09-07T13:38:00.000Z"
+    },
+    {
+      "id": "3d4cf5a2-6731-8160-93af-d00488f8031c",
+      "topic": "Direito Administrativo — Estado, governo e Administração Pública",
+      "subtopic": "Conceitos de Estado, governo e Administração Pública; sentido objetivo e subjetivo.",
+      "subject": "Direito Administrativo",
+      "cargos": [
+        "Núcleo comum"
+      ],
+      "sourceBase": "Edital 2016 — Apoio",
+      "layer": "Base histórica",
+      "sourceUrl": "https://cdn.cebraspe.org.br/concursos/SEE_16_DF/arquivos/ED_1_SEE_DF_2016___ABERTURA.PDF",
+      "sourceLastEditedAt": "2026-09-07T13:38:00.000Z"
+    },
+    {
+      "id": "3d4cf5a2-6731-8177-802a-e89ae5860710",
+      "topic": "Direito Administrativo — organização administrativa",
+      "subtopic": "Centralização, descentralização, concentração e desconcentração; Administração direta e indireta; autarquias, fundações, empresas públicas e sociedades de economia mista.",
+      "subject": "Direito Administrativo",
+      "cargos": [
+        "Núcleo comum"
+      ],
+      "sourceBase": "Edital 2016 — Apoio",
+      "layer": "Base histórica",
+      "sourceUrl": "https://cdn.cebraspe.org.br/concursos/SEE_16_DF/arquivos/ED_1_SEE_DF_2016___ABERTURA.PDF",
+      "sourceLastEditedAt": "2026-09-07T13:38:00.000Z"
+    },
+    {
+      "id": "3d4cf5a2-6731-815b-9a22-e423f9b1b993",
+      "topic": "Direito Administrativo — poderes administrativos",
+      "subtopic": "Hierárquico, disciplinar, regulamentar e de polícia; uso e abuso do poder.",
+      "subject": "Direito Administrativo",
+      "cargos": [
+        "Núcleo comum"
+      ],
+      "sourceBase": "Edital 2016 — Apoio",
+      "layer": "Base histórica",
+      "sourceUrl": "https://cdn.cebraspe.org.br/concursos/SEE_16_DF/arquivos/ED_1_SEE_DF_2016___ABERTURA.PDF",
+      "sourceLastEditedAt": "2026-09-07T13:38:00.000Z"
+    },
+    {
+      "id": "3d4cf5a2-6731-81c0-9e48-f745f53c2a9f",
+      "topic": "Direito Administrativo aplicado à gestão",
+      "subtopic": "Administração direta, indireta e fundacional; atos administrativos; requisição; regime de servidores; contratação pública.",
+      "subject": "Direito Administrativo",
+      "cargos": [
+        "Gestor — Administração"
+      ],
+      "sourceBase": "Edital 2022 — Gestor",
+      "layer": "Base histórica",
+      "sourceUrl": "https://economia.df.gov.br/documents/d/seec/dodf-122-01-07-2022-integra",
+      "sourceLastEditedAt": "2026-09-07T13:25:00.000Z"
+    },
+    {
+      "id": "3d4cf5a2-6731-81d4-a2d3-cd1b32c03289",
+      "topic": "Constituição — direitos, Administração Pública e educação",
+      "subtopic": "CF/88: arts. 1º a 13; 37 a 43; 205 a 217; 226 a 230, conforme edital-base.",
+      "subject": "Direito Constitucional",
+      "cargos": [
+        "Analista — Monitor"
+      ],
+      "sourceBase": "Edital 2016 — Monitor",
+      "layer": "Base histórica",
+      "sourceUrl": "https://cdn.cebraspe.org.br/concursos/SEE_16_DF/arquivos/ED_1_SEE_DF_2016___ABERTURA.PDF",
+      "sourceLastEditedAt": "2026-09-07T13:25:00.000Z"
+    },
+    {
+      "id": "3d4cf5a2-6731-8196-90d5-fbebf3ee6729",
+      "topic": "Constituição Federal — educação",
+      "subtopic": "Direito à educação, princípios do ensino, autonomia universitária, dever do Estado, colaboração federativa e financiamento da educação conforme texto constitucional vigente.",
+      "subject": "Direito Constitucional",
+      "cargos": [
+        "Gestor — Administração",
+        "Núcleo comum"
+      ],
+      "sourceBase": "Edital 2022 — Gestor",
+      "layer": "Base histórica",
+      "sourceUrl": "https://app.notion.com/p/3a6cf5a26731812d92f1e1a33e258eda",
+      "sourceLastEditedAt": "2026-09-07T13:42:00.000Z"
+    },
+    {
+      "id": "3d4cf5a2-6731-81e3-aab3-f18e7e2eabf7",
+      "topic": "LODF — Administração Pública do Distrito Federal",
+      "subtopic": "Organização administrativa do DF, princípios e regras constitucionais/distritais aplicáveis à Administração Pública.",
+      "subject": "Direito Constitucional",
+      "cargos": [
+        "Núcleo comum"
+      ],
+      "sourceBase": "Edital 2016 — Apoio",
+      "layer": "Base histórica",
+      "sourceUrl": "https://cdn.cebraspe.org.br/concursos/SEE_16_DF/arquivos/ED_1_SEE_DF_2016___ABERTURA.PDF",
+      "sourceLastEditedAt": "2026-09-07T13:38:00.000Z"
+    },
+    {
+      "id": "3d4cf5a2-6731-8197-b3d1-cf486876f375",
+      "topic": "LODF — fundamentos e organização do Distrito Federal",
+      "subtopic": "Fundamentos da organização dos poderes e do Distrito Federal; organização administrativa e competências conforme recorte do edital-base.",
+      "subject": "Direito Constitucional",
+      "cargos": [
+        "Núcleo comum"
+      ],
+      "sourceBase": "Edital 2016 — Apoio",
+      "layer": "Base histórica",
+      "sourceUrl": "https://cdn.cebraspe.org.br/concursos/SEE_16_DF/arquivos/ED_1_SEE_DF_2016___ABERTURA.PDF",
+      "sourceLastEditedAt": "2026-09-07T13:38:00.000Z"
+    },
+    {
+      "id": "3d4cf5a2-6731-8110-a29c-ce67c4e6a809",
+      "topic": "LODF — servidores públicos",
+      "subtopic": "Regras da LODF relativas aos servidores públicos do Distrito Federal no recorte exigido pelo edital-base.",
+      "subject": "Direito Constitucional",
+      "cargos": [
+        "Núcleo comum"
+      ],
+      "sourceBase": "Edital 2016 — Apoio",
+      "layer": "Base histórica",
+      "sourceUrl": "https://cdn.cebraspe.org.br/concursos/SEE_16_DF/arquivos/ED_1_SEE_DF_2016___ABERTURA.PDF",
+      "sourceLastEditedAt": "2026-09-07T13:38:00.000Z"
+    },
+    {
+      "id": "3d4cf5a2-6731-8111-8188-d1e9c664f073",
+      "topic": "Adolescência e desenvolvimento psicossocial",
+      "subtopic": "Características de desenvolvimento psicossocial; saúde, esporte e lazer.",
+      "subject": "ECA e Direitos",
+      "cargos": [
+        "Analista — Monitor"
+      ],
+      "sourceBase": "Edital 2016 — Monitor",
+      "layer": "Base histórica",
+      "sourceUrl": "https://cdn.cebraspe.org.br/concursos/SEE_16_DF/arquivos/ED_1_SEE_DF_2016___ABERTURA.PDF",
+      "sourceLastEditedAt": "2026-09-07T13:51:00.000Z"
+    },
+    {
+      "id": "3d4cf5a2-6731-8137-9b4a-f771bf8d6152",
+      "topic": "Estatuto da Criança e do Adolescente — ECA",
+      "subtopic": "Lei nº 8.069/1990, conforme edital-base; delimitação de dispositivos será auditada no edital projetado.",
+      "subject": "ECA e Direitos",
+      "cargos": [
+        "Analista — Monitor"
+      ],
+      "sourceBase": "Edital 2016 — Monitor",
+      "layer": "Base histórica",
+      "sourceUrl": "https://cdn.cebraspe.org.br/concursos/SEE_16_DF/arquivos/ED_1_SEE_DF_2016___ABERTURA.PDF",
+      "sourceLastEditedAt": "2026-09-07T13:25:00.000Z"
+    },
+    {
+      "id": "3d4cf5a2-6731-81d8-9929-ef9c02756811",
+      "topic": "Prevenção ao uso de drogas no ambiente escolar",
+      "subtopic": "Conhecimento básico sobre diagnóstico e prevenção ao uso de drogas.",
+      "subject": "ECA e Direitos",
+      "cargos": [
+        "Analista — Monitor"
+      ],
+      "sourceBase": "Edital 2016 — Monitor",
+      "layer": "Base histórica",
+      "sourceUrl": "https://cdn.cebraspe.org.br/concursos/SEE_16_DF/arquivos/ED_1_SEE_DF_2016___ABERTURA.PDF",
+      "sourceLastEditedAt": "2026-09-07T13:25:00.000Z"
+    },
+    {
+      "id": "3d4cf5a2-6731-8171-9fe4-e7bcc4e21e3c",
+      "topic": "Gestão de pessoas",
+      "subtopic": "Equilíbrio organizacional; objetivos; recrutamento e seleção; cargos; capacitação; desempenho.",
+      "subject": "Gestão de Pessoas",
+      "cargos": [
+        "Gestor — Administração"
+      ],
+      "sourceBase": "Edital 2022 — Gestor",
+      "layer": "Base histórica",
+      "sourceUrl": "https://economia.df.gov.br/documents/d/seec/dodf-122-01-07-2022-integra",
+      "sourceLastEditedAt": "2026-09-07T13:25:00.000Z"
+    },
+    {
+      "id": "3d4cf5a2-6731-8164-a58d-ddf79346d4fb",
+      "topic": "Gestão de pessoas e comportamento organizacional",
+      "subtopic": "Equilíbrio organizacional; objetivos e desafios; relações indivíduo/organização; motivação, liderança e desempenho.",
+      "subject": "Gestão de Pessoas",
+      "cargos": [
+        "Analista — Apoio Administrativo"
+      ],
+      "sourceBase": "Edital 2016 — Apoio",
+      "layer": "Base histórica",
+      "sourceUrl": "https://cdn.cebraspe.org.br/concursos/SEE_16_DF/arquivos/ED_1_SEE_DF_2016___ABERTURA.PDF",
+      "sourceLastEditedAt": "2026-09-07T13:25:00.000Z"
+    },
+    {
+      "id": "3d4cf5a2-6731-819b-9852-e11387366047",
+      "topic": "Relações humanas, comunicação e trabalho em equipe",
+      "subtopic": "Interação e comunicação; trabalho em equipe; trabalho interdisciplinar e multidisciplinar.",
+      "subject": "Gestão de Pessoas",
+      "cargos": [
+        "Analista — Monitor"
+      ],
+      "sourceBase": "Edital 2016 — Monitor",
+      "layer": "Base histórica",
+      "sourceUrl": "https://cdn.cebraspe.org.br/concursos/SEE_16_DF/arquivos/ED_1_SEE_DF_2016___ABERTURA.PDF",
+      "sourceLastEditedAt": "2026-09-07T13:25:00.000Z"
+    },
+    {
+      "id": "3d4cf5a2-6731-81de-9439-c7e75259e134",
+      "topic": "Acessibilidade e direitos da pessoa com deficiência",
+      "subtopic": "Acessibilidade; integração/inclusão da pessoa com deficiência; diretrizes de educação especial.",
+      "subject": "Inclusão e Educação Especial",
+      "cargos": [
+        "Analista — Monitor",
+        "Núcleo comum"
+      ],
+      "sourceBase": "Edital 2016 — Monitor",
+      "layer": "Atualização obrigatória",
+      "sourceUrl": "https://cdn.cebraspe.org.br/concursos/SEE_16_DF/arquivos/ED_1_SEE_DF_2016___ABERTURA.PDF",
+      "sourceLastEditedAt": "2026-09-07T13:25:00.000Z"
+    },
+    {
+      "id": "3d4cf5a2-6731-816e-ab67-e5144ac83aca",
+      "topic": "Desenvolvimento infantil e cuidado na Educação Infantil",
+      "subtopic": "Criança/desenvolvimento infantil; atendimento e cuidado; brinquedos e brincadeiras.",
+      "subject": "Inclusão e Educação Especial",
+      "cargos": [
+        "Analista — Monitor"
+      ],
+      "sourceBase": "Edital 2016 — Monitor",
+      "layer": "Base histórica",
+      "sourceUrl": "https://cdn.cebraspe.org.br/concursos/SEE_16_DF/arquivos/ED_1_SEE_DF_2016___ABERTURA.PDF",
+      "sourceLastEditedAt": "2026-09-07T13:25:00.000Z"
+    },
+    {
+      "id": "3d4cf5a2-6731-81d1-897a-e2350e78b330",
+      "topic": "Lei Brasileira de Inclusão — Lei nº 13.146/2015",
+      "subtopic": "Direitos da pessoa com deficiência, acessibilidade, inclusão, educação inclusiva e deveres do poder público conforme texto vigente.",
+      "subject": "Inclusão e Educação Especial",
+      "cargos": [
+        "Analista — Monitor",
+        "Núcleo comum"
+      ],
+      "sourceBase": "Legislação vigente 2026",
+      "layer": "Atualização obrigatória",
+      "sourceUrl": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2015/lei/l13146.htm",
+      "sourceLastEditedAt": "2026-09-07T13:38:00.000Z"
+    },
+    {
+      "id": "3d4cf5a2-6731-8123-a151-c23f043ea5ba",
+      "topic": "Informática — desenho real da prova Gestor 2022",
+      "subtopic": "Backup; Google Sala de Aula, Documentos e Planilha; Windows; Excel; Internet e protocolos. Atualizar softwares e versões no próximo edital.",
+      "subject": "Informática",
+      "cargos": [
+        "Gestor — Administração",
+        "Núcleo comum"
+      ],
+      "sourceBase": "Edital 2022 — Gestor",
+      "layer": "Atualização obrigatória",
+      "sourceUrl": "https://app.notion.com/p/3a6cf5a2673181148accc8d3b59f3606",
+      "sourceLastEditedAt": "2026-09-07T13:42:00.000Z"
+    },
+    {
+      "id": "3d4cf5a2-6731-811d-a16b-fa44a0ec844b",
+      "topic": "Noções de Informática",
+      "subtopic": "Editor de textos, planilhas, apresentações, sistema operacional, internet/intranet e segurança/gerenciamento de informações.",
+      "subject": "Informática",
+      "cargos": [
+        "Analista — Apoio Administrativo"
+      ],
+      "sourceBase": "Edital 2016 — Apoio",
+      "layer": "Atualização obrigatória",
+      "sourceUrl": "https://cdn.cebraspe.org.br/concursos/SEE_16_DF/arquivos/ED_1_SEE_DF_2016___ABERTURA.PDF",
+      "sourceLastEditedAt": "2026-09-07T13:51:00.000Z"
+    },
+    {
+      "id": "3d4cf5a2-6731-81aa-bad7-f8f250e5fd48",
+      "topic": "LC 840/2011 — regime jurídico dos servidores do DF",
+      "subtopic": "Provimento, vacância, direitos, deveres, proibições, responsabilidades e demais pontos do regime jurídico conforme recorte a ser auditado.",
+      "subject": "LC 840/2011",
+      "cargos": [
+        "Núcleo comum"
+      ],
+      "sourceBase": "Edital 2016 — Apoio",
+      "layer": "Atualização obrigatória",
+      "sourceUrl": "https://cdn.cebraspe.org.br/concursos/SEE_16_DF/arquivos/ED_1_SEE_DF_2016___ABERTURA.PDF",
+      "sourceLastEditedAt": "2026-09-07T13:38:00.000Z"
+    },
+    {
+      "id": "3d4cf5a2-6731-818e-913e-c266f3fde939",
+      "topic": "Diretrizes Curriculares Nacionais para a Educação Infantil",
+      "subtopic": "Diretrizes curriculares da Educação Infantil e atualização normativa aplicável.",
+      "subject": "Legislação Educacional",
+      "cargos": [
+        "Analista — Monitor"
+      ],
+      "sourceBase": "Edital 2016 — Monitor",
+      "layer": "Atualização obrigatória",
+      "sourceUrl": "https://cdn.cebraspe.org.br/concursos/SEE_16_DF/arquivos/ED_1_SEE_DF_2016___ABERTURA.PDF",
+      "sourceLastEditedAt": "2026-09-07T13:25:00.000Z"
+    },
+    {
+      "id": "3d4cf5a2-6731-81da-9a99-c05350a9c977",
+      "topic": "Lei de Diretrizes e Bases da Educação — LDB",
+      "subtopic": "Lei nº 9.394/1996 e alterações vigentes.",
+      "subject": "Legislação Educacional",
+      "cargos": [
+        "Analista — Monitor",
+        "Núcleo comum"
+      ],
+      "sourceBase": "Edital 2016 — Monitor",
+      "layer": "Atualização obrigatória",
+      "sourceUrl": "https://cdn.cebraspe.org.br/concursos/SEE_16_DF/arquivos/ED_1_SEE_DF_2016___ABERTURA.PDF",
+      "sourceLastEditedAt": "2026-09-07T13:25:00.000Z"
+    },
+    {
+      "id": "3d4cf5a2-6731-818d-aa26-d3d1ea852483",
+      "topic": "Lei DF nº 7.142/2022 — estrutura atual da carreira PPGE",
+      "subtopic": "Transformação dos cargos da carreira PPGE, escolaridade de ingresso, especialidades e enquadramento atual; requisito específico do próximo edital deve ser monitorado.",
+      "subject": "Legislação Educacional",
+      "cargos": [
+        "Gestor — Administração",
+        "Analista — Apoio Administrativo",
+        "Analista — Monitor"
+      ],
+      "sourceBase": "Legislação vigente 2026",
+      "layer": "Atualização obrigatória",
+      "sourceUrl": "https://www.sinj.df.gov.br/sinj/Norma/177e453f9f784e1fbecce53d12c966a7/Lei_7142_19_05_2022.html",
+      "sourceLastEditedAt": "2026-09-07T13:38:00.000Z"
+    },
+    {
+      "id": "3d4cf5a2-6731-816c-b07a-c046d5ae8402",
+      "topic": "PDE-DF — transição do plano 2015/2024 para novo plano decenal",
+      "subtopic": "Monitorar elaboração/publicação do novo Plano Distrital de Educação em adequação ao PNE 2026; usar o PDE 2015/2024 apenas como referência histórica enquanto não houver novo texto vigente aplicável.",
+      "subject": "Legislação Educacional",
+      "cargos": [
+        "Núcleo comum"
+      ],
+      "sourceBase": "Legislação vigente 2026",
+      "layer": "Atualização obrigatória",
+      "sourceUrl": "https://www.educacao.df.gov.br/pde-2/",
+      "sourceLastEditedAt": "2026-09-07T13:38:00.000Z"
+    },
+    {
+      "id": "3d4cf5a2-6731-817c-8628-d1d1d375fc03",
+      "topic": "PNE 2026–2035 — Lei nº 15.388/2026",
+      "subtopic": "Diretrizes, objetivos, metas, estratégias, monitoramento e articulação federativa do novo Plano Nacional de Educação.",
+      "subject": "Legislação Educacional",
+      "cargos": [
+        "Núcleo comum"
+      ],
+      "sourceBase": "Legislação vigente 2026",
+      "layer": "Atualização obrigatória",
+      "sourceUrl": "https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2026/lei/l15388.htm",
+      "sourceLastEditedAt": "2026-09-07T13:38:00.000Z"
+    },
+    {
+      "id": "3d4cf5a2-6731-814c-9fb1-dab980d92eea",
+      "topic": "Política Nacional de Educação Digital — Lei nº 14.533/2023",
+      "subtopic": "Inclusão Digital; Educação Digital Escolar; capacitação/especialização digital; pesquisa e desenvolvimento; alterações na legislação educacional.",
+      "subject": "Legislação Educacional",
+      "cargos": [
+        "Núcleo comum",
+        "Analista — Monitor"
+      ],
+      "sourceBase": "Legislação vigente 2026",
+      "layer": "Radar provável",
+      "sourceUrl": "https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2023/lei/l14533.htm",
+      "sourceLastEditedAt": "2026-09-07T13:38:00.000Z"
+    },
+    {
+      "id": "3d4cf5a2-6731-810f-aeed-d795aca915e3",
+      "topic": "Regimento Escolar da Rede Pública de Ensino do DF",
+      "subtopic": "Organização pedagógica, modalidades, recursos de apoio, organização curricular, avanço de estudos, ano letivo e demais regras da rede pública conforme versão vigente.",
+      "subject": "Legislação Educacional",
+      "cargos": [
+        "Gestor — Administração",
+        "Núcleo comum"
+      ],
+      "sourceBase": "Edital 2022 — Gestor",
+      "layer": "Atualização obrigatória",
+      "sourceUrl": "https://app.notion.com/p/3a6cf5a26731812d92f1e1a33e258eda",
+      "sourceLastEditedAt": "2026-09-07T13:42:00.000Z"
+    },
+    {
+      "id": "3d4cf5a2-6731-815d-a70f-e3a58d145574",
+      "topic": "Licitações, contratos, compras e convênios",
+      "subtopic": "Licitação pública; modalidades; dispensa e inexigibilidade; pregão; contratos e compras; convênios e termos similares.",
+      "subject": "Licitações e Contratos",
+      "cargos": [
+        "Gestor — Administração"
+      ],
+      "sourceBase": "Edital 2022 — Gestor",
+      "layer": "Atualização obrigatória",
+      "sourceUrl": "https://economia.df.gov.br/documents/d/seec/dodf-122-01-07-2022-integra",
+      "sourceLastEditedAt": "2026-09-07T13:25:00.000Z"
+    },
+    {
+      "id": "3d4cf5a2-6731-814a-8b05-f6cb887c7be9",
+      "topic": "Administração de materiais e estoques",
+      "subtopic": "Classificação; curva ABC; estoques; recebimento; armazenagem; leiaute; distribuição.",
+      "subject": "Materiais e Patrimônio",
+      "cargos": [
+        "Analista — Apoio Administrativo"
+      ],
+      "sourceBase": "Edital 2016 — Apoio",
+      "layer": "Base histórica",
+      "sourceUrl": "https://cdn.cebraspe.org.br/concursos/SEE_16_DF/arquivos/ED_1_SEE_DF_2016___ABERTURA.PDF",
+      "sourceLastEditedAt": "2026-09-07T13:25:00.000Z"
+    },
+    {
+      "id": "3d4cf5a2-6731-81a6-8575-ddbf805c37e9",
+      "topic": "Gestão patrimonial",
+      "subtopic": "Tombamento; controle; inventário; alienação; alterações e baixa de bens.",
+      "subject": "Materiais e Patrimônio",
+      "cargos": [
+        "Analista — Apoio Administrativo"
+      ],
+      "sourceBase": "Edital 2016 — Apoio",
+      "layer": "Base histórica",
+      "sourceUrl": "https://cdn.cebraspe.org.br/concursos/SEE_16_DF/arquivos/ED_1_SEE_DF_2016___ABERTURA.PDF",
+      "sourceLastEditedAt": "2026-09-07T13:25:00.000Z"
+    },
+    {
+      "id": "3d4cf5a2-6731-81c6-a811-df2172e343da",
+      "topic": "Discursiva aplicada à gestão escolar",
+      "subtopic": "Texto dissertativo relacionado a gestão escolar, pessoas, políticas educacionais e problemas concretos da rede; prova 2022 teve limite de 30 linhas e três aspectos obrigatórios.",
+      "subject": "Outras",
+      "cargos": [
+        "Gestor — Administração"
+      ],
+      "sourceBase": "Edital 2022 — Gestor",
+      "layer": "Base histórica",
+      "sourceUrl": "https://app.notion.com/p/3a6cf5a26731816d80a3f8794e083a47",
+      "sourceLastEditedAt": "2026-09-07T13:42:00.000Z"
+    },
+    {
+      "id": "3d4cf5a2-6731-8188-97f7-d54ecba709d2",
+      "topic": "Segurança, ergonomia e primeiros socorros no ambiente escolar",
+      "subtopic": "Segurança do trabalho; ergonomia; primeiros socorros no ambiente escolar.",
+      "subject": "Outras",
+      "cargos": [
+        "Analista — Monitor"
+      ],
+      "sourceBase": "Edital 2016 — Monitor",
+      "layer": "Base histórica",
+      "sourceUrl": "https://cdn.cebraspe.org.br/concursos/SEE_16_DF/arquivos/ED_1_SEE_DF_2016___ABERTURA.PDF",
+      "sourceLastEditedAt": "2026-09-07T13:25:00.000Z"
+    },
+    {
+      "id": "3d4cf5a2-6731-81eb-9732-cc4e83242d84",
+      "topic": "Disciplina escolar e contexto social da escola",
+      "subtopic": "Disciplina escolar; diversidade cultural; gênero; preconceito; violência; mídia e relações escolares.",
+      "subject": "Políticas Públicas",
+      "cargos": [
+        "Analista — Monitor"
+      ],
+      "sourceBase": "Edital 2016 — Monitor",
+      "layer": "Base histórica",
+      "sourceUrl": "https://cdn.cebraspe.org.br/concursos/SEE_16_DF/arquivos/ED_1_SEE_DF_2016___ABERTURA.PDF",
+      "sourceLastEditedAt": "2026-09-07T13:25:00.000Z"
+    },
+    {
+      "id": "3d4cf5a2-6731-8133-aafb-d1c93f50aa5c",
+      "topic": "Geografia e realidade do Distrito Federal",
+      "subtopic": "Aspectos geográficos, territoriais, ambientais, populacionais e realidade do Distrito Federal conforme desenho da prova e eventual conteúdo do próximo edital.",
+      "subject": "Políticas Públicas",
+      "cargos": [
+        "Gestor — Administração",
+        "Núcleo comum"
+      ],
+      "sourceBase": "Edital 2022 — Gestor",
+      "layer": "Base histórica",
+      "sourceUrl": "https://app.notion.com/p/3a6cf5a2673181148accc8d3b59f3606",
+      "sourceLastEditedAt": "2026-09-07T13:42:00.000Z"
+    },
+    {
+      "id": "3d4cf5a2-6731-81ed-a527-f60c9c5bb69b",
+      "topic": "Português — classes de palavras e morfossintaxe",
+      "subtopic": "Emprego das classes de palavras; relações morfossintáticas; tempos e modos verbais.",
+      "subject": "Português",
+      "cargos": [
+        "Núcleo comum"
+      ],
+      "sourceBase": "Edital 2016 — Apoio",
+      "layer": "Base histórica",
+      "sourceUrl": "https://cdn.cebraspe.org.br/concursos/SEE_16_DF/arquivos/ED_1_SEE_DF_2016___ABERTURA.PDF",
+      "sourceLastEditedAt": "2026-09-07T13:38:00.000Z"
+    },
+    {
+      "id": "3d4cf5a2-6731-81ad-bf8b-dee5b231458a",
+      "topic": "Português — colocação pronominal",
+      "subtopic": "Colocação dos pronomes átonos: próclise, mesóclise e ênclise.",
+      "subject": "Português",
+      "cargos": [
+        "Núcleo comum"
+      ],
+      "sourceBase": "Edital 2016 — Apoio",
+      "layer": "Base histórica",
+      "sourceUrl": "https://cdn.cebraspe.org.br/concursos/SEE_16_DF/arquivos/ED_1_SEE_DF_2016___ABERTURA.PDF",
+      "sourceLastEditedAt": "2026-09-07T13:38:00.000Z"
+    },
+    {
+      "id": "3d4cf5a2-6731-8139-8f3c-cc40ac503a6a",
+      "topic": "Português — concordância verbal e nominal",
+      "subtopic": "Concordância verbal e nominal, incluindo identificação do núcleo do sujeito e casos especiais.",
+      "subject": "Português",
+      "cargos": [
+        "Núcleo comum"
+      ],
+      "sourceBase": "Edital 2016 — Apoio",
+      "layer": "Base histórica",
+      "sourceUrl": "https://cdn.cebraspe.org.br/concursos/SEE_16_DF/arquivos/ED_1_SEE_DF_2016___ABERTURA.PDF",
+      "sourceLastEditedAt": "2026-09-07T13:38:00.000Z"
+    },
+    {
+      "id": "3d4cf5a2-6731-818e-bdf6-d19d3a841d77",
+      "topic": "Português — coordenação e subordinação",
+      "subtopic": "Relações de coordenação entre orações e termos; relações de subordinação entre orações e termos.",
+      "subject": "Português",
+      "cargos": [
+        "Núcleo comum"
+      ],
+      "sourceBase": "Edital 2016 — Apoio",
+      "layer": "Base histórica",
+      "sourceUrl": "https://cdn.cebraspe.org.br/concursos/SEE_16_DF/arquivos/ED_1_SEE_DF_2016___ABERTURA.PDF",
+      "sourceLastEditedAt": "2026-09-07T13:38:00.000Z"
+    },
+    {
+      "id": "3d4cf5a2-6731-8165-b48c-dd2a71b1c561",
+      "topic": "Português — correspondência oficial",
+      "subtopic": "Adequação da linguagem ao tipo de documento e ao contexto oficial; redação/correspondência oficial conforme referência vigente.",
+      "subject": "Português",
+      "cargos": [
+        "Núcleo comum"
+      ],
+      "sourceBase": "Edital 2016 — Apoio",
+      "layer": "Atualização obrigatória",
+      "sourceUrl": "https://cdn.cebraspe.org.br/concursos/SEE_16_DF/arquivos/ED_1_SEE_DF_2016___ABERTURA.PDF",
+      "sourceLastEditedAt": "2026-09-07T13:38:00.000Z"
+    },
+    {
+      "id": "3d4cf5a2-6731-81e0-abc7-eb3326f89163",
+      "topic": "Português — interpretação e tipologia textual",
+      "subtopic": "Compreensão e interpretação de textos de gêneros variados; reconhecimento de tipos e gêneros textuais.",
+      "subject": "Português",
+      "cargos": [
+        "Núcleo comum"
+      ],
+      "sourceBase": "Edital 2016 — Apoio",
+      "layer": "Base histórica",
+      "sourceUrl": "https://cdn.cebraspe.org.br/concursos/SEE_16_DF/arquivos/ED_1_SEE_DF_2016___ABERTURA.PDF",
+      "sourceLastEditedAt": "2026-09-07T13:38:00.000Z"
+    },
+    {
+      "id": "3d4cf5a2-6731-81f5-ad94-ee9893559367",
+      "topic": "Português — ortografia, coesão e mecanismos referenciais",
+      "subtopic": "Ortografia oficial; emprego de elementos de referenciação, substituição e repetição; conectores e mecanismos de coesão textual.",
+      "subject": "Português",
+      "cargos": [
+        "Núcleo comum"
+      ],
+      "sourceBase": "Edital 2016 — Apoio",
+      "layer": "Base histórica",
+      "sourceUrl": "https://cdn.cebraspe.org.br/concursos/SEE_16_DF/arquivos/ED_1_SEE_DF_2016___ABERTURA.PDF",
+      "sourceLastEditedAt": "2026-09-07T13:38:00.000Z"
+    },
+    {
+      "id": "3d4cf5a2-6731-81b6-bcbb-fd42b5979aea",
+      "topic": "Português — pontuação",
+      "subtopic": "Emprego dos sinais de pontuação e seus efeitos sintáticos e semânticos.",
+      "subject": "Português",
+      "cargos": [
+        "Núcleo comum"
+      ],
+      "sourceBase": "Edital 2016 — Apoio",
+      "layer": "Base histórica",
+      "sourceUrl": "https://cdn.cebraspe.org.br/concursos/SEE_16_DF/arquivos/ED_1_SEE_DF_2016___ABERTURA.PDF",
+      "sourceLastEditedAt": "2026-09-07T13:38:00.000Z"
+    },
+    {
+      "id": "3d4cf5a2-6731-8173-82ee-ed4a67d8f997",
+      "topic": "Português — reescrita e substituição textual",
+      "subtopic": "Reescrita de frases e parágrafos; substituição de palavras/trechos; reorganização de estruturas e manutenção de sentido.",
+      "subject": "Português",
+      "cargos": [
+        "Núcleo comum"
+      ],
+      "sourceBase": "Edital 2016 — Apoio",
+      "layer": "Base histórica",
+      "sourceUrl": "https://cdn.cebraspe.org.br/concursos/SEE_16_DF/arquivos/ED_1_SEE_DF_2016___ABERTURA.PDF",
+      "sourceLastEditedAt": "2026-09-07T13:38:00.000Z"
+    },
+    {
+      "id": "3d4cf5a2-6731-8131-84b3-c401e8795691",
+      "topic": "Português — regência e crase",
+      "subtopic": "Regência verbal e nominal; emprego do sinal indicativo de crase.",
+      "subject": "Português",
+      "cargos": [
+        "Núcleo comum"
+      ],
+      "sourceBase": "Edital 2016 — Apoio",
+      "layer": "Base histórica",
+      "sourceUrl": "https://cdn.cebraspe.org.br/concursos/SEE_16_DF/arquivos/ED_1_SEE_DF_2016___ABERTURA.PDF",
+      "sourceLastEditedAt": "2026-09-07T13:38:00.000Z"
+    }
+  ]
+}
