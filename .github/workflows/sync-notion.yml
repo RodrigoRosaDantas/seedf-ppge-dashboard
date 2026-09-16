@@ -7,6 +7,7 @@ on:
       - "scripts/sync-notion.mjs"
       - "scripts/sync-leis-primeiro.mjs"
       - "scripts/sync-legislation-bank.mjs"
+      - "scripts/export-edital-verticalizado.mjs"
       - ".github/workflows/sync-notion.yml"
   schedule:
     - cron: "*/15 * * * *"
@@ -48,12 +49,13 @@ jobs:
           node scripts/sync-notion.mjs
           node scripts/sync-leis-primeiro.mjs
           node scripts/sync-legislation-bank.mjs
+          node scripts/export-edital-verticalizado.mjs
 
       - name: Commit snapshots when changed
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add public/data/seedf-snapshot.json public/data/leis-primeiro.json public/data/legislation-bank.json
+          git add public/data/seedf-snapshot.json public/data/leis-primeiro.json public/data/legislation-bank.json public/data/seedf-edital.json
           if git diff --cached --quiet; then
             echo "No public snapshot changes detected."
             exit 0
