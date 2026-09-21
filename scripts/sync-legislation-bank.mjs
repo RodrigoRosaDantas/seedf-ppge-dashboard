@@ -150,7 +150,7 @@ const rows = pages.map((page) => {
 }).filter((row) => row.operational_order > 0).sort((a, b) => a.operational_order - b.operational_order);
 
 const snapshot = {
-  schema_version: 3,
+  schema_version: 4,
   source: { kind: "notion", database_id: DATABASE_ID, database_url: notionUrl(DATABASE_ID), data_source_id: DATA_SOURCE_ID, synced_at: new Date().toISOString() },
   summary: { records: rows.length, trail_records: rows.filter((r) => r.record_kind === "trilha").length, radar_records: rows.filter((r) => r.record_kind === "radar").length },
   rows,

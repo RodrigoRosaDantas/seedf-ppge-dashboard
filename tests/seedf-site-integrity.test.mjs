@@ -71,6 +71,7 @@ test("keeps Leis Primeiro execution semantics separated by Dia ID", async () => 
   assert.match(syncLaws, /propertyRollupNullableNumber\(properties, "Resumo nº atual"\)/);
   assert.match(syncLaws, /propertyRollupNullableNumber\(properties, "Leitura nº atual"\)/);
   assert.match(syncLaws, /meta operacional da Lxx \(base \+ adicional quando aplicável\)/);
+  assert.match(syncLaws, /schema_version: 8/);
   assert.match(syncLaws, /individualProgressForSharedLaw/);
   assert.match(syncLaws, /session\.page_code === code/);
   assert.match(syncLaws, /flashcards_scope: "Bloco M5"/);

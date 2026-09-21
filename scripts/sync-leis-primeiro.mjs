@@ -179,7 +179,7 @@ const lawsWithIndividualProgress = laws.map((law) =>
 );
 
 const snapshot = {
-  schema_version: 7,
+  schema_version: 8,
   source: {
     kind: "notion",
     title: pageTitle(page) || "Leis Primeiro | SEEDF",
