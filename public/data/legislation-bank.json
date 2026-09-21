@@ -1,11 +1,11 @@
 {
-  "schema_version": 3,
+  "schema_version": 4,
   "source": {
     "kind": "notion",
     "database_id": "49157e87d33a4fa590edfdb4b84dbc46",
     "database_url": "https://app.notion.com/p/49157e87d33a4fa590edfdb4b84dbc46",
     "data_source_id": "6b3c940a-a382-419f-9ef6-531a1dc5cad2",
-    "synced_at": "2026-09-21T20:21:35.346Z"
+    "synced_at": "2026-09-21T20:24:52.394Z"
   },
   "summary": {
     "records": 33,
