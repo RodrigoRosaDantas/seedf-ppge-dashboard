@@ -6,8 +6,8 @@
     "page_id": "3d4cf5a2-6731-8106-a2c9-c97816aa6cf5",
     "page_url": "https://app.notion.com/p/SEEDF-PPGE-Gestor-Analista-Monitor-Dashboard-PRO-3d4cf5a267318106a2c9c97816aa6cf5",
     "last_edited_time": "2026-09-12T11:38:00.000Z",
-    "synced_at": "2026-09-21T18:35:48.704Z",
-    "content_hash": "04d37f594dcf3921d5309522d0bb540877f09b69a2a54f65dfad8a6b076c2013",
+    "synced_at": "2026-09-21T19:36:37.356Z",
+    "content_hash": "0bfb9bf0c133fded7b2f2491303b50bf87472d926e07d7bfd19ac8a5e9b55681",
     "status": "synced"
   },
   "dashboard": {
@@ -586,7 +586,7 @@
     ]
   },
   "execution": {
-    "as_of": "2026-09-21T18:35:48.692Z",
+    "as_of": "2026-09-21T19:36:37.351Z",
     "c01": {
       "days": [
         {
@@ -1033,12 +1033,12 @@
           "correct": 37,
           "errors": 3,
           "doubts": 0,
-          "minutes": 0,
+          "minutes": 60,
           "precision": 0.925,
           "href": "https://app.notion.com/p/3d8cf5a267318133b196fddf1efde990",
           "executed_at": "2026-09-21",
           "created_at": "2026-09-21T18:11:00.000Z",
-          "updated_at": "2026-09-21T18:17:00.000Z"
+          "updated_at": "2026-09-21T19:35:00.000Z"
         }
       ],
       "totals": {
@@ -1047,7 +1047,7 @@
         "correct": 37,
         "errors": 3,
         "doubts": 0,
-        "minutes": 0,
+        "minutes": 60,
         "precision": 0.925
       },
       "statuses": {
@@ -1149,7 +1149,7 @@
           "precision": 0.925,
           "href": "https://app.notion.com/p/3d8cf5a267318133b196fddf1efde990",
           "created_at": "2026-09-21T17:10:00.000Z",
-          "updated_at": "2026-09-21T18:01:00.000Z"
+          "updated_at": "2026-09-21T19:36:00.000Z"
         }
       ],
       "session_totals": {
