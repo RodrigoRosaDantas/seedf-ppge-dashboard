@@ -451,6 +451,8 @@ function parseLeisPrimeiroDay(page) {
     precision: precision(correct, done),
     href: propertyUrl(properties, "Página do dia") || page.url || notionPageUrl(page.id),
     executed_at: propertyDate(properties, "Data execução"),
+    created_at: page.created_time || null,
+    updated_at: page.last_edited_time || null,
   };
 }
 

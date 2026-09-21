@@ -189,8 +189,8 @@ function sessionMatchesExecution(
 ) {
   if (session.page_code !== day.page_code) return false;
   if (day.executed_at && session.date !== day.executed_at) return false;
-  if (day.summary_number && session.summary_number && session.summary_number !== day.summary_number) return false;
-  if (day.reading_number && session.reading_number && session.reading_number !== day.reading_number) return false;
+  if (day.summary_number != null && session.summary_number !== day.summary_number) return false;
+  if (day.reading_number != null && session.reading_number !== day.reading_number) return false;
   return true;
 }
 
