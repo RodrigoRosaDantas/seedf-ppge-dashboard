@@ -1,11 +1,11 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "source": {
     "kind": "notion",
     "database_id": "49157e87d33a4fa590edfdb4b84dbc46",
     "database_url": "https://app.notion.com/p/49157e87d33a4fa590edfdb4b84dbc46",
     "data_source_id": "6b3c940a-a382-419f-9ef6-531a1dc5cad2",
-    "synced_at": "2026-09-21T18:39:14.250Z"
+    "synced_at": "2026-09-21T19:33:31.586Z"
   },
   "summary": {
     "records": 33,
@@ -43,9 +43,7 @@
       "errors": 3,
       "doubtful_hits": 0,
       "accuracy": 92.5,
-      "flashcards_done": 0,
-      "flashcards_meta": 20,
-      "flashcards_status": "Não iniciado",
+      "flashcards_done": true,
       "cargos": [
         "Núcleo comum",
         "Gestor - Administração",
@@ -62,7 +60,7 @@
       "d7": false,
       "d20": false,
       "next_review": null,
-      "next_step": "4 · Fazer flashcards",
+      "next_step": "3 · Ler lei seca",
       "cut": "Núcleo: arts. 205–214 e 37–41. Analista - Monitor amplia arts. 1º–13 e 226–230, com bloco suplementar próprio.",
       "alert": "Texto constitucional compilado vigente. Atenção às atualizações recentes do recorte: EC nº 135/2024 alterou o art. 212-A e o §11 do art. 37; EC nº 138/2025 alterou o art. 37, XVI, b, permitindo professor + outro cargo de qualquer natureza, com compatibilidade de horários e observância do teto.",
       "block": "Bloco 01; Gestor retoma arts. 165–169 em G3",
@@ -99,9 +97,7 @@
       "errors": 0,
       "doubtful_hits": 0,
       "accuracy": 0,
-      "flashcards_done": 0,
-      "flashcards_meta": 20,
-      "flashcards_status": "Não iniciado",
+      "flashcards_done": false,
       "cargos": [
         "Núcleo comum",
         "Gestor - Administração",
@@ -155,9 +151,7 @@
       "errors": 0,
       "doubtful_hits": 0,
       "accuracy": 0,
-      "flashcards_done": 0,
-      "flashcards_meta": 20,
-      "flashcards_status": "Não iniciado",
+      "flashcards_done": false,
       "cargos": [
         "Núcleo comum",
         "Gestor - Administração",
@@ -211,9 +205,7 @@
       "errors": 0,
       "doubtful_hits": 0,
       "accuracy": 0,
-      "flashcards_done": 0,
-      "flashcards_meta": 20,
-      "flashcards_status": "Não iniciado",
+      "flashcards_done": false,
       "cargos": [
         "Núcleo comum",
         "Gestor - Administração",
@@ -267,9 +259,7 @@
       "errors": 0,
       "doubtful_hits": 0,
       "accuracy": 0,
-      "flashcards_done": 0,
-      "flashcards_meta": 20,
-      "flashcards_status": "Não iniciado",
+      "flashcards_done": false,
       "cargos": [
         "Núcleo comum",
         "Gestor - Administração",
@@ -323,9 +313,7 @@
       "errors": 0,
       "doubtful_hits": 0,
       "accuracy": 0,
-      "flashcards_done": 0,
-      "flashcards_meta": 12,
-      "flashcards_status": "Não iniciado",
+      "flashcards_done": false,
       "cargos": [
         "Núcleo comum",
         "Gestor - Administração",
@@ -379,9 +367,7 @@
       "errors": 0,
       "doubtful_hits": 0,
       "accuracy": 0,
-      "flashcards_done": 0,
-      "flashcards_meta": 12,
-      "flashcards_status": "Não iniciado",
+      "flashcards_done": false,
       "cargos": [
         "Núcleo comum",
         "Gestor - Administração",
@@ -435,9 +421,7 @@
       "errors": 0,
       "doubtful_hits": 0,
       "accuracy": 0,
-      "flashcards_done": 0,
-      "flashcards_meta": 12,
-      "flashcards_status": "Não iniciado",
+      "flashcards_done": false,
       "cargos": [
         "Núcleo comum",
         "Gestor - Administração",
@@ -491,9 +475,7 @@
       "errors": 0,
       "doubtful_hits": 0,
       "accuracy": 0,
-      "flashcards_done": 0,
-      "flashcards_meta": 12,
-      "flashcards_status": "Não iniciado",
+      "flashcards_done": false,
       "cargos": [
         "Núcleo comum",
         "Gestor - Administração",
@@ -547,9 +529,7 @@
       "errors": 0,
       "doubtful_hits": 0,
       "accuracy": 0,
-      "flashcards_done": 0,
-      "flashcards_meta": 8,
-      "flashcards_status": "Não iniciado",
+      "flashcards_done": false,
       "cargos": [
         "Núcleo comum",
         "Gestor - Administração",
@@ -603,9 +583,7 @@
       "errors": 0,
       "doubtful_hits": 0,
       "accuracy": 0,
-      "flashcards_done": 0,
-      "flashcards_meta": 0,
-      "flashcards_status": "Não iniciado",
+      "flashcards_done": false,
       "cargos": [
         "Núcleo comum",
         "Gestor - Administração",
@@ -622,7 +600,7 @@
       "d7": false,
       "d20": false,
       "next_review": null,
-      "next_step": "1 · Ler orientação",
+      "next_step": "Radar / monitorar",
       "cut": "Radar: conversão das nomenclaturas após Lei nº 7.142/2022; nome da carreira e GIC pela Lei nº 7.353/2023; art. 17/recessos; art. 7º-B da Lei nº 7.692/2025; escolaridade dos arts. 6º, 7º e 7º-A; para Gestor Administração, Portaria Conjunta nº 36/2022. Promover para P1/P0 somente se o edital cobrar carreira ou requisitos com maior profundidade.",
       "alert": "Rechecagem oficial em 11/09/2026: a Lei nº 5.106/2013 permanece vigente no texto compilado; a alteração legislativa mais recente localizada continua sendo a Lei nº 7.692/2025, que alterou o Capítulo IV e acrescentou o art. 7º-B. Em 2026 há regulamentação complementar, como a Portaria nº 2/2026 sobre afastamento remunerado para estudos, sem alterar a Lei nº 5.106. Manter em Radar e não presumir requisitos finais de Apoio/Monitor antes do novo edital.",
       "block": "Bloco 12",
@@ -659,9 +637,7 @@
       "errors": 0,
       "doubtful_hits": 0,
       "accuracy": 0,
-      "flashcards_done": 0,
-      "flashcards_meta": 20,
-      "flashcards_status": "Não iniciado",
+      "flashcards_done": false,
       "cargos": [
         "Gestor - Administração"
       ],
@@ -712,9 +688,7 @@
       "errors": 0,
       "doubtful_hits": 0,
       "accuracy": 0,
-      "flashcards_done": 0,
-      "flashcards_meta": 12,
-      "flashcards_status": "Não iniciado",
+      "flashcards_done": false,
       "cargos": [
         "Gestor - Administração"
       ],
@@ -765,9 +739,7 @@
       "errors": 0,
       "doubtful_hits": 0,
       "accuracy": 0,
-      "flashcards_done": 0,
-      "flashcards_meta": 12,
-      "flashcards_status": "Não iniciado",
+      "flashcards_done": false,
       "cargos": [
         "Gestor - Administração"
       ],
@@ -818,9 +790,7 @@
       "errors": 0,
       "doubtful_hits": 0,
       "accuracy": 0,
-      "flashcards_done": 0,
-      "flashcards_meta": 12,
-      "flashcards_status": "Não iniciado",
+      "flashcards_done": false,
       "cargos": [
         "Gestor - Administração"
       ],
@@ -871,9 +841,7 @@
       "errors": 0,
       "doubtful_hits": 0,
       "accuracy": 0,
-      "flashcards_done": 0,
-      "flashcards_meta": 12,
-      "flashcards_status": "Não iniciado",
+      "flashcards_done": false,
       "cargos": [
         "Gestor - Administração"
       ],
@@ -924,9 +892,7 @@
       "errors": 0,
       "doubtful_hits": 0,
       "accuracy": 0,
-      "flashcards_done": 0,
-      "flashcards_meta": 12,
-      "flashcards_status": "Não iniciado",
+      "flashcards_done": false,
       "cargos": [
         "Gestor - Administração"
       ],
@@ -977,9 +943,7 @@
       "errors": 0,
       "doubtful_hits": 0,
       "accuracy": 0,
-      "flashcards_done": 0,
-      "flashcards_meta": 8,
-      "flashcards_status": "Não iniciado",
+      "flashcards_done": false,
       "cargos": [
         "Gestor - Administração"
       ],
@@ -1030,9 +994,7 @@
       "errors": 0,
       "doubtful_hits": 0,
       "accuracy": 0,
-      "flashcards_done": 0,
-      "flashcards_meta": 12,
-      "flashcards_status": "Não iniciado",
+      "flashcards_done": false,
       "cargos": [
         "Analista - Apoio Administrativo"
       ],
@@ -1083,9 +1045,7 @@
       "errors": 0,
       "doubtful_hits": 0,
       "accuracy": 0,
-      "flashcards_done": 0,
-      "flashcards_meta": 12,
-      "flashcards_status": "Não iniciado",
+      "flashcards_done": false,
       "cargos": [
         "Analista - Apoio Administrativo"
       ],
@@ -1136,9 +1096,7 @@
       "errors": 0,
       "doubtful_hits": 0,
       "accuracy": 0,
-      "flashcards_done": 0,
-      "flashcards_meta": 12,
-      "flashcards_status": "Não iniciado",
+      "flashcards_done": false,
       "cargos": [
         "Analista - Apoio Administrativo"
       ],
@@ -1189,9 +1147,7 @@
       "errors": 0,
       "doubtful_hits": 0,
       "accuracy": 0,
-      "flashcards_done": 0,
-      "flashcards_meta": 12,
-      "flashcards_status": "Não iniciado",
+      "flashcards_done": false,
       "cargos": [
         "Analista - Apoio Administrativo"
       ],
@@ -1242,9 +1198,7 @@
       "errors": 0,
       "doubtful_hits": 0,
       "accuracy": 0,
-      "flashcards_done": 0,
-      "flashcards_meta": 12,
-      "flashcards_status": "Não iniciado",
+      "flashcards_done": false,
       "cargos": [
         "Analista - Apoio Administrativo"
       ],
@@ -1295,9 +1249,7 @@
       "errors": 0,
       "doubtful_hits": 0,
       "accuracy": 0,
-      "flashcards_done": 0,
-      "flashcards_meta": 8,
-      "flashcards_status": "Não iniciado",
+      "flashcards_done": false,
       "cargos": [
         "Analista - Apoio Administrativo"
       ],
@@ -1348,9 +1300,7 @@
       "errors": 0,
       "doubtful_hits": 0,
       "accuracy": 0,
-      "flashcards_done": 0,
-      "flashcards_meta": 20,
-      "flashcards_status": "Não iniciado",
+      "flashcards_done": false,
       "cargos": [
         "Analista - Monitor"
       ],
@@ -1401,9 +1351,7 @@
       "errors": 0,
       "doubtful_hits": 0,
       "accuracy": 0,
-      "flashcards_done": 0,
-      "flashcards_meta": 20,
-      "flashcards_status": "Não iniciado",
+      "flashcards_done": false,
       "cargos": [
         "Analista - Monitor",
         "Núcleo comum"
@@ -1455,9 +1403,7 @@
       "errors": 0,
       "doubtful_hits": 0,
       "accuracy": 0,
-      "flashcards_done": 0,
-      "flashcards_meta": 12,
-      "flashcards_status": "Não iniciado",
+      "flashcards_done": false,
       "cargos": [
         "Analista - Monitor",
         "Núcleo comum"
@@ -1509,9 +1455,7 @@
       "errors": 0,
       "doubtful_hits": 0,
       "accuracy": 0,
-      "flashcards_done": 0,
-      "flashcards_meta": 12,
-      "flashcards_status": "Não iniciado",
+      "flashcards_done": false,
       "cargos": [
         "Analista - Monitor"
       ],
@@ -1562,9 +1506,7 @@
       "errors": 0,
       "doubtful_hits": 0,
       "accuracy": 0,
-      "flashcards_done": 0,
-      "flashcards_meta": 12,
-      "flashcards_status": "Não iniciado",
+      "flashcards_done": false,
       "cargos": [
         "Analista - Monitor"
       ],
@@ -1619,9 +1561,7 @@
       "errors": 0,
       "doubtful_hits": 0,
       "accuracy": 0,
-      "flashcards_done": 0,
-      "flashcards_meta": 8,
-      "flashcards_status": "Não iniciado",
+      "flashcards_done": false,
       "cargos": [
         "Analista - Monitor"
       ],
@@ -1672,9 +1612,7 @@
       "errors": 0,
       "doubtful_hits": 0,
       "accuracy": 0,
-      "flashcards_done": 0,
-      "flashcards_meta": 0,
-      "flashcards_status": "Não iniciado",
+      "flashcards_done": false,
       "cargos": [
         "Analista - Monitor"
       ],
@@ -1688,7 +1626,7 @@
       "d7": false,
       "d20": false,
       "next_review": null,
-      "next_step": "1 · Ler orientação",
+      "next_step": "Radar / monitorar",
       "cut": "Identificação, atendimento e direitos educacionais de estudantes com altas habilidades ou superdotação; conexão com Educação Especial.",
       "alert": "Norma nova de 2026 e diretamente aderente ao eixo de Educação Especial; elevar a P1/P0 se aparecer no edital.",
       "block": "M6",
@@ -1725,9 +1663,7 @@
       "errors": 0,
       "doubtful_hits": 0,
       "accuracy": 0,
-      "flashcards_done": 0,
-      "flashcards_meta": 0,
-      "flashcards_status": "Não iniciado",
+      "flashcards_done": false,
       "cargos": [
         "Analista - Monitor"
       ],
@@ -1741,7 +1677,7 @@
       "d7": false,
       "d20": false,
       "next_review": null,
-      "next_step": "1 · Ler orientação",
+      "next_step": "Radar / monitorar",
       "cut": "Art. 14, §6º, acrescentado ao ECA; estudar apenas como atualização futura enquanto não entrar em vigor.",
       "alert": "Publicada no DOU de 01/07/2026. O art. 2º prevê vacatio legis de 180 dias; pela regra de contagem da LC nº 95/1998, a vigência começa em 28/12/2026. Em 11/09/2026 ainda não é regra vigente do ECA.",
       "block": "M6",
@@ -1774,9 +1710,7 @@
       "errors": 0,
       "doubtful_hits": 0,
       "accuracy": 0,
-      "flashcards_done": 0,
-      "flashcards_meta": 0,
-      "flashcards_status": "Não iniciado",
+      "flashcards_done": false,
       "cargos": [
         "Núcleo comum",
         "Gestor - Administração",
@@ -1793,7 +1727,7 @@
       "d7": false,
       "d20": false,
       "next_review": null,
-      "next_step": "1 · Ler orientação",
+      "next_step": "Radar / monitorar",
       "cut": "Acompanhar elaboração/publicação do plano distrital em adequação ao PNE de 2026; substituir a referência histórica quando houver novo texto vigente.",
       "alert": "Em 11/09/2026 não foi localizado novo Plano Distrital de Educação publicado. A Lei DF nº 5.499/2015 segue como referência histórica/local, e a SEEDF continua monitorando esse PDE por comissão própria; a Portaria SEEDF nº 371/2026, de 28/08/2026, ainda altera a composição da comissão de monitoramento. O novo PNE de 2026 exige adequação do plano distrital, portanto manter Radar forte até publicação de nova lei.",
       "block": "Radar",
