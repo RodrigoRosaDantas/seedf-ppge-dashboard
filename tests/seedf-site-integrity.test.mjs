@@ -68,11 +68,15 @@ test("keeps Leis Primeiro execution semantics separated by Dia ID", async () => 
   assert.match(syncMain, /function parseLeisPrimeiroDay[\s\S]*created_at: page\.created_time/);
   assert.match(syncLaws, /dashboardSnapshot\?\.execution\?\.leis_primeiro/);
   assert.match(syncLaws, /Flashcards feitos\?/);
+  assert.match(syncLaws, /propertyRollupNullableNumber\(properties, "Resumo nº atual"\)/);
+  assert.match(syncLaws, /propertyRollupNullableNumber\(properties, "Leitura nº atual"\)/);
+  assert.match(syncLaws, /meta operacional da Lxx \(base \+ adicional quando aplicável\)/);
   assert.match(syncLaws, /individualProgressForSharedLaw/);
   assert.match(syncLaws, /session\.page_code === code/);
   assert.match(syncLaws, /flashcards_scope: "Bloco M5"/);
   assert.match(syncLaws, /laws: lawsWithIndividualProgress/);
   assert.doesNotMatch(syncLaws, /Flashcards-meta|propertyNumber\(properties, "Flashcards feitos"\)/);
+  assert.match(syncLaws, /a etapa é binária e não possui meta numérica/);
   assert.match(appPage, /flashcards_done\?: boolean/);
   assert.doesNotMatch(appPage, /flashcardsTarget|flashcards_meta/);
   assert.match(appPage, /Resumo e leitura de lei seca são eventos distintos/);

@@ -201,8 +201,8 @@ const snapshot = {
     "Orientação — leia Como estudar, Marcar, Pegadinhas, Recorte prioritário e Vigência / alerta.",
     "Resumo / material — estudar a página, quadros e comentários é uma sessão válida, mas não conta como leitura da lei seca.",
     "Lei seca — abra a fonte oficial e leia o recorte indicado; só então incremente a contagem de leitura.",
-    "Questões — cumpra a Questões-meta e registre no Banco de Controle de Questões SEEDF.",
-    "Flashcards — crie cartões apenas do que exige recuperação ativa.",
+    "Questões — cumpra a meta operacional da Lxx (base + adicional quando aplicável) e registre no Banco de Controle de Questões SEEDF.",
+    "Flashcards — faça/revise somente os cartões necessários; a etapa é binária e não possui meta numérica.",
     "D0 — feche o bloco somente quando os requisitos pedagógicos da Lxx estiverem cumpridos.",
     "D7/D20 — revise em paralelo enquanto avança para as próximas normas.",
   ],
@@ -406,9 +406,9 @@ function parseBankRow(page) {
     status: propertyText(properties, "Status"),
     study_phase: propertyText(properties, "Fase de estudo"),
     summaries_done: propertyRollupNumber(properties, "Resumos realizados"),
-    summary_number: propertyRollupNumber(properties, "Resumo nº atual"),
+    summary_number: propertyRollupNullableNumber(properties, "Resumo nº atual"),
     readings_done: propertyRollupNumber(properties, "Leituras realizadas"),
-    reading_number: propertyRollupNumber(properties, "Leitura nº atual"),
+    reading_number: propertyRollupNullableNumber(properties, "Leitura nº atual"),
     sessions_done: propertyRollupNumber(properties, "Sessões registradas"),
     question_target: propertyNumber(properties, "Questões-meta"),
     questions_additional: propertyNumber(properties, "Questões adicionais"),
@@ -454,6 +454,20 @@ function propertyRollupNumber(properties, name) {
     return sum;
   }, 0);
   return 0;
+}
+function propertyRollupNullableNumber(properties, name) {
+  const rollup = properties?.[name]?.rollup;
+  if (!rollup) return null;
+  if (rollup.type === "number") return typeof rollup.number === "number" && Number.isFinite(rollup.number) ? rollup.number : null;
+  if (Array.isArray(rollup.array)) {
+    const values = rollup.array.flatMap((item) => {
+      if (item?.type === "number" && typeof item.number === "number" && Number.isFinite(item.number)) return [item.number];
+      if (item?.type === "formula" && typeof item.formula?.number === "number" && Number.isFinite(item.formula.number)) return [item.formula.number];
+      return [];
+    });
+    return values.length ? Math.max(...values) : null;
+  }
+  return null;
 }
 function propertyFormula(properties, name) {
   const formula = properties?.[name]?.formula;

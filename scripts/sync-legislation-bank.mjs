@@ -63,6 +63,20 @@ function rollupNumber(properties, name) {
   }, 0);
   return 0;
 }
+function rollupNullableNumber(properties, name) {
+  const r = properties?.[name]?.rollup;
+  if (!r) return null;
+  if (r.type === "number") return typeof r.number === "number" && Number.isFinite(r.number) ? r.number : null;
+  if (Array.isArray(r.array)) {
+    const values = r.array.flatMap((item) => {
+      if (item?.type === "number" && typeof item.number === "number" && Number.isFinite(item.number)) return [item.number];
+      if (item?.type === "formula" && typeof item.formula?.number === "number" && Number.isFinite(item.formula.number)) return [item.formula.number];
+      return [];
+    });
+    return values.length ? Math.max(...values) : null;
+  }
+  return null;
+}
 function formula(properties, name) {
   const f = properties?.[name]?.formula;
   if (!f) return null;
@@ -118,9 +132,9 @@ const rows = pages.map((page) => {
     cargos: multi(p, "Cargos"),
     orientation_read: checkbox(p, "Orientação lida"),
     summaries_done: rollupNumber(p, "Resumos realizados"),
-    summary_number: rollupNumber(p, "Resumo nº atual"),
+    summary_number: rollupNullableNumber(p, "Resumo nº atual"),
     readings_done: rollupNumber(p, "Leituras realizadas"),
-    reading_number: rollupNumber(p, "Leitura nº atual"),
+    reading_number: rollupNullableNumber(p, "Leitura nº atual"),
     sessions_done: rollupNumber(p, "Sessões registradas"),
     d0: checkbox(p, "D0"), d7: checkbox(p, "D7"), d20: checkbox(p, "D20"),
     next_review: date(p, "Próxima revisão"),
