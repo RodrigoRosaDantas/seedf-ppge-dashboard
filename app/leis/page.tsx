@@ -26,9 +26,9 @@ type Law = {
   status?: string;
   study_phase?: string;
   summaries_done?: number;
-  summary_number?: number;
+  summary_number?: number | null;
   readings_done?: number;
-  reading_number?: number;
+  reading_number?: number | null;
   sessions_done?: number;
   question_target?: number;
   questions_additional?: number;
