@@ -68,9 +68,13 @@ function operationalMarkup(law, row) {
   };
   const latestSession = latestDay
     ? (execution.sessions || []).find((session) => sessionMatchesExecution(session, latestDay))
-      || (execution.sessions || []).find((session) => session.page_code === law.code && (!latestDay.executed_at || session.date === latestDay.executed_at))
-      || (execution.sessions || []).find((session) => session.page_code === law.code)
-      || null
+      || (
+        latestDay.summary_number == null && latestDay.reading_number == null
+          ? (execution.sessions || []).find((session) => session.page_code === law.code && (!latestDay.executed_at || session.date === latestDay.executed_at))
+            || (execution.sessions || []).find((session) => session.page_code === law.code)
+            || null
+          : null
+      )
     : null;
   const dayErrors = latestDay ? (execution.errors || []).filter((item) => item.day_id === latestDay.day_id) : [];
   const errorItems = dayErrors.map((item) => `<li><b>${esc(item.question_id || "Erro")}</b> — ${esc(item.subject || item.title || "Erro registrado")} <small>· ${esc(item.review || "sem revisão")} · reincidência ${n(item.recurrence)}${item.flashcard ? " · flashcard" : ""}</small></li>`).join("");

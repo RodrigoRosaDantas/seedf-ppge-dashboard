@@ -332,9 +332,13 @@ export default function LeisPrimeiroPage() {
   const latestLaw = latestExecution ? snapshot?.laws.find((law) => law.code === latestExecution.page_code) : null;
   const latestSession = latestExecution
     ? snapshot?.execution?.sessions?.find((session) => sessionMatchesExecution(session, latestExecution))
-      || snapshot?.execution?.sessions?.find((session) => session.page_code === latestExecution.page_code && (!latestExecution.executed_at || session.date === latestExecution.executed_at))
-      || snapshot?.execution?.sessions?.find((session) => session.page_code === latestExecution.page_code)
-      || null
+      || (
+        latestExecution.summary_number == null && latestExecution.reading_number == null
+          ? snapshot?.execution?.sessions?.find((session) => session.page_code === latestExecution.page_code && (!latestExecution.executed_at || session.date === latestExecution.executed_at))
+            || snapshot?.execution?.sessions?.find((session) => session.page_code === latestExecution.page_code)
+            || null
+          : null
+      )
     : null;
   const latestErrors = latestExecution
     ? (snapshot?.execution?.errors || []).filter((item) => item.day_id === latestExecution.day_id)
@@ -410,7 +414,7 @@ export default function LeisPrimeiroPage() {
             <article className="laws-stat-progress"><div className="laws-stat-top"><span className="laws-stat-icon">R</span><span>RESUMO × LEI</span></div><strong>{latestExecution.summary_number || 0} / {latestExecution.reading_number || 0}</strong><small>resumo nº / leitura nº · leitura real não é inferida</small></article>
             <article className="laws-stat-questions"><div className="laws-stat-top"><span className="laws-stat-icon">Q</span><span>QUESTÕES</span></div><strong>{latestExecution.done || 0}/{latestExecution.planned || 0}</strong><small>{latestExecution.correct || 0} acertos · {formatPercent(latestExecution.precision)}</small></article>
             <article className="laws-stat-map"><div className="laws-stat-top"><span className="laws-stat-icon">E</span><span>CADERNO DE ERROS</span></div><strong>{latestErrors.length}</strong><small>{latestErrors.filter((item) => item.flashcard).length} com flashcard · vínculo por Dia ID</small></article>
-            <article className="laws-stat-source"><div className="laws-stat-top"><span className="laws-stat-icon">D0</span><span>FECHAMENTO</span></div><strong>{latestLaw?.d0 ? "Concluído" : "Pendente"}</strong><small>{latestSession?.flashcards || 0} flashcards gerados na sessão</small></article>
+            <article className="laws-stat-source"><div className="laws-stat-top"><span className="laws-stat-icon">D0</span><span>D0 DA NORMA</span></div><strong>{latestLaw?.d0 ? "Concluído" : "Pendente"}</strong><small>checkpoint geral · {latestSession?.flashcards || 0} flashcards gerados na sessão</small></article>
           </div>
           {latestErrors.length ? <div className="laws-map-list">{latestErrors.map((item) => <article className="laws-map-row" key={item.id}><div className="laws-map-main"><span className="law-code">{item.question_id}</span><strong>{item.subject || item.title || "Erro registrado"}</strong></div><div className="laws-map-meta"><span>{item.review || "Sem revisão"}</span><span>{item.status || "Sem status"}</span><span>reincidência {item.recurrence || 0}</span></div><p className="laws-map-next">{item.title || item.pattern || item.reason || "Registro vinculado ao Caderno de Erros"}</p>{item.url ? <a className="laws-map-open" href={item.url} target="_blank" rel="noreferrer">Abrir erro ↗</a> : null}</article>)}</div> : <p className="laws-empty">Nenhum erro vinculado a esta execução.</p>}
         </section>

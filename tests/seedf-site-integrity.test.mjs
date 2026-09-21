@@ -70,10 +70,14 @@ test("keeps Leis Primeiro execution semantics separated by Dia ID", async () => 
   assert.match(appPage, /CADERNO DE ERROS/);
   assert.match(appPage, /sessionMatchesExecution/);
   assert.match(appPage, /day\.summary_number != null && session\.summary_number !== day\.summary_number/);
+  assert.match(appPage, /latestExecution\.summary_number == null && latestExecution\.reading_number == null/);
+  assert.match(appPage, /D0 DA NORMA/);
   assert.match(cockpit, /HISTÓRICO REAL · LEIS PRIMEIRO/);
   assert.match(cockpit, /sessionMatchesExecution/);
+  assert.match(cockpit, /D0 DA NORMA/);
   assert.match(enhancer, /Ver erros desta execução/);
   assert.match(enhancer, /sessionMatchesExecution/);
+  assert.match(enhancer, /latestDay\.summary_number == null && latestDay\.reading_number == null/);
   assert.match(enhancer, /const radar = \/radar\/i/);
   assert.match(enhancer, /Unidade de monitoramento; o fluxo normal de fechamento não se aplica/);
   assert.doesNotMatch(lawCss, /laws-flow-steps\s*\{[^}]*grid-template-columns:\s*repeat\(5/);
