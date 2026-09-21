@@ -92,6 +92,8 @@ function stateFor(law, row) {
   const readingsDone = number(row?.readings_done ?? law.readings_done);
   const orientation = Boolean(row?.orientation_read ?? law.orientation_read);
   const d0 = Boolean(row?.d0 ?? law.d0);
+  const d7 = Boolean(row?.d7 ?? law.d7);
+  const d20 = Boolean(row?.d20 ?? law.d20);
   const complete = !radarLaw(law) && orientation && summariesDone > 0 && readingsDone > 0 && questionsDone >= questionTarget && (!flashcardsTarget || flashcardsDone >= flashcardsTarget) && d0;
   let nextStep = row?.next_step || "1 · Ler orientação";
   if (radarLaw(law)) nextStep = row?.action || law.action || "Radar / monitorar";
@@ -102,7 +104,7 @@ function stateFor(law, row) {
   else if (flashcardsTarget && flashcardsDone < flashcardsTarget) nextStep = `5 · Revisar flashcards (${flashcardsDone}/${flashcardsTarget})`;
   else if (!d0) nextStep = "6 · Fechar D0";
   else nextStep = "Bloco fechado · seguir para a próxima norma";
-  return { complete, questionTarget, questionsDone, flashcardsTarget, flashcardsDone, summariesDone, readingsDone, orientation, d0, nextStep };
+  return { complete, questionTarget, questionsDone, flashcardsTarget, flashcardsDone, summariesDone, readingsDone, orientation, d0, d7, d20, nextStep };
 }
 
 function checkpoint(label, done) {
@@ -222,7 +224,7 @@ export async function buildLeisCockpit(sourceHtml) {
   const currentHref = current ? `./${lawSlug(current)}/` : "#mapa-detalhado";
   const currentNotion = current?.notion_url || snapshot.source?.page_url || "#";
   const currentStage = current ? studyStageNumber(currentState) : 1;
-  const currentChecks = current ? `${checkpoint("Orientação", currentState.orientation)}${checkpoint("Resumo", currentState.summariesDone > 0)}${checkpoint("Lei seca", currentState.readingsDone > 0)}${checkpoint("Questões", currentState.questionsDone >= currentState.questionTarget && currentState.questionTarget > 0)}${checkpoint("Flashcards", currentState.flashcardsTarget > 0 && currentState.flashcardsDone >= currentState.flashcardsTarget)}${checkpoint("D0", currentState.d0)}${checkpoint("D7/D20", false)}` : checkpoint("Sincronização", false);
+  const currentChecks = current ? `${checkpoint("Orientação", currentState.orientation)}${checkpoint("Resumo", currentState.summariesDone > 0)}${checkpoint("Lei seca", currentState.readingsDone > 0)}${checkpoint("Questões", currentState.questionsDone >= currentState.questionTarget && currentState.questionTarget > 0)}${checkpoint("Flashcards", currentState.flashcardsTarget > 0 && currentState.flashcardsDone >= currentState.flashcardsTarget)}${checkpoint("D0", currentState.d0)}${checkpoint("D7/D20", currentState.d7 && currentState.d20)}` : checkpoint("Sincronização", false);
   const latestExecution = snapshot.execution?.days?.[0] || null;
   const latestLaw = latestExecution ? laws.find((law) => law.code === latestExecution.page_code) : null;
   const sessionMatchesExecution = (session, day) => {

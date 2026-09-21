@@ -72,8 +72,10 @@ test("keeps Leis Primeiro execution semantics separated by Dia ID", async () => 
   assert.match(appPage, /day\.summary_number != null && session\.summary_number !== day\.summary_number/);
   assert.match(appPage, /latestExecution\.summary_number == null && latestExecution\.reading_number == null/);
   assert.match(appPage, /D0 DA NORMA/);
+  assert.match(appPage, /currentLaw\?\.d7 && currentLaw\?\.d20/);
   assert.match(cockpit, /HISTÓRICO REAL · LEIS PRIMEIRO/);
   assert.match(cockpit, /sessionMatchesExecution/);
+  assert.match(cockpit, /currentState\.d7 && currentState\.d20/);
   assert.match(cockpit, /D0 DA NORMA/);
   assert.match(enhancer, /Ver erros desta execução/);
   assert.match(enhancer, /sessionMatchesExecution/);

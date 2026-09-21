@@ -351,7 +351,7 @@ export default function LeisPrimeiroPage() {
     { label: "Questões", done: Boolean(currentState && currentState.questionTarget > 0 && currentState.questionsDone >= currentState.questionTarget) },
     { label: "Flashcards", done: Boolean(currentState && currentState.flashcardsTarget > 0 && currentState.flashcardsDone >= currentState.flashcardsTarget) },
     { label: "D0", done: Boolean(currentState?.d0) },
-    { label: "D7/D20", done: false },
+    { label: "D7/D20", done: Boolean(currentLaw?.d7 && currentLaw?.d20) },
   ];
 
   return (
