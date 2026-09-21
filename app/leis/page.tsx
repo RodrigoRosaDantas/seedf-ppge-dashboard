@@ -51,6 +51,7 @@ type Law = {
   shared_codes?: string[];
   questions_done?: number;
   flashcards_done?: boolean;
+  flashcards_scope?: "Norma" | "Bloco M5" | string;
   next_step?: string;
 };
 
@@ -238,7 +239,7 @@ function studyState(law: Law) {
   else if (!summariesDone) nextStep = "2 · Estudar resumo/material (não conta como lei seca)";
   else if (!readingsDone) nextStep = "3 · Ler a lei seca na fonte oficial";
   else if (questionsDone < questionTarget) nextStep = `4 · Fazer questões (${questionsDone}/${questionTarget})`;
-  else if (!flashcardsDone) nextStep = "5 · Fazer/revisar flashcards";
+  else if (!flashcardsDone) nextStep = law.shared_block ? "5 · Fazer/revisar flashcards do bloco M5" : "5 · Fazer/revisar flashcards";
   else if (!d0) nextStep = "6 · Fechar D0";
   else nextStep = "Bloco fechado · seguir para a próxima norma";
   return { complete, questionTarget, questionsDone, flashcardsDone, summariesDone, readingsDone, orientation, d0, nextStep };
@@ -517,6 +518,9 @@ export default function LeisPrimeiroPage() {
                       <div className="law-cargos">{(law.cargos || []).map((cargo) => <span key={cargo}>{cargo}</span>)}</div>
                       <div className="law-progress" aria-label={`Estado de revisão de ${law.code}`}>
                         <span className={law.orientation_read ? "is-done" : ""}>Orientação {law.orientation_read ? "✓" : "—"}</span>
+                        <span className={(law.summaries_done || 0) > 0 ? "is-done" : ""}>Resumo {(law.summaries_done || 0) > 0 ? "✓" : "—"}</span>
+                        <span className={(law.readings_done || 0) > 0 ? "is-done" : ""}>Lei seca {(law.readings_done || 0) > 0 ? "✓" : "—"}</span>
+                        <span className={law.flashcards_done ? "is-done" : ""}>{law.shared_block ? "Flashcards M5" : "Flashcards"} {law.flashcards_done ? "✓" : "—"}</span>
                         <span className={law.d0 ? "is-done" : ""}>D0 {law.d0 ? "✓" : "—"}</span>
                         <span className={law.d7 ? "is-done" : ""}>D7 {law.d7 ? "✓" : "—"}</span>
                         <span className={law.d20 ? "is-done" : ""}>D20 {law.d20 ? "✓" : "—"}</span>
@@ -540,7 +544,7 @@ export default function LeisPrimeiroPage() {
                           {auditDate ? <div className="law-audit-date"><strong>Última auditoria no banco</strong><p>{auditDate}</p></div> : null}
                         </div>
                       ) : null}
-                      {law.shared_block ? <div className="law-shared-note"><CircleAlert size={14} /> L30–L32 compartilham uma única meta operacional de 10 questões.</div> : null}
+                      {law.shared_block ? <div className="law-shared-note"><CircleAlert size={14} /> M5: questões, Flashcards feitos?, D0, D7 e D20 são do bloco; resumos e leituras são individuais por Página Lxx.</div> : null}
                       <div className="law-actions">
                         <a href={law.notion_url} target="_blank" rel="noreferrer">Página da lei <ExternalLink size={14} /></a>
                         {law.bank_record_url ? <a href={law.bank_record_url} target="_blank" rel="noreferrer">Registro operacional <ExternalLink size={14} /></a> : null}

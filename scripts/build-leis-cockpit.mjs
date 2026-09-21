@@ -87,8 +87,8 @@ function stateFor(law, row) {
   const questionTarget = number(law.shared_block ? 10 : (row?.operational_question_target ?? law.operational_target_total ?? row?.question_target ?? law.question_target));
   const questionsDone = number(row?.questions_done);
   const flashcardsDone = Boolean(row?.flashcards_done ?? law.flashcards_done);
-  const summariesDone = number(row?.summaries_done ?? law.summaries_done);
-  const readingsDone = number(row?.readings_done ?? law.readings_done);
+  const summariesDone = number(law.shared_block ? law.summaries_done : (row?.summaries_done ?? law.summaries_done));
+  const readingsDone = number(law.shared_block ? law.readings_done : (row?.readings_done ?? law.readings_done));
   const orientation = Boolean(row?.orientation_read ?? law.orientation_read);
   const d0 = Boolean(row?.d0 ?? law.d0);
   const d7 = Boolean(row?.d7 ?? law.d7);
@@ -100,7 +100,7 @@ function stateFor(law, row) {
   else if (!summariesDone) nextStep = "2 · Estudar resumo/material (não conta como lei seca)";
   else if (!readingsDone) nextStep = "3 · Ler a lei seca na fonte oficial";
   else if (questionsDone < questionTarget) nextStep = `4 · Fazer questões (${questionsDone}/${questionTarget})`;
-  else if (!flashcardsDone) nextStep = "5 · Fazer/revisar flashcards";
+  else if (!flashcardsDone) nextStep = law.shared_block ? "5 · Fazer/revisar flashcards do bloco M5" : "5 · Fazer/revisar flashcards";
   else if (!d0) nextStep = "6 · Fechar D0";
   else nextStep = "Bloco fechado · seguir para a próxima norma";
   return { complete, questionTarget, questionsDone, flashcardsDone, summariesDone, readingsDone, orientation, d0, d7, d20, nextStep };
@@ -173,12 +173,12 @@ function buildMapRow(law, rowsByCode) {
   const searchText = [law.code, law.title, law.group, law.priority, law.action, law.cut, law.alert, law.block, law.observations, row?.next_step].filter(Boolean).join(" ").toLocaleLowerCase("pt-BR");
   const status = radar ? "Radar" : state.complete ? "D0 fechado" : (row?.action || law.action || law.status || "Estudar");
   const questionProgress = law.shared_block ? `M5 ${state.questionsDone}/10 · ${number(law.question_target)}q desta lei` : `questões ${state.questionsDone}/${target}`;
-  const shared = law.shared_block ? `<span class="laws-map-note">Bloco M5 · meta total 10 (3 + 4 + 3)</span>` : "";
+  const shared = law.shared_block ? `<span class="laws-map-note">Bloco M5 · 10 questões · flashcards/D0/D7/D20 do bloco · resumo/leitura por Lxx</span>` : "";
   return `<article class="laws-map-row ${radar ? "is-radar" : ""}" data-law-card data-law-group="${escapeHtml(law.group)}" data-priority="${escapeHtml(law.priority || "")}" data-search="${escapeHtml(searchText)}">
     <div class="laws-map-main"><a href="./${escapeHtml(lawSlug(law))}/"><span class="law-code">${code}</span><strong>${escapeHtml(law.title)}</strong></a><span class="laws-chip priority-${priorityClass(law.priority)}">${escapeHtml(compactPriority(law.priority))}</span></div>
     <div class="laws-map-meta"><span>${escapeHtml(law.group)}</span><span>${escapeHtml(status)}</span><span>${escapeHtml(radar ? "monitoramento" : questionProgress)}</span></div>
     <p class="laws-map-next">${escapeHtml(state.nextStep)}${shared ? ` · ${shared.replace(/<[^>]+>/g, "")}` : ""}</p>
-    <div class="laws-map-checks">${radar ? checkpoint("Radar", false) : `${checkpoint("Orientação", state.orientation)}${checkpoint("Resumo", state.summariesDone > 0)}${checkpoint("Lei seca", state.readingsDone > 0)}${checkpoint("D0", state.d0)}${checkpoint("D7", Boolean(row?.d7))}${checkpoint("D20", Boolean(row?.d20))}`}</div>
+    <div class="laws-map-checks">${radar ? checkpoint("Radar", false) : `${checkpoint("Orientação", state.orientation)}${checkpoint("Resumo", state.summariesDone > 0)}${checkpoint("Lei seca", state.readingsDone > 0)}${checkpoint("Questões", state.questionTarget > 0 && state.questionsDone >= state.questionTarget)}${checkpoint(law.shared_block ? "Flashcards M5" : "Flashcards", state.flashcardsDone)}${checkpoint("D0", state.d0)}${checkpoint("D7", Boolean(row?.d7))}${checkpoint("D20", Boolean(row?.d20))}`}</div>
     <a class="laws-map-open" href="./${escapeHtml(lawSlug(law))}/">Abrir norma →</a>
   </article>`;
 }

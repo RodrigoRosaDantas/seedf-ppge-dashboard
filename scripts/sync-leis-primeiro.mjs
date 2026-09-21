@@ -149,8 +149,37 @@ try {
   }
 } catch {}
 
+function individualProgressForSharedLaw(code) {
+  const sessions = (execution?.sessions || []).filter((session) => session.page_code === code);
+  const summariesDone = sessions.reduce((sum, session) => sum + Number(session.summary_counter || 0), 0);
+  const readingsDone = sessions.reduce((sum, session) => sum + Number(session.reading_counter || 0), 0);
+  const sessionsDone = sessions.reduce((sum, session) => sum + Number(session.session_counter || 0), 0);
+  const summaryNumber = sessions.reduce((max, session) => Math.max(max, Number(session.summary_number || 0)), 0);
+  const readingNumber = sessions.reduce((max, session) => Math.max(max, Number(session.reading_number || 0)), 0);
+  return {
+    summaries_done: summariesDone,
+    summary_number: summaryNumber || null,
+    readings_done: readingsDone,
+    reading_number: readingNumber || null,
+    sessions_done: sessionsDone,
+  };
+}
+
+const lawsWithIndividualProgress = laws.map((law) =>
+  law.shared_block
+    ? {
+        ...law,
+        ...individualProgressForSharedLaw(law.code),
+        flashcards_scope: "Bloco M5",
+      }
+    : {
+        ...law,
+        flashcards_scope: "Norma",
+      },
+);
+
 const snapshot = {
-  schema_version: 6,
+  schema_version: 7,
   source: {
     kind: "notion",
     title: pageTitle(page) || "Leis Primeiro | SEEDF",
@@ -179,10 +208,11 @@ const snapshot = {
   ],
   advance_rule: "Resumo e leitura são eventos distintos. Uma sessão de resumo pode terminar concluída sem fechar D0; D0 só fecha após o cumprimento real dos requisitos da Lxx. D7/D20 seguem em paralelo.",
   execution,
-  laws,
+  laws: lawsWithIndividualProgress,
   radars: radarRows,
   audit_notes: [
     "34 páginas L01–L34 usam 32 registros diretamente mapeados; L30 + L31 + L32 compartilham o registro M5 de acessibilidade.",
+    "No M5, resumos, leituras e número de sessões são derivados por Página Lxx no Histórico; questões, Flashcards feitos?, D0, D7 e D20 permanecem checkpoints do bloco compartilhado.",
     "O 33º registro do banco é o Radar 901 do novo PDE/DF, fora da numeração L01–L34.",
     "L11 permanece com meta operacional 0 enquanto o edital não fechar cargos e escolaridade.",
     "L33 é Radar forte com 10 questões de familiarização.",

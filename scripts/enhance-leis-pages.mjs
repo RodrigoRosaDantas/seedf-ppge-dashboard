@@ -44,11 +44,11 @@ function readerScript(prefix) { return `<script src="${prefix}reading-preference
 function operationalMarkup(law, row) {
   const target = n(law.shared_block ? 10 : (row?.operational_question_target ?? law.operational_target_total ?? row?.question_target ?? law.question_target));
   const done = n(row?.questions_done); const flashcards = Boolean(row?.flashcards_done ?? law.flashcards_done);
-  const summariesDone = n(row?.summaries_done ?? law.summaries_done);
-  const summaryNumber = n(row?.summary_number ?? law.summary_number);
-  const readingsDone = n(row?.readings_done ?? law.readings_done);
-  const readingNumber = n(row?.reading_number ?? law.reading_number);
-  const sessionsDone = n(row?.sessions_done ?? law.sessions_done);
+  const summariesDone = n(law.shared_block ? law.summaries_done : (row?.summaries_done ?? law.summaries_done));
+  const summaryNumber = n(law.shared_block ? law.summary_number : (row?.summary_number ?? law.summary_number));
+  const readingsDone = n(law.shared_block ? law.readings_done : (row?.readings_done ?? law.readings_done));
+  const readingNumber = n(law.shared_block ? law.reading_number : (row?.reading_number ?? law.reading_number));
+  const sessionsDone = n(law.shared_block ? law.sessions_done : (row?.sessions_done ?? law.sessions_done));
   const orientation = Boolean(row?.orientation_read ?? law.orientation_read);
   const d0 = Boolean(row?.d0 ?? law.d0);
   const d7 = Boolean(row?.d7 ?? law.d7);
@@ -77,14 +77,14 @@ function operationalMarkup(law, row) {
     : null;
   const dayErrors = latestDay ? (execution.errors || []).filter((item) => item.day_id === latestDay.day_id) : [];
   const errorItems = dayErrors.map((item) => `<li><b>${esc(item.question_id || "Erro")}</b> — ${esc(item.subject || item.title || "Erro registrado")} <small>· ${esc(item.review || "sem revisão")} · reincidência ${n(item.recurrence)}${item.flashcard ? " · flashcard" : ""}</small></li>`).join("");
-  const executionCard = latestDay ? `<article class="study-ops-card"><span class="eyebrow">Última execução · Dia ID</span><div class="big"><strong style="font-size:14px">${esc(latestDay.day_id)}</strong></div><div class="ops-grid"><div class="ops-mini"><b>${n(latestDay.done)}/${n(latestDay.planned)}</b><small>questões</small></div><div class="ops-mini"><b>${dayErrors.length}</b><small>erros</small></div><div class="ops-mini"><b>${flashcards ? "✓" : "○"}</b><small>flashcards feitos</small></div></div>${dayErrors.length ? `<details><summary>Ver erros desta execução</summary><ul>${errorItems}</ul></details>` : `<p class="ops-next">Nenhum erro vinculado a esta execução.</p>`}</article>` : "";
+  const executionCard = latestDay ? `<article class="study-ops-card"><span class="eyebrow">Última execução · Dia ID</span><div class="big"><strong style="font-size:14px">${esc(latestDay.day_id)}</strong></div><div class="ops-grid"><div class="ops-mini"><b>${n(latestDay.done)}/${n(latestDay.planned)}</b><small>questões</small></div><div class="ops-mini"><b>${dayErrors.length}</b><small>erros</small></div><div class="ops-mini"><b>${flashcards ? "✓" : "○"}</b><small>${law.shared_block ? "flashcards M5" : "flashcards feitos"}</small></div></div>${dayErrors.length ? `<details><summary>Ver erros desta execução</summary><ul>${errorItems}</ul></details>` : `<p class="ops-next">Nenhum erro vinculado a esta execução.</p>`}</article>` : "";
   let nextStep = row?.next_step || "1 · Ler orientação";
   if (radar) nextStep = action || "Radar / monitorar";
   else if (!orientation) nextStep = "1 · Ler orientação";
   else if (!summariesDone) nextStep = "2 · Estudar resumo/material (não conta como lei seca)";
   else if (!readingsDone) nextStep = "3 · Ler a lei seca na fonte oficial";
   else if (!questions) nextStep = `4 · Fazer questões (${done}/${target})`;
-  else if (!flashcards) nextStep = "5 · Fazer/revisar flashcards";
+  else if (!flashcards) nextStep = law.shared_block ? "5 · Fazer/revisar flashcards do bloco M5" : "5 · Fazer/revisar flashcards";
   else if (!d0) nextStep = "6 · Fechar D0";
   else nextStep = "Bloco fechado · seguir para a próxima norma";
   const checklist = radar
@@ -92,7 +92,9 @@ function operationalMarkup(law, row) {
     : `${state("Orientação",orientation)}${state("Resumo",summariesDone>0)}${state("Lei seca",readingsDone>0)}${state("Questões",questions)}${state("Flashcards",flashcards)}${state("D0",d0)}`;
   const actionNote = radar
     ? "Unidade de monitoramento; o fluxo normal de fechamento não se aplica."
-    : "Resumo e lei seca são eventos separados.";
+    : law.shared_block
+      ? "M5: resumo e leitura são individuais por Lxx; questões, flashcards e revisões são checkpoints do bloco."
+      : "Resumo e lei seca são eventos separados.";
   return `<section class="study-enhanced-ops" aria-label="Painel operacional sincronizado do Notion">
     <article class="study-ops-card study-ops-focus"><span class="eyebrow">Próxima ação</span><div class="big"><strong style="font-size:17px">${esc(nextStep)}</strong></div><p class="ops-next">${esc(action)} · ${esc(actionNote)}</p><a class="ops-primary" href="#study-content">Ir para o material ↓</a><div class="ops-checklist">${checklist}</div></article>
     <article class="study-ops-card"><span class="eyebrow">Resumo × lei seca</span><div class="ops-grid"><div class="ops-mini"><b>${summariesDone}</b><small>resumos</small></div><div class="ops-mini"><b>${readingsDone}</b><small>leituras</small></div><div class="ops-mini"><b>${sessionsDone}</b><small>sessões</small></div></div><p class="ops-next">Atual: resumo ${summaryNumber || "—"} · leitura ${readingNumber || "—"}. Estudar esta página não incrementa leitura da norma.</p></article>
