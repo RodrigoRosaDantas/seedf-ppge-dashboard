@@ -58,6 +58,8 @@ test("keeps Leis Primeiro execution semantics separated by Dia ID", async () => 
   ]);
   assert.match(syncMain, /Origem \/ Dia ID/);
   assert.match(syncMain, /errors: lawErrors/);
+  assert.match(syncMain, /sort\(compareLeisPrimeiroDays\)/);
+  assert.match(syncMain, /left\.page_code === right\.page_code/);
   assert.match(syncMain, /leisPrimeiroSequence\(right\.day_id\) - leisPrimeiroSequence\(left\.day_id\)/);
   assert.match(syncMain, /right\.created_at/);
   assert.match(syncMain, /function parseLeisPrimeiroDay[\s\S]*created_at: page\.created_time/);

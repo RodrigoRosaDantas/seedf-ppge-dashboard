@@ -309,12 +309,7 @@ function buildExecutionSnapshot(dayPages, questionPages, errorPages, legislation
   const lawDays = dayPages
     .map(parseLeisPrimeiroDay)
     .filter(Boolean)
-    .sort((left, right) =>
-      (right.executed_at || "").localeCompare(left.executed_at || "") ||
-      (right.created_at || "").localeCompare(left.created_at || "") ||
-      leisPrimeiroSequence(right.day_id) - leisPrimeiroSequence(left.day_id) ||
-      right.day_id.localeCompare(left.day_id)
-    );
+    .sort(compareLeisPrimeiroDays);
 
   const lawQuestionPages = questionPages
     .map((page) => ({ page, day_id: normalizeLeisPrimeiroId(propertyText(page.properties, "Dia ID")) }))
@@ -538,6 +533,18 @@ function pageCodeFromExecutionId(value) {
 function leisPrimeiroSequence(value) {
   const match = normalizeLeisPrimeiroId(value)?.match(/-R(\d+)$/i);
   return match ? Number(match[1]) : 0;
+}
+
+function compareLeisPrimeiroDays(left, right) {
+  const dateOrder = (right.executed_at || "").localeCompare(left.executed_at || "");
+  if (dateOrder) return dateOrder;
+  if (left.page_code === right.page_code) {
+    const sequenceOrder = leisPrimeiroSequence(right.day_id) - leisPrimeiroSequence(left.day_id);
+    if (sequenceOrder) return sequenceOrder;
+  }
+  const createdOrder = (right.created_at || "").localeCompare(left.created_at || "");
+  if (createdOrder) return createdOrder;
+  return right.day_id.localeCompare(left.day_id);
 }
 
 function propertyText(properties, name) {
