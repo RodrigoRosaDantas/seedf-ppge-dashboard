@@ -72,6 +72,8 @@ test("keeps Leis Primeiro execution semantics separated by Dia ID", async () => 
   assert.match(appPage, /&& summariesDone > 0[\s\S]*&& readingsDone > 0/);
   assert.doesNotMatch(appPage, /!summariesDone && !readingsDone/);
   assert.match(appPage, /CADERNO DE ERROS/);
+  assert.doesNotMatch(appPage, /com flashcard · vínculo por Dia ID/);
+  assert.doesNotMatch(cockpit, /com flashcard · vínculo por Dia ID/);
   assert.match(appPage, /sessionMatchesExecution/);
   assert.match(appPage, /day\.summary_number != null && session\.summary_number !== day\.summary_number/);
   assert.match(appPage, /latestExecution\.summary_number == null && latestExecution\.reading_number == null/);
