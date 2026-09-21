@@ -488,7 +488,7 @@ function pageCodeFromExecutionId(value) {
   return normalizeLeisPrimeiroId(value)?.match(/-(L\d{2})-/)?.[1] || "";
 }
 
-function propertyText(properties, name) {function propertyText(properties, name) {
+function propertyText(properties, name) {
   const property = properties?.[name];
   if (!property) return "";
   if (property.type === "title" || property.title) {

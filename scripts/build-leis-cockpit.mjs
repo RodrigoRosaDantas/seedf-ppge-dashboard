@@ -105,7 +105,7 @@ function stateFor(law, row) {
   return { complete, questionTarget, questionsDone, flashcardsTarget, flashcardsDone, summariesDone, readingsDone, orientation, d0, nextStep };
 }
 
-function checkpointfunction checkpoint(label, done) {
+function checkpoint(label, done) {
   return `<span class="laws-checkpoint ${done ? "is-done" : ""}">${done ? "✓" : "○"} ${escapeHtml(label)}</span>`;
 }
 

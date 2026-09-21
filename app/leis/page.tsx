@@ -165,7 +165,7 @@ function studyState(law: Law) {
   return { complete, questionTarget, questionsDone, flashcardsTarget, flashcardsDone, summariesDone, readingsDone, orientation, d0, nextStep };
 }
 
-function lawCompletefunction lawComplete(law: Law) {
+function lawComplete(law: Law) {
   return studyState(law).complete;
 }
 
