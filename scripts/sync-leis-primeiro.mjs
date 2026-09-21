@@ -101,6 +101,12 @@ const laws = childPages.map((child) => {
     priority: row.priority,
     official_url: sharedSourceOverrides[child.code] || row.official_url,
     status: row.status,
+    study_phase: row.study_phase,
+    summaries_done: row.summaries_done,
+    summary_number: row.summary_number,
+    readings_done: row.readings_done,
+    reading_number: row.reading_number,
+    sessions_done: row.sessions_done,
     question_target: sharedBlock ? sharedTargets[child.code] : row.question_target,
     operational_target_total: sharedBlock ? 10 : row.question_target,
     questions_done: row.questions_done,
@@ -130,7 +136,7 @@ const priorities = bankRows.reduce((acc, row) => {
 }, {});
 
 const snapshot = {
-  schema_version: 3,
+  schema_version: 4,
   source: {
     kind: "notion",
     title: pageTitle(page) || "Leis Primeiro | SEEDF",
@@ -150,13 +156,14 @@ const snapshot = {
   },
   study_sequence: [
     "Orientação — leia Como estudar, Marcar, Pegadinhas, Recorte prioritário e Vigência / alerta.",
-    "Lei seca — abra a fonte oficial e leia o recorte indicado.",
+    "Resumo / material — estudar a página, quadros e comentários é uma sessão válida, mas não conta como leitura da lei seca.",
+    "Lei seca — abra a fonte oficial e leia o recorte indicado; só então incremente a contagem de leitura.",
     "Questões — cumpra a Questões-meta e registre no Banco de Controle de Questões SEEDF.",
     "Flashcards — crie cartões apenas do que exige recuperação ativa.",
-    "D0 — feche o bloco com marcação, erros e flashcards.",
+    "D0 — feche o bloco somente quando os requisitos pedagógicos da Lxx estiverem cumpridos.",
     "D7/D20 — revise em paralelo enquanto avança para as próximas normas.",
   ],
-  advance_rule: "Avance após orientação + 1ª leitura + questões + flashcards + D0; D7/D20 seguem em paralelo.",
+  advance_rule: "Resumo e leitura são eventos distintos. Uma sessão de resumo pode terminar concluída sem fechar D0; D0 só fecha após o cumprimento real dos requisitos da Lxx. D7/D20 seguem em paralelo.",
   laws,
   radars: radarRows,
   audit_notes: [
@@ -352,6 +359,12 @@ function parseBankRow(page) {
     priority: propertyText(properties, "Prioridade"),
     official_url: propertyUrl(properties, "Fonte oficial"),
     status: propertyText(properties, "Status"),
+    study_phase: propertyText(properties, "Fase de estudo"),
+    summaries_done: propertyRollupNumber(properties, "Resumos realizados"),
+    summary_number: propertyRollupNumber(properties, "Resumo nº atual"),
+    readings_done: propertyRollupNumber(properties, "Leituras realizadas"),
+    reading_number: propertyRollupNumber(properties, "Leitura nº atual"),
+    sessions_done: propertyRollupNumber(properties, "Sessões registradas"),
     question_target: propertyNumber(properties, "Questões-meta"),
     questions_done: propertyRollupNumber(properties, "Questões feitas"),
     flashcards_done: propertyNumber(properties, "Flashcards feitos"),

@@ -100,6 +100,7 @@ const rows = pages.map((page) => {
     title: text(p, "Norma"),
     priority: text(p, "Prioridade"),
     status: text(p, "Status"),
+    study_phase: text(p, "Fase de estudo"),
     action: text(p, "Ação atual"),
     official_url: url(p, "Fonte oficial"),
     question_target: number(p, "Questões-meta"),
@@ -113,6 +114,11 @@ const rows = pages.map((page) => {
     flashcards_status: formula(p, "Flashcards status"),
     cargos: multi(p, "Cargos"),
     orientation_read: checkbox(p, "Orientação lida"),
+    summaries_done: rollupNumber(p, "Resumos realizados"),
+    summary_number: rollupNumber(p, "Resumo nº atual"),
+    readings_done: rollupNumber(p, "Leituras realizadas"),
+    reading_number: rollupNumber(p, "Leitura nº atual"),
+    sessions_done: rollupNumber(p, "Sessões registradas"),
     d0: checkbox(p, "D0"), d7: checkbox(p, "D7"), d20: checkbox(p, "D20"),
     next_review: date(p, "Próxima revisão"),
     next_step: formula(p, "Próximo passo"),
@@ -127,7 +133,7 @@ const rows = pages.map((page) => {
 }).filter((row) => row.operational_order > 0).sort((a, b) => a.operational_order - b.operational_order);
 
 const snapshot = {
-  schema_version: 1,
+  schema_version: 2,
   source: { kind: "notion", database_id: DATABASE_ID, database_url: notionUrl(DATABASE_ID), data_source_id: DATA_SOURCE_ID, synced_at: new Date().toISOString() },
   summary: { records: rows.length, trail_records: rows.filter((r) => r.record_kind === "trilha").length, radar_records: rows.filter((r) => r.record_kind === "radar").length },
   rows,

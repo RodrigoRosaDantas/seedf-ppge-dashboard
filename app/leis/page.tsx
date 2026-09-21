@@ -24,6 +24,12 @@ type Law = {
   priority?: string;
   official_url?: string;
   status?: string;
+  study_phase?: string;
+  summaries_done?: number;
+  summary_number?: number;
+  readings_done?: number;
+  reading_number?: number;
+  sessions_done?: number;
   question_target?: number;
   operational_target_total?: number;
   cargos?: string[];
@@ -137,33 +143,40 @@ function studyState(law: Law) {
   const questionsDone = numberValue(law.questions_done);
   const flashcardsTarget = numberValue(law.flashcards_meta);
   const flashcardsDone = numberValue(law.flashcards_done);
+  const summariesDone = numberValue(law.summaries_done);
+  const readingsDone = numberValue(law.readings_done);
   const orientation = Boolean(law.orientation_read);
   const d0 = Boolean(law.d0);
   const complete = !isRadarLaw(law)
     && orientation
+    && readingsDone > 0
     && questionsDone >= questionTarget
     && (!flashcardsTarget || flashcardsDone >= flashcardsTarget)
     && d0;
   let nextStep = law.next_step || "1 · Ler orientação";
   if (isRadarLaw(law)) nextStep = law.action || "Radar / monitorar";
   else if (!orientation) nextStep = "1 · Ler orientação";
-  else if (questionsDone < questionTarget) nextStep = `3 · Fazer questões (${questionsDone}/${questionTarget})`;
-  else if (flashcardsTarget && flashcardsDone < flashcardsTarget) nextStep = `4 · Revisar flashcards (${flashcardsDone}/${flashcardsTarget})`;
-  else if (!d0) nextStep = "5 · Fechar D0";
+  else if (!summariesDone && !readingsDone) nextStep = "2 · Estudar resumo/material (não conta como lei seca)";
+  else if (!readingsDone) nextStep = "3 · Ler a lei seca na fonte oficial";
+  else if (questionsDone < questionTarget) nextStep = `4 · Fazer questões (${questionsDone}/${questionTarget})`;
+  else if (flashcardsTarget && flashcardsDone < flashcardsTarget) nextStep = `5 · Revisar flashcards (${flashcardsDone}/${flashcardsTarget})`;
+  else if (!d0) nextStep = "6 · Fechar D0";
   else nextStep = "Bloco fechado · seguir para a próxima norma";
-  return { complete, questionTarget, questionsDone, flashcardsTarget, flashcardsDone, orientation, d0, nextStep };
+  return { complete, questionTarget, questionsDone, flashcardsTarget, flashcardsDone, summariesDone, readingsDone, orientation, d0, nextStep };
 }
 
-function lawComplete(law: Law) {
+function lawCompletefunction lawComplete(law: Law) {
   return studyState(law).complete;
 }
 
 function studyStageNumber(law: Law) {
   const state = studyState(law);
   if (!state.orientation) return 1;
-  if (state.questionsDone < state.questionTarget) return 3;
-  if (state.flashcardsTarget && state.flashcardsDone < state.flashcardsTarget) return 4;
-  return 5;
+  if (!state.summariesDone && !state.readingsDone) return 2;
+  if (!state.readingsDone) return 3;
+  if (state.questionsDone < state.questionTarget) return 4;
+  if (state.flashcardsTarget && state.flashcardsDone < state.flashcardsTarget) return 5;
+  return 6;
 }
 
 function completionPercent(done: number, total: number) {
@@ -220,6 +233,7 @@ export default function LeisPrimeiroPage() {
   const currentStage = currentLaw ? studyStageNumber(currentLaw) : 1;
   const flowSteps = [
     ["Orientação", "entender o recorte"],
+    ["Resumo / material", "estudar a página sem contar como lei seca"],
     ["Lei seca", "ler a fonte oficial"],
     ["Questões", "responder e registrar"],
     ["Flashcards", "recuperar o essencial"],
@@ -235,6 +249,8 @@ export default function LeisPrimeiroPage() {
   const radarRecords = snapshot?.summary.radar_records ?? snapshot?.radars?.length ?? 1;
   const currentChecks = [
     { label: "Orientação", done: Boolean(currentState?.orientation) },
+    { label: "Resumo", done: Boolean(currentState && currentState.summariesDone > 0) },
+    { label: "Lei seca", done: Boolean(currentState && currentState.readingsDone > 0) },
     { label: "Questões", done: Boolean(currentState && currentState.questionTarget > 0 && currentState.questionsDone >= currentState.questionTarget) },
     { label: "Flashcards", done: Boolean(currentState && currentState.flashcardsTarget > 0 && currentState.flashcardsDone >= currentState.flashcardsTarget) },
     { label: "D0", done: Boolean(currentState?.d0) },
@@ -263,11 +279,11 @@ export default function LeisPrimeiroPage() {
           </div>
         </div>
         <aside className="laws-next-card">
-          <div className="laws-next-top"><div><p className="laws-kicker">PRÓXIMA AÇÃO</p><span>Bloco atual · {currentLaw?.code || "—"}</span></div><span className="laws-next-badge">{String(currentStage).padStart(2, "0")} / 05</span></div>
+          <div className="laws-next-top"><div><p className="laws-kicker">PRÓXIMA AÇÃO</p><span>Bloco atual · {currentLaw?.code || "—"}</span></div><span className="laws-next-badge">{String(currentStage).padStart(2, "0")} / 06</span></div>
           <div className="laws-next-law"><span className="laws-next-code">{currentLaw?.code || "—"}</span><h2>{currentLaw?.title || "Aguardando dados"}</h2></div>
           <div className="laws-next-context"><span>{currentLaw ? `${currentLaw.code} / ${snapshot?.laws.length || 34}` : "—"}</span><span>{currentState?.questionTarget || 0} questões-meta</span><span>{currentLaw?.group || "Aguardando"}</span></div>
           <div className="laws-next-focus"><span>{String(currentStage).padStart(2, "0")}</span><div><small>FAÇA AGORA</small><strong>{currentStep}</strong></div></div>
-          <p>Feche orientação, leitura, questões, flashcards e D0 antes de avançar. D7/D20 seguem em paralelo.</p>
+          <p>Resumo e leitura de lei seca são eventos distintos. Feche D0 somente após cumprir os requisitos reais da Lxx; D7/D20 seguem em paralelo.</p>
           <div className="laws-checkpoints">{currentChecks.map(({ label, done }) => <span className={`laws-checkpoint ${done ? "is-done" : ""}`} key={label}>{done ? "✓" : "○"} {label}</span>)}</div>
           <a className="laws-next-cta" href={currentLaw ? `./${currentLaw.code.toLowerCase()}/` : "#mapa-detalhado"}>Abrir norma <span aria-hidden="true">↗</span></a>
           <a className="laws-next-notion" href={currentLaw?.notion_url || snapshot?.source.page_url || "#"} target="_blank" rel="noreferrer">Plano B · abrir no Notion ↗</a>

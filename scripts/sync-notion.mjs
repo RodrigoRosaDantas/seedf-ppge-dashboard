@@ -9,6 +9,7 @@ const CYCLE_PAGE_ID = "3d4cf5a2-6731-8185-a1c6-da3820a7687b";
 const DAYS_DATA_SOURCE_ID = "60966f0a-b3eb-416b-8995-64253ed26a45";
 const QUESTIONS_DATA_SOURCE_ID = "8a241986-94e7-4340-b898-dc905b19fd58";
 const ERRORS_DATA_SOURCE_ID = "68d7c880-165b-4e44-988b-cb9e3c38d8b2";
+const LEGISLATION_HISTORY_DATA_SOURCE_ID = "61340ed0-f7cf-4fbf-b543-62e1c2b6f458";
 const NOTION_API_BASE = "https://api.notion.com/v1";
 const NOTION_VERSION = process.env.NOTION_VERSION || "2026-03-11";
 const MAX_NOTION_CONCURRENCY = 4;
@@ -117,14 +118,15 @@ let execution = null;
 let executionHashText = "";
 
 try {
-  const [dayPages, questionPages, errorPages] = await Promise.all([
+  const [dayPages, questionPages, errorPages, legislationSessionPages] = await Promise.all([
     queryDataSource(DAYS_DATA_SOURCE_ID, request),
     queryDataSource(QUESTIONS_DATA_SOURCE_ID, request),
     queryDataSource(ERRORS_DATA_SOURCE_ID, request),
+    queryDataSource(LEGISLATION_HISTORY_DATA_SOURCE_ID, request),
   ]);
-  execution = buildExecutionSnapshot(dayPages, questionPages, errorPages);
+  execution = buildExecutionSnapshot(dayPages, questionPages, errorPages, legislationSessionPages);
   executionHashText = JSON.stringify(
-    [dayPages, questionPages, errorPages].map((pages) =>
+    [dayPages, questionPages, errorPages, legislationSessionPages].map((pages) =>
       pages.map((page) => ({ id: page.id, edited: page.last_edited_time, properties: page.properties })),
     ),
   );
@@ -140,7 +142,7 @@ const syncedAt =
     : new Date().toISOString();
 
 const snapshot = {
-  schema_version: 1,
+  schema_version: 2,
   source: {
     kind: "notion",
     title: pageTitle(page) || "SEEDF — PPGE | Dashboard PRO",
@@ -247,7 +249,7 @@ async function queryDataSource(dataSourceId, request) {
   return pages;
 }
 
-function buildExecutionSnapshot(dayPages, questionPages, errorPages) {
+function buildExecutionSnapshot(dayPages, questionPages, errorPages, legislationSessionPages = []) {
   const days = dayPages
     .map(parseExecutionDay)
     .filter(Boolean)
@@ -271,11 +273,11 @@ function buildExecutionSnapshot(dayPages, questionPages, errorPages) {
       precision: null,
       rows: 0,
     };
-    current.planned += propertyNumber(properties, "Meta de questões");
-    current.done += propertyNumber(properties, "Questões feitas");
-    current.correct += propertyNumber(properties, "Acertos");
-    current.errors += propertyNumber(properties, "Erros");
-    current.doubts += propertyNumber(properties, "Acertos com dúvida");
+    current.planned += propertyNumeric(properties, "Meta de questões");
+    current.done += propertyNumeric(properties, "Questões feitas");
+    current.correct += propertyNumeric(properties, "Acertos");
+    current.errors += propertyNumeric(properties, "Erros");
+    current.doubts += propertyNumeric(properties, "Acertos com dúvida");
     current.rows += 1;
     current.precision = precision(current.correct, current.done);
     subjects.set(subject, current);
@@ -304,6 +306,49 @@ function buildExecutionSnapshot(dayPages, questionPages, errorPages) {
   const activeDay = days.find((day) => /próximo|andamento|execução/i.test(day.status))?.day ||
     days.find((day) => day.done > 0 && day.done < day.planned)?.day || null;
 
+  const lawDays = dayPages
+    .map(parseLeisPrimeiroDay)
+    .filter(Boolean)
+    .sort((left, right) => (right.executed_at || "").localeCompare(left.executed_at || "") || left.day_id.localeCompare(right.day_id));
+
+  const lawQuestionPages = questionPages
+    .map((page) => ({ page, day_id: normalizeLeisPrimeiroId(propertyText(page.properties, "Dia ID")) }))
+    .filter((item) => Boolean(item.day_id));
+  const lawErrorPages = errorPages
+    .map((page) => ({ page, day_id: normalizeLeisPrimeiroId(propertyText(page.properties, "Dia ID")) }))
+    .filter((item) => Boolean(item.day_id));
+  const legislationSessions = legislationSessionPages
+    .map(parseLegislationSession)
+    .filter(Boolean)
+    .sort((left, right) => (right.date || "").localeCompare(left.date || "") || left.title.localeCompare(right.title));
+
+  const lawTotals = lawDays.reduce((sum, day) => {
+    sum.planned += day.planned;
+    sum.done += day.done;
+    sum.correct += day.correct;
+    sum.errors += day.errors;
+    sum.doubts += day.doubts;
+    sum.minutes += day.minutes;
+    return sum;
+  }, { planned: 0, done: 0, correct: 0, errors: 0, doubts: 0, minutes: 0, precision: null });
+  lawTotals.precision = precision(lawTotals.correct, lawTotals.done);
+
+  const sessionTotals = legislationSessions.reduce((sum, session) => {
+    sum.sessions += session.session_counter;
+    sum.summaries += session.summary_counter;
+    sum.readings += session.reading_counter;
+    sum.questions += session.questions_done;
+    sum.correct += session.correct;
+    sum.errors += session.errors;
+    sum.doubts += session.doubts;
+    sum.flashcards += session.flashcards;
+    return sum;
+  }, { sessions: 0, summaries: 0, readings: 0, questions: 0, correct: 0, errors: 0, doubts: 0, flashcards: 0, precision: null });
+  sessionTotals.precision = precision(sessionTotals.correct, sessionTotals.questions);
+
+  const lawStatuses = {};
+  for (const day of lawDays) lawStatuses[day.status] = (lawStatuses[day.status] || 0) + 1;
+
   return {
     as_of: new Date().toISOString(),
     c01: {
@@ -312,28 +357,41 @@ function buildExecutionSnapshot(dayPages, questionPages, errorPages) {
       subjects: Array.from(subjects.values()).sort((left, right) => right.planned - left.planned || left.subject.localeCompare(right.subject)),
       statuses,
       active_day: activeDay,
-      error_count: errorPages.length,
+      error_count: errorPages.filter((page) => !normalizeLeisPrimeiroId(propertyText(page.properties, "Dia ID"))).length,
       question_rows: currentQuestionPages.length,
+    },
+    leis_primeiro: {
+      days: lawDays,
+      totals: lawTotals,
+      statuses: lawStatuses,
+      active_day_id: lawDays.find((day) => /próximo|andamento/i.test(day.status))?.day_id || null,
+      question_rows: lawQuestionPages.length,
+      error_count: lawErrorPages.length,
+      sessions: legislationSessions,
+      session_totals: sessionTotals,
     },
   };
 }
 
 function parseExecutionDay(page) {
   const properties = page.properties || {};
-  const day = normalizeC01Day(propertyText(properties, "Dia"));
-  if (!day || propertyText(properties, "Ciclo") !== "C01") return null;
+  const day = normalizeC01Day(propertyText(properties, "Dia ID") || propertyText(properties, "Dia"));
+  const trail = propertyText(properties, "Trilha");
+  if (!day || propertyText(properties, "Ciclo") !== "C01" || (trail && trail !== "Ciclo principal")) return null;
 
-  const planned = propertyNumber(properties, "Meta questões");
-  const done = propertyNumber(properties, "Questões feitas");
-  const correct = propertyNumber(properties, "Acertos");
-  const errors = propertyNumber(properties, "Erros");
-  const doubts = propertyNumber(properties, "Acertos com dúvida");
+  const planned = propertyNumeric(properties, "Meta questões") || propertyNumeric(properties, "Meta auto");
+  const done = propertyNumeric(properties, "Questões feitas") || propertyNumeric(properties, "Feitas auto");
+  const correct = propertyNumeric(properties, "Acertos") || propertyNumeric(properties, "Acertos auto");
+  const errors = propertyNumeric(properties, "Erros") || propertyNumeric(properties, "Erros auto");
+  const doubts = propertyNumeric(properties, "Acertos com dúvida") || propertyNumeric(properties, "Dúvidas auto");
   return {
     day,
+    day_id: propertyText(properties, "Dia ID") || `C01-${day}`,
+    trail: trail || "Ciclo principal",
     title: propertyText(properties, "Dia") || day,
     status: propertyText(properties, "Situação") || "Sem situação",
     type: propertyText(properties, "Tipo") || "Temático",
-    order: propertyNumber(properties, "Ordem"),
+    order: propertyNumeric(properties, "Ordem"),
     planned,
     done,
     correct,
@@ -347,12 +405,90 @@ function parseExecutionDay(page) {
   };
 }
 
+function parseLeisPrimeiroDay(page) {
+  const properties = page.properties || {};
+  if (propertyText(properties, "Trilha") !== "Leis Primeiro") return null;
+  const dayId = normalizeLeisPrimeiroId(propertyText(properties, "Dia ID"));
+  if (!dayId) return null;
+  const pageCode = propertyText(properties, "Página Lxx") || pageCodeFromExecutionId(dayId);
+  const planned = propertyNumeric(properties, "Meta auto") || propertyNumeric(properties, "Meta questões");
+  const done = propertyNumeric(properties, "Feitas auto") || propertyNumeric(properties, "Questões feitas");
+  const correct = propertyNumeric(properties, "Acertos auto") || propertyNumeric(properties, "Acertos");
+  const errors = propertyNumeric(properties, "Erros auto") || propertyNumeric(properties, "Erros");
+  const doubts = propertyNumeric(properties, "Dúvidas auto") || propertyNumeric(properties, "Acertos com dúvida");
+  return {
+    day_id: dayId,
+    trail: "Leis Primeiro",
+    title: propertyText(properties, "Dia") || dayId,
+    page_code: pageCode,
+    progress: propertyText(properties, "Progresso da sessão"),
+    summary_number: propertyNumeric(properties, "Resumo nº") || null,
+    reading_number: propertyNumeric(properties, "Leitura nº") || null,
+    status: propertyText(properties, "Situação") || "Sem situação",
+    phase: propertyText(properties, "Fase") || null,
+    type: propertyText(properties, "Tipo") || "Temático",
+    planned,
+    done,
+    correct,
+    errors,
+    doubts,
+    minutes: firstNumberProperty(properties, ["Tempo (min)", "Minutos", "Tempo"]),
+    precision: precision(correct, done),
+    href: propertyUrl(properties, "Página do dia") || page.url || notionPageUrl(page.id),
+    executed_at: propertyDate(properties, "Data execução"),
+  };
+}
+
+function parseLegislationSession(page) {
+  const properties = page.properties || {};
+  const pageCode = propertyText(properties, "Página Lxx");
+  const title = propertyText(properties, "Sessão");
+  if (!title && !pageCode) return null;
+  const questionsDone = propertyNumeric(properties, "Questões feitas");
+  const correct = propertyNumeric(properties, "Acertos");
+  return {
+    id: page.id,
+    title: title || page.id,
+    url: page.url || notionPageUrl(page.id),
+    date: propertyDate(properties, "Data"),
+    page_code: pageCode || null,
+    stage: propertyText(properties, "Etapa") || null,
+    session_type: propertyText(properties, "Tipo de sessão") || null,
+    modality: propertyText(properties, "Modalidade") || null,
+    progress: propertyText(properties, "Progresso da sessão") || null,
+    source: propertyText(properties, "Fonte") || null,
+    summary_number: propertyNumeric(properties, "Resumo nº") || null,
+    reading_number: propertyNumeric(properties, "Leitura nº") || null,
+    summary_counter: propertyNumeric(properties, "Contador — resumo"),
+    reading_counter: propertyNumeric(properties, "Contador — leitura"),
+    session_counter: propertyNumeric(properties, "Contador — sessão"),
+    completed: Boolean(properties?.["Concluída"]?.checkbox),
+    questions_planned: propertyNumeric(properties, "Questões previstas"),
+    questions_done: questionsDone,
+    correct,
+    errors: propertyNumeric(properties, "Erros"),
+    doubts: propertyNumeric(properties, "Acertos com dúvida"),
+    flashcards: propertyNumeric(properties, "Flashcards gerados"),
+    precision: precision(correct, questionsDone),
+    href: propertyUrl(properties, "Link da página") || null,
+  };
+}
+
 function normalizeC01Day(value) {
-  const match = value.match(/(?:^|\s)C01-D(0[1-9]|1[0-4])(?=$|[\s—–-])/i);
+  const match = String(value || "").match(/(?:^|\s)C01-D(0[1-9]|1[0-4])(?=$|[\s—–-])/i);
   return match ? `D${match[1]}` : null;
 }
 
-function propertyText(properties, name) {
+function normalizeLeisPrimeiroId(value) {
+  const match = String(value || "").trim().match(/^LP-(\d{8})-(L\d{2})-R(\d+)$/i);
+  return match ? `LP-${match[1]}-${match[2].toUpperCase()}-R${match[3]}` : null;
+}
+
+function pageCodeFromExecutionId(value) {
+  return normalizeLeisPrimeiroId(value)?.match(/-(L\d{2})-/)?.[1] || "";
+}
+
+function propertyText(properties, name) {function propertyText(properties, name) {
   const property = properties?.[name];
   if (!property) return "";
   if (property.type === "title" || property.title) {
@@ -367,14 +503,30 @@ function propertyText(properties, name) {
   return "";
 }
 
-function propertyNumber(properties, name) {
+function propertyNumeric(properties, name) {
   const property = properties?.[name];
-  return typeof property?.number === "number" && Number.isFinite(property.number) ? property.number : 0;
+  if (!property) return 0;
+  if (typeof property.number === "number" && Number.isFinite(property.number)) return property.number;
+  if (property.formula?.type === "number" && typeof property.formula.number === "number") return property.formula.number;
+  const rollup = property.rollup;
+  if (rollup?.type === "number" && typeof rollup.number === "number") return rollup.number;
+  if (Array.isArray(rollup?.array)) {
+    return rollup.array.reduce((sum, item) => {
+      if (item?.type === "number" && typeof item.number === "number") return sum + item.number;
+      if (item?.type === "formula" && typeof item.formula?.number === "number") return sum + item.formula.number;
+      return sum;
+    }, 0);
+  }
+  return 0;
+}
+
+function propertyNumber(properties, name) {
+  return propertyNumeric(properties, name);
 }
 
 function firstNumberProperty(properties, names) {
   for (const name of names) {
-    const value = propertyNumber(properties, name);
+    const value = propertyNumeric(properties, name);
     if (value) return value;
   }
   return 0;
