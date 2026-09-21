@@ -57,6 +57,7 @@ function operationalMarkup(law, row) {
   const flashcards = flashTarget > 0 && flashDone >= flashTarget;
   const state = (label, ok) => `<span class="ops-state ${ok ? "done" : ""}">${ok ? "✓" : "○"} ${esc(label)}</span>`;
   const action = row?.action || law.action || law.status || "Estudar";
+  const radar = /radar/i.test(`${action} ${law.priority || ""}`);
   const latestDay = (execution.days || []).find((day) => day.page_code === law.code) || null;
   const sessionMatchesExecution = (session, day) => {
     if (session.page_code !== day.page_code) return false;
@@ -75,15 +76,22 @@ function operationalMarkup(law, row) {
   const errorItems = dayErrors.map((item) => `<li><b>${esc(item.question_id || "Erro")}</b> — ${esc(item.subject || item.title || "Erro registrado")} <small>· ${esc(item.review || "sem revisão")} · reincidência ${n(item.recurrence)}${item.flashcard ? " · flashcard" : ""}</small></li>`).join("");
   const executionCard = latestDay ? `<article class="study-ops-card"><span class="eyebrow">Última execução · Dia ID</span><div class="big"><strong style="font-size:14px">${esc(latestDay.day_id)}</strong></div><div class="ops-grid"><div class="ops-mini"><b>${n(latestDay.done)}/${n(latestDay.planned)}</b><small>questões</small></div><div class="ops-mini"><b>${dayErrors.length}</b><small>erros</small></div><div class="ops-mini"><b>${n(latestSession?.flashcards)}</b><small>flashcards</small></div></div>${dayErrors.length ? `<details><summary>Ver erros desta execução</summary><ul>${errorItems}</ul></details>` : `<p class="ops-next">Nenhum erro vinculado a esta execução.</p>`}</article>` : "";
   let nextStep = row?.next_step || "1 · Ler orientação";
-  if (!orientation) nextStep = "1 · Ler orientação";
+  if (radar) nextStep = action || "Radar / monitorar";
+  else if (!orientation) nextStep = "1 · Ler orientação";
   else if (!summariesDone) nextStep = "2 · Estudar resumo/material (não conta como lei seca)";
   else if (!readingsDone) nextStep = "3 · Ler a lei seca na fonte oficial";
   else if (!questions) nextStep = `4 · Fazer questões (${done}/${target})`;
   else if (flashTarget && !flashcards) nextStep = `5 · Revisar flashcards (${flashDone}/${flashTarget})`;
   else if (!d0) nextStep = "6 · Fechar D0";
   else nextStep = "Bloco fechado · seguir para a próxima norma";
+  const checklist = radar
+    ? state("Radar", false)
+    : `${state("Orientação",orientation)}${state("Resumo",summariesDone>0)}${state("Lei seca",readingsDone>0)}${state("Questões",questions)}${state("Flashcards",flashcards)}${state("D0",d0)}`;
+  const actionNote = radar
+    ? "Unidade de monitoramento; o fluxo normal de fechamento não se aplica."
+    : "Resumo e lei seca são eventos separados.";
   return `<section class="study-enhanced-ops" aria-label="Painel operacional sincronizado do Notion">
-    <article class="study-ops-card study-ops-focus"><span class="eyebrow">Próxima ação</span><div class="big"><strong style="font-size:17px">${esc(nextStep)}</strong></div><p class="ops-next">${esc(action)} · resumo e lei seca são eventos separados.</p><a class="ops-primary" href="#study-content">Ir para o material ↓</a><div class="ops-checklist">${state("Orientação",orientation)}${state("Resumo",summariesDone>0)}${state("Lei seca",readingsDone>0)}${state("Questões",questions)}${state("Flashcards",flashcards)}${state("D0",d0)}</div></article>
+    <article class="study-ops-card study-ops-focus"><span class="eyebrow">Próxima ação</span><div class="big"><strong style="font-size:17px">${esc(nextStep)}</strong></div><p class="ops-next">${esc(action)} · ${esc(actionNote)}</p><a class="ops-primary" href="#study-content">Ir para o material ↓</a><div class="ops-checklist">${checklist}</div></article>
     <article class="study-ops-card"><span class="eyebrow">Resumo × lei seca</span><div class="ops-grid"><div class="ops-mini"><b>${summariesDone}</b><small>resumos</small></div><div class="ops-mini"><b>${readingsDone}</b><small>leituras</small></div><div class="ops-mini"><b>${sessionsDone}</b><small>sessões</small></div></div><p class="ops-next">Atual: resumo ${summaryNumber || "—"} · leitura ${readingNumber || "—"}. Estudar esta página não incrementa leitura da norma.</p></article>
     <article class="study-ops-card"><span class="eyebrow">Questões</span><div class="big"><strong>${done}</strong><span>de ${target || "—"}</span></div><div class="ops-progress"><span style="width:${pct(done,target)}%"></span></div><div class="ops-grid"><div class="ops-mini"><b>${n(row?.hits)}</b><small>acertos</small></div><div class="ops-mini"><b>${n(row?.errors)}</b><small>erros</small></div><div class="ops-mini"><b>${accuracy(row?.accuracy)}</b><small>precisão</small></div></div></article>
     <article class="study-ops-card"><span class="eyebrow">Revisões</span><div class="ops-grid"><div class="ops-mini"><b>${date(row?.next_review)}</b><small>próx. revisão</small></div><div class="ops-mini"><b>${d7 ? "✓" : "○"}</b><small>D7</small></div><div class="ops-mini"><b>${d20 ? "✓" : "○"}</b><small>D20</small></div></div><p class="ops-next">D7 e D20 seguem em paralelo e não bloqueiam a próxima norma.</p></article>

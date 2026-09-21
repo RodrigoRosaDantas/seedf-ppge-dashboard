@@ -74,6 +74,8 @@ test("keeps Leis Primeiro execution semantics separated by Dia ID", async () => 
   assert.match(cockpit, /sessionMatchesExecution/);
   assert.match(enhancer, /Ver erros desta execução/);
   assert.match(enhancer, /sessionMatchesExecution/);
+  assert.match(enhancer, /const radar = \/radar\/i/);
+  assert.match(enhancer, /Unidade de monitoramento; o fluxo normal de fechamento não se aplica/);
   assert.doesNotMatch(lawCss, /laws-flow-steps\s*\{[^}]*grid-template-columns:\s*repeat\(5/);
   assert.match(lawCss, /laws-flow-steps\s*\{[^}]*grid-template-columns:\s*repeat\(6/);
 });
