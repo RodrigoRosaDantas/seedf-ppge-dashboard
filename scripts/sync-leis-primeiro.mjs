@@ -114,8 +114,7 @@ const laws = childPages.map((child) => {
     additional_target_cargos: row.additional_target_cargos,
     operational_target_total: sharedBlock ? 10 : (row.operational_question_target || row.question_target),
     questions_done: row.questions_done,
-    flashcards_done: row.flashcards_done,
-    flashcards_meta: row.flashcards_meta,
+    flashcards_done: Boolean(row.flashcards_done),
     next_step: row.next_step,
     cargos: row.cargos,
     action: row.action,
@@ -151,7 +150,7 @@ try {
 } catch {}
 
 const snapshot = {
-  schema_version: 5,
+  schema_version: 6,
   source: {
     kind: "notion",
     title: pageTitle(page) || "Leis Primeiro | SEEDF",
@@ -388,8 +387,7 @@ function parseBankRow(page) {
     additional_target_cargos: propertyMultiSelect(properties, "Cargo da meta adicional"),
     operational_question_target: propertyNumber(properties, "Questões-meta") + propertyNumber(properties, "Questões adicionais"),
     questions_done: propertyRollupNumber(properties, "Questões feitas"),
-    flashcards_done: propertyNumber(properties, "Flashcards feitos"),
-    flashcards_meta: propertyFormula(properties, "Flashcards-meta"),
+    flashcards_done: propertyCheckbox(properties, "Flashcards feitos?"),
     next_step: propertyFormula(properties, "Próximo passo"),
     cargos: propertyMultiSelect(properties, "Cargos"),
     action: propertyText(properties, "Ação atual"),

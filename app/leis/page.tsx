@@ -50,8 +50,7 @@ type Law = {
   shared_block?: boolean;
   shared_codes?: string[];
   questions_done?: number;
-  flashcards_done?: number;
-  flashcards_meta?: number | string | null;
+  flashcards_done?: boolean;
   next_step?: string;
 };
 
@@ -221,8 +220,7 @@ function operationalUnits(laws: Law[]) {
 function studyState(law: Law) {
   const questionTarget = numberValue(law.operational_target_total ?? law.question_target);
   const questionsDone = numberValue(law.questions_done);
-  const flashcardsTarget = numberValue(law.flashcards_meta);
-  const flashcardsDone = numberValue(law.flashcards_done);
+  const flashcardsDone = Boolean(law.flashcards_done);
   const summariesDone = numberValue(law.summaries_done);
   const readingsDone = numberValue(law.readings_done);
   const orientation = Boolean(law.orientation_read);
@@ -232,7 +230,7 @@ function studyState(law: Law) {
     && summariesDone > 0
     && readingsDone > 0
     && questionsDone >= questionTarget
-    && (!flashcardsTarget || flashcardsDone >= flashcardsTarget)
+    && flashcardsDone
     && d0;
   let nextStep = law.next_step || "1 · Ler orientação";
   if (isRadarLaw(law)) nextStep = law.action || "Radar / monitorar";
@@ -240,10 +238,10 @@ function studyState(law: Law) {
   else if (!summariesDone) nextStep = "2 · Estudar resumo/material (não conta como lei seca)";
   else if (!readingsDone) nextStep = "3 · Ler a lei seca na fonte oficial";
   else if (questionsDone < questionTarget) nextStep = `4 · Fazer questões (${questionsDone}/${questionTarget})`;
-  else if (flashcardsTarget && flashcardsDone < flashcardsTarget) nextStep = `5 · Revisar flashcards (${flashcardsDone}/${flashcardsTarget})`;
+  else if (!flashcardsDone) nextStep = "5 · Fazer/revisar flashcards";
   else if (!d0) nextStep = "6 · Fechar D0";
   else nextStep = "Bloco fechado · seguir para a próxima norma";
-  return { complete, questionTarget, questionsDone, flashcardsTarget, flashcardsDone, summariesDone, readingsDone, orientation, d0, nextStep };
+  return { complete, questionTarget, questionsDone, flashcardsDone, summariesDone, readingsDone, orientation, d0, nextStep };
 }
 
 function lawComplete(law: Law) {
@@ -256,7 +254,7 @@ function studyStageNumber(law: Law) {
   if (!state.summariesDone) return 2;
   if (!state.readingsDone) return 3;
   if (state.questionsDone < state.questionTarget) return 4;
-  if (state.flashcardsTarget && state.flashcardsDone < state.flashcardsTarget) return 5;
+  if (!state.flashcardsDone) return 5;
   return 6;
 }
 
@@ -349,7 +347,7 @@ export default function LeisPrimeiroPage() {
     { label: "Resumo", done: Boolean(currentState && currentState.summariesDone > 0) },
     { label: "Lei seca", done: Boolean(currentState && currentState.readingsDone > 0) },
     { label: "Questões", done: Boolean(currentState && currentState.questionTarget > 0 && currentState.questionsDone >= currentState.questionTarget) },
-    { label: "Flashcards", done: Boolean(currentState && currentState.flashcardsTarget > 0 && currentState.flashcardsDone >= currentState.flashcardsTarget) },
+    { label: "Flashcards", done: Boolean(currentState?.flashcardsDone) },
     { label: "D0", done: Boolean(currentState?.d0) },
     { label: "D7/D20", done: Boolean(currentLaw?.d7 && currentLaw?.d20) },
   ];
@@ -414,7 +412,7 @@ export default function LeisPrimeiroPage() {
             <article className="laws-stat-progress"><div className="laws-stat-top"><span className="laws-stat-icon">R</span><span>RESUMO × LEI</span></div><strong>{latestExecution.summary_number || 0} / {latestExecution.reading_number || 0}</strong><small>resumo nº / leitura nº · leitura real não é inferida</small></article>
             <article className="laws-stat-questions"><div className="laws-stat-top"><span className="laws-stat-icon">Q</span><span>QUESTÕES</span></div><strong>{latestExecution.done || 0}/{latestExecution.planned || 0}</strong><small>{latestExecution.correct || 0} acertos · {formatPercent(latestExecution.precision)}</small></article>
             <article className="laws-stat-map"><div className="laws-stat-top"><span className="laws-stat-icon">E</span><span>CADERNO DE ERROS</span></div><strong>{latestErrors.length}</strong><small>{latestErrors.filter((item) => item.flashcard).length} com flashcard · vínculo por Dia ID</small></article>
-            <article className="laws-stat-source"><div className="laws-stat-top"><span className="laws-stat-icon">D0</span><span>D0 DA NORMA</span></div><strong>{latestLaw?.d0 ? "Concluído" : "Pendente"}</strong><small>checkpoint geral · {latestSession?.flashcards || 0} flashcards gerados na sessão</small></article>
+            <article className="laws-stat-source"><div className="laws-stat-top"><span className="laws-stat-icon">D0</span><span>D0 DA NORMA</span></div><strong>{latestLaw?.d0 ? "Concluído" : "Pendente"}</strong><small>Flashcards: {latestLaw?.flashcards_done ? "feitos" : "pendentes"} · sem meta numérica</small></article>
           </div>
           {latestErrors.length ? <div className="laws-map-list">{latestErrors.map((item) => <article className="laws-map-row" key={item.id}><div className="laws-map-main"><span className="law-code">{item.question_id}</span><strong>{item.subject || item.title || "Erro registrado"}</strong></div><div className="laws-map-meta"><span>{item.review || "Sem revisão"}</span><span>{item.status || "Sem status"}</span><span>reincidência {item.recurrence || 0}</span></div><p className="laws-map-next">{item.title || item.pattern || item.reason || "Registro vinculado ao Caderno de Erros"}</p>{item.url ? <a className="laws-map-open" href={item.url} target="_blank" rel="noreferrer">Abrir erro ↗</a> : null}</article>)}</div> : <p className="laws-empty">Nenhum erro vinculado a esta execução.</p>}
         </section>

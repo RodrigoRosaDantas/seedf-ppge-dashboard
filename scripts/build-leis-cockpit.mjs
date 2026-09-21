@@ -86,25 +86,24 @@ function rowForLaw(law, rowsByCode) {
 function stateFor(law, row) {
   const questionTarget = number(law.shared_block ? 10 : (row?.operational_question_target ?? law.operational_target_total ?? row?.question_target ?? law.question_target));
   const questionsDone = number(row?.questions_done);
-  const flashcardsTarget = number(row?.flashcards_meta);
-  const flashcardsDone = number(row?.flashcards_done);
+  const flashcardsDone = Boolean(row?.flashcards_done ?? law.flashcards_done);
   const summariesDone = number(row?.summaries_done ?? law.summaries_done);
   const readingsDone = number(row?.readings_done ?? law.readings_done);
   const orientation = Boolean(row?.orientation_read ?? law.orientation_read);
   const d0 = Boolean(row?.d0 ?? law.d0);
   const d7 = Boolean(row?.d7 ?? law.d7);
   const d20 = Boolean(row?.d20 ?? law.d20);
-  const complete = !radarLaw(law) && orientation && summariesDone > 0 && readingsDone > 0 && questionsDone >= questionTarget && (!flashcardsTarget || flashcardsDone >= flashcardsTarget) && d0;
+  const complete = !radarLaw(law) && orientation && summariesDone > 0 && readingsDone > 0 && questionsDone >= questionTarget && flashcardsDone && d0;
   let nextStep = row?.next_step || "1 · Ler orientação";
   if (radarLaw(law)) nextStep = row?.action || law.action || "Radar / monitorar";
   else if (!orientation) nextStep = "1 · Ler orientação";
   else if (!summariesDone) nextStep = "2 · Estudar resumo/material (não conta como lei seca)";
   else if (!readingsDone) nextStep = "3 · Ler a lei seca na fonte oficial";
   else if (questionsDone < questionTarget) nextStep = `4 · Fazer questões (${questionsDone}/${questionTarget})`;
-  else if (flashcardsTarget && flashcardsDone < flashcardsTarget) nextStep = `5 · Revisar flashcards (${flashcardsDone}/${flashcardsTarget})`;
+  else if (!flashcardsDone) nextStep = "5 · Fazer/revisar flashcards";
   else if (!d0) nextStep = "6 · Fechar D0";
   else nextStep = "Bloco fechado · seguir para a próxima norma";
-  return { complete, questionTarget, questionsDone, flashcardsTarget, flashcardsDone, summariesDone, readingsDone, orientation, d0, d7, d20, nextStep };
+  return { complete, questionTarget, questionsDone, flashcardsDone, summariesDone, readingsDone, orientation, d0, d7, d20, nextStep };
 }
 
 function checkpoint(label, done) {
@@ -116,7 +115,7 @@ function studyStageNumber(state) {
   if (!state.summariesDone) return 2;
   if (!state.readingsDone) return 3;
   if (state.questionsDone < state.questionTarget) return 4;
-  if (state.flashcardsTarget && state.flashcardsDone < state.flashcardsTarget) return 5;
+  if (!state.flashcardsDone) return 5;
   return 6;
 }
 
@@ -224,7 +223,7 @@ export async function buildLeisCockpit(sourceHtml) {
   const currentHref = current ? `./${lawSlug(current)}/` : "#mapa-detalhado";
   const currentNotion = current?.notion_url || snapshot.source?.page_url || "#";
   const currentStage = current ? studyStageNumber(currentState) : 1;
-  const currentChecks = current ? `${checkpoint("Orientação", currentState.orientation)}${checkpoint("Resumo", currentState.summariesDone > 0)}${checkpoint("Lei seca", currentState.readingsDone > 0)}${checkpoint("Questões", currentState.questionsDone >= currentState.questionTarget && currentState.questionTarget > 0)}${checkpoint("Flashcards", currentState.flashcardsTarget > 0 && currentState.flashcardsDone >= currentState.flashcardsTarget)}${checkpoint("D0", currentState.d0)}${checkpoint("D7/D20", currentState.d7 && currentState.d20)}` : checkpoint("Sincronização", false);
+  const currentChecks = current ? `${checkpoint("Orientação", currentState.orientation)}${checkpoint("Resumo", currentState.summariesDone > 0)}${checkpoint("Lei seca", currentState.readingsDone > 0)}${checkpoint("Questões", currentState.questionsDone >= currentState.questionTarget && currentState.questionTarget > 0)}${checkpoint("Flashcards", currentState.flashcardsDone)}${checkpoint("D0", currentState.d0)}${checkpoint("D7/D20", currentState.d7 && currentState.d20)}` : checkpoint("Sincronização", false);
   const latestExecution = snapshot.execution?.days?.[0] || null;
   const latestLaw = latestExecution ? laws.find((law) => law.code === latestExecution.page_code) : null;
   const sessionMatchesExecution = (session, day) => {
@@ -254,7 +253,7 @@ export async function buildLeisCockpit(sourceHtml) {
   const errorMarkup = latestErrors.length
     ? `<div class="laws-map-list">${latestErrors.map((item) => `<article class="laws-map-row"><div class="laws-map-main"><span class="law-code">${escapeHtml(item.question_id || "Erro")}</span><strong>${escapeHtml(item.subject || item.title || "Erro registrado")}</strong></div><div class="laws-map-meta"><span>${escapeHtml(item.review || "Sem revisão")}</span><span>${escapeHtml(item.status || "Sem status")}</span><span>reincidência ${number(item.recurrence)}</span></div><p class="laws-map-next">${escapeHtml(item.title || item.pattern || item.reason || "Registro vinculado ao Caderno de Erros")}</p>${item.url ? `<a class="laws-map-open" href="${escapeHtml(item.url)}" target="_blank" rel="noreferrer">Abrir erro ↗</a>` : ""}</article>`).join("")}</div>`
     : `<p class="laws-empty">Nenhum erro vinculado a esta execução.</p>`;
-  const executionMarkup = latestExecution ? `<section class="laws-panel" id="historico-leis"><div class="laws-heading"><div><p class="laws-kicker">HISTÓRICO REAL · LEIS PRIMEIRO</p><h2>Última execução registrada</h2><p>Resumo, leitura de lei seca, questões e erros permanecem separados pelo Dia ID.</p></div><span class="laws-heading-note">${escapeHtml(latestExecution.day_id)}</span></div><div class="laws-status-strip"><article class="laws-stat-progress"><div class="laws-stat-top"><span class="laws-stat-icon">R</span><span>RESUMO × LEI</span></div><strong>${number(latestExecution.summary_number)} / ${number(latestExecution.reading_number)}</strong><small>resumo nº / leitura nº · leitura real não é inferida</small></article><article class="laws-stat-questions"><div class="laws-stat-top"><span class="laws-stat-icon">Q</span><span>QUESTÕES</span></div><strong>${number(latestExecution.done)}/${number(latestExecution.planned)}</strong><small>${number(latestExecution.correct)} acertos · ${formatExecutionPercent(latestExecution.precision)}</small></article><article class="laws-stat-map"><div class="laws-stat-top"><span class="laws-stat-icon">E</span><span>CADERNO DE ERROS</span></div><strong>${latestErrors.length}</strong><small>${latestErrors.filter((item) => item.flashcard).length} com flashcard · vínculo por Dia ID</small></article><article class="laws-stat-source"><div class="laws-stat-top"><span class="laws-stat-icon">D0</span><span>D0 DA NORMA</span></div><strong>${latestLaw?.d0 ? "Concluído" : "Pendente"}</strong><small>checkpoint geral · ${number(latestSession?.flashcards)} flashcards gerados na sessão</small></article></div>${errorMarkup}</section>` : "";
+  const executionMarkup = latestExecution ? `<section class="laws-panel" id="historico-leis"><div class="laws-heading"><div><p class="laws-kicker">HISTÓRICO REAL · LEIS PRIMEIRO</p><h2>Última execução registrada</h2><p>Resumo, leitura de lei seca, questões e erros permanecem separados pelo Dia ID.</p></div><span class="laws-heading-note">${escapeHtml(latestExecution.day_id)}</span></div><div class="laws-status-strip"><article class="laws-stat-progress"><div class="laws-stat-top"><span class="laws-stat-icon">R</span><span>RESUMO × LEI</span></div><strong>${number(latestExecution.summary_number)} / ${number(latestExecution.reading_number)}</strong><small>resumo nº / leitura nº · leitura real não é inferida</small></article><article class="laws-stat-questions"><div class="laws-stat-top"><span class="laws-stat-icon">Q</span><span>QUESTÕES</span></div><strong>${number(latestExecution.done)}/${number(latestExecution.planned)}</strong><small>${number(latestExecution.correct)} acertos · ${formatExecutionPercent(latestExecution.precision)}</small></article><article class="laws-stat-map"><div class="laws-stat-top"><span class="laws-stat-icon">E</span><span>CADERNO DE ERROS</span></div><strong>${latestErrors.length}</strong><small>${latestErrors.filter((item) => item.flashcard).length} com flashcard · vínculo por Dia ID</small></article><article class="laws-stat-source"><div class="laws-stat-top"><span class="laws-stat-icon">D0</span><span>D0 DA NORMA</span></div><strong>${latestLaw?.d0 ? "Concluído" : "Pendente"}</strong><small>Flashcards: ${latestLaw?.flashcards_done ? "feitos" : "pendentes"} · sem meta numérica</small></article></div>${errorMarkup}</section>` : "";
 
   return `<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Leis Primeiro | SEEDF PPGE</title><meta name="description" content="Central de estudo e acompanhamento da trilha Leis Primeiro do SEEDF"><link rel="icon" href="../favicon.svg"><link rel="manifest" href="../manifest.webmanifest"><script src="../sw-register.js" defer></script>${styles}<style>
 html,body{margin:0;min-height:100%;background:#07111f}body{font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.laws-map-row a{text-decoration:none}.laws-map-row strong{color:#edf6fd}.laws-map-row p{margin:0}.laws-radar-item a{text-decoration:none}.laws-disclosure>summary{list-style:none}.laws-disclosure>summary::-webkit-details-marker{display:none}

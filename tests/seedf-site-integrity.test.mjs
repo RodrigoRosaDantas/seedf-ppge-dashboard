@@ -64,6 +64,10 @@ test("keeps Leis Primeiro execution semantics separated by Dia ID", async () => 
   assert.match(syncMain, /right\.created_at/);
   assert.match(syncMain, /function parseLeisPrimeiroDay[\s\S]*created_at: page\.created_time/);
   assert.match(syncLaws, /dashboardSnapshot\?\.execution\?\.leis_primeiro/);
+  assert.match(syncLaws, /Flashcards feitos\?/);
+  assert.doesNotMatch(syncLaws, /Flashcards-meta|propertyNumber\(properties, "Flashcards feitos"\)/);
+  assert.match(appPage, /flashcards_done\?: boolean/);
+  assert.doesNotMatch(appPage, /flashcardsTarget|flashcards_meta/);
   assert.match(appPage, /Resumo e leitura de lei seca são eventos distintos/);
   assert.match(appPage, /&& summariesDone > 0[\s\S]*&& readingsDone > 0/);
   assert.doesNotMatch(appPage, /!summariesDone && !readingsDone/);
@@ -77,11 +81,13 @@ test("keeps Leis Primeiro execution semantics separated by Dia ID", async () => 
   assert.match(cockpit, /sessionMatchesExecution/);
   assert.match(cockpit, /currentState\.d7 && currentState\.d20/);
   assert.match(cockpit, /D0 DA NORMA/);
+  assert.doesNotMatch(cockpit, /flashcardsTarget|flashcards_meta/);
   assert.match(enhancer, /Ver erros desta execução/);
   assert.match(enhancer, /sessionMatchesExecution/);
   assert.match(enhancer, /latestDay\.summary_number == null && latestDay\.reading_number == null/);
   assert.match(enhancer, /const radar = \/radar\/i/);
   assert.match(enhancer, /Unidade de monitoramento; o fluxo normal de fechamento não se aplica/);
+  assert.doesNotMatch(enhancer, /flashTarget|flashcards_meta|flashcards_status/);
   assert.doesNotMatch(lawCss, /laws-flow-steps\s*\{[^}]*grid-template-columns:\s*repeat\(5/);
   assert.match(lawCss, /laws-flow-steps\s*\{[^}]*grid-template-columns:\s*repeat\(6/);
 });
