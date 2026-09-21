@@ -48,9 +48,10 @@ test("keeps local law reading payload with a Notion fallback", async () => {
   assert.match(appPage, /Fallback: Notion/);
 });
 test("keeps Leis Primeiro execution semantics separated by Dia ID", async () => {
-  const [syncMain, syncLaws, appPage, cockpit, enhancer, lawCss] = await Promise.all([
+  const [syncMain, syncLaws, liveNotion, appPage, cockpit, enhancer, lawCss] = await Promise.all([
     read("scripts/sync-notion.mjs"),
     read("scripts/sync-leis-primeiro.mjs"),
+    read("supabase/functions/seedf-notion/index.ts"),
     read("app/leis/page.tsx"),
     read("scripts/build-leis-cockpit.mjs"),
     read("scripts/enhance-leis-pages.mjs"),
@@ -61,6 +62,11 @@ test("keeps Leis Primeiro execution semantics separated by Dia ID", async () => 
   assert.match(syncMain, /error_count: currentErrorPages\.length/);
   assert.doesNotMatch(syncMain, /!lawErrorIds\.has/);
   assert.match(syncMain, /errors: lawErrors/);
+  assert.match(liveNotion, /const currentErrorPages = errorPages/);
+  assert.match(liveNotion, /Origem \/ Dia ID/);
+  assert.match(liveNotion, /error_count: currentErrorPages\.length/);
+  assert.match(liveNotion, /trail && trail !== "Ciclo principal"/);
+  assert.doesNotMatch(liveNotion, /error_count: errorPages\.length/);
   assert.match(syncMain, /sort\(compareLeisPrimeiroDays\)/);
   assert.match(syncMain, /left\.page_code === right\.page_code/);
   assert.match(syncMain, /leisPrimeiroSequence\(right\.day_id\) - leisPrimeiroSequence\(left\.day_id\)/);

@@ -292,6 +292,15 @@ function buildExecutionSnapshot(
   const currentQuestionPages = questionPages
     .map((page) => ({ page, day: normalizeC01Day(propertyText(page.properties, "Dia ID")) }))
     .filter((item): item is { page: Record<string, any>; day: string } => Boolean(item.day));
+  const currentErrorPages = errorPages
+    .map((page) => ({
+      page,
+      day: normalizeC01Day(
+        propertyText(page.properties, "Origem / Dia ID") ||
+        propertyText(page.properties, "Dia ID"),
+      ),
+    }))
+    .filter((item): item is { page: Record<string, any>; day: string } => Boolean(item.day));
 
   const subjects = new Map<string, SubjectExecution>();
   for (const { page } of currentQuestionPages) {
@@ -361,7 +370,7 @@ function buildExecutionSnapshot(
       subjects: Array.from(subjects.values()).sort((left, right) => right.planned - left.planned || left.subject.localeCompare(right.subject)),
       statuses,
       active_day: activeDay,
-      error_count: errorPages.length,
+      error_count: currentErrorPages.length,
       question_rows: currentQuestionPages.length,
     },
   };
@@ -370,7 +379,8 @@ function buildExecutionSnapshot(
 function parseExecutionDay(page: Record<string, any>): ExecutionDay | null {
   const properties = page.properties || {};
   const day = normalizeC01Day(propertyText(properties, "Dia"));
-  if (!day || propertyText(properties, "Ciclo") !== "C01") return null;
+  const trail = propertyText(properties, "Trilha");
+  if (!day || propertyText(properties, "Ciclo") !== "C01" || (trail && trail !== "Ciclo principal")) return null;
 
   const planned = propertyNumber(properties, "Meta questões");
   const done = propertyNumber(properties, "Questões feitas");
