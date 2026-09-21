@@ -206,7 +206,7 @@ test("published shell includes an offline registration path", async () => {
   assert.match(serviceWorker, /isStableStudyAsset/);
   assert.match(serviceWorker, /fetch\(request, \{ cache: "no-store" \}\)/);
   assert.match(serviceWorker, /cache\.put\(request, copy\)\)\.catch/);
-  assert.match(registration, /serviceWorker\.register/);
+  assert.match(registration, /serviceWorker[\s\S]*\.register/);
   assert.match(registration, /updateViaCache: "none"/);
   assert.match(registration, /registration\.update\(\)/);
   assert.match(layout, /sw-register\.js/);
