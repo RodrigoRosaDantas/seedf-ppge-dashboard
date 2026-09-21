@@ -47,6 +47,37 @@ test("keeps local law reading payload with a Notion fallback", async () => {
   assert.match(enhancer, /Leitura principal: site/);
   assert.match(appPage, /Fallback: Notion/);
 });
+test("keeps every Leis Primeiro page aligned with the operational method", async () => {
+  const dataset = JSON.parse(await read("public/data/leis-primeiro.json"));
+  assert.equal(dataset.laws.length, 34);
+
+  for (const law of dataset.laws) {
+    const html = law.content_html || "";
+    const plain = html.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ");
+
+    assert.match(plain, /Estudei o resumo\/material desta página/i, `${law.code}: resumo/material ausente do fechamento`);
+    assert.match(plain, /orienta/i, `${law.code}: orientação ausente do fechamento`);
+    assert.doesNotMatch(plain, /concluir leitura \+ questões \+ flashcards \+ D0/i, `${law.code}: regra antiga de avanço`);
+    assert.doesNotMatch(plain, /\d+\s*\/\s*\d+\s*flashcards|meta numérica de \d+\s*flashcards/i, `${law.code}: meta quantitativa de flashcards`);
+
+    const radar = /radar/i.test(`${law.action || ""} ${law.priority || ""}`);
+    if (radar) {
+      assert.match(plain, /D0 não é requisito para avanço/i, `${law.code}: Radar voltou a exigir D0`);
+    }
+  }
+
+  const l01 = dataset.laws.find((law) => law.code === "L01");
+  assert.equal(l01?.summaries_done, 1);
+  assert.equal(l01?.summary_number, 1);
+  assert.equal(l01?.readings_done, 0);
+  assert.equal(l01?.reading_number, null);
+  assert.equal(l01?.questions_done, 40);
+  assert.equal(l01?.operational_target_total, 40);
+  assert.equal(l01?.flashcards_done, true);
+  assert.equal(l01?.d0, false);
+  assert.equal(l01?.next_step, "3 · Ler lei seca");
+});
+
 test("keeps Leis Primeiro execution semantics separated by Dia ID", async () => {
   const [syncMain, syncLaws, liveNotion, appPage, cockpit, enhancer, lawCss] = await Promise.all([
     read("scripts/sync-notion.mjs"),
