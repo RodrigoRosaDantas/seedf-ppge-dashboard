@@ -1,13 +1,13 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "source": {
     "kind": "notion",
     "title": "SEEDF — PPGE | Gestor + Analista + Monitor | Dashboard PRO",
     "page_id": "3d4cf5a2-6731-8106-a2c9-c97816aa6cf5",
     "page_url": "https://app.notion.com/p/SEEDF-PPGE-Gestor-Analista-Monitor-Dashboard-PRO-3d4cf5a267318106a2c9c97816aa6cf5",
     "last_edited_time": "2026-09-12T11:38:00.000Z",
-    "synced_at": "2026-09-12T11:54:43.217Z",
-    "content_hash": "941319408c4acd3d9a349bbb176102f3632475d60d5be94564097f9b89f69ff4",
+    "synced_at": "2026-09-21T18:35:48.704Z",
+    "content_hash": "04d37f594dcf3921d5309522d0bb540877f09b69a2a54f65dfad8a6b076c2013",
     "status": "synced"
   },
   "dashboard": {
@@ -586,11 +586,13 @@
     ]
   },
   "execution": {
-    "as_of": "2026-09-12T19:35:24.233Z",
+    "as_of": "2026-09-21T18:35:48.692Z",
     "c01": {
       "days": [
         {
           "day": "D01",
+          "day_id": "C01-D01",
+          "trail": "Ciclo principal",
           "title": "C01-D01 — Português fino + LDB",
           "status": "Próximo",
           "type": "Temático",
@@ -608,6 +610,8 @@
         },
         {
           "day": "D02",
+          "day_id": "C01-D02",
+          "trail": "Ciclo principal",
           "title": "C01-D02 — CF/88 Educação + LDB",
           "status": "Não iniciado",
           "type": "Temático",
@@ -625,6 +629,8 @@
         },
         {
           "day": "D03",
+          "day_id": "C01-D03",
+          "trail": "Ciclo principal",
           "title": "C01-D03 — PNE 2026 + PNED + LDB",
           "status": "Não iniciado",
           "type": "Temático",
@@ -642,6 +648,8 @@
         },
         {
           "day": "D04",
+          "day_id": "C01-D04",
+          "trail": "Ciclo principal",
           "title": "C01-D04 — Administração Geral/Pública + PODC",
           "status": "Não iniciado",
           "type": "Temático",
@@ -659,6 +667,8 @@
         },
         {
           "day": "D05",
+          "day_id": "C01-D05",
+          "trail": "Ciclo principal",
           "title": "C01-D05 — LC 840 + atos administrativos",
           "status": "Não iniciado",
           "type": "Temático",
@@ -676,6 +686,8 @@
         },
         {
           "day": "D06",
+          "day_id": "C01-D06",
+          "trail": "Ciclo principal",
           "title": "C01-D06 — Informática atualizada",
           "status": "Não iniciado",
           "type": "Temático",
@@ -693,6 +705,8 @@
         },
         {
           "day": "D07",
+          "day_id": "C01-D07",
+          "trail": "Ciclo principal",
           "title": "C01-D07 — Revisão adaptativa",
           "status": "Não iniciado",
           "type": "Checkpoint",
@@ -710,6 +724,8 @@
         },
         {
           "day": "D08",
+          "day_id": "C01-D08",
+          "trail": "Ciclo principal",
           "title": "C01-D08 — Arquivologia + e-ARQ",
           "status": "Não iniciado",
           "type": "Temático",
@@ -727,6 +743,8 @@
         },
         {
           "day": "D09",
+          "day_id": "C01-D09",
+          "trail": "Ciclo principal",
           "title": "C01-D09 — Qualidade + BPM + Projetos",
           "status": "Não iniciado",
           "type": "Temático",
@@ -744,6 +762,8 @@
         },
         {
           "day": "D10",
+          "day_id": "C01-D10",
+          "trail": "Ciclo principal",
           "title": "C01-D10 — Gestão de Pessoas + comportamento",
           "status": "Não iniciado",
           "type": "Temático",
@@ -761,6 +781,8 @@
         },
         {
           "day": "D11",
+          "day_id": "C01-D11",
+          "trail": "Ciclo principal",
           "title": "C01-D11 — AFO + orçamento público",
           "status": "Não iniciado",
           "type": "Temático",
@@ -778,6 +800,8 @@
         },
         {
           "day": "D12",
+          "day_id": "C01-D12",
+          "trail": "Ciclo principal",
           "title": "C01-D12 — Materiais + patrimônio + LAI",
           "status": "Não iniciado",
           "type": "Temático",
@@ -795,6 +819,8 @@
         },
         {
           "day": "D13",
+          "day_id": "C01-D13",
+          "trail": "Ciclo principal",
           "title": "C01-D13 — ECA + acessibilidade + Educação Especial",
           "status": "Não iniciado",
           "type": "Temático",
@@ -812,6 +838,8 @@
         },
         {
           "day": "D14",
+          "day_id": "C01-D14",
+          "trail": "Ciclo principal",
           "title": "C01-D14 — Checkpoint e fechamento do ciclo",
           "status": "Não iniciado",
           "type": "Checkpoint",
@@ -956,8 +984,87 @@
         "Não iniciado": 13
       },
       "active_day": "D01",
-      "error_count": 0,
+      "error_count": 3,
       "question_rows": 39
+    },
+    "leis_primeiro": {
+      "days": [
+        {
+          "day_id": "LP-20260921-L01-R1",
+          "trail": "Leis Primeiro",
+          "title": "2026-09-21 — Leis Primeiro · L01 · Resumo 1",
+          "page_code": "L01",
+          "progress": "Resumo 1",
+          "summary_number": 1,
+          "reading_number": null,
+          "status": "Concluído",
+          "phase": "Fase 1",
+          "type": "Temático",
+          "planned": 40,
+          "done": 40,
+          "correct": 37,
+          "errors": 3,
+          "doubts": 0,
+          "minutes": 0,
+          "precision": 0.925,
+          "href": "https://app.notion.com/p/3d8cf5a267318133b196fddf1efde990",
+          "executed_at": "2026-09-21"
+        }
+      ],
+      "totals": {
+        "planned": 40,
+        "done": 40,
+        "correct": 37,
+        "errors": 3,
+        "doubts": 0,
+        "minutes": 0,
+        "precision": 0.925
+      },
+      "statuses": {
+        "Concluído": 1
+      },
+      "active_day_id": null,
+      "question_rows": 2,
+      "error_count": 0,
+      "sessions": [
+        {
+          "id": "3e2cf5a2-6731-8161-8647-fa2bb4594fcd",
+          "title": "2026-09-21 · L01 · D0 · resumo 1 + questões",
+          "url": "https://app.notion.com/p/2026-09-21-L01-D0-resumo-1-quest-es-3e2cf5a2673181618647fa2bb4594fcd",
+          "date": "2026-09-21",
+          "page_code": "L01",
+          "stage": "D0",
+          "session_type": "Estudo de resumo",
+          "modality": "Resumo / material",
+          "progress": "Resumo 1",
+          "source": "Material auditado",
+          "summary_number": 1,
+          "reading_number": null,
+          "summary_counter": 1,
+          "reading_counter": 0,
+          "session_counter": 1,
+          "completed": true,
+          "questions_planned": 40,
+          "questions_done": 40,
+          "correct": 37,
+          "errors": 3,
+          "doubts": 0,
+          "flashcards": 2,
+          "precision": 0.925,
+          "href": "https://app.notion.com/p/3d8cf5a267318133b196fddf1efde990"
+        }
+      ],
+      "session_totals": {
+        "sessions": 1,
+        "summaries": 1,
+        "readings": 0,
+        "questions": 40,
+        "correct": 37,
+        "errors": 3,
+        "doubts": 0,
+        "flashcards": 2,
+        "precision": 0.925
+      }
     }
   },
   "notice": "Snapshot público sanitizado. O conteúdo completo continua no Notion; materiais, fontes e execução do C01 são indexados para consulta."
