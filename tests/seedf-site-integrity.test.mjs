@@ -65,6 +65,8 @@ test("keeps Leis Primeiro execution semantics separated by Dia ID", async () => 
   assert.match(syncMain, /function parseLeisPrimeiroDay[\s\S]*created_at: page\.created_time/);
   assert.match(syncLaws, /dashboardSnapshot\?\.execution\?\.leis_primeiro/);
   assert.match(appPage, /Resumo e leitura de lei seca são eventos distintos/);
+  assert.match(appPage, /&& summariesDone > 0[\s\S]*&& readingsDone > 0/);
+  assert.doesNotMatch(appPage, /!summariesDone && !readingsDone/);
   assert.match(appPage, /CADERNO DE ERROS/);
   assert.match(appPage, /sessionMatchesExecution/);
   assert.match(appPage, /day\.summary_number != null && session\.summary_number !== day\.summary_number/);

@@ -229,6 +229,7 @@ function studyState(law: Law) {
   const d0 = Boolean(law.d0);
   const complete = !isRadarLaw(law)
     && orientation
+    && summariesDone > 0
     && readingsDone > 0
     && questionsDone >= questionTarget
     && (!flashcardsTarget || flashcardsDone >= flashcardsTarget)
@@ -236,7 +237,7 @@ function studyState(law: Law) {
   let nextStep = law.next_step || "1 · Ler orientação";
   if (isRadarLaw(law)) nextStep = law.action || "Radar / monitorar";
   else if (!orientation) nextStep = "1 · Ler orientação";
-  else if (!summariesDone && !readingsDone) nextStep = "2 · Estudar resumo/material (não conta como lei seca)";
+  else if (!summariesDone) nextStep = "2 · Estudar resumo/material (não conta como lei seca)";
   else if (!readingsDone) nextStep = "3 · Ler a lei seca na fonte oficial";
   else if (questionsDone < questionTarget) nextStep = `4 · Fazer questões (${questionsDone}/${questionTarget})`;
   else if (flashcardsTarget && flashcardsDone < flashcardsTarget) nextStep = `5 · Revisar flashcards (${flashcardsDone}/${flashcardsTarget})`;
@@ -252,7 +253,7 @@ function lawComplete(law: Law) {
 function studyStageNumber(law: Law) {
   const state = studyState(law);
   if (!state.orientation) return 1;
-  if (!state.summariesDone && !state.readingsDone) return 2;
+  if (!state.summariesDone) return 2;
   if (!state.readingsDone) return 3;
   if (state.questionsDone < state.questionTarget) return 4;
   if (state.flashcardsTarget && state.flashcardsDone < state.flashcardsTarget) return 5;

@@ -76,7 +76,7 @@ function operationalMarkup(law, row) {
   const executionCard = latestDay ? `<article class="study-ops-card"><span class="eyebrow">Última execução · Dia ID</span><div class="big"><strong style="font-size:14px">${esc(latestDay.day_id)}</strong></div><div class="ops-grid"><div class="ops-mini"><b>${n(latestDay.done)}/${n(latestDay.planned)}</b><small>questões</small></div><div class="ops-mini"><b>${dayErrors.length}</b><small>erros</small></div><div class="ops-mini"><b>${n(latestSession?.flashcards)}</b><small>flashcards</small></div></div>${dayErrors.length ? `<details><summary>Ver erros desta execução</summary><ul>${errorItems}</ul></details>` : `<p class="ops-next">Nenhum erro vinculado a esta execução.</p>`}</article>` : "";
   let nextStep = row?.next_step || "1 · Ler orientação";
   if (!orientation) nextStep = "1 · Ler orientação";
-  else if (!summariesDone && !readingsDone) nextStep = "2 · Estudar resumo/material (não conta como lei seca)";
+  else if (!summariesDone) nextStep = "2 · Estudar resumo/material (não conta como lei seca)";
   else if (!readingsDone) nextStep = "3 · Ler a lei seca na fonte oficial";
   else if (!questions) nextStep = `4 · Fazer questões (${done}/${target})`;
   else if (flashTarget && !flashcards) nextStep = `5 · Revisar flashcards (${flashDone}/${flashTarget})`;
