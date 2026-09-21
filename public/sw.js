@@ -1,4 +1,4 @@
-const CACHE_NAME = "seedf-pages-v3";
+const CACHE_NAME = "seedf-pages-v4";
 const CORE_ASSETS = [
   "./",
   "./manifest.webmanifest",
@@ -44,20 +44,35 @@ function cacheResponse(request, response) {
   return response;
 }
 
+function networkFirst(request, fallbackUrl) {
+  return fetch(request, { cache: "no-store" })
+    .then((response) => cacheResponse(request, response))
+    .catch(() =>
+      caches.match(request).then((cached) =>
+        cached || (fallbackUrl ? caches.match(fallbackUrl) : undefined),
+      ),
+    );
+}
+
 self.addEventListener("fetch", (event) => {
   const request = event.request;
   if (request.method !== "GET" || !isSameOrigin(request)) return;
 
   const url = new URL(request.url);
   const acceptsHtml = request.mode === "navigate" || (request.headers.get("accept") || "").includes("text/html");
+  const isDataSnapshot = /\/data\/[^/]+\.json$/i.test(url.pathname);
+  const isStableStudyAsset = /\/(?:leis-enhanced|reading-preferences)\.(?:css|js)$/i.test(url.pathname);
   const isStaticAsset = /\.(?:css|js|json|svg|webmanifest|woff2?)$/i.test(url.pathname);
 
   if (acceptsHtml) {
     event.respondWith(
-      fetch(request, { cache: "no-store" })
-        .then((response) => cacheResponse(request, response))
-        .catch(() => caches.match(request).then((cached) => cached || caches.match(new URL("./", self.registration.scope).href))),
+      networkFirst(request, new URL("./", self.registration.scope).href),
     );
+    return;
+  }
+
+  if (isDataSnapshot || isStableStudyAsset) {
+    event.respondWith(networkFirst(request));
     return;
   }
 

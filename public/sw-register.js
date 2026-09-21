@@ -12,8 +12,11 @@
   window.addEventListener("load", () => {
     const workerUrl = new URL("sw.js", scriptUrl);
     const scope = new URL("./", workerUrl).pathname;
-    navigator.serviceWorker.register(workerUrl.href, { scope }).catch(() => {
-      // Offline enhancement is optional; the online study flow remains available.
-    });
+    navigator.serviceWorker
+      .register(workerUrl.href, { scope, updateViaCache: "none" })
+      .then((registration) => registration.update().catch(() => undefined))
+      .catch(() => {
+        // Offline enhancement is optional; the online study flow remains available.
+      });
   });
 })();

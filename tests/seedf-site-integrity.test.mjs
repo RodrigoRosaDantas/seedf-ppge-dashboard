@@ -190,12 +190,17 @@ test("published shell includes an offline registration path", async () => {
   const manifestValue = JSON.parse(manifest);
   assert.equal(manifestValue.display, "standalone");
   assert.equal(manifestValue.orientation, "any");
-  assert.match(serviceWorker, /seedf-pages-v3/);
+  assert.match(serviceWorker, /seedf-pages-v4/);
   assert.match(serviceWorker, /reading-preferences\.js/);
   assert.match(serviceWorker, /reading-preferences\.css/);
+  assert.match(serviceWorker, /function networkFirst/);
+  assert.match(serviceWorker, /isDataSnapshot/);
+  assert.match(serviceWorker, /isStableStudyAsset/);
   assert.match(serviceWorker, /fetch\(request, \{ cache: "no-store" \}\)/);
   assert.match(serviceWorker, /cache\.put\(request, copy\)\)\.catch/);
   assert.match(registration, /serviceWorker\.register/);
+  assert.match(registration, /updateViaCache: "none"/);
+  assert.match(registration, /registration\.update\(\)/);
   assert.match(layout, /sw-register\.js/);
   assert.match(layout, /theme-color/);
 });
