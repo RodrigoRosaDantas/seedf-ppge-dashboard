@@ -57,6 +57,9 @@ test("keeps Leis Primeiro execution semantics separated by Dia ID", async () => 
     read("public/leis-enhanced.css"),
   ]);
   assert.match(syncMain, /Origem \/ Dia ID/);
+  assert.match(syncMain, /const currentErrorPages = errorPages/);
+  assert.match(syncMain, /error_count: currentErrorPages\.length/);
+  assert.doesNotMatch(syncMain, /!lawErrorIds\.has/);
   assert.match(syncMain, /errors: lawErrors/);
   assert.match(syncMain, /sort\(compareLeisPrimeiroDays\)/);
   assert.match(syncMain, /left\.page_code === right\.page_code/);

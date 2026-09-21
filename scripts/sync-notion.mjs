@@ -258,6 +258,15 @@ function buildExecutionSnapshot(dayPages, questionPages, errorPages, legislation
   const currentQuestionPages = questionPages
     .map((page) => ({ page, day: normalizeC01Day(propertyText(page.properties, "Dia ID")) }))
     .filter((item) => Boolean(item.day));
+  const currentErrorPages = errorPages
+    .map((page) => ({
+      page,
+      day: normalizeC01Day(
+        propertyText(page.properties, "Origem / Dia ID") ||
+        propertyText(page.properties, "Dia ID"),
+      ),
+    }))
+    .filter((item) => Boolean(item.day));
 
   const subjects = new Map();
   for (const { page } of currentQuestionPages) {
@@ -318,7 +327,6 @@ function buildExecutionSnapshot(dayPages, questionPages, errorPages, legislation
     .map(parseLeisPrimeiroError)
     .filter(Boolean)
     .sort((left, right) => (right.date || "").localeCompare(left.date || "") || left.question_id.localeCompare(right.question_id));
-  const lawErrorIds = new Set(lawErrors.map((item) => item.id));
   const legislationSessions = legislationSessionPages
     .map(parseLegislationSession)
     .filter(Boolean)
@@ -363,7 +371,7 @@ function buildExecutionSnapshot(dayPages, questionPages, errorPages, legislation
       subjects: Array.from(subjects.values()).sort((left, right) => right.planned - left.planned || left.subject.localeCompare(right.subject)),
       statuses,
       active_day: activeDay,
-      error_count: errorPages.filter((page) => !lawErrorIds.has(page.id)).length,
+      error_count: currentErrorPages.length,
       question_rows: currentQuestionPages.length,
     },
     leis_primeiro: {
