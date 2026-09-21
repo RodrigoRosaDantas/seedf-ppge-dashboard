@@ -48,20 +48,28 @@ test("keeps local law reading payload with a Notion fallback", async () => {
   assert.match(appPage, /Fallback: Notion/);
 });
 test("keeps Leis Primeiro execution semantics separated by Dia ID", async () => {
-  const [syncMain, syncLaws, appPage, cockpit, enhancer] = await Promise.all([
+  const [syncMain, syncLaws, appPage, cockpit, enhancer, lawCss] = await Promise.all([
     read("scripts/sync-notion.mjs"),
     read("scripts/sync-leis-primeiro.mjs"),
     read("app/leis/page.tsx"),
     read("scripts/build-leis-cockpit.mjs"),
     read("scripts/enhance-leis-pages.mjs"),
+    read("public/leis-enhanced.css"),
   ]);
   assert.match(syncMain, /Origem \/ Dia ID/);
   assert.match(syncMain, /errors: lawErrors/);
+  assert.match(syncMain, /leisPrimeiroSequence\(right\.day_id\) - leisPrimeiroSequence\(left\.day_id\)/);
+  assert.match(syncMain, /right\.created_at/);
   assert.match(syncLaws, /dashboardSnapshot\?\.execution\?\.leis_primeiro/);
   assert.match(appPage, /Resumo e leitura de lei seca são eventos distintos/);
   assert.match(appPage, /CADERNO DE ERROS/);
+  assert.match(appPage, /sessionMatchesExecution/);
   assert.match(cockpit, /HISTÓRICO REAL · LEIS PRIMEIRO/);
+  assert.match(cockpit, /sessionMatchesExecution/);
   assert.match(enhancer, /Ver erros desta execução/);
+  assert.match(enhancer, /sessionMatchesExecution/);
+  assert.doesNotMatch(lawCss, /laws-flow-steps\s*\{[^}]*grid-template-columns:\s*repeat\(5/);
+  assert.match(lawCss, /laws-flow-steps\s*\{[^}]*grid-template-columns:\s*repeat\(6/);
 });
 
 test("reader exposes resumable, portable study controls", async () => {

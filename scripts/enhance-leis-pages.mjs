@@ -58,8 +58,16 @@ function operationalMarkup(law, row) {
   const state = (label, ok) => `<span class="ops-state ${ok ? "done" : ""}">${ok ? "✓" : "○"} ${esc(label)}</span>`;
   const action = row?.action || law.action || law.status || "Estudar";
   const latestDay = (execution.days || []).find((day) => day.page_code === law.code) || null;
+  const sessionMatchesExecution = (session, day) => {
+    if (session.page_code !== day.page_code) return false;
+    if (day.executed_at && session.date !== day.executed_at) return false;
+    if (day.summary_number && session.summary_number && session.summary_number !== day.summary_number) return false;
+    if (day.reading_number && session.reading_number && session.reading_number !== day.reading_number) return false;
+    return true;
+  };
   const latestSession = latestDay
-    ? (execution.sessions || []).find((session) => session.page_code === law.code && (!latestDay.executed_at || session.date === latestDay.executed_at))
+    ? (execution.sessions || []).find((session) => sessionMatchesExecution(session, latestDay))
+      || (execution.sessions || []).find((session) => session.page_code === law.code && (!latestDay.executed_at || session.date === latestDay.executed_at))
       || (execution.sessions || []).find((session) => session.page_code === law.code)
       || null
     : null;

@@ -309,7 +309,12 @@ function buildExecutionSnapshot(dayPages, questionPages, errorPages, legislation
   const lawDays = dayPages
     .map(parseLeisPrimeiroDay)
     .filter(Boolean)
-    .sort((left, right) => (right.executed_at || "").localeCompare(left.executed_at || "") || left.day_id.localeCompare(right.day_id));
+    .sort((left, right) =>
+      (right.executed_at || "").localeCompare(left.executed_at || "") ||
+      (right.created_at || "").localeCompare(left.created_at || "") ||
+      leisPrimeiroSequence(right.day_id) - leisPrimeiroSequence(left.day_id) ||
+      right.day_id.localeCompare(left.day_id)
+    );
 
   const lawQuestionPages = questionPages
     .map((page) => ({ page, day_id: normalizeLeisPrimeiroId(propertyText(page.properties, "Dia ID")) }))
@@ -322,7 +327,11 @@ function buildExecutionSnapshot(dayPages, questionPages, errorPages, legislation
   const legislationSessions = legislationSessionPages
     .map(parseLegislationSession)
     .filter(Boolean)
-    .sort((left, right) => (right.date || "").localeCompare(left.date || "") || left.title.localeCompare(right.title));
+    .sort((left, right) =>
+      (right.date || "").localeCompare(left.date || "") ||
+      (right.created_at || "").localeCompare(left.created_at || "") ||
+      right.title.localeCompare(left.title)
+    );
 
   const lawTotals = lawDays.reduce((sum, day) => {
     sum.planned += day.planned;
@@ -406,6 +415,8 @@ function parseExecutionDay(page) {
     progress: planned > 0 ? done / planned : 0,
     href: propertyUrl(properties, "Página do dia") || page.url || notionPageUrl(page.id),
     executed_at: propertyDate(properties, "Data execução"),
+    created_at: page.created_time || null,
+    updated_at: page.last_edited_time || null,
   };
 }
 
@@ -503,6 +514,8 @@ function parseLegislationSession(page) {
     flashcards: propertyNumeric(properties, "Flashcards gerados"),
     precision: precision(correct, questionsDone),
     href: propertyUrl(properties, "Link da página") || null,
+    created_at: page.created_time || null,
+    updated_at: page.last_edited_time || null,
   };
 }
 
@@ -518,6 +531,11 @@ function normalizeLeisPrimeiroId(value) {
 
 function pageCodeFromExecutionId(value) {
   return normalizeLeisPrimeiroId(value)?.match(/-(L\d{2})-/)?.[1] || "";
+}
+
+function leisPrimeiroSequence(value) {
+  const match = normalizeLeisPrimeiroId(value)?.match(/-R(\d+)$/i);
+  return match ? Number(match[1]) : 0;
 }
 
 function propertyText(properties, name) {

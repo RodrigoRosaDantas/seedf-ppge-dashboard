@@ -98,6 +98,9 @@ type LeisExecution = {
     session_type?: string | null;
     modality?: string | null;
     flashcards?: number;
+    summary_number?: number | null;
+    reading_number?: number | null;
+    created_at?: string | null;
     questions_done?: number;
     correct?: number;
     errors?: number;
@@ -178,6 +181,17 @@ function formatPercent(value: number | null | undefined) {
   if (!Number.isFinite(parsed)) return "—";
   const percent = parsed >= 0 && parsed <= 1 ? parsed * 100 : parsed;
   return `${percent.toFixed(percent % 1 ? 1 : 0).replace(".", ",")}%`;
+}
+
+function sessionMatchesExecution(
+  session: NonNullable<LeisExecution["sessions"]>[number],
+  day: NonNullable<LeisExecution["days"]>[number],
+) {
+  if (session.page_code !== day.page_code) return false;
+  if (day.executed_at && session.date !== day.executed_at) return false;
+  if (day.summary_number && session.summary_number && session.summary_number !== day.summary_number) return false;
+  if (day.reading_number && session.reading_number && session.reading_number !== day.reading_number) return false;
+  return true;
 }
 
 function priorityShort(value?: string) {
@@ -316,7 +330,8 @@ export default function LeisPrimeiroPage() {
   const latestExecution = snapshot?.execution?.days?.[0] || null;
   const latestLaw = latestExecution ? snapshot?.laws.find((law) => law.code === latestExecution.page_code) : null;
   const latestSession = latestExecution
-    ? snapshot?.execution?.sessions?.find((session) => session.page_code === latestExecution.page_code && (!latestExecution.executed_at || session.date === latestExecution.executed_at))
+    ? snapshot?.execution?.sessions?.find((session) => sessionMatchesExecution(session, latestExecution))
+      || snapshot?.execution?.sessions?.find((session) => session.page_code === latestExecution.page_code && (!latestExecution.executed_at || session.date === latestExecution.executed_at))
       || snapshot?.execution?.sessions?.find((session) => session.page_code === latestExecution.page_code)
       || null
     : null;

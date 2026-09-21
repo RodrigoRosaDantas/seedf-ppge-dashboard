@@ -376,7 +376,7 @@
 
 .laws-flow-steps {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(6, minmax(0, 1fr));
   gap: 5px;
   margin: 0;
   padding: 0;
@@ -759,7 +759,7 @@
   .laws-next-card h2 { font-size: 18px !important; }
   .laws-next-context span { font-size: 7.5px; }
   .laws-study-flow { grid-template-columns: 1fr; gap: 15px; margin-bottom: 13px; padding: 17px 16px; border-radius: 18px; }
-  .laws-flow-steps { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 2px; }
+  .laws-flow-steps { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 2px; }
   .laws-flow-steps li { padding: 4px 2px; }
   .laws-flow-steps li:not(:last-child)::after { display: none; }
   .laws-flow-steps li > span { width: 23px; height: 23px; margin-bottom: 5px; }
@@ -1074,7 +1074,7 @@
 .laws-flow-intro > p:not(.laws-kicker) { margin: 7px 0 9px; color: #6a7d80; font-size: 10px; line-height: 1.45; }
 .laws-flow-now { display: block; color: #718384; font-size: 9px; line-height: 1.4; }
 .laws-flow-now strong { color: #176b62; }
-.laws-flow-steps { display: grid; grid-template-columns: repeat(5,minmax(0,1fr)); gap: 5px; margin: 0; padding: 0; list-style: none; }
+.laws-flow-steps { display: grid; grid-template-columns: repeat(6,minmax(0,1fr)); gap: 5px; margin: 0; padding: 0; list-style: none; }
 .laws-flow-steps li { position: relative; min-width: 0; padding: 5px 6px; border-radius: 10px; }
 .laws-flow-steps li:not(:last-child)::after { content: ""; position: absolute; top: 17px; right: -5px; width: 10px; height: 1px; background: #cbd9d6; }
 .laws-flow-steps li > span { display: grid; place-items: center; width: 25px; height: 25px; margin-bottom: 7px; border: 1px solid #cbdad6; border-radius: 50%; color: #829594; background: #f6faf8; font-size: 8px; font-weight: 900; }
@@ -1219,7 +1219,7 @@
   .laws-next-card h2 { font-size: 18px !important; }
   .laws-next-context span { font-size: 7.5px; }
   .laws-study-flow { grid-template-columns: 1fr; gap: 15px; margin-bottom: 13px; padding: 17px 16px; border-radius: 18px; }
-  .laws-flow-steps { grid-template-columns: repeat(5,minmax(0,1fr)); gap: 2px; }
+  .laws-flow-steps { grid-template-columns: repeat(6,minmax(0,1fr)); gap: 2px; }
   .laws-flow-steps li { padding: 4px 2px; }
   .laws-flow-steps li:not(:last-child)::after { display: none; }
   .laws-flow-steps li > span { width: 23px; height: 23px; margin-bottom: 5px; }
