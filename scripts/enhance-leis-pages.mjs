@@ -41,7 +41,7 @@ function readerCssLink(prefix) { return `<link rel="stylesheet" href="${prefix}r
 function readerScript(prefix) { return `<script src="${prefix}reading-preferences.js"></script>`; }
 
 function operationalMarkup(law, row) {
-  const target = n(law.shared_block ? 10 : (row?.question_target ?? law.question_target));
+  const target = n(law.shared_block ? 10 : (row?.operational_question_target ?? law.operational_target_total ?? row?.question_target ?? law.question_target));
   const done = n(row?.questions_done); const flashDone = n(row?.flashcards_done); const flashTarget = n(row?.flashcards_meta);
   const summariesDone = n(row?.summaries_done ?? law.summaries_done);
   const summaryNumber = n(row?.summary_number ?? law.summary_number);

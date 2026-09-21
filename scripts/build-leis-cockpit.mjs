@@ -84,7 +84,7 @@ function rowForLaw(law, rowsByCode) {
 }
 
 function stateFor(law, row) {
-  const questionTarget = number(law.shared_block ? 10 : (row?.question_target ?? law.question_target));
+  const questionTarget = number(law.shared_block ? 10 : (row?.operational_question_target ?? law.operational_target_total ?? row?.question_target ?? law.question_target));
   const questionsDone = number(row?.questions_done);
   const flashcardsTarget = number(row?.flashcards_meta);
   const flashcardsDone = number(row?.flashcards_done);
@@ -208,7 +208,7 @@ export async function buildLeisCockpit(sourceHtml) {
   const current = executable.find((law) => !stateFor(law, rowForLaw(law, rowsByCode)).complete) || executable[0] || laws[0];
   const currentState = current ? stateFor(current, rowForLaw(current, rowsByCode)) : { nextStep: "Aguardando sincronização" };
   const completed = executable.filter((law) => stateFor(law, rowForLaw(law, rowsByCode)).complete).length;
-  const totalQuestions = laws.filter((law) => !radarLaw(law)).reduce((sum, law) => sum + number(law.question_target), 0);
+  const totalQuestions = laws.filter((law) => !radarLaw(law)).reduce((sum, law) => sum + (law.shared_block && law.code !== "L30" ? 0 : number(law.operational_target_total ?? law.question_target)), 0);
   const mapped = snapshot.summary?.mapped_law_records ?? snapshot.summary?.mapped_operational_records ?? 32;
   const radarRecords = snapshot.summary?.radar_records ?? (Array.isArray(snapshot.radars) ? snapshot.radars.length : 1);
   const radarLaws = laws.filter(radarLaw);

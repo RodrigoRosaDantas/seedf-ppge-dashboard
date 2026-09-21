@@ -31,6 +31,10 @@ type Law = {
   reading_number?: number;
   sessions_done?: number;
   question_target?: number;
+  questions_additional?: number;
+  questions_optional?: number;
+  target_model?: string;
+  additional_target_cargos?: string[];
   operational_target_total?: number;
   cargos?: string[];
   action?: string;
@@ -139,7 +143,7 @@ function operationalUnits(laws: Law[]) {
 }
 
 function studyState(law: Law) {
-  const questionTarget = numberValue(law.shared_block ? (law.operational_target_total ?? 10) : law.question_target);
+  const questionTarget = numberValue(law.operational_target_total ?? law.question_target);
   const questionsDone = numberValue(law.questions_done);
   const flashcardsTarget = numberValue(law.flashcards_meta);
   const flashcardsDone = numberValue(law.flashcards_done);
@@ -242,7 +246,7 @@ export default function LeisPrimeiroPage() {
   const radarLaws = snapshot?.laws.filter(isRadarLaw) || [];
   const groupNames = groups.slice(1);
   const totalQuestions = (snapshot?.laws || []).reduce(
-    (sum, law) => sum + (law.shared_block ? (law.code === "L30" ? 10 : 0) : law.question_target || 0),
+    (sum, law) => sum + (law.shared_block && law.code !== "L30" ? 0 : (law.operational_target_total ?? law.question_target ?? 0)),
     0,
   );
   const mappedRecords = snapshot?.summary.mapped_law_records ?? snapshot?.summary.mapped_operational_records ?? 32;
