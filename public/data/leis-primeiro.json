@@ -6,7 +6,7 @@
     "page_id": "3d8cf5a2-6731-817c-89f4-f4907d14a701",
     "page_url": "https://app.notion.com/p/Leis-Primeiro-SEEDF-leitura-quest-es-flashcards-3d8cf5a26731817c89f4f4907d14a701",
     "last_edited_time": "2026-09-21T17:00:00.000Z",
-    "synced_at": "2026-09-21T18:55:38.202Z",
+    "synced_at": "2026-09-21T18:58:18.602Z",
     "data_source_id": "6b3c940a-a382-419f-9ef6-531a1dc5cad2",
     "internal_pages": true
   },
@@ -54,7 +54,9 @@
         "minutes": 0,
         "precision": 0.925,
         "href": "https://app.notion.com/p/3d8cf5a267318133b196fddf1efde990",
-        "executed_at": "2026-09-21"
+        "executed_at": "2026-09-21",
+        "created_at": "2026-09-21T18:11:00.000Z",
+        "updated_at": "2026-09-21T18:17:00.000Z"
       }
     ],
     "totals": {
