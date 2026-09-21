@@ -69,6 +69,60 @@ type Radar = {
   url: string;
 };
 
+type LeisExecution = {
+  as_of?: string | null;
+  latest_day_id?: string | null;
+  error_count?: number;
+  days?: Array<{
+    day_id: string;
+    page_code?: string | null;
+    title?: string;
+    progress?: string | null;
+    summary_number?: number | null;
+    reading_number?: number | null;
+    status?: string;
+    planned?: number;
+    done?: number;
+    correct?: number;
+    errors?: number;
+    doubts?: number;
+    precision?: number | null;
+    executed_at?: string | null;
+    href?: string | null;
+  }>;
+  sessions?: Array<{
+    title?: string;
+    page_code?: string | null;
+    date?: string | null;
+    progress?: string | null;
+    session_type?: string | null;
+    modality?: string | null;
+    flashcards?: number;
+    questions_done?: number;
+    correct?: number;
+    errors?: number;
+    precision?: number | null;
+  }>;
+  errors?: Array<{
+    id: string;
+    day_id: string;
+    page_code?: string | null;
+    question_id: string;
+    title?: string;
+    subject?: string | null;
+    discipline?: string | null;
+    reason?: string | null;
+    pattern?: string | null;
+    severity?: string | null;
+    review?: string | null;
+    status?: string | null;
+    recurrence?: number;
+    flashcard?: boolean;
+    next_review?: string | null;
+    url?: string | null;
+  }>;
+};
+
 type Snapshot = {
   schema_version?: number;
   source: {
@@ -87,6 +141,7 @@ type Snapshot = {
   };
   study_sequence: string[];
   advance_rule: string;
+  execution?: LeisExecution | null;
   laws: Law[];
   radars?: Radar[];
   audit_notes?: string[];
@@ -116,6 +171,13 @@ function formatAuditDate(value: string | null | undefined) {
   const date = new Date(`${value.slice(0, 10)}T12:00:00`);
   if (Number.isNaN(date.valueOf())) return value;
   return new Intl.DateTimeFormat("pt-BR", { dateStyle: "short" }).format(date);
+}
+
+function formatPercent(value: number | null | undefined) {
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed)) return "—";
+  const percent = parsed >= 0 && parsed <= 1 ? parsed * 100 : parsed;
+  return `${percent.toFixed(percent % 1 ? 1 : 0).replace(".", ",")}%`;
 }
 
 function priorityShort(value?: string) {
@@ -251,6 +313,17 @@ export default function LeisPrimeiroPage() {
   );
   const mappedRecords = snapshot?.summary.mapped_law_records ?? snapshot?.summary.mapped_operational_records ?? 32;
   const radarRecords = snapshot?.summary.radar_records ?? snapshot?.radars?.length ?? 1;
+  const latestExecution = snapshot?.execution?.days?.[0] || null;
+  const latestLaw = latestExecution ? snapshot?.laws.find((law) => law.code === latestExecution.page_code) : null;
+  const latestSession = latestExecution
+    ? snapshot?.execution?.sessions?.find((session) => session.page_code === latestExecution.page_code && (!latestExecution.executed_at || session.date === latestExecution.executed_at))
+      || snapshot?.execution?.sessions?.find((session) => session.page_code === latestExecution.page_code)
+      || null
+    : null;
+  const latestErrors = latestExecution
+    ? (snapshot?.execution?.errors || []).filter((item) => item.day_id === latestExecution.day_id)
+    : [];
+
   const currentChecks = [
     { label: "Orientação", done: Boolean(currentState?.orientation) },
     { label: "Resumo", done: Boolean(currentState && currentState.summariesDone > 0) },
@@ -313,6 +386,19 @@ export default function LeisPrimeiroPage() {
         <article className="laws-stat-map"><div className="laws-stat-top"><span className="laws-stat-icon">03</span><span>NORMAS NO MAPA</span></div><strong>{snapshot?.summary.pages ?? 34}</strong><small>L01–L34 · 4 trilhas</small></article>
         <article className="laws-stat-source"><div className="laws-stat-top"><span className="laws-stat-icon">04</span><span>FONTE VIVA</span></div><strong>Notion</strong><small>{mappedRecords} mapeados · {radarRecords} radar</small></article>
       </section>
+
+      {latestExecution ? (
+        <section className="laws-panel" id="historico-leis">
+          <div className="laws-heading"><div><p className="laws-kicker">HISTÓRICO REAL · LEIS PRIMEIRO</p><h2>Última execução registrada</h2><p>Resumo, leitura de lei seca, questões e erros permanecem separados pelo Dia ID.</p></div><span className="laws-heading-note">{latestExecution.day_id}</span></div>
+          <div className="laws-status-strip">
+            <article className="laws-stat-progress"><div className="laws-stat-top"><span className="laws-stat-icon">R</span><span>RESUMO × LEI</span></div><strong>{latestExecution.summary_number || 0} / {latestExecution.reading_number || 0}</strong><small>resumo nº / leitura nº · leitura real não é inferida</small></article>
+            <article className="laws-stat-questions"><div className="laws-stat-top"><span className="laws-stat-icon">Q</span><span>QUESTÕES</span></div><strong>{latestExecution.done || 0}/{latestExecution.planned || 0}</strong><small>{latestExecution.correct || 0} acertos · {formatPercent(latestExecution.precision)}</small></article>
+            <article className="laws-stat-map"><div className="laws-stat-top"><span className="laws-stat-icon">E</span><span>CADERNO DE ERROS</span></div><strong>{latestErrors.length}</strong><small>{latestErrors.filter((item) => item.flashcard).length} com flashcard · vínculo por Dia ID</small></article>
+            <article className="laws-stat-source"><div className="laws-stat-top"><span className="laws-stat-icon">D0</span><span>FECHAMENTO</span></div><strong>{latestLaw?.d0 ? "Concluído" : "Pendente"}</strong><small>{latestSession?.flashcards || 0} flashcards gerados na sessão</small></article>
+          </div>
+          {latestErrors.length ? <div className="laws-map-list">{latestErrors.map((item) => <article className="laws-map-row" key={item.id}><div className="laws-map-main"><span className="law-code">{item.question_id}</span><strong>{item.subject || item.title || "Erro registrado"}</strong></div><div className="laws-map-meta"><span>{item.review || "Sem revisão"}</span><span>{item.status || "Sem status"}</span><span>reincidência {item.recurrence || 0}</span></div><p className="laws-map-next">{item.title || item.pattern || item.reason || "Registro vinculado ao Caderno de Erros"}</p>{item.url ? <a className="laws-map-open" href={item.url} target="_blank" rel="noreferrer">Abrir erro ↗</a> : null}</article>)}</div> : <p className="laws-empty">Nenhum erro vinculado a esta execução.</p>}
+        </section>
+      ) : null}
 
       <section className="laws-panel laws-track-panel" id="trilha">
         <div className="laws-heading"><div><p className="laws-kicker">MAPA DE DECISÃO</p><h2>Por onde continuar</h2><p>Escolha a trilha pelo cargo. Cada cartão já aponta para a próxima norma pendente.</p></div><span className="laws-heading-note">{executableLaws.length} blocos operacionais</span></div>

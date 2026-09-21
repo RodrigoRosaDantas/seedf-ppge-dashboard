@@ -314,9 +314,11 @@ function buildExecutionSnapshot(dayPages, questionPages, errorPages, legislation
   const lawQuestionPages = questionPages
     .map((page) => ({ page, day_id: normalizeLeisPrimeiroId(propertyText(page.properties, "Dia ID")) }))
     .filter((item) => Boolean(item.day_id));
-  const lawErrorPages = errorPages
-    .map((page) => ({ page, day_id: normalizeLeisPrimeiroId(propertyText(page.properties, "Dia ID")) }))
-    .filter((item) => Boolean(item.day_id));
+  const lawErrors = errorPages
+    .map(parseLeisPrimeiroError)
+    .filter(Boolean)
+    .sort((left, right) => (right.date || "").localeCompare(left.date || "") || left.question_id.localeCompare(right.question_id));
+  const lawErrorIds = new Set(lawErrors.map((item) => item.id));
   const legislationSessions = legislationSessionPages
     .map(parseLegislationSession)
     .filter(Boolean)
@@ -357,7 +359,7 @@ function buildExecutionSnapshot(dayPages, questionPages, errorPages, legislation
       subjects: Array.from(subjects.values()).sort((left, right) => right.planned - left.planned || left.subject.localeCompare(right.subject)),
       statuses,
       active_day: activeDay,
-      error_count: errorPages.filter((page) => !normalizeLeisPrimeiroId(propertyText(page.properties, "Dia ID"))).length,
+      error_count: errorPages.filter((page) => !lawErrorIds.has(page.id)).length,
       question_rows: currentQuestionPages.length,
     },
     leis_primeiro: {
@@ -366,7 +368,9 @@ function buildExecutionSnapshot(dayPages, questionPages, errorPages, legislation
       statuses: lawStatuses,
       active_day_id: lawDays.find((day) => /próximo|andamento/i.test(day.status))?.day_id || null,
       question_rows: lawQuestionPages.length,
-      error_count: lawErrorPages.length,
+      error_count: lawErrors.length,
+      errors: lawErrors,
+      latest_day_id: lawDays[0]?.day_id || null,
       sessions: legislationSessions,
       session_totals: sessionTotals,
     },
@@ -436,6 +440,34 @@ function parseLeisPrimeiroDay(page) {
     precision: precision(correct, done),
     href: propertyUrl(properties, "Página do dia") || page.url || notionPageUrl(page.id),
     executed_at: propertyDate(properties, "Data execução"),
+  };
+}
+
+function parseLeisPrimeiroError(page) {
+  const properties = page.properties || {};
+  const dayId = normalizeLeisPrimeiroId(propertyText(properties, "Origem / Dia ID"));
+  if (!dayId) return null;
+  const questionId = propertyText(properties, "Questão ID");
+  return {
+    id: page.id,
+    url: page.url || notionPageUrl(page.id),
+    day_id: dayId,
+    page_code: pageCodeFromExecutionId(dayId) || questionId.match(/^(L\d{2})-/i)?.[1]?.toUpperCase() || null,
+    question_id: questionId || page.id,
+    title: propertyText(properties, "Erro / Questão") || questionId || "Erro registrado",
+    subject: propertyText(properties, "Assunto") || null,
+    discipline: propertyText(properties, "Matéria") || null,
+    reason: propertyText(properties, "Motivo do erro") || null,
+    pattern: propertyText(properties, "Padrão do erro") || null,
+    severity: propertyText(properties, "Gravidade") || null,
+    review: propertyText(properties, "Revisão") || null,
+    status: propertyText(properties, "Status") || null,
+    recurrence: propertyNumeric(properties, "Reincidência"),
+    flashcard: Boolean(properties?.["Flashcard?"]?.checkbox),
+    next_review: propertyDate(properties, "Próxima revisão"),
+    date: propertyDate(properties, "Data"),
+    rule: propertyText(properties, "Regra correta / conceito") || null,
+    observations: propertyText(properties, "Observações") || null,
   };
 }
 

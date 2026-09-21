@@ -47,6 +47,23 @@ test("keeps local law reading payload with a Notion fallback", async () => {
   assert.match(enhancer, /Leitura principal: site/);
   assert.match(appPage, /Fallback: Notion/);
 });
+test("keeps Leis Primeiro execution semantics separated by Dia ID", async () => {
+  const [syncMain, syncLaws, appPage, cockpit, enhancer] = await Promise.all([
+    read("scripts/sync-notion.mjs"),
+    read("scripts/sync-leis-primeiro.mjs"),
+    read("app/leis/page.tsx"),
+    read("scripts/build-leis-cockpit.mjs"),
+    read("scripts/enhance-leis-pages.mjs"),
+  ]);
+  assert.match(syncMain, /Origem \/ Dia ID/);
+  assert.match(syncMain, /errors: lawErrors/);
+  assert.match(syncLaws, /dashboardSnapshot\.execution\?\.leis_primeiro/);
+  assert.match(appPage, /Resumo e leitura de lei seca são eventos distintos/);
+  assert.match(appPage, /CADERNO DE ERROS/);
+  assert.match(cockpit, /HISTÓRICO REAL · LEIS PRIMEIRO/);
+  assert.match(enhancer, /Ver erros desta execução/);
+});
+
 test("reader exposes resumable, portable study controls", async () => {
   const html = await read("public/leis/flashcards/index.html");
   assert.match(html, /id="day-select"/);

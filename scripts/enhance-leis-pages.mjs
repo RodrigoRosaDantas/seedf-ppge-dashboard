@@ -6,6 +6,7 @@ const lawsSnapshot = JSON.parse(await readFile(path.resolve("public/data/leis-pr
 let bankSnapshot = { source: {}, rows: [] };
 try { bankSnapshot = JSON.parse(await readFile(path.resolve("public/data/legislation-bank.json"), "utf8")); } catch {}
 const laws = Array.isArray(lawsSnapshot.laws) ? lawsSnapshot.laws : [];
+const execution = lawsSnapshot.execution || {};
 const rows = Array.isArray(bankSnapshot.rows) ? bankSnapshot.rows : [];
 const rowByOrder = new Map(rows.map((row) => [Number(row.operational_order), row]));
 
@@ -56,6 +57,15 @@ function operationalMarkup(law, row) {
   const flashcards = flashTarget > 0 && flashDone >= flashTarget;
   const state = (label, ok) => `<span class="ops-state ${ok ? "done" : ""}">${ok ? "✓" : "○"} ${esc(label)}</span>`;
   const action = row?.action || law.action || law.status || "Estudar";
+  const latestDay = (execution.days || []).find((day) => day.page_code === law.code) || null;
+  const latestSession = latestDay
+    ? (execution.sessions || []).find((session) => session.page_code === law.code && (!latestDay.executed_at || session.date === latestDay.executed_at))
+      || (execution.sessions || []).find((session) => session.page_code === law.code)
+      || null
+    : null;
+  const dayErrors = latestDay ? (execution.errors || []).filter((item) => item.day_id === latestDay.day_id) : [];
+  const errorItems = dayErrors.map((item) => `<li><b>${esc(item.question_id || "Erro")}</b> — ${esc(item.subject || item.title || "Erro registrado")} <small>· ${esc(item.review || "sem revisão")} · reincidência ${n(item.recurrence)}${item.flashcard ? " · flashcard" : ""}</small></li>`).join("");
+  const executionCard = latestDay ? `<article class="study-ops-card"><span class="eyebrow">Última execução · Dia ID</span><div class="big"><strong style="font-size:14px">${esc(latestDay.day_id)}</strong></div><div class="ops-grid"><div class="ops-mini"><b>${n(latestDay.done)}/${n(latestDay.planned)}</b><small>questões</small></div><div class="ops-mini"><b>${dayErrors.length}</b><small>erros</small></div><div class="ops-mini"><b>${n(latestSession?.flashcards)}</b><small>flashcards</small></div></div>${dayErrors.length ? `<details><summary>Ver erros desta execução</summary><ul>${errorItems}</ul></details>` : `<p class="ops-next">Nenhum erro vinculado a esta execução.</p>`}</article>` : "";
   let nextStep = row?.next_step || "1 · Ler orientação";
   if (!orientation) nextStep = "1 · Ler orientação";
   else if (!summariesDone && !readingsDone) nextStep = "2 · Estudar resumo/material (não conta como lei seca)";
@@ -69,6 +79,7 @@ function operationalMarkup(law, row) {
     <article class="study-ops-card"><span class="eyebrow">Resumo × lei seca</span><div class="ops-grid"><div class="ops-mini"><b>${summariesDone}</b><small>resumos</small></div><div class="ops-mini"><b>${readingsDone}</b><small>leituras</small></div><div class="ops-mini"><b>${sessionsDone}</b><small>sessões</small></div></div><p class="ops-next">Atual: resumo ${summaryNumber || "—"} · leitura ${readingNumber || "—"}. Estudar esta página não incrementa leitura da norma.</p></article>
     <article class="study-ops-card"><span class="eyebrow">Questões</span><div class="big"><strong>${done}</strong><span>de ${target || "—"}</span></div><div class="ops-progress"><span style="width:${pct(done,target)}%"></span></div><div class="ops-grid"><div class="ops-mini"><b>${n(row?.hits)}</b><small>acertos</small></div><div class="ops-mini"><b>${n(row?.errors)}</b><small>erros</small></div><div class="ops-mini"><b>${accuracy(row?.accuracy)}</b><small>precisão</small></div></div></article>
     <article class="study-ops-card"><span class="eyebrow">Revisões</span><div class="ops-grid"><div class="ops-mini"><b>${date(row?.next_review)}</b><small>próx. revisão</small></div><div class="ops-mini"><b>${d7 ? "✓" : "○"}</b><small>D7</small></div><div class="ops-mini"><b>${d20 ? "✓" : "○"}</b><small>D20</small></div></div><p class="ops-next">D7 e D20 seguem em paralelo e não bloqueiam a próxima norma.</p></article>
+    ${executionCard}
   </section>`;
 }
 

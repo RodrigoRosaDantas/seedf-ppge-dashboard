@@ -139,8 +139,19 @@ const priorities = bankRows.reduce((acc, row) => {
   return acc;
 }, {});
 
+let execution = null;
+try {
+  const dashboardSnapshot = JSON.parse(await readFile(path.resolve("public/data/seedf-snapshot.json"), "utf8"));
+  if (dashboardSnapshot?.execution?.leis_primeiro) {
+    execution = {
+      ...dashboardSnapshot.execution.leis_primeiro,
+      as_of: dashboardSnapshot.execution.as_of || null,
+    };
+  }
+} catch {}
+
 const snapshot = {
-  schema_version: 4,
+  schema_version: 5,
   source: {
     kind: "notion",
     title: pageTitle(page) || "Leis Primeiro | SEEDF",
@@ -168,6 +179,7 @@ const snapshot = {
     "D7/D20 — revise em paralelo enquanto avança para as próximas normas.",
   ],
   advance_rule: "Resumo e leitura são eventos distintos. Uma sessão de resumo pode terminar concluída sem fechar D0; D0 só fecha após o cumprimento real dos requisitos da Lxx. D7/D20 seguem em paralelo.",
+  execution,
   laws,
   radars: radarRows,
   audit_notes: [
