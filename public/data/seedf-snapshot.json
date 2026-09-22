@@ -6,8 +6,8 @@
     "page_id": "3d4cf5a2-6731-8106-a2c9-c97816aa6cf5",
     "page_url": "https://app.notion.com/p/SEEDF-PPGE-Gestor-Analista-Monitor-Dashboard-PRO-3d4cf5a267318106a2c9c97816aa6cf5",
     "last_edited_time": "2026-09-12T11:38:00.000Z",
-    "synced_at": "2026-09-21T19:36:37.356Z",
-    "content_hash": "0bfb9bf0c133fded7b2f2491303b50bf87472d926e07d7bfd19ac8a5e9b55681",
+    "synced_at": "2026-09-22T21:44:46.238Z",
+    "content_hash": "dd36f949b3ecf51b9a7b14666858bc800dd3cdf26bdd839dc94fd01ff987ba0f",
     "status": "synced"
   },
   "dashboard": {
@@ -586,7 +586,7 @@
     ]
   },
   "execution": {
-    "as_of": "2026-09-21T19:36:37.351Z",
+    "as_of": "2026-09-22T21:44:46.234Z",
     "c01": {
       "days": [
         {
@@ -1123,6 +1123,34 @@
       ],
       "latest_day_id": "LP-20260921-L01-R1",
       "sessions": [
+        {
+          "id": "3e3cf5a2-6731-81a8-8042-d6ef60d05b16",
+          "title": "2026-09-22 · L02 · D0 · primeira leitura",
+          "url": "https://app.notion.com/p/2026-09-22-L02-D0-primeira-leitura-3e3cf5a2673181a88042d6ef60d05b16",
+          "date": "2026-09-22",
+          "page_code": "L02",
+          "stage": "D0",
+          "session_type": "Lei seca — primeira leitura",
+          "modality": "Dirigida / recorte",
+          "progress": null,
+          "source": "Lei seca oficial",
+          "summary_number": null,
+          "reading_number": null,
+          "summary_counter": 0,
+          "reading_counter": 0,
+          "session_counter": 0,
+          "completed": false,
+          "questions_planned": 30,
+          "questions_done": 0,
+          "correct": 0,
+          "errors": 0,
+          "doubts": 0,
+          "flashcards": 0,
+          "precision": null,
+          "href": "https://app.notion.com/p/3d8cf5a2673181d98092e1bf6378badb",
+          "created_at": "2026-09-22T20:04:00.000Z",
+          "updated_at": "2026-09-22T20:04:00.000Z"
+        },
         {
           "id": "3e2cf5a2-6731-8161-8647-fa2bb4594fcd",
           "title": "2026-09-21 · L01 · D0 · resumo 1 + questões",

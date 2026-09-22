@@ -6,7 +6,7 @@
     "page_id": "3d8cf5a2-6731-817c-89f4-f4907d14a701",
     "page_url": "https://app.notion.com/p/Leis-Primeiro-SEEDF-leitura-quest-es-flashcards-3d8cf5a26731817c89f4f4907d14a701",
     "last_edited_time": "2026-09-21T20:17:00.000Z",
-    "synced_at": "2026-09-22T18:53:59.982Z",
+    "synced_at": "2026-09-22T21:46:18.293Z",
     "data_source_id": "6b3c940a-a382-419f-9ef6-531a1dc5cad2",
     "internal_pages": true
   },
@@ -142,6 +142,34 @@
     "latest_day_id": "LP-20260921-L01-R1",
     "sessions": [
       {
+        "id": "3e3cf5a2-6731-81a8-8042-d6ef60d05b16",
+        "title": "2026-09-22 · L02 · D0 · primeira leitura",
+        "url": "https://app.notion.com/p/2026-09-22-L02-D0-primeira-leitura-3e3cf5a2673181a88042d6ef60d05b16",
+        "date": "2026-09-22",
+        "page_code": "L02",
+        "stage": "D0",
+        "session_type": "Lei seca — primeira leitura",
+        "modality": "Dirigida / recorte",
+        "progress": null,
+        "source": "Lei seca oficial",
+        "summary_number": null,
+        "reading_number": null,
+        "summary_counter": 0,
+        "reading_counter": 0,
+        "session_counter": 0,
+        "completed": false,
+        "questions_planned": 30,
+        "questions_done": 0,
+        "correct": 0,
+        "errors": 0,
+        "doubts": 0,
+        "flashcards": 0,
+        "precision": null,
+        "href": "https://app.notion.com/p/3d8cf5a2673181d98092e1bf6378badb",
+        "created_at": "2026-09-22T20:04:00.000Z",
+        "updated_at": "2026-09-22T20:04:00.000Z"
+      },
+      {
         "id": "3e2cf5a2-6731-8161-8647-fa2bb4594fcd",
         "title": "2026-09-21 · L01 · D0 · resumo 1 + questões",
         "url": "https://app.notion.com/p/2026-09-21-L01-D0-resumo-1-quest-es-3e2cf5a2673181618647fa2bb4594fcd",
@@ -181,7 +209,7 @@
       "flashcards": 2,
       "precision": 0.925
     },
-    "as_of": "2026-09-21T19:36:37.351Z"
+    "as_of": "2026-09-22T21:44:46.234Z"
   },
   "laws": [
     {
@@ -246,7 +274,7 @@
       "priority": "P0 - Nuclear",
       "official_url": "https://www.planalto.gov.br/ccivil_03/leis/l9394compilado.htm",
       "status": "Não iniciado",
-      "study_phase": "Não iniciado",
+      "study_phase": "Em estudo",
       "summaries_done": 0,
       "summary_number": null,
       "readings_done": 0,
