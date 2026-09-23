@@ -6,8 +6,8 @@
     "page_id": "3d4cf5a2-6731-8106-a2c9-c97816aa6cf5",
     "page_url": "https://app.notion.com/p/SEEDF-PPGE-Gestor-Analista-Monitor-Dashboard-PRO-3d4cf5a267318106a2c9c97816aa6cf5",
     "last_edited_time": "2026-09-12T11:38:00.000Z",
-    "synced_at": "2026-09-23T02:47:37.900Z",
-    "content_hash": "0912aaf26691c47a27974a18dce19168e6ab22529903bcd12fa86051f8fc1d94",
+    "synced_at": "2026-09-23T21:11:49.037Z",
+    "content_hash": "99a9020e030c08bc37288873c7e7d3557fe138a97874720f150c81a7c4f641ca",
     "status": "synced"
   },
   "dashboard": {
@@ -586,7 +586,7 @@
     ]
   },
   "execution": {
-    "as_of": "2026-09-23T02:47:37.895Z",
+    "as_of": "2026-09-23T21:11:49.032Z",
     "c01": {
       "days": [
         {
@@ -1123,6 +1123,34 @@
       ],
       "latest_day_id": "LP-20260921-L01-R1",
       "sessions": [
+        {
+          "id": "3e4cf5a2-6731-81df-9296-e5e993f40f22",
+          "title": "2026-09-23 · L03 · D0 · primeira leitura",
+          "url": "https://app.notion.com/p/2026-09-23-L03-D0-primeira-leitura-3e4cf5a2673181df9296e5e993f40f22",
+          "date": "2026-09-23",
+          "page_code": "L03",
+          "stage": "D0",
+          "session_type": "Lei seca — primeira leitura",
+          "modality": "Dirigida / recorte",
+          "progress": null,
+          "source": "Lei seca oficial",
+          "summary_number": null,
+          "reading_number": null,
+          "summary_counter": 0,
+          "reading_counter": 0,
+          "session_counter": 0,
+          "completed": false,
+          "questions_planned": 25,
+          "questions_done": 0,
+          "correct": 0,
+          "errors": 0,
+          "doubts": 0,
+          "flashcards": 0,
+          "precision": null,
+          "href": "https://app.notion.com/p/3d8cf5a267318146b405d71a373c0a4d",
+          "created_at": "2026-09-23T20:20:00.000Z",
+          "updated_at": "2026-09-23T20:21:00.000Z"
+        },
         {
           "id": "3e3cf5a2-6731-81a8-8042-d6ef60d05b16",
           "title": "2026-09-22 · L02 · D0 · primeira leitura",

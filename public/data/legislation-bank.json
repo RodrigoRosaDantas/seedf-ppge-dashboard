@@ -5,7 +5,7 @@
     "database_id": "49157e87d33a4fa590edfdb4b84dbc46",
     "database_url": "https://app.notion.com/p/49157e87d33a4fa590edfdb4b84dbc46",
     "data_source_id": "6b3c940a-a382-419f-9ef6-531a1dc5cad2",
-    "synced_at": "2026-09-23T02:49:21.421Z"
+    "synced_at": "2026-09-23T21:13:32.272Z"
   },
   "summary": {
     "records": 33,
@@ -137,7 +137,7 @@
       "title": "Portaria SEEDF nº 15/2015 — Regimento Escolar da Rede Pública",
       "priority": "P0 - Nuclear",
       "status": "Não iniciado",
-      "study_phase": "Não iniciado",
+      "study_phase": "Em estudo",
       "action": "Estudar agora",
       "official_url": "https://www.sinj.df.gov.br/sinj/Norma/79276/Portaria_15_11_02_2015.html",
       "question_target": 25,
@@ -170,12 +170,12 @@
       "next_review": null,
       "next_step": "1 · Ler orientação",
       "cut": "P0: arts. 5º–12 (gestão democrática/equipe gestora), arts. 29–32 (Conselho de Classe), art. 118 e arts. 154–157 (organização pedagógica/PPP), arts. 174–184 (avaliação e limite de 50% para provas/testes), arts. 234–243 e art. 280 em diante (regime escolar, matrícula e frequência), arts. 305–314-A (direitos, deveres, convivência, disciplina e prevenção da violência). Confrontar art. 235 com Resolução CEDF nº 2/2023 quando a questão cobrar o sistema vigente.",
-      "alert": "Rechecagem oficial em 11/09/2026: a Portaria nº 15/2015 permanece como base do Regimento Escolar da Rede Pública, com texto compilado no SINJ e alterações posteriores. A Portaria SEEDF nº 350/2026 instituiu comissão de revisão, com prazo de até 30 dias contado da publicação e possibilidade de prorrogação justificada, mas não foi localizado até esta auditoria novo Regimento Escolar, portaria substitutiva, alteração posterior da Portaria nº 15/2015 nem publicação conclusiva da comissão com efeito substitutivo. Não confundir com a Portaria nº 167/2026, que aprova o Regimento Interno da SEEDF. Em conflitos, aplicar norma posterior vigente, especialmente a Resolução CEDF nº 2/2023.",
+      "alert": "Rechecagem oficial em 23/09/2026: o SINJ continua apresentando a Portaria nº 15/2015 como base do Regimento Escolar da Rede Pública, em situação alterada/compilada, com alterações de 2019/2020. A Portaria SEEDF nº 350, de 06/08/2026, instituiu comissão de revisão; não foi localizado nesta rechecagem ato posterior que substitua o Regimento. Não confundir com a Portaria nº 167/2026, que aprova o Regimento Interno da SEEDF. Em conflitos, aplicar norma posterior vigente, especialmente a Resolução CEDF nº 2/2023.",
       "block": "Blocos 05–06",
       "observations": "L03 auditada operacionalmente em 11/09/2026. A página contém bateria própria de 25 itens C/E no padrão 8 gestão/equipe/Conselho de Classe + 6 PPP/organização pedagógica/avaliação + 6 regime escolar/matrícula/frequência + 5 direitos/deveres/convivência/disciplina, com gabarito recolhido. Flashcards existentes são baseados em conteúdo normativo e pegadinhas, não em roteiro de estudo. Atenção à sobreposição: art. 235 do Regimento antigo registra 1.000 h no diurno para EI/EF/EM; Resolução CEDF nº 2/2023 fixa atualmente 800 h para EI/EF e 1.000 h para EM.",
       "complementary_sources": "Portaria SEEDF nº 180/2019 — alterações do Regimento: https://www.sinj.df.gov.br/sinj/Norma/ee9b60ba60e74ea5b6b7094a9dce8c67/Portaria_180_30_05_2019.html | Portaria SEEDF nº 301/2020 — alterações/revogações posteriores: https://www.sinj.df.gov.br/sinj/Norma/d917b6a0bb9b459f8113f1c3b701fed8/Portaria_301_05_10_2020.html | Resolução CEDF nº 2/2023 — norma vigente de Educação Básica no DF: https://www.sinj.df.gov.br/sinj/Norma/230a46c26218466fad6d7d2de080213e/Resolu_o_2_12_12_2023.html | Portaria SEEDF nº 350/2026 — comissão de revisão: https://www.sinj.df.gov.br/sinj/TextoArquivoDiario.aspx?id_file=9a5072fc-fb96-30b3-a700-718e7c78c5b3 | Portaria nº 167/2026 — Regimento Interno da SEEDF, apenas para evitar confusão de objeto: https://www.sinj.df.gov.br/sinj/Norma/1ff2ce3031664ac8a9f1b499bf904ab9/Portaria_167_24_02_2026.html",
       "last_read": null,
-      "last_audit": "2026-09-11"
+      "last_audit": "2026-09-23"
     },
     {
       "page_id": "3d8cf5a2-6731-8153-9306-dac1fe64dbf0",
