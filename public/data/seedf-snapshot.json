@@ -6,8 +6,8 @@
     "page_id": "3d4cf5a2-6731-8106-a2c9-c97816aa6cf5",
     "page_url": "https://app.notion.com/p/SEEDF-PPGE-Gestor-Analista-Monitor-Dashboard-PRO-3d4cf5a267318106a2c9c97816aa6cf5",
     "last_edited_time": "2026-09-12T11:38:00.000Z",
-    "synced_at": "2026-09-22T21:44:46.238Z",
-    "content_hash": "dd36f949b3ecf51b9a7b14666858bc800dd3cdf26bdd839dc94fd01ff987ba0f",
+    "synced_at": "2026-09-23T02:47:37.900Z",
+    "content_hash": "0912aaf26691c47a27974a18dce19168e6ab22529903bcd12fa86051f8fc1d94",
     "status": "synced"
   },
   "dashboard": {
@@ -586,7 +586,7 @@
     ]
   },
   "execution": {
-    "as_of": "2026-09-22T21:44:46.234Z",
+    "as_of": "2026-09-23T02:47:37.895Z",
     "c01": {
       "days": [
         {
@@ -1132,24 +1132,24 @@
           "stage": "D0",
           "session_type": "Lei seca — primeira leitura",
           "modality": "Dirigida / recorte",
-          "progress": null,
+          "progress": "Leitura 1",
           "source": "Lei seca oficial",
           "summary_number": null,
-          "reading_number": null,
+          "reading_number": 1,
           "summary_counter": 0,
-          "reading_counter": 0,
-          "session_counter": 0,
-          "completed": false,
+          "reading_counter": 1,
+          "session_counter": 1,
+          "completed": true,
           "questions_planned": 30,
-          "questions_done": 0,
-          "correct": 0,
-          "errors": 0,
+          "questions_done": 30,
+          "correct": 22,
+          "errors": 8,
           "doubts": 0,
-          "flashcards": 0,
-          "precision": null,
+          "flashcards": 5,
+          "precision": 0.7333333333333333,
           "href": "https://app.notion.com/p/3d8cf5a2673181d98092e1bf6378badb",
           "created_at": "2026-09-22T20:04:00.000Z",
-          "updated_at": "2026-09-22T20:04:00.000Z"
+          "updated_at": "2026-09-23T02:34:00.000Z"
         },
         {
           "id": "3e2cf5a2-6731-8161-8647-fa2bb4594fcd",
@@ -1181,15 +1181,15 @@
         }
       ],
       "session_totals": {
-        "sessions": 1,
+        "sessions": 2,
         "summaries": 1,
-        "readings": 0,
-        "questions": 40,
-        "correct": 37,
-        "errors": 3,
+        "readings": 1,
+        "questions": 70,
+        "correct": 59,
+        "errors": 11,
         "doubts": 0,
-        "flashcards": 2,
-        "precision": 0.925
+        "flashcards": 7,
+        "precision": 0.8428571428571429
       }
     }
   },
