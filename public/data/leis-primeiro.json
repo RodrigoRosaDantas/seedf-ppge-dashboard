@@ -1,12 +1,12 @@
 {
-  "schema_version": 8,
+  "schema_version": 9,
   "source": {
     "kind": "notion",
     "title": "Leis Primeiro | SEEDF — leitura + questões + flashcards",
     "page_id": "3d8cf5a2-6731-817c-89f4-f4907d14a701",
     "page_url": "https://app.notion.com/p/Leis-Primeiro-SEEDF-leitura-quest-es-flashcards-3d8cf5a26731817c89f4f4907d14a701",
     "last_edited_time": "2026-09-24T12:23:00.000Z",
-    "synced_at": "2026-09-24T17:26:50.595Z",
+    "synced_at": "2026-09-24T18:09:30.694Z",
     "data_source_id": "6b3c940a-a382-419f-9ef6-531a1dc5cad2",
     "internal_pages": true
   },
@@ -27,7 +27,7 @@
     "Orientação — leia Como estudar, Marcar, Pegadinhas, Recorte prioritário e Vigência / alerta.",
     "Resumo / material — estudar a página, quadros e comentários é uma sessão válida, mas não conta como leitura da lei seca.",
     "Lei seca — abra a fonte oficial e leia o recorte indicado; só então incremente a contagem de leitura.",
-    "Questões — cumpra a meta operacional da Lxx (base + adicional quando aplicável) e registre no Banco de Controle de Questões SEEDF.",
+    "Questões — cumpra somente a meta operacional obrigatória da Lxx; questões opcionais/Radar preservam histórico sem gerar dívida.",
     "Flashcards — faça/revise somente os cartões necessários; a etapa é binária e não possui meta numérica.",
     "D0 — feche o bloco somente quando os requisitos pedagógicos da Lxx estiverem cumpridos.",
     "D7/D20 — revise em paralelo enquanto avança para as próximas normas."
@@ -73,6 +73,42 @@
     },
     "active_day_id": null,
     "question_rows": 2,
+    "question_records": [
+      {
+        "id": "3e2cf5a2-6731-817f-a902-e6bd7ab2ffc0",
+        "url": "https://app.notion.com/p/L01-Resumo-1-D0-Suplemento-Analista-Monitor-10-quest-es-3e2cf5a26731817fa902e6bd7ab2ffc0",
+        "day_id": "LP-20260921-L01-R1",
+        "page_code": "L01",
+        "title": "L01 · Resumo 1 · D0 · Suplemento Analista Monitor — 10 questões",
+        "discipline": "Direito Constitucional",
+        "subject": "CF/88 — ampliação Monitor (arts. 1º–13 e 226–230)",
+        "strategic_use": "Radar suspenso",
+        "date": "2026-09-21",
+        "planned": 10,
+        "done": 10,
+        "correct": 8,
+        "errors": 2,
+        "doubts": 0,
+        "precision": 0.8
+      },
+      {
+        "id": "3e2cf5a2-6731-81a6-b181-c29592e9e134",
+        "url": "https://app.notion.com/p/L01-Resumo-1-D0-N-cleo-comum-30-quest-es-3e2cf5a2673181a6b181c29592e9e134",
+        "day_id": "LP-20260921-L01-R1",
+        "page_code": "L01",
+        "title": "L01 · Resumo 1 · D0 · Núcleo comum — 30 questões",
+        "discipline": "Direito Constitucional",
+        "subject": "CF/88 — Educação (arts. 205–214) + Administração Pública (arts. 37–41)",
+        "strategic_use": "Ativo",
+        "date": "2026-09-21",
+        "planned": 30,
+        "done": 30,
+        "correct": 29,
+        "errors": 1,
+        "doubts": 0,
+        "precision": 0.9666666666666667
+      }
+    ],
     "error_count": 3,
     "errors": [
       {
@@ -89,6 +125,7 @@
         "severity": null,
         "review": "D0",
         "status": "Em andamento",
+        "strategic_use": "Ativo",
         "recurrence": 1,
         "flashcard": true,
         "next_review": null,
@@ -110,6 +147,7 @@
         "severity": null,
         "review": "D0",
         "status": "Em andamento",
+        "strategic_use": "Radar suspenso",
         "recurrence": 1,
         "flashcard": true,
         "next_review": null,
@@ -131,6 +169,7 @@
         "severity": null,
         "review": "D0",
         "status": "Em andamento",
+        "strategic_use": "Radar suspenso",
         "recurrence": 1,
         "flashcard": false,
         "next_review": null,
@@ -277,6 +316,8 @@
         "Analista - Monitor"
       ],
       "action": "Estudar agora",
+      "documentary_strength": "🟢 Base histórica forte",
+      "strategic_status": "Ativo — compartilhado",
       "cut": "Núcleo ativo: arts. 205–214 e 37–41. O antigo recorte suplementar de Monitor (arts. 1º–13 e 226–230) permanece apenas como acervo opcional para eventual reativação do cargo.",
       "alert": "Texto constitucional compilado vigente. Atenção às atualizações recentes do recorte: EC nº 135/2024 alterou o art. 212-A e o §11 do art. 37; EC nº 138/2025 alterou o art. 37, XVI, b, permitindo professor + outro cargo de qualquer natureza, com compatibilidade de horários e observância do teto.",
       "block": "Bloco 01; Gestor retoma arts. 165–169 em G3",
@@ -329,6 +370,8 @@
         "Analista - Monitor"
       ],
       "action": "Estudar agora",
+      "documentary_strength": "🟢 Base histórica forte",
+      "strategic_status": "Ativo — compartilhado",
       "cut": "Arts. 1º–5º; 8º–17; 21–26; 29–36; 58–60; 61–67. Atenção especial aos arts. 4º, 11–14, 25-A, 26, 31, 58–60, 61 e 67.",
       "alert": "Usar sempre o texto compilado. Auditoria em 11/09/2026: incorporar Lei 15.276/2025 (art. 4º XIII), Lei 15.326/2026 (art. 61 §2º), Lei 15.360/2026 (art. 25-A), Lei 15.369/2026 (art. 11 V), Lei 15.462/2026 (art. 67 II) e Lei 15.468/2026 (art. 26 §9º-B). Não foram localizadas alterações posteriores da LDB entre agosto e 11/09/2026.",
       "block": "Blocos 02–04",
@@ -377,6 +420,8 @@
         "Analista - Monitor"
       ],
       "action": "Estudar agora",
+      "documentary_strength": "🟢 Base histórica forte",
+      "strategic_status": "Ativo — compartilhado",
       "cut": "P0: arts. 5º–12 (gestão democrática/equipe gestora), arts. 29–32 (Conselho de Classe), art. 118 e arts. 154–157 (organização pedagógica/PPP), arts. 174–184 (avaliação e limite de 50% para provas/testes), arts. 234–243 e art. 280 em diante (regime escolar, matrícula e frequência), arts. 305–314-A (direitos, deveres, convivência, disciplina e prevenção da violência). Confrontar art. 235 com Resolução CEDF nº 2/2023 quando a questão cobrar o sistema vigente.",
       "alert": "Rechecagem oficial em 23/09/2026: o SINJ continua apresentando a Portaria nº 15/2015 como base do Regimento Escolar da Rede Pública, em situação alterada/compilada, com alterações de 2019/2020. A Portaria SEEDF nº 350, de 06/08/2026, instituiu comissão de revisão; não foi localizado nesta rechecagem ato posterior que substitua o Regimento. Não confundir com a Portaria nº 167/2026, que aprova o Regimento Interno da SEEDF. Em conflitos, aplicar norma posterior vigente, especialmente a Resolução CEDF nº 2/2023.",
       "block": "Blocos 05–06",
@@ -425,6 +470,8 @@
         "Analista - Monitor"
       ],
       "action": "Estudar agora",
+      "documentary_strength": "🟢 Base histórica forte",
+      "strategic_status": "Ativo — compartilhado",
       "cut": "P0: arts. 1º–15 (conceitos, planos decenais, colaboração, governança, monitoramento, conferências, FNE, Inep e planos de ações); arts. 16–27 (financiamento, CAQ e Programa Nacional de Infraestrutura Escolar); arts. 28–37 (180 dias, 18 meses, 120 dias, 6 meses, 12/15 meses); Anexo I: Objetivos 1 e 2 (Educação Infantil), 17 (profissionais), 18 (gestão democrática) e 19 (financiamento/infraestrutura). Usar Anexos III e IV como calendário de revisão.",
       "alert": "Lei nº 15.388/2026 vigente desde sua publicação em 15/04/2026, com duração do PNE de 10 anos contados da publicação. O Anexo II foi republicado em 17/04/2026 por inexatidão material. Rechecagem em 11/09/2026: não foi identificada revogação expressa nem alteração legislativa posterior da Lei. Estados e DF devem publicar seus planos em até 12 meses; Municípios, em até 15 meses. Monitorar a adequação/publicação do novo Plano Distrital de Educação.",
       "block": "Bloco 07",
@@ -473,6 +520,8 @@
         "Analista - Monitor"
       ],
       "action": "Estudar agora",
+      "documentary_strength": "🚨 Confirmado pelo TR atual",
+      "strategic_status": "Ativo — compartilhado",
       "cut": "P0: arts. 4º–54 (cargo, provimento, posse, exercício, estágio, estabilidade, retorno e vacância); art. 64; recorte dirigido dos direitos, com atenção ao art. 178; art. 180; arts. 181–210 (responsabilidades, infrações, sanções e prescrição); arts. 211–267 (sindicância e PAD). Complementar arts. 22–31 com Decreto nº 48.806/2026. Números-chave: 30 dias posse; 5 dias úteis exercício; 3 anos estágio; 5/2/1 anos prescrição; 30+30 sindicância; 60+60 PAD; suspensão de prazos de 20/12 a 20/01.",
       "alert": "Usar exclusivamente o texto compilado vigente do SINJ, que incorpora alterações legislativas, revogações e notas de controle de constitucionalidade. Rechecagem em 11/09/2026: o texto consolidado permanece vigente e registra como atualização normativa de 2026 a regulamentação dos arts. 22–31 pelo Decreto nº 48.806/2026. Título VI = Regime Disciplinar; Título VII = Processos de Apuração de Infração Disciplinar. Não estudar por PDF antigo isolado.",
       "block": "Blocos 08–09",
@@ -521,6 +570,8 @@
         "Analista - Monitor"
       ],
       "action": "Estudar agora",
+      "documentary_strength": "🚨 Confirmado pelo TR atual",
+      "strategic_status": "Ativo — compartilhado",
       "cut": "P0/P1: art. 19 e arts. 19–32 (princípios, concurso, funções/cargos, acumulação, Administração indireta e atualização da ELO 134/2026); arts. 33–44, com atenção ao art. 35 e comparação com LC 840; arts. 221–244, com foco em arts. 221–225, 229, 232, 234, 235, 239, 241 e 244. Números-chave: educação obrigatória 4–17; creche 0–3; pré-escola 4–5; mínimo constitucional/orgânico de 25% da receita de impostos em MDE; relatório educacional em até 30 dias após cada bimestre.",
       "alert": "Usar o texto atualizado da CLDF. Rechecagem em 11/09/2026: a ELO nº 134/2026 é a alteração mais recente localizada com impacto no recorte desta L06, acrescentando os incisos XXIV e XXV ao art. 19 e alterando outros dispositivos. Não foi localizada ELO posterior já promulgada que modifique Administração/servidores/educação no recorte estudado. Confrontar sempre LODF com CF/88, LC 840 e legislação educacional específica.",
       "block": "Bloco 10",
@@ -569,6 +620,8 @@
         "Analista - Monitor"
       ],
       "action": "Estudar agora",
+      "documentary_strength": "🟢 Base histórica forte",
+      "strategic_status": "Ativo — compartilhado",
       "cut": "P0/P1: arts. 1º–9º; arts. 21–35 (Assembleia Geral, Conselho Escolar e Conselho de Classe); arts. 37–48 (direção, requisitos, mandato, vacância e processo eleitoral); art. 54-A. Números-chave: Assembleia ordinária semestral; convocação 15 dias/3 dias úteis; Conselho Escolar 5–21 membros, reunião mensal, 48 h; Conselho de Classe bimestral; mandatos atuais 3 anos; curso de gestão 75%; dupla vacância antes de 2/3 = eleição em até 20 dias; hipóteses legais de repetição do pleito = até 180 dias.",
       "alert": "Texto compilado vigente. Rechecagem em 11/09/2026: a alteração legislativa mais recente localizada é a Lei nº 7.784/2025, que deu nova redação aos arts. 28 e 41 e acrescentou o art. 54-A. Mandato atual de conselheiro escolar = 3 anos; mandato de diretor/vice = 3 anos, iniciado em 2 de janeiro do ano seguinte à eleição, com reeleição por igual período. Art. 54-A cria impedimento de assunção de mandato em hipóteses legais de condenação. Materiais que indiquem 4 anos estão desatualizados.",
       "block": "Bloco 10",
@@ -617,6 +670,8 @@
         "Analista - Monitor"
       ],
       "action": "Estudar agora",
+      "documentary_strength": "🟢 Base histórica forte",
+      "strategic_status": "Ativo — compartilhado",
       "cut": "P1/P0: arts. 1º–20; arts. 21–22 e 27; Educação Infantil arts. 40–41; EJA arts. 77–86-A pela redação de 2025; avaliação/regularização arts. 131–139; matrícula/transferência arts. 154–175; documentos organizacionais arts. 264 e 293. Números-chave: obrigatoriedade 4–17; EI/EF 800 h; EM 1.000 h; 200 dias; frequência EF/EM 75%; creche 0–3; pré-escola 4–5; corte EF 6 anos até 31/03; EJA 15/18; art. 293 = 30/12/2026.",
       "alert": "Texto compilado vigente. Rechecagem em 11/09/2026: não foi localizada resolução de 2026 alterando a Resolução CEDF nº 2/2023. Permanecem centrais as alterações da Resolução CEDF nº 1/2025 no bloco EJA e da Resolução CEDF nº 4/2025 no art. 293. O prazo do art. 86-A para implementação das novas diretrizes de EJA (31/07/2026) já transcorreu; o prazo atual do art. 293 é 30/12/2026.",
       "block": "Bloco 11",
@@ -665,6 +720,8 @@
         "Analista - Monitor"
       ],
       "action": "Leitura dirigida",
+      "documentary_strength": "🟡 Radar provável",
+      "strategic_status": "Ativo — núcleo comum",
       "cut": "P1: art. 1º, especialmente quatro eixos e §3º (articulação, não substituição); arts. 2º–5º; art. 3º e cinco dimensões; art. 6º (liderança escolar, avaliação e metas); art. 7º e alterações na LDB, especialmente art. 4º, XII, e art. 26, §11; art. 8º; art. 11. Números-chave: 4 eixos; 5 dimensões; Fust a partir de 01/01/2025.",
       "alert": "Lei nº 14.533/2023 vigente. Rechecagem oficial em 11/09/2026: não foi localizada alteração legislativa já sancionada ou revogação da PNED após a promulgação, em 22/12/2023, da parte vetada que inseriu o art. 26, §11, da LDB. Existem projetos legislativos em tramitação em 2026 sobre IA, segurança, proteção de dados e cidadania digital, mas eles não alteram a lei seca enquanto não convertidos em lei. Fust é fonte da PNED a partir de 01/01/2025.",
       "block": "Bloco 12",
@@ -713,6 +770,8 @@
         "Analista - Monitor"
       ],
       "action": "Leitura dirigida",
+      "documentary_strength": "🟡 Radar provável",
+      "strategic_status": "Ativo — núcleo comum",
       "cut": "P2: arts. 1º–6º (objeto, natureza, áreas, competências, fundos, estrutura e vinculados); art. 24 (Unidade de Apoio às CREs); art. 246 (subordinação das unidades escolares); art. 247 e seguintes (competências comuns); arts. 264–267. Proteção conceitual: Regimento Interno da SEEDF ≠ Regimento Escolar da Rede Pública. Cadeia: SEEDF central → CRE → unidade escolar.",
       "alert": "Rechecagem oficial em 11/09/2026: a Portaria nº 167, de 24/02/2026, da Secretaria de Estado de Economia, que aprova o Regimento Interno da SEEDF, permanece sem revogação expressa no SINJ. Não confundir com a Portaria SEEDF nº 167, de 04/03/2026, sobre contratação temporária de professor substituto, que foi revogada pela Portaria nº 222/2026.",
       "block": "Bloco 12",
@@ -761,6 +820,8 @@
         "Analista - Monitor"
       ],
       "action": "Radar / monitorar",
+      "documentary_strength": "🟡 Radar provável",
+      "strategic_status": "Radar normativo",
       "cut": "Radar: conversão das nomenclaturas após Lei nº 7.142/2022; nome da carreira e GIC pela Lei nº 7.353/2023; art. 17/recessos; art. 7º-B da Lei nº 7.692/2025; escolaridade dos arts. 6º, 7º e 7º-A; para Gestor Administração, Portaria Conjunta nº 36/2022. Promover para P1/P0 somente se o edital cobrar carreira ou requisitos com maior profundidade.",
       "alert": "Rechecagem oficial em 11/09/2026: a Lei nº 5.106/2013 permanece vigente no texto compilado; a alteração legislativa mais recente localizada continua sendo a Lei nº 7.692/2025, que alterou o Capítulo IV e acrescentou o art. 7º-B. Em 2026 há regulamentação complementar, como a Portaria nº 2/2026 sobre afastamento remunerado para estudos, sem alterar a Lei nº 5.106. Manter em Radar e não presumir requisitos finais de Apoio/Monitor antes do novo edital.",
       "block": "Bloco 12",
@@ -806,6 +867,8 @@
         "Gestor - Administração"
       ],
       "action": "Estudar agora",
+      "documentary_strength": "🟢 Base histórica forte",
+      "strategic_status": "Ativo — Gestor",
       "cut": "P0 Gestor: arts. 1º–18; arts. 28–33; arts. 72–75; arts. 89–95; arts. 105–117; arts. 124–154; arts. 155–168; arts. 169–175. Proteger: governança/segregação; sete fases; cinco modalidades × seis critérios; dispensa × inexigibilidade; contratos e fiscalização; quatro sanções e alcance; três linhas de defesa; PNCP/Sicx. Valores 2026: art. 75 I = R$ 130.984,20; art. 75 II = R$ 65.492,11; art. 95 §2º = R$ 13.098,41.",
       "alert": "Texto compilado vigente. Rechecagem em 11/09/2026: no recorte desta L12, permanecem relevantes a Lei nº 15.266/2025 (Sicx) e o Decreto nº 12.807/2025, que atualizou valores com vigência desde 01/01/2026. Não foi localizada lei de 2026 já sancionada alterando este recorte; projetos em tramitação não integram a lei seca. Valores do art. 75 e demais limites monetários são dinâmicos e devem ser reconferidos na data do edital.",
       "block": "G1",
@@ -851,6 +914,8 @@
         "Gestor - Administração"
       ],
       "action": "Estudar agora",
+      "documentary_strength": "🟢 Base histórica forte",
+      "strategic_status": "Ativo — Gestor",
       "cut": "P1 Gestor: arts. 1º e 4º; arts. 5º–30 (agentes, gestão e fiscalização); arts. 38–53 (PCA); planejamento e fase preparatória; arts. 189–217 (SRP); arts. 223–231 (contratação direta), com atenção especial aos arts. 224 e 228; cadastro/sanções e publicidade. Proteção conceitual: Lei 14.133 = regime federal; Decreto 44.330 = operacionalização distrital. Ata de registro de preços ≠ contrato.",
       "alert": "Usar sempre o texto compilado do SINJ. Rechecagem em 11/09/2026: o Decreto nº 44.330/2023 permanece vigente e a alteração normativa mais recente localizada continua sendo o Decreto nº 46.308/2024. Não foi identificado decreto de 2025/2026 que altere o texto compilado; atos de 2026, como a Portaria nº 421/2026 sobre o PCA 2027, operacionalizam o regulamento sem substituí-lo. Art. 224 vigente: autorização de dispensa/inexigibilidade pelos ordenadores de despesa, vedada delegação.",
       "block": "G2",
@@ -896,6 +961,8 @@
         "Gestor - Administração"
       ],
       "action": "Estudar agora",
+      "documentary_strength": "🟢 Base histórica forte",
+      "strategic_status": "Ativo — Gestor",
       "cut": "P1 Gestor/AFO: arts. 165–169. Proteger PPA, LDO e LOA; RREO; princípio da exclusividade; emendas; vedações do art. 167; regra de ouro; créditos extraordinários; gatilho de 95% do art. 167-A; duodécimos do art. 168; requisitos e providências do art. 169. Regra conjuntural do art. 165, §22, para 2026 = radar, não núcleo.",
       "alert": "Constituição vigente. Rechecagem oficial em 11/09/2026: texto da Câmara atualizado até a EC nº 139/2026. Essa emenda altera os arts. 31 e 75, sem impacto nos arts. 165–169. No recorte AFO, a alteração recente relevante continua sendo a EC nº 136/2025, inclusive §§ 18–22 do art. 165. A regra do §22 é específica do exercício financeiro de 2026.",
       "block": "G3",
@@ -941,6 +1008,8 @@
         "Gestor - Administração"
       ],
       "action": "Estudar agora",
+      "documentary_strength": "🟢 Base histórica forte",
+      "strategic_status": "Ativo — Gestor",
       "cut": "P1 Gestor/AFO: arts. 2º–6º; arts. 9º–15; arts. 34–39-A; arts. 40–46; arts. 58–69; arts. 75–82; arts. 83–105. Proteger: regime do art. 35; RP × DEA; créditos suplementar/especial/extraordinário; fontes do art. 43; empenho/liquidação/pagamento; controle prévio/concomitante/subsequente; quatro demonstrativos do art. 101.",
       "alert": "Lei nº 4.320/1964 vigente e sem revogação expressa. Rechecagem oficial em 11/09/2026: a alteração recente relevante localizada continua sendo a LC nº 208/2024, que acrescentou o art. 39-A. Não foi localizada alteração legislativa de 2025/2026 da Lei nº 4.320. Estudar em conjunto com CF/88 e LRF, sem tratar a redação histórica isoladamente como suficiente para todos os temas de AFO.",
       "block": "G3",
@@ -986,6 +1055,8 @@
         "Gestor - Administração"
       ],
       "action": "Estudar agora",
+      "documentary_strength": "🟢 Base histórica forte",
+      "strategic_status": "Ativo — Gestor",
       "cut": "P1 Gestor/AFO: arts. 1º–5º; arts. 8º–17, com foco especial nos arts. 14 e 14-A; arts. 18–23; arts. 29–42; arts. 48–59. Proteger Metas × Riscos; limitação de empenho; renúncia e art. 14-A; art. 16 × art. 17; pessoal 60%/49% e faixas 90/95/100; exceção de reposição em educação do art. 22; art. 42; RREO × RGF; transparência do art. 48.",
       "alert": "LRF vigente. Rechecagem oficial em 11/09/2026: a LC nº 224/2025, com efeitos relevantes desde 01/01/2026, alterou os arts. 5º, 14 e 48 e criou o art. 14-A. A LC nº 235/2026 não revogou a regra geral; apenas excepciona, de modo extraordinário e materialmente delimitado no exercício de 2026, a aplicação do art. 14-A em hipóteses federais específicas. Usar o texto compilado.",
       "block": "G3",
@@ -1031,6 +1102,8 @@
         "Gestor - Administração"
       ],
       "action": "Estudar agora",
+      "documentary_strength": "🟢 Base histórica forte",
+      "strategic_status": "Ativo — Gestor",
       "cut": "P1 Gestor/Administração Pública: arts. 1º–5º; art. 6º; arts. 7º–14; arts. 19–27. Proteger: Direta × Indireta; quatro entidades; cinco princípios fundamentais; descentralização × desconcentração; delegação de competência; controle e racionalização; supervisão ministerial × hierarquia.",
       "alert": "Decreto-Lei nº 200/1967 permanece sem revogação expressa, mas possui dispositivos alterados ou parcialmente revogados ao longo do tempo. Rechecagem oficial em 11/09/2026: não foi localizada alteração legislativa de 2025/2026 no recorte desta L17. Usar o texto atualizado e conciliar seus conceitos históricos com a CF/88 e legislação administrativa posterior.",
       "block": "G4",
@@ -1076,6 +1149,8 @@
         "Gestor - Administração"
       ],
       "action": "Leitura dirigida",
+      "documentary_strength": "🟢 Base histórica forte",
+      "strategic_status": "Ativo — Gestor",
       "cut": "P2 Gestor/Ética: Anexo II, especialmente arts. 1º–16; Anexo III, especialmente composição e competências da CGEP e das Comissões de Ética. Proteger: princípios além do LIMPE; ordem manifestamente ilegal; conflito de interesses; vantagens e exceções; censura ética × disciplina; CGEP 5+5; Comissão do órgão 3 efetivos + suplentes; mandato de 2 anos e uma recondução.",
       "alert": "Texto compilado vigente. Rechecagem em 11/09/2026: as alterações normativas mais recentes localizadas do Decreto nº 37.297/2016 continuam sendo os Decretos nº 42.973/2022 e nº 43.170/2022. Atos de 2025/2026 encontrados instituem/designam Comissões de Ética em órgãos específicos, sem alterar o Código. Não confundir censura ética com sanção disciplinar da LC nº 840/2011.",
       "block": "G4",
@@ -1121,6 +1196,8 @@
         "Analista - Apoio Administrativo"
       ],
       "action": "Estudar agora",
+      "documentary_strength": "🟢 Base histórica forte",
+      "strategic_status": "Ativo — Apoio",
       "cut": "P1 Apoio Administrativo: arts. 1º–9º; arts. 10–20; arts. 21–31; arts. 32–34. Proteger publicidade como regra; ativa × passiva; art. 8º e atualização dos arts. 8º-A/8º-B; pedido sem motivação; imediato → 20 + 10; recurso 10 → 5; 25/15/5; informação pessoal até 100 anos; acesso parcial; responsabilidades.",
       "alert": "LAI federal vigente. Rechecagem oficial em 11/09/2026: a atualização legislativa permanente mais recente localizada continua sendo a Lei nº 15.141/2025, que criou os arts. 8º-A e 8º-B. Projetos em tramitação em 2026, inclusive o PL nº 3.240/2025 aprovado pela Câmara e remetido ao Senado, ainda não integram a lei seca. Não transplantar automaticamente a estrutura recursal federal para o DF.",
       "block": "A1",
@@ -1166,6 +1243,8 @@
         "Analista - Apoio Administrativo"
       ],
       "action": "Estudar agora",
+      "documentary_strength": "🟢 Base histórica forte",
+      "strategic_status": "Ativo — Apoio",
       "cut": "P1 Apoio Administrativo: arts. 1º–13; arts. 14–22; arts. 23–33; arts. 35–36; arts. 45–46. Proteger SIC nas ouvidorias; transferências a unidades escolares; instrumentos arquivísticos; pedido sem motivação; imediato → 20 +10; recurso 10 → 5; CGDF × CGU; 25/15/5; informação pessoal 100 anos; autoridade de monitoramento.",
       "alert": "Lei DF nº 4.990/2012 vigente no texto compilado do SINJ. Rechecagem em 11/09/2026: não foi localizada alteração legislativa de 2025/2026 da lei; atos recentes encontrados apenas operacionalizam/designam autoridades de monitoramento em órgãos específicos. Ler nomenclaturas institucionais históricas em conjunto com a estrutura vigente da CGDF e com o Decreto nº 34.276/2013.",
       "block": "A1",
@@ -1211,6 +1290,8 @@
         "Analista - Apoio Administrativo"
       ],
       "action": "Estudar agora",
+      "documentary_strength": "🟢 Base histórica forte",
+      "strategic_status": "Ativo — Apoio",
       "cut": "P1 Apoio Administrativo: arts. 9º–24; arts. 25–41; arts. 42–48; arts. 49–55. Proteger negativa × omissão; 1º recurso 10→5; 2º recurso 10→5; reclamação por omissão a partir de 30 dias; 3ª instância atual CGDF; 25/15/5; delegação; TCI; informação pessoal 100 anos; publicação anual até 1º de maio.",
       "alert": "Decreto DF nº 34.276/2013 vigente como regulamentação da LAI no Executivo do DF. Rechecagem em 11/09/2026: não foi localizada alteração substantiva de 2025/2026; usar o texto compilado, que já incorpora alterações históricas. Não confundir negativa (recurso) com omissão (reclamação), nem CGDF com CGU.",
       "block": "A1",
@@ -1256,6 +1337,8 @@
         "Analista - Apoio Administrativo"
       ],
       "action": "Estudar agora",
+      "documentary_strength": "🟢 Base histórica forte",
+      "strategic_status": "Ativo — Apoio",
       "cut": "P1 Apoio/Arquivologia: arts. 1º–10; arts. 11–21; arts. 25–26. Proteger conceito de arquivo; gestão documental; corrente/intermediário/permanente; eliminação com autorização; recolhimento; permanente inalienável e imprescritível; arquivos privados de interesse público/social; competências federativas; arts. 22–24 revogados; CONARQ/SINAR.",
       "alert": "Lei nº 8.159/1991 vigente no núcleo aplicável; arts. 22–24 permanecem revogados pela LAI. Rechecagem em 11/09/2026: a atualização recente relevante está na regulamentação, especialmente o Decreto nº 12.599/2025, que alterou o Decreto nº 4.073/2002. Não usar o antigo regime de sigilo da Lei nº 8.159 como vigente.",
       "block": "A2",
@@ -1301,6 +1384,8 @@
         "Analista - Apoio Administrativo"
       ],
       "action": "Estudar agora",
+      "documentary_strength": "🟢 Base histórica forte",
+      "strategic_status": "Ativo — Apoio",
       "cut": "P1 Apoio/Arquivologia digital: arts. 1º–7º da Resolução; conceito de e-ARQ e SIGAD; Parte I × Parte II; requisitos funcionais × não funcionais; O/AD/F × O/OA/F; captura; classificação; TTD; metadados; confiabilidade × autenticidade; segurança e preservação. Não decorar códigos individuais de centenas de requisitos antes do edital.",
       "alert": "Resolução CONARQ nº 50/2022 vigente e continua estabelecendo o e-ARQ Brasil Versão 2. Rechecagem oficial em 11/09/2026: o catálogo do CONARQ mantém a nº 50; Resoluções posteriores nº 51–54/2023 complementam temas de preservação e LGPD, sem substituí-la. e-ARQ não é software nem tabela de temporalidade.",
       "block": "A2",
@@ -1346,6 +1431,8 @@
         "Analista - Apoio Administrativo"
       ],
       "action": "Reaproveitamento",
+      "documentary_strength": "🟢 Base histórica forte",
+      "strategic_status": "Ativo — Apoio",
       "cut": "P2 Apoio/Reaproveitamento: arts. 5º–12; art. 17; art. 18; arts. 72–75; arts. 89–95; art. 117; art. 140 e pagamentos quando aderentes. Priorizar DFD × ETP × TR; segregação; contratação direta; instrumentos hábeis; fiscalização e recebimento de compras/bens.",
       "alert": "Mesmo texto vigente já auditado na L12. Rechecagem em 11/09/2026: permanecem relevantes Sicx (Lei nº 15.266/2025) e valores de 2026 do Decreto nº 12.807/2025. Não duplicar carga do Gestor nem contabilizar novamente questão já registrada na L12.",
       "block": "A3",
@@ -1391,6 +1478,8 @@
         "Analista - Monitor"
       ],
       "action": "Radar / monitorar",
+      "documentary_strength": "⏸️ Suspenso",
+      "strategic_status": "Radar — suspenso até edital",
       "cut": "P0 Monitor: arts. 1º–6º; 15–18-B; 53–59; 70–70-B; 98–101; 129–136. Atualizações 2025/2026: assistência afetiva; art. 11-A; art. 56 IV; art. 89-A; art. 136; Lei nº 15.487/2026. Proteger: idade; prioridade absoluta; educação; dever de comunicação; medidas de proteção; Conselho Tutelar; Monitor protege/comunica, não investiga nem pune informalmente.",
       "alert": "ECA vigente no texto compilado. Rechecagem em 24/09/2026: o texto atualizado incorpora alterações de 2026 já vigentes. A Lei nº 15.450/2026 permanece em vacatio legis de 180 dias desde a publicação de 01/07/2026 e ainda não deve ser tratada como regra vigente; usar sempre o texto compilado.",
       "block": "M1",
@@ -1437,6 +1526,8 @@
         "Núcleo comum"
       ],
       "action": "Estudar agora",
+      "documentary_strength": "🟢 Base histórica forte",
+      "strategic_status": "Ativo — compartilhado",
       "cut": "P0 Monitor/Núcleo comum: arts. 1º–9º; arts. 27–30; art. 3º, XIII e XV; art. 18, §4º, V; conceitos de deficiência, avaliação biopsicossocial, seis barreiras, acessibilidade, desenho universal, adaptação razoável, tecnologia assistiva, profissional de apoio escolar, educação inclusiva/AEE e comunicação aumentativa/alternativa. Atualização 2026: Tourette pode gerar enquadramento como PCD quando houver comprometimento significativo e avaliação biopsicossocial.",
       "alert": "LBI vigente no texto compilado. Rechecagem em 11/09/2026: Lei nº 15.249/2025 permanece relevante para comunicação aumentativa/alternativa; Lei nº 15.280/2025 atualizou o art. 18, §4º, V; Lei nº 15.492/2026, publicada em 03/09/2026, estabelece que pessoa com síndrome de Tourette será considerada PCD quando os sintomas comprometerem significativamente funcionalidade/participação social, conforme avaliação biopsicossocial da LBI. Não tratar Tourette como enquadramento automático e incondicionado.",
       "block": "M2",
@@ -1483,6 +1574,8 @@
         "Núcleo comum"
       ],
       "action": "Estudar agora",
+      "documentary_strength": "🟢 Base histórica forte",
+      "strategic_status": "Ativo — compartilhado",
       "cut": "P1 Monitor/Núcleo comum: arts. 1º–4º-A; arts. 5º–10; art. 11; art. 12; arts. 13–15; arts. 16–21; art. 23. Proteger: deficiência + TEA + altas habilidades; transversalidade; classe comum; AEE complementar × suplementar; estudo de caso; PAEE + PEI; AEE e apoio sem laudo; apoio escolar; professor AEE 360h; apoio nível médio + 180h; Rede Nacional; revogação do Decreto nº 7.611/2011.",
       "alert": "Decreto nº 12.686/2025 vigente com redação consolidada pelo Decreto nº 12.773/2025. Rechecagem oficial em 11/09/2026: não foi localizado decreto de 2026 alterando ou substituindo esse regime. Usar sempre o texto consolidado; material que traga 80h para professor/Apoio está desatualizado após o Decreto nº 12.773/2025.",
       "block": "M3",
@@ -1528,6 +1621,8 @@
         "Analista - Monitor"
       ],
       "action": "Radar / monitorar",
+      "documentary_strength": "⏸️ Suspenso",
+      "strategic_status": "Radar — suspenso até edital",
       "cut": "P1 Monitor: arts. 1º–8º; art. 10; arts. 11–21; arts. 22–26. Proteger: modalidade transversal; público; matrícula sem laudo; enturmação 1–3 + Estratégia de Matrícula anual; estudo de caso/CEE; PEI; avaliação biopsicossocial; terminalidade específica; AEE complementar × suplementar; PAEE sem laudo; sala de recursos; apoio escolar; art. 26 com alcance além do público estrito do art. 2º.",
       "alert": "Resolução CEDF nº 3/2023 vigente e sem revogação expressa. Rechecagem em 11/09/2026: não foi localizada alteração específica posterior; atos da SEEDF de 2026 continuam aplicando expressamente a norma. Deve ser interpretada em compatibilidade com os Decretos nº 12.686/2025 e nº 12.773/2025, sem restringir direitos assegurados pela política nacional vigente.",
       "block": "M4",
@@ -1573,6 +1668,8 @@
         "Analista - Monitor"
       ],
       "action": "Radar / monitorar",
+      "documentary_strength": "⏸️ Suspenso",
+      "strategic_status": "Radar — suspenso até edital",
       "cut": "Arts. 1º–6º e 8º–10; concepção de criança, currículo, princípios, proposta pedagógica, avaliação e transição na Educação Infantil.",
       "alert": "Usar como referência normativa da Educação Infantil e confrontar com alterações posteriores do sistema educacional quando o edital sair.",
       "block": "M5",
@@ -1618,6 +1715,8 @@
         "Analista - Monitor"
       ],
       "action": "Radar / monitorar",
+      "documentary_strength": "⏸️ Suspenso",
+      "strategic_status": "Radar — suspenso até edital",
       "cut": "Atendimento prioritário, acessibilidade, barreiras e regulamentação histórica; usar como complemento à LBI.",
       "alert": "Base histórica ainda útil, mas subordinada à LBI e às normas atuais de inclusão.",
       "block": "M5",
@@ -1667,6 +1766,8 @@
         "Analista - Monitor"
       ],
       "action": "Radar / monitorar",
+      "documentary_strength": "⏸️ Suspenso",
+      "strategic_status": "Radar — suspenso até edital",
       "cut": "Atendimento prioritário, acessibilidade, barreiras e regulamentação histórica; usar como complemento à LBI.",
       "alert": "Base histórica ainda útil, mas subordinada à LBI e às normas atuais de inclusão.",
       "block": "M5",
@@ -1716,6 +1817,8 @@
         "Analista - Monitor"
       ],
       "action": "Radar / monitorar",
+      "documentary_strength": "⏸️ Suspenso",
+      "strategic_status": "Radar — suspenso até edital",
       "cut": "Atendimento prioritário, acessibilidade, barreiras e regulamentação histórica; usar como complemento à LBI.",
       "alert": "Base histórica ainda útil, mas subordinada à LBI e às normas atuais de inclusão.",
       "block": "M5",
@@ -1765,6 +1868,8 @@
         "Analista - Monitor"
       ],
       "action": "Radar / monitorar",
+      "documentary_strength": "⏸️ Suspenso",
+      "strategic_status": "Radar — suspenso até edital",
       "cut": "Identificação, atendimento e direitos educacionais de estudantes com altas habilidades ou superdotação; conexão com Educação Especial.",
       "alert": "Norma vigente de 2026 e aderente à Educação Especial. Enquanto Monitor estiver em Radar, preservar sem carga obrigatória; reclassificar apenas se o edital ou ato oficial justificar.",
       "block": "M6",
@@ -1810,6 +1915,8 @@
         "Analista - Monitor"
       ],
       "action": "Radar / monitorar",
+      "documentary_strength": "⏸️ Suspenso",
+      "strategic_status": "Radar — suspenso até edital",
       "cut": "Art. 14, §6º, acrescentado ao ECA; estudar apenas como atualização futura enquanto não entrar em vigor.",
       "alert": "Publicada no DOU de 01/07/2026. O art. 2º prevê vacatio legis de 180 dias; pela regra de contagem aplicável, a vigência começa em 28/12/2026. Em 24/09/2026 ainda não é regra vigente do ECA.",
       "block": "M6",
@@ -1855,6 +1962,8 @@
         "Analista - Monitor"
       ],
       "action": "Radar / monitorar",
+      "documentary_strength": "🟡 Radar provável",
+      "strategic_status": "Radar normativo",
       "cut": "Acompanhar elaboração/publicação do plano distrital em adequação ao PNE de 2026; substituir a referência histórica quando houver novo texto vigente.",
       "alert": "Em 11/09/2026 não foi localizado novo Plano Distrital de Educação publicado. A Lei DF nº 5.499/2015 segue como referência histórica/local, e a SEEDF continua monitorando esse PDE por comissão própria; a Portaria SEEDF nº 371/2026, de 28/08/2026, ainda altera a composição da comissão de monitoramento. O novo PNE de 2026 exige adequação do plano distrital, portanto manter Radar forte até publicação de nova lei.",
       "block": "Radar",
@@ -1868,12 +1977,12 @@
   ],
   "audit_notes": [
     "34 páginas L01–L34 usam 32 registros diretamente mapeados; L30 + L31 + L32 compartilham o registro M5 de acessibilidade.",
-    "No M5, resumos, leituras e número de sessões são derivados por Página Lxx no Histórico; questões, Flashcards feitos?, D0, D7 e D20 permanecem checkpoints do bloco compartilhado.",
+    "No M5, resumos, leituras e número de sessões são derivados por Página Lxx no Histórico. Pós-TR, a meta obrigatória do bloco é 0 e as 10 questões antigas permanecem opcionais enquanto Monitor estiver suspenso.",
     "O 33º registro do banco é o Radar 901 do novo PDE/DF, fora da numeração L01–L34.",
-    "L11 permanece com meta operacional 0 enquanto o edital não fechar cargos e escolaridade.",
-    "L33 é Radar forte com 10 questões de familiarização.",
-    "L34 permanece com meta operacional 0 durante a vacatio legis; vigência em 28/12/2026.",
-    "A propriedade Questões-meta do BANCO — LEGISLAÇÃO SEEDF é a referência operacional.",
+    "Metas obrigatórias iguais a 0 são respeitadas literalmente; conteúdo opcional ou Radar não cria dívida de execução.",
+    "L33 permanece Radar suspenso: 0 questões obrigatórias e 10 opcionais preservadas como acervo.",
+    "L34 permanece Radar suspenso: 0 obrigatórias e 8 opcionais; a Lei nº 15.450/2026 entra em vigor em 28/12/2026.",
+    "Questões-meta + Questões adicionais definem a carga obrigatória; Questões opcionais ficam fora da dívida e da continuidade canônica.",
     "As páginas L01–L34 são publicadas também como páginas internas do site; o Notion permanece como fonte operacional."
   ]
 }
