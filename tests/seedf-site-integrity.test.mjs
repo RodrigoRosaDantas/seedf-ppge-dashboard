@@ -310,7 +310,7 @@ test("the Pages workflow validates the exact final artifact before publishing", 
   const prepareIndex = workflow.indexOf("node scripts/prepare-github-pages.mjs");
   const enhanceIndex = workflow.indexOf("node scripts/enhance-leis-pages.mjs");
   const renderedIndex = workflow.indexOf("npm run test:rendered");
-  const uploadIndex = workflow.indexOf("actions/upload-pages-artifact@v3");
+  const uploadIndex = workflow.indexOf("actions/upload-pages-artifact@");
   assert.ok(sourceIndex >= 0 && sourceIndex < buildIndex);
   assert.ok(buildIndex < prepareIndex && prepareIndex < enhanceIndex);
   assert.ok(enhanceIndex < renderedIndex && renderedIndex < uploadIndex);
