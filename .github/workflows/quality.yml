@@ -45,8 +45,11 @@ jobs:
       - name: Type check
         run: npm run type-check
 
-      - name: Dependency audit
+      - name: Dependency audit · production
         run: npm run audit:deps
+
+      - name: Dependency audit · toolchain critical
+        run: npm run audit:toolchain
 
       - name: Validate snapshots
         run: npm run validate:snapshot

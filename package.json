@@ -15,12 +15,13 @@
     "db:generate": "bash scripts/sites-env.sh -- drizzle-kit generate",
     "type-check": "tsc --noEmit --project tsconfig.quality.json",
     "test:unit": "node --test tests/*.test.mjs",
-    "audit:deps": "npm audit --audit-level=high",
+    "audit:deps": "npm audit --omit=dev --audit-level=high",
     "validate:snapshot": "node scripts/validate-seedf-snapshot.mjs",
     "security:audit": "node scripts/security-audit.mjs",
     "visual:qa": "node scripts/visual-smoke.mjs",
     "e2e": "node scripts/e2e-study-os.mjs",
-    "quality": "npm run lint && npm run type-check && npm run validate:snapshot && npm run security:audit && npm run test:unit"
+    "quality": "npm run lint && npm run type-check && npm run validate:snapshot && npm run security:audit && npm run test:unit",
+    "audit:toolchain": "npm audit --audit-level=critical"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",

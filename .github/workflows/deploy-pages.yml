@@ -44,6 +44,7 @@ jobs:
           npm run lint
           npm run type-check
           npm run audit:deps
+          npm run audit:toolchain
           npm run validate:snapshot
           npm run security:audit
           npm run test:unit
