@@ -181,11 +181,12 @@ async function buildSnapshot(token: string): Promise<DashboardSnapshot> {
       next_action:
         firstMatch(sourceText, /Próxima ação operacional:\s*([^\.\n]+)/i) ||
         "D01 · Português fino + LDB",
-      planned_questions: firstNumber(sourceText, /metas fixas somam\s*([\d.]+)\s*questões/i) || 385,
-      projected_questions: 455,
+      planned_questions: firstNumber(sourceText, /metas fixas somam\s*([\d.]+)\s*questões/i) || 355,
+      projected_questions: 425,
       executed_questions: executedQuestions,
-      verticalized_axes: 60,
-      jobs: 3,
+      verticalized_axes: 64,
+      jobs: 2,
+      radar_jobs: 1,
     },
     materials,
     execution,
@@ -706,7 +707,7 @@ const META_BY_DAY: Record<string, string> = {
   D10: "35 questões",
   D11: "35 questões",
   D12: "35 questões",
-  D13: "30 questões",
+  D13: "0 questões · nova bateria pendente",
   D14: "40 questões · adaptativo",
 };
 
@@ -765,6 +766,7 @@ type DashboardSnapshot = {
     executed_questions: number | null;
     verticalized_axes: number;
     jobs: number;
+    radar_jobs?: number;
   };
   materials: MaterialsSnapshot | null;
   execution: ExecutionSnapshot | null;
