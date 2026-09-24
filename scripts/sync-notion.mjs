@@ -282,33 +282,33 @@ function buildExecutionSnapshot(dayPages, questionPages, errorPages, legislation
       precision: null,
       rows: 0,
     };
-    current.planned += propertyNumeric(properties, "Meta de questões");
-    current.done += propertyNumeric(properties, "Questões feitas");
-    current.correct += propertyNumeric(properties, "Acertos");
-    current.errors += propertyNumeric(properties, "Erros");
-    current.doubts += propertyNumeric(properties, "Acertos com dúvida");
+    current.planned = strictAdd(current.planned, propertyNumeric(properties, "Meta de questões"));
+    current.done = strictAdd(current.done, propertyNumeric(properties, "Questões feitas"));
+    current.correct = strictAdd(current.correct, propertyNumeric(properties, "Acertos"));
+    current.errors = strictAdd(current.errors, propertyNumeric(properties, "Erros"));
+    current.doubts = strictAdd(current.doubts, propertyNumeric(properties, "Acertos com dúvida"));
     current.rows += 1;
     current.precision = precision(current.correct, current.done);
     subjects.set(subject, current);
   }
 
-  const fixedMeta = Array.from(subjects.values()).reduce((sum, subject) => sum + subject.planned, 0);
+  const fixedMeta = Array.from(subjects.values()).reduce((sum, subject) => strictAdd(sum, subject.planned), 0);
   const totals = days.reduce(
     (sum, day) => ({
-      planned: sum.planned + day.planned,
+      planned: strictAdd(sum.planned, day.planned),
       fixed_meta: fixedMeta,
-      done: sum.done + day.done,
-      correct: sum.correct + day.correct,
-      errors: sum.errors + day.errors,
-      doubts: sum.doubts + day.doubts,
-      minutes: sum.minutes + day.minutes,
+      done: strictAdd(sum.done, day.done),
+      correct: strictAdd(sum.correct, day.correct),
+      errors: strictAdd(sum.errors, day.errors),
+      doubts: strictAdd(sum.doubts, day.doubts),
+      minutes: strictAdd(sum.minutes, day.minutes),
       precision: null,
       progress: 0,
     }),
     { planned: 0, fixed_meta: fixedMeta, done: 0, correct: 0, errors: 0, doubts: 0, minutes: 0, precision: null, progress: 0 },
   );
   totals.precision = precision(totals.correct, totals.done);
-  totals.progress = totals.planned > 0 ? totals.done / totals.planned : null;
+  totals.progress = totals.planned !== null && totals.done !== null && totals.planned > 0 ? totals.done / totals.planned : null;
 
   const statuses = {};
   for (const day of days) statuses[day.status] = (statuses[day.status] || 0) + 1;
@@ -342,25 +342,25 @@ function buildExecutionSnapshot(dayPages, questionPages, errorPages, legislation
     );
 
   const lawTotals = lawDays.reduce((sum, day) => {
-    sum.planned += day.planned;
-    sum.done += day.done;
-    sum.correct += day.correct;
-    sum.errors += day.errors;
-    sum.doubts += day.doubts;
-    sum.minutes += day.minutes;
+    sum.planned = strictAdd(sum.planned, day.planned);
+    sum.done = strictAdd(sum.done, day.done);
+    sum.correct = strictAdd(sum.correct, day.correct);
+    sum.errors = strictAdd(sum.errors, day.errors);
+    sum.doubts = strictAdd(sum.doubts, day.doubts);
+    sum.minutes = strictAdd(sum.minutes, day.minutes);
     return sum;
   }, { planned: 0, done: 0, correct: 0, errors: 0, doubts: 0, minutes: 0, precision: null });
   lawTotals.precision = precision(lawTotals.correct, lawTotals.done);
 
   const sessionTotals = legislationSessions.reduce((sum, session) => {
-    sum.sessions += session.session_counter;
-    sum.summaries += session.summary_counter;
-    sum.readings += session.reading_counter;
-    sum.questions += session.questions_done;
-    sum.correct += session.correct;
-    sum.errors += session.errors;
-    sum.doubts += session.doubts;
-    sum.flashcards += session.flashcards;
+    sum.sessions = strictAdd(sum.sessions, session.session_counter);
+    sum.summaries = strictAdd(sum.summaries, session.summary_counter);
+    sum.readings = strictAdd(sum.readings, session.reading_counter);
+    sum.questions = strictAdd(sum.questions, session.questions_done);
+    sum.correct = strictAdd(sum.correct, session.correct);
+    sum.errors = strictAdd(sum.errors, session.errors);
+    sum.doubts = strictAdd(sum.doubts, session.doubts);
+    sum.flashcards = strictAdd(sum.flashcards, session.flashcards);
     return sum;
   }, { sessions: 0, summaries: 0, readings: 0, questions: 0, correct: 0, errors: 0, doubts: 0, flashcards: 0, precision: null });
   sessionTotals.precision = precision(sessionTotals.correct, sessionTotals.questions);
@@ -446,8 +446,8 @@ function parseLeisPrimeiroDay(page) {
     title: propertyText(properties, "Dia") || dayId,
     page_code: pageCode,
     progress: propertyText(properties, "Progresso da sessão"),
-    summary_number: propertyNumeric(properties, "Resumo nº") || null,
-    reading_number: propertyNumeric(properties, "Leitura nº") || null,
+    summary_number: propertyNumeric(properties, "Resumo nº"),
+    reading_number: propertyNumeric(properties, "Leitura nº"),
     status: propertyText(properties, "Situação") || "Sem situação",
     phase: propertyText(properties, "Fase") || null,
     type: propertyText(properties, "Tipo") || "Temático",
@@ -541,8 +541,8 @@ function parseLegislationSession(page) {
     modality: propertyText(properties, "Modalidade") || null,
     progress: propertyText(properties, "Progresso da sessão") || null,
     source: propertyText(properties, "Fonte") || null,
-    summary_number: propertyNumeric(properties, "Resumo nº") || null,
-    reading_number: propertyNumeric(properties, "Leitura nº") || null,
+    summary_number: propertyNumeric(properties, "Resumo nº"),
+    reading_number: propertyNumeric(properties, "Leitura nº"),
     summary_counter: propertyNumeric(properties, "Contador — resumo"),
     reading_counter: propertyNumeric(properties, "Contador — leitura"),
     session_counter: propertyNumeric(properties, "Contador — sessão"),
@@ -651,6 +651,11 @@ function propertyUrl(properties, name) {
 
 function propertyDate(properties, name) {
   return properties?.[name]?.date?.start || null;
+}
+
+function strictAdd(left, right) {
+  if (left === null || right === null) return null;
+  return left + right;
 }
 
 function precision(correct, done) {
