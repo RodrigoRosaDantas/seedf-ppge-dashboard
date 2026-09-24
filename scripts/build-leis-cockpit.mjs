@@ -72,9 +72,8 @@ function extractStylesheetLinks(source, prefix = "../") {
 }
 
 function radarLaw(law) {
-  const action = String(law.action || "").toLocaleLowerCase("pt-BR");
-  const priority = String(law.priority || "").toLocaleLowerCase("pt-BR");
-  return action.includes("radar") || priority.includes("radar");
+  const state = `${law.strategic_status || ""} ${law.action || ""} ${law.priority || ""}`.toLocaleLowerCase("pt-BR");
+  return /radar|suspenso|fora do escopo/.test(state);
 }
 
 function operationalUnits(laws = []) {
@@ -92,8 +91,8 @@ function rowForLaw(law, rowsByCode) {
 }
 
 function stateFor(law, row) {
-  const questionTarget = number(law.shared_block ? 10 : (row?.operational_question_target ?? law.operational_target_total ?? row?.question_target ?? law.question_target));
-  const questionsDone = number(row?.questions_done);
+  const questionTarget = number(law.operational_target_total ?? row?.operational_question_target ?? law.question_target ?? row?.question_target);
+  const questionsDone = number(law.questions_done ?? row?.questions_done);
   const flashcardsDone = Boolean(row?.flashcards_done ?? law.flashcards_done);
   const summariesDone = number(law.shared_block ? law.summaries_done : (row?.summaries_done ?? law.summaries_done));
   const readingsDone = number(law.shared_block ? law.readings_done : (row?.readings_done ?? law.readings_done));
@@ -103,7 +102,7 @@ function stateFor(law, row) {
   const d20 = Boolean(row?.d20 ?? law.d20);
   const hasSummary = summariesDone !== null && summariesDone > 0;
   const hasReading = readingsDone !== null && readingsDone > 0;
-  const questionsComplete = questionTarget !== null && questionsDone !== null && questionTarget > 0 && questionsDone >= questionTarget;
+  const questionsComplete = questionTarget === 0 || (questionTarget !== null && questionsDone !== null && questionTarget > 0 && questionsDone >= questionTarget);
   const complete = !radarLaw(law) && orientation && hasSummary && hasReading && questionsComplete && flashcardsDone && d0;
   let nextStep = row?.next_step || "1 · Ler orientação";
   if (radarLaw(law)) nextStep = row?.action || law.action || "Radar / monitorar";
@@ -220,7 +219,7 @@ export async function buildLeisCockpit(sourceHtml) {
   const current = executable.find((law) => !stateFor(law, rowForLaw(law, rowsByCode)).complete) || executable[0] || laws[0];
   const currentState = current ? stateFor(current, rowForLaw(current, rowsByCode)) : { nextStep: "Aguardando sincronização" };
   const completed = executable.filter((law) => stateFor(law, rowForLaw(law, rowsByCode)).complete).length;
-  const totalQuestions = laws.filter((law) => !radarLaw(law)).reduce((sum, law) => sum + (law.shared_block && law.code !== "L30" ? 0 : number(law.operational_target_total ?? law.question_target)), 0);
+  const totalQuestions = operationalUnits(laws).reduce((sum, law) => sum + number(law.operational_target_total ?? law.question_target), 0);
   const mapped = snapshot.summary?.mapped_law_records ?? snapshot.summary?.mapped_operational_records ?? 32;
   const radarRecords = snapshot.summary?.radar_records ?? (Array.isArray(snapshot.radars) ? snapshot.radars.length : 1);
   const radarLaws = laws.filter(radarLaw);
@@ -237,7 +236,7 @@ export async function buildLeisCockpit(sourceHtml) {
   const currentChecks = current ? `${checkpoint("Orientação", currentState.orientation)}${checkpoint("Resumo", currentState.hasSummary)}${checkpoint("Lei seca", currentState.hasReading)}${checkpoint("Questões", currentState.questionsComplete)}${checkpoint("Flashcards", currentState.flashcardsDone)}${checkpoint("D0", currentState.d0)}${checkpoint("D7/D20", currentState.d7 && currentState.d20)}` : checkpoint("Sincronização", false);
   const latestExecution = snapshot.execution?.days?.[0] || null;
   const latestLaw = latestExecution ? laws.find((law) => law.code === latestExecution.page_code) : null;
-  const latestErrors = latestExecution ? (snapshot.execution?.errors || []).filter((item) => item.day_id === latestExecution.day_id) : [];
+  const latestErrors = latestExecution ? (snapshot.execution?.errors || []).filter((item) => item.day_id === latestExecution.day_id && !/radar|suspenso|historico/i.test(String(item.strategic_use || "").toLocaleLowerCase("pt-BR"))) : [];
   const formatExecutionPercent = (value) => {
     const parsed = Number(value);
     if (!Number.isFinite(parsed)) return "—";
