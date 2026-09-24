@@ -116,6 +116,8 @@ const rows = pages.map((page) => {
     status: text(p, "Status"),
     study_phase: text(p, "Fase de estudo"),
     action: text(p, "Ação atual"),
+    documentary_strength: text(p, "Força documental") || null,
+    strategic_status: text(p, "Status estratégico pós-TR") || null,
     official_url: url(p, "Fonte oficial"),
     question_target: number(p, "Questões-meta"),
     questions_additional: number(p, "Questões adicionais"),
@@ -149,10 +151,21 @@ const rows = pages.map((page) => {
   };
 }).filter((row) => row.operational_order > 0).sort((a, b) => a.operational_order - b.operational_order);
 
+const strategicStatuses = Object.fromEntries([...rows.reduce((map, row) => {
+  const key = row.strategic_status || "Sem classificação";
+  map.set(key, (map.get(key) || 0) + 1);
+  return map;
+}, new Map())]);
+
 const snapshot = {
-  schema_version: 4,
+  schema_version: 5,
   source: { kind: "notion", database_id: DATABASE_ID, database_url: notionUrl(DATABASE_ID), data_source_id: DATA_SOURCE_ID, synced_at: new Date().toISOString() },
-  summary: { records: rows.length, trail_records: rows.filter((r) => r.record_kind === "trilha").length, radar_records: rows.filter((r) => r.record_kind === "radar").length },
+  summary: {
+    records: rows.length,
+    trail_records: rows.filter((r) => r.record_kind === "trilha").length,
+    radar_records: rows.filter((r) => r.record_kind === "radar").length,
+    strategic_statuses: strategicStatuses,
+  },
   rows,
 };
 if (rows.length !== 33) throw new Error(`Expected 33 legislation bank rows, found ${rows.length}.`);
