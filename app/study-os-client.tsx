@@ -498,7 +498,7 @@ function EditalView({ intel, data }: { intel: any; data: Payload }) {
         <h3>Material existente não vira domínio</h3>
         <div className="os-card-grid">
           {[...bySubject.entries()].map(([subject,axes])=>{
-            const activeAxes=axes.filter((axis)=>!/radar|suspenso|fora do escopo/i.test(String(axis.documentaryStrength || axis.layer || "")));
+            const activeAxes=axes.filter((axis)=>!/radar|suspenso|fora do escopo/i.test(`${axis.documentaryStrength || ""} ${axis.layer || ""}`) && !(/monitorar/i.test(String(axis.action || "")) && /monitor/i.test(String(axis.cargos || ""))));
             const covered=activeAxes.filter((axis)=>axis.covered===true).length;
             const known=activeAxes.length>0 && activeAxes.every((axis)=>typeof axis.covered==="boolean");
             return <article className="os-card" key={subject}>
