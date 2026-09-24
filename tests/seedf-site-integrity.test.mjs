@@ -354,3 +354,9 @@ test("stable snapshot timestamps are presented as data-version timestamps", asyn
   assert.match(studyOs, /Versão dos dados/);
   assert.doesNotMatch(lawsPage, /Notion → GitHub · \{formatDate\(snapshot\?\.source\.synced_at\)\}/);
 });
+
+
+test("Pages push deployments checkout the exact triggering SHA", async () => {
+  const workflow = await read(".github/workflows/deploy-pages.yml");
+  assert.match(workflow, /ref: \$\{\{ github\.event_name == 'push' && github\.sha \|\| 'main' \}\}/);
+});
