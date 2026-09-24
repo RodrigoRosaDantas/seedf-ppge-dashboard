@@ -279,10 +279,10 @@ const jobs = [
 ];
 
 const workload = [
-  { label: "Reforço", blocks: 19, questions: 175, tone: "coral" },
-  { label: "Manutenção", blocks: 11, questions: 115, tone: "teal" },
-  { label: "Novo", blocks: 9, questions: 95, tone: "violet" },
-  { label: "Dominado", blocks: 0, questions: 0, tone: "slate" },
+  { label: "Fixas ativas", blocks: 11, questions: 355, tone: "teal" },
+  { label: "Checkpoint D07", blocks: 1, questions: 30, tone: "violet" },
+  { label: "D13 pós-TR", blocks: 1, questions: 0, tone: "coral" },
+  { label: "Fechamento D14", blocks: 1, questions: 40, tone: "gold" },
 ];
 
 const dayRows = [
@@ -298,12 +298,12 @@ const dayRows = [
   { day: "D10", label: "Gestão de Pessoas + comportamento", detail: "Aguardando execução", state: "ready", meta: "35 questões" },
   { day: "D11", label: "AFO + orçamento público", detail: "Aguardando execução", state: "ready", meta: "35 questões" },
   { day: "D12", label: "Materiais + patrimônio + LAI", detail: "Aguardando execução", state: "ready", meta: "35 questões" },
-  { day: "D13", label: "ECA + acessibilidade + Educação Especial", detail: "Aguardando execução", state: "ready", meta: "30 questões" },
+  { day: "D13", label: "DF/RIDE + PDPM + Maria da Penha + primeiros socorros", detail: "Nova bateria pós-TR pendente", state: "adaptive", meta: "0 questões · curadoria pendente" },
   { day: "D14", label: "Fechamento do Ciclo 01", detail: "Bateria integrada após D01–D13", state: "adaptive", meta: "40 questões · adaptativo" },
 ];
 
 const sources = [
-  { title: "Edital projetado v0.2", detail: "60 eixos classificados por probabilidade e domínio.", tag: "NORTE", href: "https://app.notion.com/p/3d4cf5a2673181ccb624e95c0759c02d" },
+  { title: "Edital projetado pós-TR", detail: "64 eixos com força documental e escopo ativo × Radar separados.", tag: "NORTE", href: "https://app.notion.com/p/3d4cf5a2673181ccb624e95c0759c02d" },
   { title: "Legislação vigente", detail: "Atualizações normativas entram antes do conteúdo histórico.", tag: "BASE", href: "https://app.notion.com/p/3d4cf5a2673181a4a51feed1c396c77b" },
   { title: "Últimos editais aplicáveis", detail: "Gestor 2022, Apoio Administrativo 2017 e Monitor 2017.", tag: "HISTÓRICO", href: "https://app.notion.com/p/3d4cf5a2673181ccb624e95c0759c02d" },
   { title: "Bancos SEEDF", detail: "Questões, erros, simulados, conceitos e discursivas em bancos próprios.", tag: "EXECUÇÃO", href: "https://app.notion.com/p/3d4cf5a26731814e88b1e91e1d4b3208" },
@@ -328,7 +328,7 @@ const studyMaterials: StudyMaterial[] = [
   { day: "D10", title: "Gestão de Pessoas", detail: "Comportamento organizacional", meta: "35 questões", href: "https://app.notion.com/p/3d4cf5a2673181b381fad65285d56860", tone: "coral" },
   { day: "D11", title: "AFO + orçamento público", detail: "Reforço dirigido 2026", meta: "35 questões", href: "https://app.notion.com/p/3d4cf5a2673181f985a9fcffe5e94bfa", tone: "gold" },
   { day: "D12", title: "Materiais + patrimônio + LAI", detail: "Manutenção de alta eficiência", meta: "35 questões", href: "https://app.notion.com/p/3d4cf5a2673181339102dfeed723def3", tone: "teal" },
-  { day: "D13", title: "ECA + acessibilidade + Educação Especial", detail: "Núcleo Monitor", meta: "30 questões", href: "https://app.notion.com/p/3d4cf5a26731817db4f3d27a70ed8646", tone: "coral" },
+  { day: "D13", title: "DF/RIDE + PDPM + Maria da Penha + primeiros socorros", detail: "Conteúdo pós-TR · bateria pendente", meta: "0 questões", href: "https://app.notion.com/p/3d4cf5a26731817db4f3d27a70ed8646", tone: "coral" },
   { day: "D14", title: "Revisão integrada + checkpoint", detail: "Fechamento do Ciclo 01", meta: "40 questões · adaptativo", href: "https://app.notion.com/p/3d4cf5a2673181db8454e5ad9dd90c01", tone: "violet" },
 ];
 
@@ -702,7 +702,7 @@ function Overview({ onNavigate, snapshot }: { onNavigate: (section: SectionId) =
       </section>
 
       <section className="stats-grid" aria-label="Resumo do projeto">
-        <StatCard icon={Layers3} label="Eixos verticalizados" value={String(verticalizedAxes)} detail="24 manutenção · 25 reforço · 11 novos" tone="blue" />
+        <StatCard icon={Layers3} label="Eixos verticalizados" value={String(verticalizedAxes)} detail="64 totais · escopo ativo e Radar separados" tone="blue" />
         <StatCard icon={Target} label="Carga fixa do C01" value={String(plannedQuestions)} detail="Questões sincronizadas do Notion" tone="gold" />
         <StatCard icon={TrendingUp} label="Projeção do C01" value={`≈ ${projectedQuestions}`} detail="Inclui checkpoints adaptativos" tone="teal" />
         <StatCard icon={GraduationCap} label="Cargos-meta" value={String(jobsCount)} detail="Gestor + Apoio ativos · Monitor em Radar" tone="violet" />
@@ -712,9 +712,9 @@ function Overview({ onNavigate, snapshot }: { onNavigate: (section: SectionId) =
         <div className="panel workload-panel">
           <SectionHeading eyebrow="CICLO 01 · SNAPSHOT PRÉ-EXECUÇÃO" title="Onde a energia deve entrar" description="A carga abaixo é planejamento. Ela ainda não é desempenho." action={<StatusPill>{executionRate}% executado</StatusPill>} />
           <div className="workload-list">
-            {workload.map((item) => <div className="workload-row" key={item.label}><div className="workload-label"><span className={`workload-dot dot-${item.tone}`} /><strong>{item.label}</strong><span>{item.blocks} blocos</span></div><div className="workload-track"><span className={`workload-fill fill-${item.tone}`} style={{ width: `${item.questions ? Math.max(6, (item.questions / 175) * 100) : 0}%` }} /></div><strong className="workload-number">{item.questions}</strong></div>)}
+            {workload.map((item) => <div className="workload-row" key={item.label}><div className="workload-label"><span className={`workload-dot dot-${item.tone}`} /><strong>{item.label}</strong><span>{item.blocks} blocos</span></div><div className="workload-track"><span className={`workload-fill fill-${item.tone}`} style={{ width: `${item.questions ? Math.max(6, (item.questions / 355) * 100) : 0}%` }} /></div><strong className="workload-number">{item.questions}</strong></div>)}
           </div>
-          <div className="panel-footnote"><CircleAlert size={15} /> Os números só mudam quando você registra questões feitas, acertos, erros e dúvidas no banco detalhado.</div>
+          <div className="panel-footnote"><CircleAlert size={15} /> D13 permanece com meta 0 até a curadoria da nova bateria; Radar não entra como dívida.</div>
         </div>
 
         <div className="panel integrity-panel">
