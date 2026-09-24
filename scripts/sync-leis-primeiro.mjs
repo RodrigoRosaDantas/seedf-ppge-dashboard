@@ -230,7 +230,7 @@ const snapshot = {
     "D0 — feche o bloco somente quando os requisitos pedagógicos da Lxx estiverem cumpridos.",
     "D7/D20 — revise em paralelo enquanto avança para as próximas normas.",
   ],
-  advance_rule: "Resumo e leitura são eventos distintos. Uma sessão de resumo pode terminar concluída sem fechar D0; D0 só fecha após o cumprimento real dos requisitos da Lxx. D7/D20 seguem em paralelo.",
+  advance_rule: "Sessão incompleta mantém a própria Lxx. Após a sessão ser concluída e registrada, a continuidade pode avançar para a próxima lei; D0 pendente permanece como dívida de fechamento/revisão e não retrocede a sequência. D7/D20 seguem em paralelo.",
   execution,
   laws: lawsWithIndividualProgress,
   radars: radarRows,
