@@ -6,8 +6,8 @@
     "page_id": "3d4cf5a2-6731-8106-a2c9-c97816aa6cf5",
     "page_url": "https://app.notion.com/p/SEEDF-PPGE-Gestor-Analista-Monitor-Dashboard-PRO-3d4cf5a267318106a2c9c97816aa6cf5",
     "last_edited_time": "2026-09-24T12:08:00.000Z",
-    "synced_at": "2026-09-24T12:16:48.453Z",
-    "content_hash": "c28a513e33b56101b6d4a971b52a80c72632d46dde97ea7dd5e2e221ef066f0f",
+    "synced_at": "2026-09-24T17:25:11.073Z",
+    "content_hash": "c465462cee9762caf0659b817a8bcd86866395555ab9e2393b3c0fd2156ef255",
     "status": "synced"
   },
   "dashboard": {
@@ -22,7 +22,7 @@
   },
   "materials": {
     "source_url": "https://app.notion.com/p/PDFs-e-Materiais-de-Estudo-SEEDF-PPGE-3d4cf5a2673181a4a51feed1c396c77b",
-    "last_edited_time": "2026-09-08T02:55:00.000Z",
+    "last_edited_time": "2026-09-24T13:41:00.000Z",
     "days": [
       {
         "day": "D01",
@@ -123,7 +123,7 @@
       {
         "day": "D13",
         "title": "DF/RIDE + PDPM + Maria da Penha + primeiros socorros | Pós-TR",
-        "detail": "Leitura vinculada: ECA, LBI e Educação Especial Inclusiva.",
+        "detail": "Leitura vinculada: DF/RIDE + PDPM + Lei Maria da Penha + primeiros socorros | pós-TR.",
         "meta": "30 questões",
         "href": "https://app.notion.com/p/3d4cf5a26731817db4f3d27a70ed8646",
         "tone": "coral"
@@ -348,32 +348,24 @@
       },
       {
         "day": "D13",
-        "title": "ECA, LBI e Educação Especial Inclusiva",
-        "detail": "ECA — Lei nº 8.069/1990, arts. 1º–6º, 53–59, 98–102 e 131–136; LBI — Lei nº 13.146/2015, núcleo educacional dos arts. 1º–4º e 27–30; Decreto nº 12.686/2025 e Decreto nº 12.773/2025. Radar: Lei nº 15.450/2026 acrescenta o art. 14, § 6º, ao ECA, mas tem vigência após 180 dias; na auditoria de 08/09/2026, não tratá-la como regra vigente.",
+        "title": "DF/RIDE + PDPM + Lei Maria da Penha + primeiros socorros | pós-TR",
+        "detail": "bloco recalibrado pelo TR nº 3/2026. Para DF/RIDE, usar o recorte de realidade étnica, social, histórica, geográfica, cultural, política e econômica do Distrito Federal e da RIDE, com a LC nº 94/1998 apenas como referência normativa da RIDE, sem reduzir o eixo de realidade do DF a essa lei. Para PDPM, preservar o II Plano como referência histórica já estudada e monitorar a transição para o III; a versão exigível será a indicada pelo edital/ato vigente, tendo como referência distrital de conteúdo de concurso a Portaria SEEC nº 271/2021. Ler a Lei nº 11.340/2006 — Lei Maria da Penha de forma dirigida. Primeiros socorros: estudar o recorte escolar/técnico que vier a ser delimitado, sem presumir norma específica além da documentação confirmada. Meta provisória de questões = 0 até a nova bateria ser curada. O antigo D13 de ECA/LBI/Educação Especial foi preservado como acervo de Monitor e não integra esta execução.",
         "meta": "30 questões",
         "href": "https://app.notion.com/p/3d4cf5a26731817db4f3d27a70ed8646",
         "status": "Leitura + radar normativo",
         "tone": "coral",
         "links": [
           {
-            "label": "ECA — Lei nº 8.069/1990",
-            "href": "https://www.planalto.gov.br/ccivil_03/leis/l8069.htm"
+            "label": "LC nº 94/1998",
+            "href": "https://www.planalto.gov.br/ccivil_03/leis/lcp/lcp94.htm"
           },
           {
-            "label": "LBI — Lei nº 13.146/2015",
-            "href": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2015/lei/l13146.htm"
+            "label": "Portaria SEEC nº 271/2021",
+            "href": "https://www.sinj.df.gov.br/sinj/Norma/c594b64d12d0467ab61cd421022e712d/Portaria_271_07_10_2021"
           },
           {
-            "label": "Decreto nº 12.686/2025",
-            "href": "https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2025/decreto/d12686.htm"
-          },
-          {
-            "label": "Decreto nº 12.773/2025",
-            "href": "https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2025/decreto/d12773.htm"
-          },
-          {
-            "label": "Lei nº 15.450/2026",
-            "href": "https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2026/lei/l15450.htm"
+            "label": "Lei nº 11.340/2006 — Lei Maria da Penha",
+            "href": "https://www.planalto.gov.br/ccivil_03/_ato2004-2006/2006/lei/l11340.htm"
           }
         ]
       },
@@ -546,7 +538,7 @@
       {
         "code": "MS18",
         "order": 18,
-        "title": "ECA e proteção integral",
+        "title": "ECA e proteção integral | Radar Monitor — preservado, sem carga específica obrigatória",
         "group": "Educação, proteção e revisão",
         "detail": "Material sequencial atemporal do Notion.",
         "href": "https://app.notion.com/p/Materiais-Sequenciais-SEEDF-MS01-MS22-3d4cf5a26731815283c2e9f51eb86cc6"
@@ -554,7 +546,7 @@
       {
         "code": "MS19",
         "order": 19,
-        "title": "Acessibilidade, LBI e Educação Especial Inclusiva",
+        "title": "Acessibilidade, LBI e Educação Especial Inclusiva | transversal ativo no recorte compartilhado; aprofundamento exclusivo de Monitor em Radar",
         "group": "Educação, proteção e revisão",
         "detail": "Material sequencial atemporal do Notion.",
         "href": "https://app.notion.com/p/Materiais-Sequenciais-SEEDF-MS01-MS22-3d4cf5a26731815283c2e9f51eb86cc6"
@@ -562,7 +554,7 @@
       {
         "code": "MS20",
         "order": 20,
-        "title": "Educação Infantil, desenvolvimento e convivência escolar",
+        "title": "Educação Infantil, desenvolvimento e convivência escolar | Radar Monitor — preservado, sem carga específica obrigatória",
         "group": "Educação, proteção e revisão",
         "detail": "Material sequencial atemporal do Notion.",
         "href": "https://app.notion.com/p/Materiais-Sequenciais-SEEDF-MS01-MS22-3d4cf5a26731815283c2e9f51eb86cc6"
@@ -570,7 +562,7 @@
       {
         "code": "MS21",
         "order": 21,
-        "title": "Discursiva SEEDF",
+        "title": "Discursiva SEEDF | ativo para os cargos-alvo conforme desenho pós-TR",
         "group": "Educação, proteção e revisão",
         "detail": "Material sequencial atemporal do Notion.",
         "href": "https://app.notion.com/p/Materiais-Sequenciais-SEEDF-MS01-MS22-3d4cf5a26731815283c2e9f51eb86cc6"
@@ -578,7 +570,7 @@
       {
         "code": "MS22",
         "order": 22,
-        "title": "Revisão integrada e simulados",
+        "title": "Revisão integrada e simulados | ativo; simulado integral futuro segue 120 C/E = 30 + 40 + 50",
         "group": "Educação, proteção e revisão",
         "detail": "Material sequencial atemporal do Notion.",
         "href": "https://app.notion.com/p/Materiais-Sequenciais-SEEDF-MS01-MS22-3d4cf5a26731815283c2e9f51eb86cc6"
@@ -586,7 +578,7 @@
     ]
   },
   "execution": {
-    "as_of": "2026-09-24T12:16:48.449Z",
+    "as_of": "2026-09-24T17:25:11.068Z",
     "c01": {
       "days": [
         {
@@ -860,7 +852,7 @@
           "href": "https://app.notion.com/p/3d4cf5a26731817db4f3d27a70ed8646",
           "executed_at": null,
           "created_at": "2026-09-08T00:34:00.000Z",
-          "updated_at": "2026-09-24T12:11:00.000Z"
+          "updated_at": "2026-09-24T12:30:00.000Z"
         },
         {
           "day": "D14",
@@ -1077,7 +1069,7 @@
           "next_review": null,
           "date": "2026-09-21",
           "rule": "A publicidade de atos, programas, obras, serviços e campanhas dos órgãos públicos deve ter caráter educativo, informativo ou de orientação social e não pode conter nomes, símbolos ou imagens que caracterizem promoção pessoal de autoridades ou servidores.",
-          "observations": "Erro da questão 28 da bateria núcleo comum. Origem: Resumo 1 da L01. Flashcard gerado na L01."
+          "observations": "Erro da questão 28 da bateria núcleo comum. Origem: Resumo 1 da L01. Flashcard gerado na L01. Pós-TR nº 3/2026: permanece ativo por pertencer ao núcleo comum."
         },
         {
           "id": "3e2cf5a2-6731-8196-aa94-cff901e91274",
@@ -1098,7 +1090,7 @@
           "next_review": null,
           "date": "2026-09-21",
           "rule": "A família, base da sociedade, tem especial proteção do Estado.",
-          "observations": "Erro da questão 36 da bateria suplementar de Analista Monitor. Origem: Resumo 1 da L01. Flashcard gerado na L01."
+          "observations": "Erro da questão 36 da bateria suplementar de Analista Monitor. Origem: Resumo 1 da L01. Flashcard gerado na L01. Pós-TR nº 3/2026: preservar como erro pedagógico real, mas sem gerar D0/D7/D20 ou prioridade ativa enquanto Monitor permanecer em Radar."
         },
         {
           "id": "3e2cf5a2-6731-8130-a39e-f377ca6e1083",
@@ -1119,7 +1111,7 @@
           "next_review": null,
           "date": "2026-09-21",
           "rule": "É dever da família, da sociedade e do Estado assegurar, com absoluta prioridade, os direitos da criança, do adolescente e do jovem previstos no art. 227.",
-          "observations": "Erro da questão 37 da bateria suplementar de Analista Monitor. Origem: Resumo 1 da L01. Não foi criado novo flashcard porque a L01 já possuía cartão equivalente."
+          "observations": "Erro da questão 37 da bateria suplementar de Analista Monitor. Origem: Resumo 1 da L01. Não foi criado novo flashcard porque a L01 já possuía cartão equivalente. Pós-TR nº 3/2026: preservar como erro pedagógico real, mas sem gerar D0/D7/D20 ou prioridade ativa enquanto Monitor permanecer em Radar."
         }
       ],
       "latest_day_id": "LP-20260921-L01-R1",
@@ -1209,7 +1201,7 @@
           "precision": 0.925,
           "href": "https://app.notion.com/p/3d8cf5a267318133b196fddf1efde990",
           "created_at": "2026-09-21T17:10:00.000Z",
-          "updated_at": "2026-09-21T19:36:00.000Z"
+          "updated_at": "2026-09-24T13:49:00.000Z"
         }
       ],
       "session_totals": {
