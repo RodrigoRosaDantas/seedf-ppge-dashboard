@@ -5,15 +5,15 @@
     "title": "SEEDF — PPGE | Gestor + Analista + Monitor | Dashboard PRO",
     "page_id": "3d4cf5a2-6731-8106-a2c9-c97816aa6cf5",
     "page_url": "https://app.notion.com/p/SEEDF-PPGE-Gestor-Analista-Monitor-Dashboard-PRO-3d4cf5a267318106a2c9c97816aa6cf5",
-    "last_edited_time": "2026-09-12T11:38:00.000Z",
-    "synced_at": "2026-09-23T21:11:49.037Z",
-    "content_hash": "99a9020e030c08bc37288873c7e7d3557fe138a97874720f150c81a7c4f641ca",
+    "last_edited_time": "2026-09-24T12:08:00.000Z",
+    "synced_at": "2026-09-24T12:16:48.453Z",
+    "content_hash": "c28a513e33b56101b6d4a971b52a80c72632d46dde97ea7dd5e2e221ef066f0f",
     "status": "synced"
   },
   "dashboard": {
     "phase": "Fase 1",
     "cycle": "Ciclo 01",
-    "next_action": "D01 — Português fino + LDB",
+    "next_action": "D01 · Português fino + LDB",
     "planned_questions": 385,
     "projected_questions": 455,
     "executed_questions": 0,
@@ -122,7 +122,7 @@
       },
       {
         "day": "D13",
-        "title": "ECA + acessibilidade + Educação Especial Inclusiva | Núcleo Monitor",
+        "title": "DF/RIDE + PDPM + Maria da Penha + primeiros socorros | Pós-TR",
         "detail": "Leitura vinculada: ECA, LBI e Educação Especial Inclusiva.",
         "meta": "30 questões",
         "href": "https://app.notion.com/p/3d4cf5a26731817db4f3d27a70ed8646",
@@ -586,7 +586,7 @@
     ]
   },
   "execution": {
-    "as_of": "2026-09-23T21:11:49.032Z",
+    "as_of": "2026-09-24T12:16:48.449Z",
     "c01": {
       "days": [
         {
@@ -845,22 +845,22 @@
           "day": "D13",
           "day_id": "C01-D13",
           "trail": "Ciclo principal",
-          "title": "C01-D13 — ECA + acessibilidade + Educação Especial",
+          "title": "C01-D13 — DF/RIDE + PDPM + Maria da Penha + primeiros socorros",
           "status": "Não iniciado",
           "type": "Temático",
           "order": 13,
-          "planned": 30,
+          "planned": 0,
           "done": 0,
           "correct": 0,
           "errors": 0,
           "doubts": 0,
           "minutes": null,
           "precision": null,
-          "progress": 0,
+          "progress": null,
           "href": "https://app.notion.com/p/3d4cf5a26731817db4f3d27a70ed8646",
           "executed_at": null,
           "created_at": "2026-09-08T00:34:00.000Z",
-          "updated_at": "2026-09-21T18:17:00.000Z"
+          "updated_at": "2026-09-24T12:11:00.000Z"
         },
         {
           "day": "D14",
@@ -885,8 +885,8 @@
         }
       ],
       "totals": {
-        "planned": 455,
-        "fixed_meta": 385,
+        "planned": 425,
+        "fixed_meta": 355,
         "done": 0,
         "correct": 0,
         "errors": 0,
@@ -898,13 +898,13 @@
       "subjects": [
         {
           "subject": "Legislação Educacional",
-          "planned": 82,
+          "planned": 52,
           "done": 0,
           "correct": 0,
           "errors": 0,
           "doubts": null,
           "precision": null,
-          "rows": 7
+          "rows": 4
         },
         {
           "subject": "Administração Geral",
@@ -1014,7 +1014,7 @@
       "active_day": "D01",
       "error_count": 0,
       "errors": [],
-      "question_rows": 39
+      "question_rows": 36
     },
     "leis_primeiro": {
       "days": [
