@@ -628,7 +628,7 @@ export default function StudyOsClient({ view, basePrefix }: Props) {
     <div className="os-shell">
       <aside className={"os-sidebar "+(menuOpen?"is-open":"")}>
         <div className="os-brand">
-          <div className="os-brand-mark">S</div>
+          <img className="os-brand-mark" src={basePrefix + "favicon.svg"} alt="" aria-hidden="true" />
           <div><strong>SEEDF PPGE</strong><span>Study OS · v5</span></div>
           <button aria-label="Fechar menu" onClick={()=>setMenuOpen(false)}><X size={18}/></button>
         </div>
