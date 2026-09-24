@@ -212,3 +212,38 @@ test("prioridade de retomada supera revisão vencida", () => {
   data.legislationBank.rows=[{codes:["L01"],record_kind:"trilha",study_phase:"Em estudo",questions_done:10,sessions_done:1,d0:true,next_review:"2026-09-20"}];
   assert.equal(buildSeedfIntelligence(data).nextAction.kind,"resume");
 });
+
+
+test("continuidade canônica respeita o avanço real e não volta para L01 por D0 pendente", () => {
+  const data=fixture();
+  data.lawsSnapshot.laws=[
+    {code:"L01",title:"L01",study_phase:"Em estudo",d0:false},
+    {code:"L02",title:"L02",study_phase:"Em estudo",d0:false},
+    {code:"L03",title:"L03",study_phase:"Em estudo",d0:false},
+    {code:"L04",title:"L04",study_phase:"Não iniciado",d0:false},
+  ];
+  data.snapshot.execution.leis_primeiro.sessions=[
+    {id:"s3",page_code:"L03",date:"2026-09-23",title:"L03",completed:true,questions_done:0},
+    {id:"s2",page_code:"L02",date:"2026-09-22",title:"L02",completed:true,questions_done:30,correct:22,errors:8},
+    {id:"s1",page_code:"L01",date:"2026-09-21",title:"L01",completed:true,questions_done:40,correct:37,errors:3},
+  ];
+  const result=buildSeedfIntelligence(data);
+  assert.equal(result.continuity.law,"L04");
+});
+
+test("sessão atual incompleta mantém a própria Lxx como continuidade", () => {
+  const data=fixture();
+  data.lawsSnapshot.laws=[
+    {code:"L01",title:"L01"},
+    {code:"L02",title:"L02"},
+    {code:"L03",title:"L03"},
+    {code:"L04",title:"L04"},
+  ];
+  data.snapshot.execution.leis_primeiro.sessions=[
+    {id:"s3",page_code:"L03",date:"2026-09-23",title:"L03",completed:false,questions_done:0},
+    {id:"s2",page_code:"L02",date:"2026-09-22",title:"L02",completed:true,questions_done:30,correct:22,errors:8},
+  ];
+  const result=buildSeedfIntelligence(data);
+  assert.equal(result.continuity.law,"L03");
+  assert.equal(result.nextAction.kind,"resume");
+});

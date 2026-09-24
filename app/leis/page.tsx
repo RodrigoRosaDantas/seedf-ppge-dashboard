@@ -345,9 +345,9 @@ export default function LeisPrimeiroPage() {
 
   const currentChecks = [
     { label: "Orientação", done: Boolean(currentState?.orientation) },
-    { label: "Resumo", done: Boolean(currentState && currentState.summariesDone > 0) },
-    { label: "Lei seca", done: Boolean(currentState && currentState.readingsDone > 0) },
-    { label: "Questões", done: Boolean(currentState && currentState.questionTarget > 0 && currentState.questionsDone >= currentState.questionTarget) },
+    { label: "Resumo", done: Boolean(currentState?.hasSummary) },
+    { label: "Lei seca", done: Boolean(currentState?.hasReading) },
+    { label: "Questões", done: Boolean(currentState?.questionsComplete) },
     { label: "Flashcards", done: Boolean(currentState?.flashcardsDone) },
     { label: "D0", done: Boolean(currentState?.d0) },
     { label: "D7/D20", done: Boolean(currentLaw?.d7 && currentLaw?.d20) },
