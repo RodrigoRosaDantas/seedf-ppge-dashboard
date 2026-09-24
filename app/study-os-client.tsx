@@ -397,7 +397,8 @@ function PerformanceView({ intel, data, basePrefix }: { intel: any; data: Payloa
             <div className="os-card-top"><span className="os-chip os-chip-neutral">{row.code}</span><span>{row.confidence.label}</span></div>
             <h4>{row.title}</h4>
             <strong className="os-big-number">{formatPercent(row.accuracy)}</strong>
-            <div className="os-card-stats"><span>{formatNumber(row.questions)} questões</span><span>{formatNumber(row.sessions)} sessão(ões)</span></div>\n            <small>{row.source === "questões ativas" ? "Escopo ativo pós-TR" : "Histórico de sessões sem recorte estratégico disponível"}</small>
+            <div className="os-card-stats"><span>{formatNumber(row.questions)} questões</span><span>{formatNumber(row.sessions)} sessão(ões)</span></div>
+            <small>{row.source === "questões ativas" ? "Escopo ativo pós-TR" : "Histórico de sessões sem recorte estratégico disponível"}</small>
             <div className="os-trend">
               {row.trend.key === "improving" ? <TrendingUp size={16}/> : row.trend.key === "worsening" ? <TrendingDown size={16}/> : <BarChart3 size={16}/>}
               <span>{row.trend.label}</span>
