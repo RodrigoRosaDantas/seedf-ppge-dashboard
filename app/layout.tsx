@@ -9,7 +9,7 @@ const siteBasePath =
 
 export const metadata: Metadata = {
   title: "SEEDF PPGE — Dashboard PRO",
-  description: "Central de comando da preparação pré-edital para Gestor PPGE, Analista PPGE — Apoio Administrativo e Analista PPGE — Monitor.",
+  description: "Central de comando pré-edital SEEDF: Gestor PPGE — Administração e Analista PPGE — Apoio Administrativo ativos; Analista PPGE — Monitor preservado em Radar.",
   other: {
     "codex-preview": "development",
     "theme-color": "#071824",
