@@ -398,6 +398,7 @@ function PerformanceView({ intel, data, basePrefix }: { intel: any; data: Payloa
             <h4>{row.title}</h4>
             <strong className="os-big-number">{formatPercent(row.accuracy)}</strong>
             <div className="os-card-stats"><span>{formatNumber(row.questions)} questões</span><span>{formatNumber(row.sessions)} sessão(ões)</span></div>
+            <small>{row.source === "questões ativas" ? "Escopo ativo pós-TR" : "Histórico de sessões sem recorte estratégico disponível"}</small>
             <div className="os-trend">
               {row.trend.key === "improving" ? <TrendingUp size={16}/> : row.trend.key === "worsening" ? <TrendingDown size={16}/> : <BarChart3 size={16}/>}
               <span>{row.trend.label}</span>
@@ -431,19 +432,27 @@ function RisksView({ intel, basePrefix }: { intel: any; basePrefix: string }) {
 
 function ErrorsView({ intel, basePrefix }: { intel: any; basePrefix: string }) {
   return (
-    <section className="os-panel">
-      <div className="os-section-head"><div><span className="os-eyebrow">CADERNO DE ERROS</span><h3>Somente fragilidades abertas</h3></div><span>{intel.activeErrors.length} ativa(s)</span></div>
-      {intel.activeErrors.length ? <div className="os-stack">{intel.activeErrors.map((error:any,index:number)=>(
-        <SmartLink href={error.url || "erros/"} basePrefix={basePrefix} className="os-row" key={error.id || index}>
-          <div>
-            <span className="os-chip os-chip-danger">prioridade {error.score}/100</span>
-            <strong>{error.title || error.subject || "Erro registrado"}</strong>
-            <small>{error.discipline || "disciplina não informada"} · reincidência {error.recurrence === null ? "—" : error.recurrence} · {formatDate(error.date)}</small>
-          </div>
-          <ChevronRight size={16}/>
-        </SmartLink>
-      ))}</div> : <Empty>Sem erros abertos exportados. Erros resolvidos não reaparecem aqui.</Empty>}
-    </section>
+    <>
+      <section className="os-panel">
+        <div className="os-section-head"><div><span className="os-eyebrow">CADERNO DE ERROS</span><h3>Fragilidades abertas no escopo ativo</h3></div><span>{intel.activeErrors.length} ativa(s)</span></div>
+        {intel.activeErrors.length ? <div className="os-stack">{intel.activeErrors.map((error:any,index:number)=>(
+          <SmartLink href={error.url || "erros/"} basePrefix={basePrefix} className="os-row" key={error.id || index}>
+            <div>
+              <span className="os-chip os-chip-danger">prioridade {error.score}/100</span>
+              <strong>{error.title || error.subject || "Erro registrado"}</strong>
+              <small>{error.discipline || "disciplina não informada"} · reincidência {error.recurrence === null ? "—" : error.recurrence} · {formatDate(error.date)}</small>
+            </div>
+            <ChevronRight size={16}/>
+          </SmartLink>
+        ))}</div> : <Empty>Sem erros abertos no escopo ativo. Radar/histórico não gera intervenção.</Empty>}
+      </section>
+      {intel.suspendedErrors?.length ? (
+        <section className="os-panel os-method-banner">
+          <ShieldCheck size={22}/>
+          <div><strong>{intel.suspendedErrors.length} erro(s) preservado(s) em Radar/histórico</strong><p>Continuam registrados para rastreabilidade, mas não geram prioridade, revisão nem dívida enquanto o respectivo escopo estiver suspenso.</p></div>
+        </section>
+      ) : null}
+    </>
   );
 }
 
@@ -480,24 +489,25 @@ function EditalView({ intel, data }: { intel: any; data: Payload }) {
   return (
     <>
       <section className="os-metrics-grid">
-        <Metric label="Itens verticalizados" value={formatNumber(intel.coverage.edital.total)} />
-        <Metric label="Marcados cobertos" value={formatNumber(intel.coverage.edital.covered)} detail={intel.coverage.edital.covered === null ? "campo ainda não disponível no snapshot" : "Notion"} />
-        <Metric label="Com evidência operacional" value={formatNumber(intel.coverage.edital.withEvidence)} />
-        <Metric label="Consolidação" value={formatNumber(intel.coverage.law.consolidated)} detail="Leis Primeiro" />
+        <Metric label="Itens verticalizados" value={formatNumber(intel.coverage.edital.total)} detail="histórico completo" />
+        <Metric label="Escopo ativo" value={formatNumber(intel.coverage.edital.activeTotal)} detail="sem Radar/suspensos/fora do escopo" />
+        <Metric label="Radar provável" value={formatNumber(intel.coverage.edital.radar)} />
+        <Metric label="Suspensos / fora" value={formatNumber((intel.coverage.edital.suspended || 0) + (intel.coverage.edital.outside || 0))} />
       </section>
       <section className="os-panel">
         <span className="os-eyebrow">COBERTURA DO EDITAL</span>
         <h3>Material existente não vira domínio</h3>
         <div className="os-card-grid">
           {[...bySubject.entries()].map(([subject,axes])=>{
-            const covered=axes.filter((axis)=>axis.covered===true).length;
-            const known=axes.every((axis)=>typeof axis.covered==="boolean");
+            const activeAxes=axes.filter((axis)=>!/radar|suspenso|fora do escopo/i.test(`${axis.documentaryStrength || ""} ${axis.layer || ""}`) && !(/monitorar/i.test(String(axis.action || "")) && /monitor/i.test(String(axis.cargos || ""))));
+            const covered=activeAxes.filter((axis)=>axis.covered===true).length;
+            const known=activeAxes.length>0 && activeAxes.every((axis)=>typeof axis.covered==="boolean");
             return <article className="os-card" key={subject}>
               <h4>{subject}</h4>
               <strong className="os-big-number">{axes.length}</strong>
-              <span>item(ns) verticalizado(s)</span>
-              <small>Cobertos: {known ? covered + "/" + axes.length : "—"}</small>
-              <small>Prioridades: {[...new Set(axes.map((axis)=>axis.priority).filter(Boolean))].join(", ") || "—"}</small>
+              <span>item(ns) verticalizado(s) · {activeAxes.length} ativo(s)</span>
+              <small>Cobertos no ativo: {known ? covered + "/" + activeAxes.length : "—"}</small>
+              <small>Força/camada: {[...new Set(axes.map((axis)=>axis.documentaryStrength || axis.layer).filter(Boolean))].join(" · ") || "—"}</small>
             </article>;
           })}
         </div>
