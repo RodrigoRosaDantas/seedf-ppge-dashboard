@@ -38,6 +38,7 @@ type Law = {
   operational_target_total?: number;
   cargos?: string[];
   action?: string;
+  /** Força documental e governança pós-TR sincronizadas do Notion. */
   documentary_strength?: string | null;
   strategic_status?: string | null;
   cut?: string;
