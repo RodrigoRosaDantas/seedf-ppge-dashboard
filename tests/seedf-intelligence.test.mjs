@@ -88,6 +88,11 @@ test("sessão interrompida vira RETOMAR SESSÃO e precede D01", () => {
   const result=buildSeedfIntelligence(data);
   assert.equal(result.nextAction.kind,"resume");
   assert.match(result.nextAction.eyebrow,/RETOMAR/);
+  assert.equal(result.nextAction.title,"L01 · retomar sessão incompleta");
+  assert.equal(result.agenda.some((item)=>item.kind==="legislação"),false);
+  const preparedDay=result.agenda.find((item)=>item.kind==="sessão");
+  assert.equal(preparedDay.state,"preparado");
+  assert.match(preparedDay.detail,/aguarda concluir a sessão aberta L01/i);
 });
 
 test("sessão interrompida de lei suspensa não vira retomada", () => {
