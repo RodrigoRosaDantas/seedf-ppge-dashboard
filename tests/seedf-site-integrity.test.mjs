@@ -161,6 +161,28 @@ test("keeps Leis Primeiro execution semantics separated by Dia ID", async () => 
   assert.match(lawCss, /laws-flow-steps\s*\{[^}]*grid-template-columns:\s*repeat\(6/);
 });
 
+test("Leis cockpit follows real session continuity instead of D0 gating", async () => {
+  const [appPage, cockpitSource] = await Promise.all([
+    read("app/leis/page.tsx"),
+    read("scripts/build-leis-cockpit.mjs"),
+  ]);
+  assert.match(appPage, /function continuityLaw/);
+  assert.match(appPage, /const currentLaw = continuityLaw/);
+  assert.doesNotMatch(appPage, /currentLaw = executableLaws\.find\(\(law\) => !lawComplete/);
+  assert.doesNotMatch(appPage, /M5 10q/);
+  assert.match(cockpitSource, /function continuityLaw/);
+  assert.doesNotMatch(cockpitSource, /const current = executable\.find\(\(law\).*\.complete/);
+  assert.doesNotMatch(cockpitSource, /Bloco M5 · 10 questões/);
+
+  const moduleUrl = new URL("../scripts/build-leis-cockpit.mjs", import.meta.url);
+  moduleUrl.searchParams.set("continuity-test", String(Date.now()));
+  const { buildLeisCockpit } = await import(moduleUrl.href);
+  const html = await buildLeisCockpit("<html><head></head><body></body></html>");
+  assert.match(html, /Bloco atual · L03/);
+  assert.match(html, /href="\.\/l03\/"/);
+  assert.doesNotMatch(html, /Bloco atual · L01/);
+});
+
 test("reader exposes resumable, portable study controls", async () => {
   const html = await read("public/leis/flashcards/index.html");
   assert.match(html, /id="day-select"/);
