@@ -25,7 +25,7 @@ test("preserves the 34-day law flashcard catalog", async () => {
   assert.doesNotMatch(JSON.stringify(dataset), /TJDFT|RICD|C01|TDAS|EDAS/i);
 });
 
-test("keeps local law reading payload with a Notion fallback", async () => {
+test("keeps local law reading payload with Notion as the canonical operational source", async () => {
   const [snapshot, publisher, cockpit, enhancer, appPage] = await Promise.all([
     read("public/data/leis-primeiro.json"),
     read("scripts/prepare-github-pages.mjs"),
@@ -41,11 +41,11 @@ test("keeps local law reading payload with a Notion fallback", async () => {
   );
   assert.match(publisher, /const content = law\.content_html/);
   assert.match(publisher, /Ler no site/);
-  assert.match(publisher, /Plano B · Notion/);
-  assert.match(cockpit, /Leitura principal: site/);
-  assert.match(cockpit, /Fallback: Notion/);
-  assert.match(enhancer, /Leitura principal: site/);
-  assert.match(appPage, /Fallback: Notion/);
+  assert.match(publisher, /Registro vivo · Notion/);
+  assert.match(cockpit, /Fonte canônica: Notion/);
+  assert.match(cockpit, /Camada de execução: site/);
+  assert.match(enhancer, /fonte operacional: Notion/i);
+  assert.match(appPage, /Fonte canônica: Notion/);
 });
 test("keeps every Leis Primeiro page aligned with the operational method", async () => {
   const dataset = JSON.parse(await read("public/data/leis-primeiro.json"));
@@ -90,7 +90,8 @@ test("keeps Leis Primeiro execution semantics separated by Dia ID", async () => 
   ]);
   assert.match(syncMain, /Origem \/ Dia ID/);
   assert.match(syncMain, /const currentErrorPages = errorPages/);
-  assert.match(syncMain, /error_count: currentErrorPages\.length/);
+  assert.match(syncMain, /error_count: currentErrors\.length/);
+  assert.match(syncMain, /errors: currentErrors/);
   assert.doesNotMatch(syncMain, /!lawErrorIds\.has/);
   assert.match(syncMain, /errors: lawErrors/);
   assert.match(liveNotion, /const currentErrorPages = errorPages/);
@@ -118,27 +119,31 @@ test("keeps Leis Primeiro execution semantics separated by Dia ID", async () => 
   assert.match(appPage, /flashcards_done\?: boolean/);
   assert.doesNotMatch(appPage, /flashcardsTarget|flashcards_meta/);
   assert.match(appPage, /Resumo e leitura de lei seca são eventos distintos/);
-  assert.match(appPage, /&& summariesDone > 0[\s\S]*&& readingsDone > 0/);
+  assert.match(appPage, /const hasSummary = summariesDone !== null && summariesDone > 0/);
+  assert.match(appPage, /const hasReading = readingsDone !== null && readingsDone > 0/);
+  assert.match(appPage, /const questionsComplete = questionTarget !== null && questionsDone !== null/);
   assert.doesNotMatch(appPage, /!summariesDone && !readingsDone/);
   assert.match(appPage, /CADERNO DE ERROS/);
   assert.doesNotMatch(appPage, /com flashcard · vínculo por Dia ID/);
   assert.doesNotMatch(cockpit, /com flashcard · vínculo por Dia ID/);
-  assert.match(appPage, /sessionMatchesExecution/);
-  assert.match(appPage, /day\.summary_number != null && session\.summary_number !== day\.summary_number/);
-  assert.match(appPage, /latestExecution\.summary_number == null && latestExecution\.reading_number == null/);
+  assert.match(appPage, /latestErrors[\s\S]*item\.day_id === latestExecution\.day_id/);
+  assert.match(appPage, /currentState\?\.hasSummary/);
+  assert.match(appPage, /currentState\?\.hasReading/);
+  assert.match(appPage, /currentState\?\.questionsComplete/);
   assert.match(appPage, /D0 DA NORMA/);
   assert.match(appPage, /currentLaw\?\.d7 && currentLaw\?\.d20/);
   assert.match(appPage, /M5: questões, Flashcards feitos\?, D0, D7 e D20 são do bloco/);
   assert.match(cockpit, /HISTÓRICO REAL · LEIS PRIMEIRO/);
-  assert.match(cockpit, /sessionMatchesExecution/);
+  assert.match(cockpit, /latestErrors[\s\S]*item\.day_id === latestExecution\.day_id/);
+  assert.match(cockpit, /currentState\.hasSummary/);
+  assert.match(cockpit, /currentState\.questionsComplete/);
   assert.match(cockpit, /currentState\.d7 && currentState\.d20/);
   assert.match(cockpit, /D0 DA NORMA/);
   assert.match(cockpit, /law\.shared_block \? law\.summaries_done/);
   assert.match(cockpit, /Flashcards M5/);
   assert.doesNotMatch(cockpit, /flashcardsTarget|flashcards_meta/);
   assert.match(enhancer, /Ver erros desta execução/);
-  assert.match(enhancer, /sessionMatchesExecution/);
-  assert.match(enhancer, /latestDay\.summary_number == null && latestDay\.reading_number == null/);
+  assert.match(enhancer, /dayErrors[\s\S]*item\.day_id === latestDay\.day_id/);
   assert.match(enhancer, /const radar = \/radar\/i/);
   assert.match(enhancer, /Unidade de monitoramento; o fluxo normal de fechamento não se aplica/);
   assert.match(enhancer, /M5: resumo e leitura são individuais por Lxx/);
@@ -260,7 +265,7 @@ test("published shell includes an offline registration path", async () => {
   const manifestValue = JSON.parse(manifest);
   assert.equal(manifestValue.display, "standalone");
   assert.equal(manifestValue.orientation, "any");
-  assert.match(serviceWorker, /seedf-pages-v4/);
+  assert.match(serviceWorker, /seedf-pages-v5/);
   assert.match(serviceWorker, /reading-preferences\.js/);
   assert.match(serviceWorker, /reading-preferences\.css/);
   assert.match(serviceWorker, /function networkFirst/);
@@ -293,9 +298,11 @@ test("law page enhancement keeps the brand theme metadata", async () => {
   assert.match(source, /name="theme-color"/);
 });
 
-test("the Pages workflow runs tests before publishing", async () => {
+test("the Pages workflow runs source tests before build and rendered tests after build", async () => {
   const workflow = await read(".github/workflows/deploy-pages.yml");
-  assert.match(workflow, /npm test/);
+  assert.match(workflow, /npm run test:source/);
+  assert.match(workflow, /npm run build/);
+  assert.match(workflow, /npm run test:rendered/);
 });
 
 test("the Notion workflow reacts to every snapshot synchronizer", async () => {

@@ -47,13 +47,16 @@ jobs:
           npm run audit:toolchain
           npm run validate:snapshot
           npm run security:audit
-          npm run test:unit
+          npm run test:source
 
       - name: Build static export
         run: npm run build
         env:
           GITHUB_PAGES: "1"
           GITHUB_PAGES_BASE_PATH: /${{ github.event.repository.name }}
+
+      - name: Rendered regression tests
+        run: npm run test:rendered
 
       - name: Prepare Pages output
         run: |

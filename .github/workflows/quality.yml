@@ -58,7 +58,7 @@ jobs:
         run: npm run security:audit
 
       - name: Regression tests
-        run: npm run test:unit
+        run: npm run test:source
 
       - name: Build GitHub Pages
         env:
@@ -68,6 +68,9 @@ jobs:
           npm run build
           node scripts/prepare-github-pages.mjs
           node scripts/enhance-leis-pages.mjs dist/client
+
+      - name: Rendered regression tests
+        run: npm run test:rendered
 
       - name: Start QA server
         run: |
