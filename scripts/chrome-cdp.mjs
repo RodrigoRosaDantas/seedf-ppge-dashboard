@@ -12,7 +12,72 @@ function chromePath() {
   }
   throw new Error("Chrome/Chromium não encontrado para Visual QA.");
 }
-function sleep(ms) { return new Promise((resolve) => setTimeout(resolve, ms)); }
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function stopChrome(child, profile) {
+  if (child.exitCode === null && child.signalCode === null) {
+    child.kill("SIGTERM");
+    await sleep(250);
+  }
+  if (child.exitCode === null && child.signalCode === null) child.kill("SIGKILL");
+  await rm(profile,{recursive:true,force:true});
+}
+
+async function launchChrome() {
+  const binary=chromePath();
+  const failures=[];
+
+  for (let launchAttempt=1; launchAttempt<=3; launchAttempt+=1) {
+    const port=10000 + Math.floor(Math.random()*40000);
+    const profile=await mkdtemp(path.join(os.tmpdir(),"seedf-chrome-"));
+    let stderr="";
+    const child=spawn(binary,[
+      "--headless=new",
+      "--no-sandbox",
+      "--disable-dev-shm-usage",
+      "--disable-gpu",
+      "--hide-scrollbars",
+      "--remote-debugging-address=127.0.0.1",
+      "--remote-debugging-port="+port,
+      "--user-data-dir="+profile,
+      "about:blank",
+    ],{stdio:["ignore","ignore","pipe"]});
+
+    child.stderr?.on("data",(chunk)=>{
+      stderr=(stderr+String(chunk)).slice(-5000);
+    });
+
+    const endpoint="http://127.0.0.1:"+port;
+    let ready=false;
+    for (let poll=0; poll<150; poll+=1) {
+      if (child.exitCode !== null || child.signalCode !== null) break;
+      try {
+        const response=await fetch(endpoint+"/json/version");
+        if (response.ok) {
+          ready=true;
+          break;
+        }
+      } catch {}
+      await sleep(100);
+    }
+
+    if (ready) return { child, profile, endpoint };
+
+    failures.push(
+      "tentativa "+launchAttempt+
+      " · exit="+String(child.exitCode)+
+      " · signal="+String(child.signalCode)+
+      (stderr.trim() ? " · stderr="+stderr.trim().replace(/\s+/g," ").slice(-1200) : "")
+    );
+    await stopChrome(child,profile);
+    await sleep(300);
+  }
+
+  throw new Error("Chrome DevTools não iniciou após 3 tentativas. "+failures.join(" | "));
+}
 
 class Cdp {
   constructor(url) {
@@ -47,37 +112,14 @@ class Cdp {
     const result=await this.send("Runtime.evaluate",{expression,returnByValue:true,awaitPromise:true});
     return result.result?.value;
   }
-  close() { try { this.ws.close(); } catch {} }
+  close() {
+    try { this.ws.close(); } catch {}
+  }
 }
 
 export async function withChrome(callback) {
-  const port=9222 + Math.floor(Math.random()*300);
-  const profile=await mkdtemp(path.join(os.tmpdir(),"seedf-chrome-"));
-  const child=spawn(chromePath(),[
-    "--headless=new",
-    "--no-sandbox",
-    "--disable-dev-shm-usage",
-    "--disable-gpu",
-    "--hide-scrollbars",
-    "--remote-debugging-address=127.0.0.1",
-    "--remote-debugging-port="+port,
-    "--user-data-dir="+profile,
-    "about:blank",
-  ],{stdio:"ignore"});
-  const endpoint="http://127.0.0.1:"+port;
-  let ready=false;
-  for (let attempt=0;attempt<60;attempt+=1) {
-    try {
-      const response=await fetch(endpoint+"/json/version");
-      if (response.ok) { ready=true; break; }
-    } catch {}
-    await sleep(100);
-  }
-  if (!ready) {
-    child.kill("SIGKILL");
-    await rm(profile,{recursive:true,force:true});
-    throw new Error("Chrome DevTools não iniciou.");
-  }
+  const {child,profile,endpoint}=await launchChrome();
+
   async function page(width,height) {
     const response=await fetch(endpoint+"/json/new?about:blank",{method:"PUT"});
     if (!response.ok) throw new Error("Não foi possível criar página CDP.");
@@ -105,11 +147,10 @@ export async function withChrome(callback) {
       },
     };
   }
-  try { return await callback({page}); }
-  finally {
-    child.kill("SIGTERM");
-    await sleep(100);
-    if (!child.killed) child.kill("SIGKILL");
-    await rm(profile,{recursive:true,force:true});
+
+  try {
+    return await callback({page});
+  } finally {
+    await stopChrome(child,profile);
   }
 }

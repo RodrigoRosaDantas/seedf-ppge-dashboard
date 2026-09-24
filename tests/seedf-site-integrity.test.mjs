@@ -311,3 +311,12 @@ test("the Notion workflow reacts to every snapshot synchronizer", async () => {
   assert.match(workflow, /"scripts\/sync-leis-primeiro\.mjs"/);
   assert.match(workflow, /"scripts\/sync-legislation-bank\.mjs"/);
 });
+
+
+test("Visual QA tolerates transient Chrome startup without weakening layout assertions", async () => {
+  const source = await read("scripts/chrome-cdp.mjs");
+  assert.match(source, /launchAttempt<=3/);
+  assert.match(source, /poll<150/);
+  assert.match(source, /stdio:\["ignore","ignore","pipe"\]/);
+  assert.match(source, /Chrome DevTools não iniciou após 3 tentativas/);
+});
