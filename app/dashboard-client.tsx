@@ -274,7 +274,7 @@ const jobs = [
     subtitle: "Monitor",
     priority: "Radar suspenso",
     tone: "violet",
-    source: "SEEDF 2016 + carreira atual",
+    source: "SEEDF 2016 + acervo histórico",
   },
 ];
 
@@ -733,7 +733,7 @@ function Overview({ onNavigate, snapshot }: { onNavigate: (section: SectionId) =
 
       <section className="content-grid jobs-grid">
         <div className="panel jobs-panel">
-          <SectionHeading eyebrow="CARGOS-META" title="Uma preparação, três portas" description="O núcleo comum sustenta as três trilhas; o peso de cada cargo continua separado." action={<button className="text-button" onClick={() => onNavigate("cargos")}>Detalhar cargos <ChevronRight size={16} /></button>} />
+          <SectionHeading eyebrow="CARGOS-META" title="Duas frentes ativas + 1 Radar" description="Gestor e Apoio concentram a execução; Monitor permanece preservado sem dívida até o edital." action={<button className="text-button" onClick={() => onNavigate("cargos")}>Detalhar cargos <ChevronRight size={16} /></button>} />
           <div className="job-cards">{jobs.map((job) => <JobCard job={job} key={job.code} compact />)}</div>
         </div>
         <div className="panel no-data-panel"><div className="empty-icon"><BarChart3 size={22} /></div><p className="eyebrow">DESEMPENHO SEEDF</p><h3>Ainda não há desempenho executado.</h3><p>Isso é correto: o C01 está preparado, mas o diagnóstico deve nascer das suas próprias sessões.</p><button className="secondary-button" onClick={() => onNavigate("estudar")}>Começar D01 <ArrowRight size={16} /></button></div>
@@ -1075,7 +1075,7 @@ function Phases() {
 }
 
 function Jobs() {
-  return <div className="inner-page"><section className="page-intro"><div><p className="eyebrow">EDITAL PROJETADO · 60 EIXOS</p><h1>Cargos-meta e trilhas de cobrança</h1><p>O núcleo comum conversa com os três cargos; a prioridade e o aprofundamento continuam visíveis.</p></div><StatusPill tone="gold">v0.2 · 07/09/2026</StatusPill></section><section className="job-list">{jobs.map((job) => <JobCard job={job} key={job.code} />)}</section><section className="content-grid three-columns"><div className="panel mini-metric"><p className="eyebrow">MANUTENÇÃO</p><strong>24</strong><span>eixos com base histórica pertinente</span></div><div className="panel mini-metric"><p className="eyebrow">REFORÇO</p><strong>25</strong><span>eixos que pedem teoria + questões</span></div><div className="panel mini-metric"><p className="eyebrow">NOVOS</p><strong>11</strong><span>eixos sem domínio presumido</span></div></section></div>;
+  return <div className="inner-page"><section className="page-intro"><div><p className="eyebrow">EDITAL PROJETADO · 64 EIXOS</p><h1>Cargos-meta e trilhas de cobrança</h1><p>Gestor Administração e Apoio Administrativo são os focos ativos; Monitor permanece em Radar com histórico preservado.</p></div><StatusPill tone="gold">pós-TR · 24/09/2026</StatusPill></section><section className="job-list">{jobs.map((job) => <JobCard job={job} key={job.code} />)}</section><section className="content-grid three-columns"><div className="panel mini-metric"><p className="eyebrow">CONFIRMADO TR</p><strong>8</strong><span>eixos confirmados pelo desenho documental atual</span></div><div className="panel mini-metric"><p className="eyebrow">BASE HISTÓRICA FORTE</p><strong>44</strong><span>eixos ativos com suporte histórico relevante</span></div><div className="panel mini-metric"><p className="eyebrow">RADAR / SUSPENSO / FORA</p><strong>12</strong><span>3 Radar · 8 suspensos · 1 fora do escopo</span></div></section></div>;
 }
 
 function Progress({ snapshot }: { snapshot?: DashboardSnapshot | null }) {
