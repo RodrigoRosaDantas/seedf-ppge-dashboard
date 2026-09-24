@@ -2,18 +2,21 @@
 
 Dashboard privado de preparação pré-edital para:
 
-- Gestor PPGE — Administração;
-- Analista PPGE — Apoio Administrativo;
-- Analista PPGE — Monitor.
+- Gestor PPGE — Administração — **ativo**;
+- Analista PPGE — Apoio Administrativo — **ativo**;
+- Analista PPGE — Monitor — **Radar suspenso**, com histórico preservado.
 
 O Notion SEEDF é a fonte operacional. Este site é a camada de execução e visualização, com dados, métricas e identidade separados dos projetos TDAS, EDAS e TJDFT.
 
-## Estado inicial
+## Estado pós-TR nº 3/2026
 
-- Fase 1 ativa, com C01 liberado;
-- próxima ação: D01 — Português fino + LDB;
-- C01 preparado com 385 questões fixas e checkpoints adaptativos;
-- nenhum desempenho SEEDF importado ou presumido.
+- Fase 1 ativa;
+- foco operacional: Gestor Administração + Apoio Administrativo;
+- Monitor preservado em Radar, sem dívida de execução enquanto suspenso;
+- C01 com **355 questões fixas ativas** e projeção operacional de **≈425** com D07/D14;
+- D13 pós-TR: DF/RIDE + PDPM + Lei Maria da Penha + primeiros socorros, com nova bateria ainda pendente;
+- Edital verticalizado com **64 eixos**, distinguindo força documental, Radar, suspensão e fora do escopo.
+- A camada de site preserva histórico de Monitor sem convertê-lo em dívida, revisão ou prioridade ativa.
 
 ## Desenvolvimento
 
