@@ -385,3 +385,12 @@ test("GitHub Actions use current Node 24-compatible action majors", async () => 
   assert.match(joined, /actions\/upload-pages-artifact@v5/);
   assert.match(joined, /actions\/deploy-pages@v5/);
 });
+
+
+test("Pages deploys only from real pushes or explicit manual dispatch", async () => {
+  const workflow = await read(".github/workflows/deploy-pages.yml");
+  assert.match(workflow, /push:\n\s+branches: \[main\]/);
+  assert.match(workflow, /workflow_dispatch:/);
+  assert.doesNotMatch(workflow, /workflow_run:/);
+  assert.doesNotMatch(workflow, /github\.event\.workflow_run/);
+});
