@@ -62,7 +62,8 @@ test("keeps every Leis Primeiro page aligned with the operational method", async
 
     const radar = /radar|suspenso|fora do escopo/i.test(`${law.strategic_status || ""} ${law.action || ""} ${law.priority || ""}`);
     if (radar) {
-      assert.match(plain, /D0 não é requisito para avanço/i, `${law.code}: Radar voltou a exigir D0`);
+      assert.equal(law.operational_target_total, 0, `${law.code}: Radar voltou a gerar meta obrigatória`);
+      assert.ok((law.questions_optional ?? 0) >= 0, `${law.code}: acervo opcional inválido`);
     }
   }
 
