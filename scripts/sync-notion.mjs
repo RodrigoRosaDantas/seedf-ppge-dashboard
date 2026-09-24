@@ -144,11 +144,35 @@ const syncedAt =
 
 const fixedQuestions = execution?.c01?.totals?.fixed_meta ?? firstNumber(sourceText, /metas fixas somam\s*([\d.]+)\s*questões/i) ?? 355;
 
+function latestIncompleteLawSession(data) {
+  return [...(data?.leis_primeiro?.sessions || [])]
+    .filter((session) =>
+      session.completed === false &&
+      session.page_code &&
+      (
+        session.date ||
+        session.progress ||
+        Number(session.questions_done) > 0 ||
+        Number(session.minutes) > 0 ||
+        Number(session.summary_counter) > 0 ||
+        Number(session.reading_counter) > 0
+      ),
+    )
+    .sort((left, right) =>
+      String(right.updated_at || right.date || right.created_at || "").localeCompare(
+        String(left.updated_at || left.date || left.created_at || ""),
+      ),
+    )[0] || null;
+}
+
+const incompleteLawSession = latestIncompleteLawSession(execution);
+const preparedCycleDay = incompleteLawSession ? execution?.c01?.active_day || null : null;
+
 const snapshot = {
   schema_version: 3,
   source: {
     kind: "notion",
-    title: pageTitle(page) || "SEEDF — PPGE | Dashboard PRO",
+    title: pageTitle(page) || "SEEDF — PPGE | Central de Comando",
     page_id: pageId,
     page_url: page.url || `https://www.notion.so/${pageId.replaceAll("-", "")}`,
     last_edited_time: page.last_edited_time || null,
@@ -159,9 +183,11 @@ const snapshot = {
   dashboard: {
     phase: firstMatch(sourceText, /Fase atual:\s*(Fase\s+\d+)/i) || "Fase 1",
     cycle: cycleLabel(sourceText),
-    next_action:
-      firstMatch(sourceText, /Próxima ação operacional:\s*([^\.\n]+)/i) ||
-      "D01 · Português fino + LDB",
+    next_action: incompleteLawSession
+      ? `Retomar ${incompleteLawSession.page_code} · sessão incompleta`
+      : firstMatch(sourceText, /Próxima ação operacional:\s*([^\.\n]+)/i) ||
+        "D01 · Português fino + LDB",
+    prepared_cycle_day: preparedCycleDay,
     planned_questions: fixedQuestions,
     projected_questions: fixedQuestions + 70,
     executed_questions: execution?.c01?.totals?.done ?? (sourceText.includes("Ainda não há desempenho SEEDF executado") ? 0 : null),
