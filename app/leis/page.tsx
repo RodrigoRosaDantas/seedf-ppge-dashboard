@@ -470,9 +470,9 @@ export default function LeisPrimeiroPage() {
           {(snapshot?.audit_notes || [
             "34 páginas L01–L34 usam 32 registros diretamente mapeados; L30 + L31 + L32 compartilham o registro M5 de acessibilidade.",
             "O 33º registro do banco é o Radar 901 do novo PDE/DF, fora da numeração L01–L34.",
-            "L11 tem meta operacional 0 enquanto o edital não fechar cargos e escolaridade.",
-            "L33 é Radar forte com 10 questões de familiarização.",
-            "L34 permanece com meta 0 durante a vacatio legis; vigência em 28/12/2026.",
+            "Meta obrigatória 0 não cria dívida; questões opcionais/Radar ficam fora da continuidade canônica.",
+            "L33 permanece Radar suspenso: 0 obrigatórias + 10 opcionais.",
+            "L34 permanece Radar suspenso: 0 obrigatórias + 8 opcionais; Lei nº 15.450/2026 vigente a partir de 28/12/2026.",
           ]).map((note) => <div key={note}><CheckCircle2 size={16} /><span>{note}</span></div>)}
         </div>
         </div>
