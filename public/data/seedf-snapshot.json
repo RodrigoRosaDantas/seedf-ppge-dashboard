@@ -13,13 +13,14 @@
   "dashboard": {
     "phase": "Fase 1",
     "cycle": "Ciclo 01",
-    "next_action": "D01 · Português fino + LDB",
+    "next_action": "Retomar L03 · sessão incompleta",
     "planned_questions": 355,
     "projected_questions": 425,
     "executed_questions": 0,
     "verticalized_axes": 64,
     "jobs": 2,
-    "radar_jobs": 1
+    "radar_jobs": 1,
+    "prepared_cycle_day": "D01"
   },
   "materials": {
     "source_url": "https://app.notion.com/p/PDFs-e-Materiais-de-Estudo-SEEDF-PPGE-3d4cf5a2673181a4a51feed1c396c77b",
