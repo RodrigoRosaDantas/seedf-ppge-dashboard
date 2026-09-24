@@ -49,6 +49,11 @@ const axes=pages.map(page=>{
     cargos:Array.isArray(propValue(p['Cargo-meta']))?propValue(p['Cargo-meta']):[],
     sourceBase:String(propValue(p['Fonte-base'])||'').trim(),
     layer:String(propValue(p['Camada'])||'').trim(),
+    priority:String(propValue(p['Prioridade'])||'').trim()||null,
+    action:String(propValue(p['Ação'])||'').trim()||null,
+    covered:typeof propValue(p['Coberto?'])==='boolean'?propValue(p['Coberto?']):null,
+    domainState:String(propValue(p['Estado de domínio'])||'').trim()||null,
+    observations:String(propValue(p['Observações'])||'').trim()||null,
     sourceUrl:String(propValue(p['Fonte / referência'])||'').trim(),
     sourceLastEditedAt:page.last_edited_time||null
   };
@@ -57,7 +62,7 @@ const axes=pages.map(page=>{
 const layers=Object.fromEntries([...axes.reduce((map,axis)=>map.set(axis.layer||'Sem camada',(map.get(axis.layer||'Sem camada')||0)+1),new Map())]);
 const subjects=Object.fromEntries([...axes.reduce((map,axis)=>map.set(axis.subject,(map.get(axis.subject)||0)+1),new Map())]);
 const snapshot={
-  schemaVersion:1,
+  schemaVersion:2,
   competitionId:'seedf',
   title:'SEEDF — Edital Projetado + Cargos-meta',
   version:'v0.2',

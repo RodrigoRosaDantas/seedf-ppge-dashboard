@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import "./study-os.css";
 
 const siteBasePath =
   process.env.GITHUB_PAGES === "1"

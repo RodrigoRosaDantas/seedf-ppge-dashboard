@@ -1,0 +1,104 @@
+name: Quality
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: seedf-quality-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout exact HEAD
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Repository diff check
+        run: |
+          git diff --check origin/main...HEAD
+          echo "HEAD=$(git rev-parse HEAD)"
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Type check
+        run: npm run type-check
+
+      - name: Dependency audit · production
+        run: npm run audit:deps
+
+      - name: Dependency audit · toolchain critical
+        run: npm run audit:toolchain
+
+      - name: Validate snapshots
+        run: npm run validate:snapshot
+
+      - name: Security audit
+        run: npm run security:audit
+
+      - name: Regression tests
+        run: npm run test:source
+
+      - name: Build GitHub Pages
+        env:
+          GITHUB_PAGES: "1"
+          GITHUB_PAGES_BASE_PATH: /seedf-ppge-dashboard
+        run: |
+          npm run build
+          node scripts/prepare-github-pages.mjs
+          node scripts/enhance-leis-pages.mjs dist/client
+
+      - name: Rendered regression tests
+        run: npm run test:rendered
+
+      - name: Start QA server
+        run: |
+          mkdir -p .qa-server/seedf-ppge-dashboard
+          cp -R dist/client/. .qa-server/seedf-ppge-dashboard/
+          python3 -m http.server 4173 --bind 127.0.0.1 --directory .qa-server > /tmp/seedf-server.log 2>&1 &
+          echo $! > /tmp/seedf-server.pid
+          for i in {1..30}; do
+            curl -fsS http://127.0.0.1:4173/seedf-ppge-dashboard/ >/dev/null && exit 0
+            sleep 1
+          done
+          cat /tmp/seedf-server.log
+          exit 1
+
+      - name: Visual QA · 6 resolutions
+        env:
+          BASE_URL: http://127.0.0.1:4173/seedf-ppge-dashboard/
+        run: npm run visual:qa
+
+      - name: E2E Study OS
+        env:
+          BASE_URL: http://127.0.0.1:4173/seedf-ppge-dashboard/
+        run: npm run e2e
+
+      - name: Upload visual QA
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: seedf-visual-qa-${{ github.sha }}
+          path: artifacts/visual
+          if-no-files-found: warn
