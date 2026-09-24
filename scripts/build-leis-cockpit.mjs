@@ -72,9 +72,8 @@ function extractStylesheetLinks(source, prefix = "../") {
 }
 
 function radarLaw(law) {
-  const action = String(law.action || "").toLocaleLowerCase("pt-BR");
-  const priority = String(law.priority || "").toLocaleLowerCase("pt-BR");
-  return action.includes("radar") || priority.includes("radar");
+  const state = `${law.strategic_status || ""} ${law.action || ""} ${law.priority || ""}`.toLocaleLowerCase("pt-BR");
+  return /radar|suspenso|fora do escopo/.test(state);
 }
 
 function operationalUnits(laws = []) {
@@ -92,8 +91,8 @@ function rowForLaw(law, rowsByCode) {
 }
 
 function stateFor(law, row) {
-  const questionTarget = number(law.shared_block ? 10 : (row?.operational_question_target ?? law.operational_target_total ?? row?.question_target ?? law.question_target));
-  const questionsDone = number(row?.questions_done);
+  const questionTarget = number(law.operational_target_total ?? row?.operational_question_target ?? law.question_target ?? row?.question_target);
+  const questionsDone = number(law.questions_done ?? row?.questions_done);
   const flashcardsDone = Boolean(row?.flashcards_done ?? law.flashcards_done);
   const summariesDone = number(law.shared_block ? law.summaries_done : (row?.summaries_done ?? law.summaries_done));
   const readingsDone = number(law.shared_block ? law.readings_done : (row?.readings_done ?? law.readings_done));
@@ -103,7 +102,7 @@ function stateFor(law, row) {
   const d20 = Boolean(row?.d20 ?? law.d20);
   const hasSummary = summariesDone !== null && summariesDone > 0;
   const hasReading = readingsDone !== null && readingsDone > 0;
-  const questionsComplete = questionTarget !== null && questionsDone !== null && questionTarget > 0 && questionsDone >= questionTarget;
+  const questionsComplete = questionTarget === 0 || (questionTarget !== null && questionsDone !== null && questionTarget > 0 && questionsDone >= questionTarget);
   const complete = !radarLaw(law) && orientation && hasSummary && hasReading && questionsComplete && flashcardsDone && d0;
   let nextStep = row?.next_step || "1 · Ler orientação";
   if (radarLaw(law)) nextStep = row?.action || law.action || "Radar / monitorar";
@@ -220,7 +219,7 @@ export async function buildLeisCockpit(sourceHtml) {
   const current = executable.find((law) => !stateFor(law, rowForLaw(law, rowsByCode)).complete) || executable[0] || laws[0];
   const currentState = current ? stateFor(current, rowForLaw(current, rowsByCode)) : { nextStep: "Aguardando sincronização" };
   const completed = executable.filter((law) => stateFor(law, rowForLaw(law, rowsByCode)).complete).length;
-  const totalQuestions = laws.filter((law) => !radarLaw(law)).reduce((sum, law) => sum + (law.shared_block && law.code !== "L30" ? 0 : number(law.operational_target_total ?? law.question_target)), 0);
+  const totalQuestions = operationalUnits(laws).reduce((sum, law) => sum + number(law.operational_target_total ?? law.question_target), 0);
   const mapped = snapshot.summary?.mapped_law_records ?? snapshot.summary?.mapped_operational_records ?? 32;
   const radarRecords = snapshot.summary?.radar_records ?? (Array.isArray(snapshot.radars) ? snapshot.radars.length : 1);
   const radarLaws = laws.filter(radarLaw);
@@ -237,7 +236,7 @@ export async function buildLeisCockpit(sourceHtml) {
   const currentChecks = current ? `${checkpoint("Orientação", currentState.orientation)}${checkpoint("Resumo", currentState.hasSummary)}${checkpoint("Lei seca", currentState.hasReading)}${checkpoint("Questões", currentState.questionsComplete)}${checkpoint("Flashcards", currentState.flashcardsDone)}${checkpoint("D0", currentState.d0)}${checkpoint("D7/D20", currentState.d7 && currentState.d20)}` : checkpoint("Sincronização", false);
   const latestExecution = snapshot.execution?.days?.[0] || null;
   const latestLaw = latestExecution ? laws.find((law) => law.code === latestExecution.page_code) : null;
-  const latestErrors = latestExecution ? (snapshot.execution?.errors || []).filter((item) => item.day_id === latestExecution.day_id) : [];
+  const latestErrors = latestExecution ? (snapshot.execution?.errors || []).filter((item) => item.day_id === latestExecution.day_id && !/radar|suspenso|historico/i.test(String(item.strategic_use || "").toLocaleLowerCase("pt-BR"))) : [];
   const formatExecutionPercent = (value) => {
     const parsed = Number(value);
     if (!Number.isFinite(parsed)) return "—";
@@ -260,7 +259,7 @@ ${executionMarkup}
 <section class="laws-panel laws-track-panel" id="trilha"><div class="laws-heading"><div><p class="laws-kicker">MAPA DE DECISÃO</p><h2>Por onde continuar</h2><p>Escolha a trilha pelo cargo. Cada cartão já aponta para a próxima norma pendente.</p></div><span class="laws-heading-note">${executable.length} blocos operacionais</span></div><div class="laws-track-grid">${trackMarkup}</div></section>
 <nav class="laws-quick-nav" aria-label="Atalhos da trilha"><a class="laws-quick-link" href="#mapa-detalhado"><span class="laws-quick-icon">⌕</span><span><b>Localizar uma norma</b><small>Mapa detalhado e filtros</small></span><span class="laws-quick-arrow">↗</span></a><a class="laws-quick-link" href="#radar"><span class="laws-quick-icon">◎</span><span><b>Ver Radar</b><small>Atualizações fora da fila</small></span><span class="laws-quick-arrow">↗</span></a><a class="laws-quick-link" href="#banco-legislacao"><span class="laws-quick-icon">▦</span><span><b>Consultar o banco</b><small>Metas, revisões e registros</small></span><span class="laws-quick-arrow">↗</span></a><a class="laws-quick-link" href="./flashcards/"><span class="laws-quick-icon">▣</span><span><b>Estudar com cards</b><small>Revisão com repetição espaçada</small></span><span class="laws-quick-arrow">↗</span></a></nav>
 <section class="laws-panel laws-radar" id="radar"><div class="laws-heading"><div><p class="laws-kicker">RADAR · FORA DA FILA DIÁRIA</p><h2>Monitorar sem disputar atenção</h2><p>Itens de vigência, carreira e atualização normativa permanecem separados da execução.</p></div><span class="laws-chip priority-radar">${radarLaws.length + externalRadars.length} itens</span></div><div class="laws-radar-list">${radarMarkup}</div></section>
-<details class="laws-panel laws-disclosure laws-method-disclosure"><summary><span><b>📖 COMO ESTUDAR</b><strong>Fluxo de uma norma</strong></span><span>abrir método + regras</span></summary><div class="laws-disclosure-body"><ol>${sequence}</ol><p class="laws-rule"><strong>Regra de avanço:</strong> ${escapeHtml(snapshot.advance_rule || "orientação + 1ª leitura + questões + flashcards + D0; D7/D20 seguem em paralelo.")}</p><p class="laws-rule"><strong>Exceções preservadas:</strong> L30–L32 são o Bloco M5 (10 questões totais); L11 e L34 têm meta 0 nas condições registradas; L33 é Radar forte com 10 questões de familiarização.</p></div></details>
+<details class="laws-panel laws-disclosure laws-method-disclosure"><summary><span><b>📖 COMO ESTUDAR</b><strong>Fluxo de uma norma</strong></span><span>abrir método + regras</span></summary><div class="laws-disclosure-body"><ol>${sequence}</ol><p class="laws-rule"><strong>Regra de avanço:</strong> ${escapeHtml(snapshot.advance_rule || "orientação + 1ª leitura + questões + flashcards + D0; D7/D20 seguem em paralelo.")}</p><p class="laws-rule"><strong>Exceções pós-TR:</strong> L30–L32 (M5), L33 e L34 estão fora da dívida obrigatória enquanto suspensos; suas questões antigas permanecem opcionais/históricas. Meta 0 é respeitada literalmente.</p></div></details>
 <details class="laws-panel laws-disclosure laws-map-panel" id="mapa-detalhado"><summary><span><b>📚 CONSULTA RÁPIDA</b><strong>Mapa detalhado L01–L34</strong><small>Uma linha por norma: ação, prioridade, meta e revisões.</small></span><span>abrir mapa</span></summary><div class="laws-disclosure-body"><div class="laws-heading"><div><p class="laws-kicker">TODAS AS NORMAS</p><h2>Mapa detalhado</h2><p>Use os filtros quando precisar localizar uma lei, um cargo ou um alerta específico.</p></div><span class="laws-result-count" aria-live="polite"><span id="result-count">${laws.length}</span> de ${laws.length}</span></div><div class="laws-toolbar"><label class="laws-search">⌕ <input id="law-search" placeholder="Buscar LDB, ECA, LRF, LAI..." aria-label="Buscar legislação"></label><label class="laws-select">☷ <select id="group-filter" aria-label="Filtrar por trilha"><option value="">Todos os grupos</option>${groups.map((group) => `<option value="${escapeHtml(group)}">${escapeHtml(group)}</option>`).join("")}</select></label><label class="laws-select">◈ <select id="priority-filter" aria-label="Filtrar por prioridade"><option value="">Todas prioridades</option><option>P0 - Nuclear</option><option>P1 - Alta</option><option>P2 - Complementar</option><option>Radar forte</option><option>Radar</option></select></label></div><div id="laws-empty" class="laws-empty">Nenhuma norma corresponde aos filtros.</div><div class="laws-map-groups">${mapMarkup}</div></div></details>
 <details class="laws-panel laws-disclosure laws-audit" id="auditoria"><summary><span><b>🔎 AUDITORIA E INTEGRIDADE</b><strong>O que está preservado</strong></span><span>abrir conferência</span></summary><div class="laws-disclosure-body"><ul>${auditNotes}</ul><p>O Notion permanece a fonte operacional canônica; o site hospeda a leitura e interpreta os registros. A fonte jurídica continua sendo o texto oficial vigente.</p></div></details>
 <div class="static-note">Leitura local: snapshots publicados no GitHub Pages. Fonte operacional canônica: Notion. Nenhum controle visual substitui o registro operacional.</div><footer class="laws-footer"><span>SEEDF PPGE · Leis Primeiro</span><span>Fonte operacional: Notion · Camada de leitura: site · Fonte jurídica: texto oficial vigente</span></footer></main>

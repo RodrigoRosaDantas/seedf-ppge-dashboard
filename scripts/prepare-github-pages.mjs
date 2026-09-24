@@ -41,7 +41,7 @@ function buildLawCard(law) {
     law.observations ? `<div><strong>Observações</strong><p>${escapeHtml(law.observations)}</p></div>` : "",
     `<div><strong>Última auditoria</strong><p>${escapeHtml(audit)}</p></div>`,
   ].join("");
-  const shared = law.shared_block ? `<div class="law-shared-note">⚠ L30 + L31 + L32 compartilham a meta operacional consolidada do bloco M5.</div>` : "";
+  const shared = law.shared_block ? `<div class="law-shared-note">⚠ L30 + L31 + L32 compartilham o bloco M5; pós-TR, a meta obrigatória é 0 e as 10 questões antigas são opcionais enquanto Monitor estiver suspenso.</div>` : "";
   const actions = [
     `<a class="law-study-link" href="./${escapeHtml(lawSlug(law))}/">Estudar no site →</a>`,
     law.official_url ? `<a href="${escapeHtml(law.official_url)}" target="_blank" rel="noreferrer">Fonte oficial ↗</a>` : "",
@@ -49,7 +49,7 @@ function buildLawCard(law) {
   ].join("");
 
   return `<article class="law-card law-priority-${priorityClass(law.priority)}" data-law-card data-group="${escapeHtml(law.group)}" data-priority="${escapeHtml(law.priority || "")}" data-search="${escapeHtml(searchText)}">
-    <div class="law-card-top"><span class="law-code">${escapeHtml(law.code)}</span><div class="law-badges"><span class="laws-chip priority-${priorityClass(law.priority)}">${escapeHtml(compactPriority(law.priority))}</span><span class="laws-chip laws-chip-meta">${law.question_target == null ? "—" : Number(law.question_target)} questões</span></div></div>
+    <div class="law-card-top"><span class="law-code">${escapeHtml(law.code)}</span><div class="law-badges"><span class="laws-chip priority-${priorityClass(law.priority)}">${escapeHtml(compactPriority(law.priority))}</span><span class="laws-chip laws-chip-meta">${law.operational_target_total == null ? Number(law.question_target || 0) : Number(law.operational_target_total)} obrigatórias${law.questions_optional ? ` + ${Number(law.questions_optional)} opcionais` : ""}</span></div></div>
     <h4>${escapeHtml(law.title)}</h4>
     <div class="law-meta-row"><span>Ordem ${escapeHtml(law.operational_order ?? "—")}</span><span>•</span><span>${escapeHtml(law.action || law.status || "")}</span></div>
     <div class="law-cargos">${cargos}</div>
@@ -108,6 +108,10 @@ async function writeInternalLawPages(sourceHtml, snapshot, laws) {
   console.log(`Leis Primeiro: ${laws.length} páginas internas L01–L34 publicadas.`);
 }
 
+function lawInactive(law) {
+  return /radar|suspenso|fora do escopo/i.test(`${law.strategic_status || ""} ${law.action || ""} ${law.priority || ""}`);
+}
+
 async function buildLeisStandalone(sourceHtml) {
   const snapshotPath = path.resolve("public/data/leis-primeiro.json");
   const snapshot = JSON.parse(await readFile(snapshotPath, "utf8"));
@@ -115,15 +119,16 @@ async function buildLeisStandalone(sourceHtml) {
   const laws = Array.isArray(snapshot.laws) ? snapshot.laws : [];
   const radars = Array.isArray(snapshot.radars) ? snapshot.radars : [];
   const groups = ["Núcleo comum", "Gestor — Administração", "Apoio Administrativo", "Monitor"];
-  const questionTargets = laws.map((law) => law.question_target == null ? null : Number(law.question_target));
-  const totalQuestions = questionTargets.some((value) => value === null || !Number.isFinite(value))
+  const activeLaws = laws.filter((law) => !lawInactive(law));
+  const questionTargets = activeLaws.map((law) => law.operational_target_total == null ? Number(law.question_target || 0) : Number(law.operational_target_total));
+  const totalQuestions = questionTargets.some((value) => !Number.isFinite(value))
     ? "—"
     : questionTargets.reduce((sum, value) => sum + value, 0);
   const mapped = snapshot.summary?.mapped_law_records ?? snapshot.summary?.mapped_operational_records ?? 32;
   const radarCount = snapshot.summary?.radar_records ?? radars.length ?? 1;
   await writeInternalLawPages(sourceHtml, snapshot, laws);
   const groupMarkup = groups.map((group) => { const items = laws.filter((law) => law.group === group); return `<section class="law-group-block" data-law-group><div class="laws-group-title"><h3>${escapeHtml(group)}</h3><span data-group-count>${items.length} normas</span></div><div class="laws-grid">${items.map(buildLawCard).join("")}</div></section>`; }).join("");
-  const auditNotes = (snapshot.audit_notes || ["34 páginas L01–L34 usam 32 registros diretamente mapeados; L30 + L31 + L32 compartilham o registro M5 de acessibilidade.","O 33º registro do banco é o Radar 901 do novo PDE/DF, fora da numeração L01–L34.","L11 tem meta operacional 0 enquanto o edital não fechar cargos e escolaridade.","L33 é Radar forte com 10 questões de familiarização.","L34 permanece com meta 0 durante a vacatio legis; vigência em 28/12/2026."]).map((note) => `<div><span>✓</span><span>${escapeHtml(note)}</span></div>`).join("");
+  const auditNotes = (snapshot.audit_notes || ["34 páginas L01–L34 usam 32 registros diretamente mapeados; L30 + L31 + L32 compartilham o registro M5 de acessibilidade.","O 33º registro do banco é o Radar 901 do novo PDE/DF, fora da numeração L01–L34.","Meta obrigatória 0 não cria dívida; questões opcionais/Radar ficam fora da continuidade canônica.","L33 permanece Radar suspenso: 0 obrigatórias + 10 opcionais.","L34 permanece Radar suspenso: 0 obrigatórias + 8 opcionais; Lei nº 15.450/2026 vigente a partir de 28/12/2026."]).map((note) => `<div><span>✓</span><span>${escapeHtml(note)}</span></div>`).join("");
   const steps = (snapshot.study_sequence || []).map((step, index) => `<article class="laws-step"><span>${index + 1}</span><p>${escapeHtml(step)}</p></article>`).join("");
   const radarMarkup = radars.map((radar) => `<article><div><strong>${escapeHtml(radar.title)}</strong><span>${escapeHtml(radar.priority)} · ${radar.question_target == null ? "—" : Number(radar.question_target)} questões</span></div><a href="${escapeHtml(radar.official_url || radar.url || "#")}" target="_blank" rel="noreferrer">Fonte oficial ↗</a></article>`).join("");
 

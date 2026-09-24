@@ -272,17 +272,17 @@ const jobs = [
     code: "C",
     title: "Analista PPGE",
     subtitle: "Monitor",
-    priority: "Peso controlado",
+    priority: "Radar suspenso",
     tone: "violet",
-    source: "SEEDF 2016 + carreira atual",
+    source: "SEEDF 2016 + acervo histórico",
   },
 ];
 
 const workload = [
-  { label: "Reforço", blocks: 19, questions: 175, tone: "coral" },
-  { label: "Manutenção", blocks: 11, questions: 115, tone: "teal" },
-  { label: "Novo", blocks: 9, questions: 95, tone: "violet" },
-  { label: "Dominado", blocks: 0, questions: 0, tone: "slate" },
+  { label: "Fixas ativas", blocks: 11, questions: 355, tone: "teal" },
+  { label: "Checkpoint D07", blocks: 1, questions: 30, tone: "violet" },
+  { label: "D13 pós-TR", blocks: 1, questions: 0, tone: "coral" },
+  { label: "Fechamento D14", blocks: 1, questions: 40, tone: "gold" },
 ];
 
 const dayRows = [
@@ -298,12 +298,12 @@ const dayRows = [
   { day: "D10", label: "Gestão de Pessoas + comportamento", detail: "Aguardando execução", state: "ready", meta: "35 questões" },
   { day: "D11", label: "AFO + orçamento público", detail: "Aguardando execução", state: "ready", meta: "35 questões" },
   { day: "D12", label: "Materiais + patrimônio + LAI", detail: "Aguardando execução", state: "ready", meta: "35 questões" },
-  { day: "D13", label: "ECA + acessibilidade + Educação Especial", detail: "Aguardando execução", state: "ready", meta: "30 questões" },
+  { day: "D13", label: "DF/RIDE + PDPM + Maria da Penha + primeiros socorros", detail: "Nova bateria pós-TR pendente", state: "adaptive", meta: "0 questões · curadoria pendente" },
   { day: "D14", label: "Fechamento do Ciclo 01", detail: "Bateria integrada após D01–D13", state: "adaptive", meta: "40 questões · adaptativo" },
 ];
 
 const sources = [
-  { title: "Edital projetado v0.2", detail: "60 eixos classificados por probabilidade e domínio.", tag: "NORTE", href: "https://app.notion.com/p/3d4cf5a2673181ccb624e95c0759c02d" },
+  { title: "Edital projetado pós-TR", detail: "64 eixos com força documental e escopo ativo × Radar separados.", tag: "NORTE", href: "https://app.notion.com/p/3d4cf5a2673181ccb624e95c0759c02d" },
   { title: "Legislação vigente", detail: "Atualizações normativas entram antes do conteúdo histórico.", tag: "BASE", href: "https://app.notion.com/p/3d4cf5a2673181a4a51feed1c396c77b" },
   { title: "Últimos editais aplicáveis", detail: "Gestor 2022, Apoio Administrativo 2017 e Monitor 2017.", tag: "HISTÓRICO", href: "https://app.notion.com/p/3d4cf5a2673181ccb624e95c0759c02d" },
   { title: "Bancos SEEDF", detail: "Questões, erros, simulados, conceitos e discursivas em bancos próprios.", tag: "EXECUÇÃO", href: "https://app.notion.com/p/3d4cf5a26731814e88b1e91e1d4b3208" },
@@ -328,7 +328,7 @@ const studyMaterials: StudyMaterial[] = [
   { day: "D10", title: "Gestão de Pessoas", detail: "Comportamento organizacional", meta: "35 questões", href: "https://app.notion.com/p/3d4cf5a2673181b381fad65285d56860", tone: "coral" },
   { day: "D11", title: "AFO + orçamento público", detail: "Reforço dirigido 2026", meta: "35 questões", href: "https://app.notion.com/p/3d4cf5a2673181f985a9fcffe5e94bfa", tone: "gold" },
   { day: "D12", title: "Materiais + patrimônio + LAI", detail: "Manutenção de alta eficiência", meta: "35 questões", href: "https://app.notion.com/p/3d4cf5a2673181339102dfeed723def3", tone: "teal" },
-  { day: "D13", title: "ECA + acessibilidade + Educação Especial", detail: "Núcleo Monitor", meta: "30 questões", href: "https://app.notion.com/p/3d4cf5a26731817db4f3d27a70ed8646", tone: "coral" },
+  { day: "D13", title: "DF/RIDE + PDPM + Maria da Penha + primeiros socorros", detail: "Conteúdo pós-TR · bateria pendente", meta: "0 questões", href: "https://app.notion.com/p/3d4cf5a26731817db4f3d27a70ed8646", tone: "coral" },
   { day: "D14", title: "Revisão integrada + checkpoint", detail: "Fechamento do Ciclo 01", meta: "40 questões · adaptativo", href: "https://app.notion.com/p/3d4cf5a2673181db8454e5ad9dd90c01", tone: "violet" },
 ];
 
@@ -671,11 +671,11 @@ function SectionHeading({ eyebrow, title, description, action }: { eyebrow: stri
 
 function Overview({ onNavigate, snapshot }: { onNavigate: (section: SectionId) => void; snapshot: DashboardSnapshot | null }) {
   const nextAction = snapshot?.dashboard.next_action ?? "D01 · Português fino + LDB";
-  const plannedQuestions = snapshot?.dashboard.planned_questions ?? 385;
-  const projectedQuestions = snapshot?.dashboard.projected_questions ?? 455;
+  const plannedQuestions = snapshot?.dashboard.planned_questions ?? 355;
+  const projectedQuestions = snapshot?.dashboard.projected_questions ?? 425;
   const executedQuestions = snapshot?.dashboard.executed_questions ?? 0;
-  const verticalizedAxes = snapshot?.dashboard.verticalized_axes ?? 60;
-  const jobsCount = snapshot?.dashboard.jobs ?? 3;
+  const verticalizedAxes = snapshot?.dashboard.verticalized_axes ?? 64;
+  const jobsCount = snapshot?.dashboard.jobs ?? 2;
   const executionRate = plannedQuestions > 0 ? Math.round((executedQuestions / plannedQuestions) * 100) : 0;
   return (
     <>
@@ -702,19 +702,19 @@ function Overview({ onNavigate, snapshot }: { onNavigate: (section: SectionId) =
       </section>
 
       <section className="stats-grid" aria-label="Resumo do projeto">
-        <StatCard icon={Layers3} label="Eixos verticalizados" value={String(verticalizedAxes)} detail="24 manutenção · 25 reforço · 11 novos" tone="blue" />
+        <StatCard icon={Layers3} label="Eixos verticalizados" value={String(verticalizedAxes)} detail="64 totais · escopo ativo e Radar separados" tone="blue" />
         <StatCard icon={Target} label="Carga fixa do C01" value={String(plannedQuestions)} detail="Questões sincronizadas do Notion" tone="gold" />
         <StatCard icon={TrendingUp} label="Projeção do C01" value={`≈ ${projectedQuestions}`} detail="Inclui checkpoints adaptativos" tone="teal" />
-        <StatCard icon={GraduationCap} label="Cargos-meta" value={String(jobsCount)} detail="Gestor + dois Analistas PPGE" tone="violet" />
+        <StatCard icon={GraduationCap} label="Cargos-meta" value={String(jobsCount)} detail="Gestor + Apoio ativos · Monitor em Radar" tone="violet" />
       </section>
 
       <section className="content-grid two-thirds">
         <div className="panel workload-panel">
           <SectionHeading eyebrow="CICLO 01 · SNAPSHOT PRÉ-EXECUÇÃO" title="Onde a energia deve entrar" description="A carga abaixo é planejamento. Ela ainda não é desempenho." action={<StatusPill>{executionRate}% executado</StatusPill>} />
           <div className="workload-list">
-            {workload.map((item) => <div className="workload-row" key={item.label}><div className="workload-label"><span className={`workload-dot dot-${item.tone}`} /><strong>{item.label}</strong><span>{item.blocks} blocos</span></div><div className="workload-track"><span className={`workload-fill fill-${item.tone}`} style={{ width: `${item.questions ? Math.max(6, (item.questions / 175) * 100) : 0}%` }} /></div><strong className="workload-number">{item.questions}</strong></div>)}
+            {workload.map((item) => <div className="workload-row" key={item.label}><div className="workload-label"><span className={`workload-dot dot-${item.tone}`} /><strong>{item.label}</strong><span>{item.blocks} blocos</span></div><div className="workload-track"><span className={`workload-fill fill-${item.tone}`} style={{ width: `${item.questions ? Math.max(6, (item.questions / 355) * 100) : 0}%` }} /></div><strong className="workload-number">{item.questions}</strong></div>)}
           </div>
-          <div className="panel-footnote"><CircleAlert size={15} /> Os números só mudam quando você registra questões feitas, acertos, erros e dúvidas no banco detalhado.</div>
+          <div className="panel-footnote"><CircleAlert size={15} /> D13 permanece com meta 0 até a curadoria da nova bateria; Radar não entra como dívida.</div>
         </div>
 
         <div className="panel integrity-panel">
@@ -733,7 +733,7 @@ function Overview({ onNavigate, snapshot }: { onNavigate: (section: SectionId) =
 
       <section className="content-grid jobs-grid">
         <div className="panel jobs-panel">
-          <SectionHeading eyebrow="CARGOS-META" title="Uma preparação, três portas" description="O núcleo comum sustenta as três trilhas; o peso de cada cargo continua separado." action={<button className="text-button" onClick={() => onNavigate("cargos")}>Detalhar cargos <ChevronRight size={16} /></button>} />
+          <SectionHeading eyebrow="CARGOS-META" title="Duas frentes ativas + 1 Radar" description="Gestor e Apoio concentram a execução; Monitor permanece preservado sem dívida até o edital." action={<button className="text-button" onClick={() => onNavigate("cargos")}>Detalhar cargos <ChevronRight size={16} /></button>} />
           <div className="job-cards">{jobs.map((job) => <JobCard job={job} key={job.code} compact />)}</div>
         </div>
         <div className="panel no-data-panel"><div className="empty-icon"><BarChart3 size={22} /></div><p className="eyebrow">DESEMPENHO SEEDF</p><h3>Ainda não há desempenho executado.</h3><p>Isso é correto: o C01 está preparado, mas o diagnóstico deve nascer das suas próprias sessões.</p><button className="secondary-button" onClick={() => onNavigate("estudar")}>Começar D01 <ArrowRight size={16} /></button></div>
@@ -1075,14 +1075,14 @@ function Phases() {
 }
 
 function Jobs() {
-  return <div className="inner-page"><section className="page-intro"><div><p className="eyebrow">EDITAL PROJETADO · 60 EIXOS</p><h1>Cargos-meta e trilhas de cobrança</h1><p>O núcleo comum conversa com os três cargos; a prioridade e o aprofundamento continuam visíveis.</p></div><StatusPill tone="gold">v0.2 · 07/09/2026</StatusPill></section><section className="job-list">{jobs.map((job) => <JobCard job={job} key={job.code} />)}</section><section className="content-grid three-columns"><div className="panel mini-metric"><p className="eyebrow">MANUTENÇÃO</p><strong>24</strong><span>eixos com base histórica pertinente</span></div><div className="panel mini-metric"><p className="eyebrow">REFORÇO</p><strong>25</strong><span>eixos que pedem teoria + questões</span></div><div className="panel mini-metric"><p className="eyebrow">NOVOS</p><strong>11</strong><span>eixos sem domínio presumido</span></div></section></div>;
+  return <div className="inner-page"><section className="page-intro"><div><p className="eyebrow">EDITAL PROJETADO · 64 EIXOS</p><h1>Cargos-meta e trilhas de cobrança</h1><p>Gestor Administração e Apoio Administrativo são os focos ativos; Monitor permanece em Radar com histórico preservado.</p></div><StatusPill tone="gold">pós-TR · 24/09/2026</StatusPill></section><section className="job-list">{jobs.map((job) => <JobCard job={job} key={job.code} />)}</section><section className="content-grid three-columns"><div className="panel mini-metric"><p className="eyebrow">CONFIRMADO TR</p><strong>8</strong><span>eixos confirmados pelo desenho documental atual</span></div><div className="panel mini-metric"><p className="eyebrow">BASE HISTÓRICA FORTE</p><strong>44</strong><span>eixos ativos com suporte histórico relevante</span></div><div className="panel mini-metric"><p className="eyebrow">RADAR / SUSPENSO / FORA</p><strong>12</strong><span>3 Radar · 8 suspensos · 1 fora do escopo</span></div></section></div>;
 }
 
 function Progress({ snapshot }: { snapshot?: DashboardSnapshot | null }) {
   const execution = snapshot?.execution?.c01;
   const totals = execution?.totals;
-  const fixedPlanned = totals?.fixed_meta ?? snapshot?.dashboard.planned_questions ?? 385;
-  const projectedPlanned = totals?.planned ?? snapshot?.dashboard.projected_questions ?? 455;
+  const fixedPlanned = totals?.fixed_meta ?? snapshot?.dashboard.planned_questions ?? 355;
+  const projectedPlanned = totals?.planned ?? snapshot?.dashboard.projected_questions ?? 425;
   const done = totals?.done ?? snapshot?.dashboard.executed_questions ?? 0;
   const precisionValue = totals?.precision ?? null;
   const errorBank = execution?.error_count ?? 0;

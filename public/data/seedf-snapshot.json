@@ -14,11 +14,12 @@
     "phase": "Fase 1",
     "cycle": "Ciclo 01",
     "next_action": "D01 · Português fino + LDB",
-    "planned_questions": 385,
-    "projected_questions": 455,
+    "planned_questions": 355,
+    "projected_questions": 425,
     "executed_questions": 0,
-    "verticalized_axes": 60,
-    "jobs": 3
+    "verticalized_axes": 64,
+    "jobs": 2,
+    "radar_jobs": 1
   },
   "materials": {
     "source_url": "https://app.notion.com/p/PDFs-e-Materiais-de-Estudo-SEEDF-PPGE-3d4cf5a2673181a4a51feed1c396c77b",
@@ -1214,7 +1215,43 @@
         "doubts": null,
         "flashcards": null,
         "precision": null
-      }
+      },
+      "question_records": [
+        {
+          "id": "3e2cf5a2-6731-81a6-b181-c29592e9e134",
+          "url": "https://app.notion.com/p/3e2cf5a2673181a6b181c29592e9e134",
+          "day_id": "LP-20260921-L01-R1",
+          "page_code": "L01",
+          "title": "L01 · Resumo 1 · D0 · Núcleo comum — 30 questões",
+          "discipline": "Direito Constitucional",
+          "subject": "CF/88 — Educação (arts. 205–214) + Administração Pública (arts. 37–41)",
+          "strategic_use": "Ativo",
+          "date": "2026-09-21",
+          "planned": 30,
+          "done": 30,
+          "correct": 29,
+          "errors": 1,
+          "doubts": 0,
+          "precision": 0.9666666666666667
+        },
+        {
+          "id": "3e2cf5a2-6731-817f-a902-e6bd7ab2ffc0",
+          "url": "https://app.notion.com/p/3e2cf5a26731817fa902e6bd7ab2ffc0",
+          "day_id": "LP-20260921-L01-R1",
+          "page_code": "L01",
+          "title": "L01 · Resumo 1 · D0 · Suplemento Analista Monitor — 10 questões",
+          "discipline": "Direito Constitucional",
+          "subject": "CF/88 — ampliação Monitor (arts. 1º–13 e 226–230)",
+          "strategic_use": "Radar suspenso",
+          "date": "2026-09-21",
+          "planned": 10,
+          "done": 10,
+          "correct": 8,
+          "errors": 2,
+          "doubts": 0,
+          "precision": 0.8
+        }
+      ]
     }
   },
   "notice": "Snapshot público sanitizado. O conteúdo completo continua no Notion; materiais, fontes e execução do C01 são indexados para consulta."

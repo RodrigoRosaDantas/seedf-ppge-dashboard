@@ -49,6 +49,7 @@ const axes=pages.map(page=>{
     cargos:Array.isArray(propValue(p['Cargo-meta']))?propValue(p['Cargo-meta']):[],
     sourceBase:String(propValue(p['Fonte-base'])||'').trim(),
     layer:String(propValue(p['Camada'])||'').trim(),
+    documentaryStrength:String(propValue(p['Força documental'])||'').trim()||null,
     priority:String(propValue(p['Prioridade'])||'').trim()||null,
     action:String(propValue(p['Ação'])||'').trim()||null,
     covered:typeof propValue(p['Coberto?'])==='boolean'?propValue(p['Coberto?']):null,
@@ -60,12 +61,13 @@ const axes=pages.map(page=>{
 }).filter(axis=>axis.topic&&axis.subject).sort((a,b)=>a.subject.localeCompare(b.subject,'pt-BR')||a.topic.localeCompare(b.topic,'pt-BR'));
 
 const layers=Object.fromEntries([...axes.reduce((map,axis)=>map.set(axis.layer||'Sem camada',(map.get(axis.layer||'Sem camada')||0)+1),new Map())]);
+const documentaryStrengths=Object.fromEntries([...axes.reduce((map,axis)=>map.set(axis.documentaryStrength||'Sem classificação',(map.get(axis.documentaryStrength||'Sem classificação')||0)+1),new Map())]);
 const subjects=Object.fromEntries([...axes.reduce((map,axis)=>map.set(axis.subject,(map.get(axis.subject)||0)+1),new Map())]);
 const snapshot={
-  schemaVersion:2,
+  schemaVersion:3,
   competitionId:'seedf',
   title:'SEEDF — Edital Projetado + Cargos-meta',
-  version:'v0.2',
+  version:'v0.3',
   kind:'projected',
   generatedAt:new Date().toISOString(),
   source:{
@@ -76,10 +78,11 @@ const snapshot={
   },
   editorialPolicy:{
     official:false,
-    note:'Edital projetado pré-edital. Base histórica, atualização obrigatória e radar provável permanecem identificados separadamente.'
+    note:'Edital projetado pré-edital. A força documental do TR atual, a base histórica, os radares e o conteúdo suspenso permanecem identificados separadamente.'
   },
   axisCount:axes.length,
   layers,
+  documentaryStrengths,
   subjects,
   axes
 };

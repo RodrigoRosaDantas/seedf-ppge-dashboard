@@ -42,8 +42,8 @@ function readerCssLink(prefix) { return `<link rel="stylesheet" href="${prefix}r
 function readerScript(prefix) { return `<script src="${prefix}reading-preferences.js"></script>`; }
 
 function operationalMarkup(law, row) {
-  const target = n(law.shared_block ? 10 : (row?.operational_question_target ?? law.operational_target_total ?? row?.question_target ?? law.question_target));
-  const done = n(row?.questions_done); const flashcards = Boolean(row?.flashcards_done ?? law.flashcards_done);
+  const target = n(law.operational_target_total ?? row?.operational_question_target ?? law.question_target ?? row?.question_target);
+  const done = n(law.questions_done ?? row?.questions_done); const flashcards = Boolean(row?.flashcards_done ?? law.flashcards_done);
   const summariesDone = n(law.shared_block ? law.summaries_done : (row?.summaries_done ?? law.summaries_done));
   const summaryNumber = n(law.shared_block ? law.summary_number : (row?.summary_number ?? law.summary_number));
   const readingsDone = n(law.shared_block ? law.readings_done : (row?.readings_done ?? law.readings_done));
@@ -53,12 +53,12 @@ function operationalMarkup(law, row) {
   const d0 = Boolean(row?.d0 ?? law.d0);
   const d7 = Boolean(row?.d7 ?? law.d7);
   const d20 = Boolean(row?.d20 ?? law.d20);
-  const questions = target > 0 && done >= target;
+  const questions = target === 0 || (target > 0 && done >= target);
   const state = (label, ok) => `<span class="ops-state ${ok ? "done" : ""}">${ok ? "✓" : "○"} ${esc(label)}</span>`;
   const action = row?.action || law.action || law.status || "Estudar";
-  const radar = /radar/i.test(`${action} ${law.priority || ""}`);
+  const radar = /radar|suspenso|fora do escopo/i.test(`${law.strategic_status || ""} ${action} ${law.priority || ""}`);
   const latestDay = (execution.days || []).find((day) => day.page_code === law.code) || null;
-  const dayErrors = latestDay ? (execution.errors || []).filter((item) => item.day_id === latestDay.day_id) : [];
+  const dayErrors = latestDay ? (execution.errors || []).filter((item) => item.day_id === latestDay.day_id && !/radar|suspenso|historico/i.test(String(item.strategic_use || ""))) : [];
   const errorItems = dayErrors.map((item) => `<li><b>${esc(item.question_id || "Erro")}</b> — ${esc(item.subject || item.title || "Erro registrado")} <small>· ${esc(item.review || "sem revisão")} · reincidência ${shown(item.recurrence)}${item.flashcard ? " · flashcard" : ""}</small></li>`).join("");
   const executionCard = latestDay ? `<article class="study-ops-card"><span class="eyebrow">Última execução · Dia ID</span><div class="big"><strong style="font-size:14px">${esc(latestDay.day_id)}</strong></div><div class="ops-grid"><div class="ops-mini"><b>${shown(latestDay.done)}/${shown(latestDay.planned)}</b><small>questões</small></div><div class="ops-mini"><b>${dayErrors.length}</b><small>erros</small></div><div class="ops-mini"><b>${flashcards ? "✓" : "○"}</b><small>${law.shared_block ? "flashcards M5" : "flashcards feitos"}</small></div></div>${dayErrors.length ? `<details><summary>Ver erros desta execução</summary><ul>${errorItems}</ul></details>` : `<p class="ops-next">Nenhum erro vinculado a esta execução.</p>`}</article>` : "";
   let nextStep = row?.next_step || "1 · Ler orientação";
@@ -76,7 +76,7 @@ function operationalMarkup(law, row) {
   const actionNote = radar
     ? "Unidade de monitoramento; o fluxo normal de fechamento não se aplica."
     : law.shared_block
-      ? "M5: resumo e leitura são individuais por Lxx; questões, flashcards e revisões são checkpoints do bloco."
+      ? "M5: resumo e leitura são individuais por Lxx; pós-TR, questões opcionais não geram dívida enquanto o bloco estiver suspenso."
       : "Resumo e lei seca são eventos separados.";
   return `<section class="study-enhanced-ops" aria-label="Painel operacional sincronizado do Notion">
     <article class="study-ops-card study-ops-focus"><span class="eyebrow">Próxima ação</span><div class="big"><strong style="font-size:17px">${esc(nextStep)}</strong></div><p class="ops-next">${esc(action)} · ${esc(actionNote)}</p><a class="ops-primary" href="#study-content">Ir para o material ↓</a><div class="ops-checklist">${checklist}</div></article>
