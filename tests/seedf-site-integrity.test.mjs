@@ -5,6 +5,7 @@ import test from "node:test";
 import { fileURLToPath } from "node:url";
 import * as vm from "node:vm";
 import { leisPrimeiroSequence, normalizeLeisPrimeiroId, pageCodeFromExecutionId } from "../lib/leis-primeiro-ids.mjs";
+import { openStudySessionsForLaw, studyDisplayStatus } from "../lib/law-study-state.mjs";
 
 const root = fileURLToPath(new URL("..", import.meta.url));
 
@@ -61,6 +62,28 @@ test("keeps local law reading payload with Notion as the canonical operational s
   assert.match(enhancer, /Painel operacional sincronizado do Notion/);
   assert.match(appPage, /Fonte canônica: Notion/);
 });
+test("publishes open law sessions as in progress without counting unfinished study", async () => {
+  const dataset = JSON.parse(await read("public/data/leis-primeiro.json"));
+  const law = dataset.laws.find((item) => item.code === "L03");
+  const openSessions = openStudySessionsForLaw(dataset.execution.sessions, "L03");
+  assert.equal(studyDisplayStatus(law), "Em estudo");
+  assert.equal(openSessions.length, 1);
+  assert.equal(openSessions[0].completed, false);
+  assert.deepEqual(
+    [law.orientation_read, law.summaries_done, law.readings_done, law.questions_done, law.d0],
+    [false, 0, 0, 0, false],
+  );
+
+  const [publisher, enhancer] = await Promise.all([
+    read("scripts/prepare-github-pages.mjs"),
+    read("scripts/enhance-leis-pages.mjs"),
+  ]);
+  assert.match(publisher, /studyDisplayStatus\(law\)/);
+  assert.match(enhancer, /openStudySessionsForLaw\(execution\.sessions \|\| \[\], law\.code\)/);
+  assert.match(enhancer, /sessões contabilizadas/);
+  assert.match(enhancer, /sessão\(ões\) em aberto/);
+});
+
 test("keeps every Leis Primeiro page aligned with the operational method", async () => {
   const dataset = JSON.parse(await read("public/data/leis-primeiro.json"));
   assert.equal(dataset.laws.length, 34);
