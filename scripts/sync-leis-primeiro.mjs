@@ -81,7 +81,7 @@ const sharedSourceOverrides = {
   L31: "https://www.planalto.gov.br/ccivil_03/leis/l10098.htm",
   L32: "https://www.planalto.gov.br/ccivil_03/decreto/d5296.htm",
 };
-const sharedTargets = { L30: 3, L31: 4, L32: 3 };
+
 
 const laws = childPages.map((child) => {
   const number = Number(child.code.slice(1));
@@ -107,17 +107,19 @@ const laws = childPages.map((child) => {
     readings_done: row.readings_done,
     reading_number: row.reading_number,
     sessions_done: row.sessions_done,
-    question_target: sharedBlock ? sharedTargets[child.code] : row.question_target,
+    question_target: row.question_target,
     questions_additional: row.questions_additional,
     questions_optional: row.questions_optional,
     target_model: row.target_model,
     additional_target_cargos: row.additional_target_cargos,
-    operational_target_total: sharedBlock ? 10 : (row.operational_question_target || row.question_target),
+    operational_target_total: row.operational_question_target,
     questions_done: row.questions_done,
     flashcards_done: Boolean(row.flashcards_done),
     next_step: row.next_step,
     cargos: row.cargos,
     action: row.action,
+    documentary_strength: row.documentary_strength,
+    strategic_status: row.strategic_status,
     cut: row.cut,
     alert: row.alert,
     block: row.block,
@@ -179,7 +181,7 @@ const lawsWithIndividualProgress = laws.map((law) =>
 );
 
 const snapshot = {
-  schema_version: 8,
+  schema_version: 9,
   source: {
     kind: "notion",
     title: pageTitle(page) || "Leis Primeiro | SEEDF",
@@ -201,7 +203,7 @@ const snapshot = {
     "Orientação — leia Como estudar, Marcar, Pegadinhas, Recorte prioritário e Vigência / alerta.",
     "Resumo / material — estudar a página, quadros e comentários é uma sessão válida, mas não conta como leitura da lei seca.",
     "Lei seca — abra a fonte oficial e leia o recorte indicado; só então incremente a contagem de leitura.",
-    "Questões — cumpra a meta operacional da Lxx (base + adicional quando aplicável) e registre no Banco de Controle de Questões SEEDF.",
+    "Questões — cumpra somente a meta operacional obrigatória da Lxx; questões opcionais/Radar preservam histórico sem gerar dívida.",
     "Flashcards — faça/revise somente os cartões necessários; a etapa é binária e não possui meta numérica.",
     "D0 — feche o bloco somente quando os requisitos pedagógicos da Lxx estiverem cumpridos.",
     "D7/D20 — revise em paralelo enquanto avança para as próximas normas.",
@@ -212,12 +214,12 @@ const snapshot = {
   radars: radarRows,
   audit_notes: [
     "34 páginas L01–L34 usam 32 registros diretamente mapeados; L30 + L31 + L32 compartilham o registro M5 de acessibilidade.",
-    "No M5, resumos, leituras e número de sessões são derivados por Página Lxx no Histórico; questões, Flashcards feitos?, D0, D7 e D20 permanecem checkpoints do bloco compartilhado.",
+    "No M5, resumos, leituras e número de sessões são derivados por Página Lxx no Histórico. Pós-TR, a meta obrigatória do bloco é 0 e as 10 questões antigas permanecem opcionais enquanto Monitor estiver suspenso.",
     "O 33º registro do banco é o Radar 901 do novo PDE/DF, fora da numeração L01–L34.",
-    "L11 permanece com meta operacional 0 enquanto o edital não fechar cargos e escolaridade.",
-    "L33 é Radar forte com 10 questões de familiarização.",
-    "L34 permanece com meta operacional 0 durante a vacatio legis; vigência em 28/12/2026.",
-    "A propriedade Questões-meta do BANCO — LEGISLAÇÃO SEEDF é a referência operacional.",
+    "Metas obrigatórias iguais a 0 são respeitadas literalmente; conteúdo opcional ou Radar não cria dívida de execução.",
+    "L33 permanece Radar suspenso: 0 questões obrigatórias e 10 opcionais preservadas como acervo.",
+    "L34 permanece Radar suspenso: 0 obrigatórias e 8 opcionais; a Lei nº 15.450/2026 entra em vigor em 28/12/2026.",
+    "Questões-meta + Questões adicionais definem a carga obrigatória; Questões opcionais ficam fora da dívida e da continuidade canônica.",
     "As páginas L01–L34 são publicadas também como páginas internas do site; o Notion permanece como fonte operacional.",
   ],
 };
@@ -421,6 +423,8 @@ function parseBankRow(page) {
     next_step: propertyFormula(properties, "Próximo passo"),
     cargos: propertyMultiSelect(properties, "Cargos"),
     action: propertyText(properties, "Ação atual"),
+    documentary_strength: propertyText(properties, "Força documental") || null,
+    strategic_status: propertyText(properties, "Status estratégico pós-TR") || null,
     cut: propertyText(properties, "Recorte prioritário"),
     alert: propertyText(properties, "Vigência / alerta"),
     block: propertyText(properties, "Bloco sugerido"),
