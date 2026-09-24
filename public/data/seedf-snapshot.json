@@ -1012,13 +1012,13 @@
     "leis_primeiro": {
       "days": [
         {
-          "day_id": "LP-20260921-L01-R1",
+          "day_id": "LP-20260921-L01-L1",
           "trail": "Leis Primeiro",
-          "title": "2026-09-21 — Leis Primeiro · L01 · Resumo 1",
+          "title": "2026-09-21 — Leis Primeiro · L01 · Leitura 1",
           "page_code": "L01",
-          "progress": "Resumo 1",
-          "summary_number": 1,
-          "reading_number": null,
+          "progress": "Leitura 1",
+          "summary_number": null,
+          "reading_number": 1,
           "status": "Concluído",
           "phase": "Fase 1",
           "type": "Temático",
@@ -1052,10 +1052,10 @@
       "question_records": [
         {
           "id": "3e2cf5a2-6731-817f-a902-e6bd7ab2ffc0",
-          "url": "https://app.notion.com/p/L01-Resumo-1-D0-Suplemento-Analista-Monitor-10-quest-es-3e2cf5a26731817fa902e6bd7ab2ffc0",
-          "day_id": "LP-20260921-L01-R1",
+          "url": "https://app.notion.com/p/3e2cf5a26731817fa902e6bd7ab2ffc0",
+          "day_id": "LP-20260921-L01-L1",
           "page_code": "L01",
-          "title": "L01 · Resumo 1 · D0 · Suplemento Analista Monitor — 10 questões",
+          "title": "L01 · Leitura 1 · D0 · Suplemento Analista Monitor — 10 questões",
           "discipline": "Direito Constitucional",
           "subject": "CF/88 — ampliação Monitor (arts. 1º–13 e 226–230)",
           "strategic_use": "Radar suspenso",
@@ -1069,10 +1069,10 @@
         },
         {
           "id": "3e2cf5a2-6731-81a6-b181-c29592e9e134",
-          "url": "https://app.notion.com/p/L01-Resumo-1-D0-N-cleo-comum-30-quest-es-3e2cf5a2673181a6b181c29592e9e134",
-          "day_id": "LP-20260921-L01-R1",
+          "url": "https://app.notion.com/p/3e2cf5a2673181a6b181c29592e9e134",
+          "day_id": "LP-20260921-L01-L1",
           "page_code": "L01",
-          "title": "L01 · Resumo 1 · D0 · Núcleo comum — 30 questões",
+          "title": "L01 · Leitura 1 · D0 · Núcleo comum — 30 questões",
           "discipline": "Direito Constitucional",
           "subject": "CF/88 — Educação (arts. 205–214) + Administração Pública (arts. 37–41)",
           "strategic_use": "Ativo",
@@ -1090,7 +1090,7 @@
         {
           "id": "3e2cf5a2-6731-8169-9c50-c9fc2d60319b",
           "url": "https://app.notion.com/p/L01-Q28-publicidade-oficial-e-promo-o-pessoal-3e2cf5a2673181699c50c9fc2d60319b",
-          "day_id": "LP-20260921-L01-R1",
+          "day_id": "LP-20260921-L01-L1",
           "page_code": "L01",
           "question_id": "L01-Q28",
           "title": "L01-Q28 — publicidade oficial e promoção pessoal",
@@ -1107,12 +1107,12 @@
           "next_review": null,
           "date": "2026-09-21",
           "rule": "A publicidade de atos, programas, obras, serviços e campanhas dos órgãos públicos deve ter caráter educativo, informativo ou de orientação social e não pode conter nomes, símbolos ou imagens que caracterizem promoção pessoal de autoridades ou servidores.",
-          "observations": "Erro da questão 28 da bateria núcleo comum. Origem: Resumo 1 da L01. Flashcard gerado na L01. Pós-TR nº 3/2026: permanece ativo por pertencer ao núcleo comum."
+          "observations": "Erro da questão 28 da bateria núcleo comum. Origem: Leitura 1 da L01. Flashcard gerado na L01."
         },
         {
           "id": "3e2cf5a2-6731-8196-aa94-cff901e91274",
           "url": "https://app.notion.com/p/L01-Q36-fam-lia-como-base-da-sociedade-3e2cf5a267318196aa94cff901e91274",
-          "day_id": "LP-20260921-L01-R1",
+          "day_id": "LP-20260921-L01-L1",
           "page_code": "L01",
           "question_id": "L01-Q36",
           "title": "L01-Q36 — família como base da sociedade",
@@ -1129,12 +1129,12 @@
           "next_review": null,
           "date": "2026-09-21",
           "rule": "A família, base da sociedade, tem especial proteção do Estado.",
-          "observations": "Erro da questão 36 da bateria suplementar de Analista Monitor. Origem: Resumo 1 da L01. Flashcard gerado na L01. Pós-TR nº 3/2026: preservar como erro pedagógico real, mas sem gerar D0/D7/D20 ou prioridade ativa enquanto Monitor permanecer em Radar."
+          "observations": "Erro da questão 36 da bateria suplementar de Analista Monitor. Origem: Leitura 1 da L01. Flashcard gerado na L01."
         },
         {
           "id": "3e2cf5a2-6731-8130-a39e-f377ca6e1083",
           "url": "https://app.notion.com/p/L01-Q37-absoluta-prioridade-do-art-227-3e2cf5a267318130a39ef377ca6e1083",
-          "day_id": "LP-20260921-L01-R1",
+          "day_id": "LP-20260921-L01-L1",
           "page_code": "L01",
           "question_id": "L01-Q37",
           "title": "L01-Q37 — absoluta prioridade do art. 227",
@@ -1151,10 +1151,10 @@
           "next_review": null,
           "date": "2026-09-21",
           "rule": "É dever da família, da sociedade e do Estado assegurar, com absoluta prioridade, os direitos da criança, do adolescente e do jovem previstos no art. 227.",
-          "observations": "Erro da questão 37 da bateria suplementar de Analista Monitor. Origem: Resumo 1 da L01. Não foi criado novo flashcard porque a L01 já possuía cartão equivalente. Pós-TR nº 3/2026: preservar como erro pedagógico real, mas sem gerar D0/D7/D20 ou prioridade ativa enquanto Monitor permanecer em Radar."
+          "observations": "Erro da questão 37 da bateria suplementar de Analista Monitor. Origem: Leitura 1 da L01. Não foi criado novo flashcard porque a L01 já possuía cartão equivalente."
         }
       ],
-      "latest_day_id": "LP-20260921-L01-R1",
+      "latest_day_id": "LP-20260921-L01-L1",
       "sessions": [
         {
           "id": "3e4cf5a2-6731-81df-9296-e5e993f40f22",
@@ -1216,19 +1216,19 @@
         },
         {
           "id": "3e2cf5a2-6731-8161-8647-fa2bb4594fcd",
-          "title": "2026-09-21 · L01 · D0 · resumo 1 + questões",
-          "url": "https://app.notion.com/p/2026-09-21-L01-D0-resumo-1-quest-es-3e2cf5a2673181618647fa2bb4594fcd",
+          "title": "2026-09-21 · L01 · D0 · leitura 1 + questões",
+          "url": "https://app.notion.com/p/3e2cf5a2673181618647fa2bb4594fcd",
           "date": "2026-09-21",
           "page_code": "L01",
           "stage": "D0",
-          "session_type": "Estudo de resumo",
-          "modality": "Resumo / material",
-          "progress": "Resumo 1",
+          "session_type": "Lei seca — primeira leitura",
+          "modality": "Dirigida / recorte",
+          "progress": "Leitura 1",
           "source": "Material auditado",
-          "summary_number": 1,
-          "reading_number": null,
-          "summary_counter": 1,
-          "reading_counter": 0,
+          "summary_number": null,
+          "reading_number": 1,
+          "summary_counter": 0,
+          "reading_counter": 1,
           "session_counter": 1,
           "completed": true,
           "questions_planned": 40,
@@ -1241,20 +1241,21 @@
           "precision": 0.925,
           "href": "https://app.notion.com/p/3d8cf5a267318133b196fddf1efde990",
           "created_at": "2026-09-21T17:10:00.000Z",
-          "updated_at": "2026-09-24T13:49:00.000Z"
+          "updated_at": "2026-09-24T19:34:13.157Z"
         }
       ],
       "session_totals": {
         "sessions": 2,
         "summaries": null,
-        "readings": 1,
+        "readings": 2,
         "questions": null,
         "correct": null,
         "errors": null,
         "doubts": null,
         "flashcards": null,
         "precision": null
-      }
+      },
+      "as_of": "2026-09-24T17:25:11.068Z"
     }
   },
   "notice": "Snapshot público sanitizado. O conteúdo completo continua no Notion; materiais, fontes e execução do C01 são indexados para consulta."

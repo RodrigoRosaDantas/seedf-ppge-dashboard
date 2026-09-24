@@ -177,8 +177,8 @@ test("questões praticadas geram evidência apenas com resultado calculável", (
 test("L01 usa somente a bateria ativa quando suplemento Monitor está em Radar", () => {
   const data=fixture();
   data.snapshot.execution.leis_primeiro.question_records=[
-    {id:"q-core",day_id:"LP-20260921-L01-R1",page_code:"L01",strategic_use:"Ativo",planned:30,done:30,correct:29,errors:1,doubts:0},
-    {id:"q-monitor",day_id:"LP-20260921-L01-R1",page_code:"L01",strategic_use:"Radar suspenso",planned:10,done:10,correct:8,errors:2,doubts:0},
+    {id:"q-core",day_id:"LP-20260921-L01-L1",page_code:"L01",strategic_use:"Ativo",planned:30,done:30,correct:29,errors:1,doubts:0},
+    {id:"q-monitor",day_id:"LP-20260921-L01-L1",page_code:"L01",strategic_use:"Radar suspenso",planned:10,done:10,correct:8,errors:2,doubts:0},
   ];
   data.snapshot.execution.leis_primeiro.sessions=[
     {page_code:"L01",date:"2026-09-21",completed:true,questions_done:40,correct:37,errors:3},
@@ -302,8 +302,8 @@ test("desempenho ativo alimenta evidência e total global sem contar Radar", () 
   ];
   data.snapshot.execution.leis_primeiro.totals={done:40};
   data.snapshot.execution.leis_primeiro.question_records=[
-    {day_id:"LP-20260921-L01-R1",page_code:"L01",strategic_use:"Ativo",date:"2026-09-21",done:30,correct:29,errors:1},
-    {day_id:"LP-20260921-L01-R1",page_code:"L01",strategic_use:"Radar suspenso",date:"2026-09-21",done:10,correct:8,errors:2},
+    {day_id:"LP-20260921-L01-L1",page_code:"L01",strategic_use:"Ativo",date:"2026-09-21",done:30,correct:29,errors:1},
+    {day_id:"LP-20260921-L01-L1",page_code:"L01",strategic_use:"Radar suspenso",date:"2026-09-21",done:10,correct:8,errors:2},
   ];
   data.snapshot.execution.leis_primeiro.sessions=[
     {page_code:"L01",date:"2026-09-21",completed:true,questions_done:40,correct:37,errors:3},

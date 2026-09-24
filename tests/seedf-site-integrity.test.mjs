@@ -68,21 +68,91 @@ test("keeps every Leis Primeiro page aligned with the operational method", async
   }
 
   const l01 = dataset.laws.find((law) => law.code === "L01");
-  assert.equal(l01?.summaries_done, 1);
-  assert.equal(l01?.summary_number, 1);
-  assert.equal(l01?.readings_done, 0);
-  assert.equal(l01?.reading_number, null);
-  assert.ok(typeof l01?.questions_done === "number");
-  assert.ok(typeof l01?.operational_target_total === "number");
+  const l02 = dataset.laws.find((law) => law.code === "L02");
+  const legislationBank = JSON.parse(await read("public/data/legislation-bank.json"));
+  const l01Bank = legislationBank.rows.find((row) => row.codes?.includes("L01"));
+  const l02Bank = legislationBank.rows.find((row) => row.codes?.includes("L02"));
+  assert.equal(l01?.status, "Leitura 1");
+  assert.equal(l01?.study_phase, "Em estudo");
+  assert.equal(l01?.summaries_done, 0);
+  assert.equal(l01?.summary_number, null);
+  assert.equal(l01?.readings_done, 1);
+  assert.equal(l01?.reading_number, 1);
+  assert.equal(l01?.questions_done, 30);
+  assert.equal(l01?.active_questions_planned, 30);
+  assert.equal(l01?.active_questions_correct, 29);
+  assert.equal(l01?.active_questions_errors, 1);
+  assert.equal(l01?.operational_target_total, 30);
   assert.equal(l01?.flashcards_done, true);
   assert.equal(l01?.d0, false);
-  assert.equal(l01?.next_step, "3 · Ler lei seca");
+  assert.equal(l02?.status, "Leitura 1");
+  assert.equal(l02?.summaries_done, 0);
+  assert.equal(l02?.readings_done, 1);
+  assert.equal(l02?.reading_number, 1);
+  assert.equal(l01Bank?.status, "Leitura 1");
+  assert.equal(l01Bank?.study_phase, "Em estudo");
+  assert.equal(l01Bank?.summaries_done, 0);
+  assert.equal(l01Bank?.summary_number, null);
+  assert.equal(l01Bank?.readings_done, 1);
+  assert.equal(l01Bank?.reading_number, 1);
+  assert.equal(l01Bank?.questions_done, 40);
+  assert.equal(l01Bank?.hits, 37);
+  assert.equal(l01Bank?.errors, 3);
+  assert.equal(l01Bank?.last_read, "2026-09-21");
+  assert.equal(l02Bank?.status, "Leitura 1");
+  assert.equal(l02Bank?.summaries_done, 0);
+  assert.equal(l02Bank?.summary_number, null);
+  assert.equal(l02Bank?.readings_done, 1);
+  assert.equal(l02Bank?.reading_number, 1);
+  assert.equal(l02Bank?.last_read, "2026-09-22");
+
+  const l01Day = dataset.execution.days.find((day) => day.page_code === "L01");
+  assert.equal(l01Day?.day_id, "LP-20260921-L01-L1");
+  assert.equal(l01Day?.title, "2026-09-21 — Leis Primeiro · L01 · Leitura 1");
+  assert.equal(l01Day?.summary_number, null);
+  assert.equal(l01Day?.reading_number, 1);
+  assert.equal(dataset.execution.totals.done, 40);
+  assert.equal(dataset.execution.totals.correct, 37);
+  assert.equal(dataset.execution.totals.errors, 3);
+
+  const l01Session = dataset.execution.sessions.find((session) => session.page_code === "L01");
+  assert.equal(l01Session?.title, "2026-09-21 · L01 · D0 · leitura 1 + questões");
+  assert.equal(l01Session?.session_type, "Lei seca — primeira leitura");
+  assert.equal(l01Session?.summary_counter, 0);
+  assert.equal(l01Session?.reading_counter, 1);
+  assert.equal(l01Session?.questions_done, 40);
+  assert.equal(l01Session?.correct, 37);
+  assert.equal(l01Session?.errors, 3);
+
+  const l01Rows = dataset.execution.question_records.filter((row) => row.page_code === "L01");
+  const l01Core = l01Rows.find((row) => row.strategic_use === "Ativo");
+  const l01Monitor = l01Rows.find((row) => row.strategic_use === "Radar suspenso");
+  assert.equal(l01Core?.day_id, "LP-20260921-L01-L1");
+  assert.equal(l01Core?.title, "L01 · Leitura 1 · D0 · Núcleo comum — 30 questões");
+  assert.deepEqual([l01Core?.done, l01Core?.correct, l01Core?.errors], [30, 29, 1]);
+  assert.equal(l01Monitor?.day_id, "LP-20260921-L01-L1");
+  assert.equal(l01Monitor?.title, "L01 · Leitura 1 · D0 · Suplemento Analista Monitor — 10 questões");
+  assert.deepEqual([l01Monitor?.done, l01Monitor?.correct, l01Monitor?.errors], [10, 8, 2]);
+  const l01Errors = new Map(dataset.execution.errors.filter((error) => error.page_code === "L01").map((error) => [error.question_id, error]));
+  assert.equal(l01Errors.get("L01-Q28")?.strategic_use, "Ativo");
+  assert.equal(l01Errors.get("L01-Q36")?.strategic_use, "Radar suspenso");
+  assert.equal(l01Errors.get("L01-Q37")?.strategic_use, "Radar suspenso");
+  assert.ok(!JSON.stringify(dataset.execution).includes("LP-20260921-L01-R1"));
+  assert.ok(!JSON.stringify(dataset.execution).includes("L01 · Resumo 1"));
+
+  const dashboardSnapshot = JSON.parse(await read("public/data/seedf-snapshot.json"));
+  const dashboardSession = dashboardSnapshot.execution.leis_primeiro.sessions.find((session) => session.page_code === "L01");
+  assert.equal(dashboardSession?.title, l01Session?.title);
+  assert.equal(dashboardSession?.summary_counter, 0);
+  assert.equal(dashboardSession?.reading_counter, 1);
+  assert.equal(dashboardSnapshot.execution.leis_primeiro.session_totals.readings, 2);
 });
 
 test("keeps Leis Primeiro execution semantics separated by Dia ID", async () => {
-  const [syncMain, syncLaws, liveNotion, appPage, cockpit, enhancer, lawCss] = await Promise.all([
+  const [syncMain, syncLaws, syncBank, liveNotion, appPage, cockpit, enhancer, lawCss] = await Promise.all([
     read("scripts/sync-notion.mjs"),
     read("scripts/sync-leis-primeiro.mjs"),
+    read("scripts/sync-legislation-bank.mjs"),
     read("supabase/functions/seedf-notion/index.ts"),
     read("app/leis/page.tsx"),
     read("scripts/build-leis-cockpit.mjs"),
@@ -90,6 +160,10 @@ test("keeps Leis Primeiro execution semantics separated by Dia ID", async () => 
     read("public/leis-enhanced.css"),
   ]);
   assert.match(syncMain, /Origem \/ Dia ID/);
+  assert.match(syncMain, /session_type: propertyText\(properties, "Tipo de sessão"\)/);
+  assert.match(syncMain, /summary_counter: propertyNumeric\(properties, "Contador — resumo"\)/);
+  assert.match(syncMain, /reading_counter: propertyNumeric\(properties, "Contador — leitura"\)/);
+  assert.match(syncBank, /last_read: date\(p, "Última leitura"\)/);
   assert.match(syncMain, /const currentErrorPages = errorPages/);
   assert.match(syncMain, /error_count: currentErrors\.length/);
   assert.match(syncMain, /errors: currentErrors/);
