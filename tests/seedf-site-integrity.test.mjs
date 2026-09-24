@@ -360,3 +360,12 @@ test("Pages push deployments checkout the exact triggering SHA", async () => {
   const workflow = await read(".github/workflows/deploy-pages.yml");
   assert.match(workflow, /ref: \$\{\{ github\.event_name == 'push' && github\.sha \|\| 'main' \}\}/);
 });
+
+
+test("unchanged projected edital snapshots keep a stable generatedAt version", async () => {
+  const source = await read("scripts/export-edital-verticalizado.mjs");
+  assert.match(source, /readPreviousSnapshot\(outputPath\)/);
+  assert.match(source, /snapshotContent\(previousSnapshot\)===snapshotContent\(snapshot\)/);
+  assert.match(source, /key==='generatedAt'\?undefined:nested/);
+  assert.match(source, /snapshot\.generatedAt=previousSnapshot\.generatedAt/);
+});
