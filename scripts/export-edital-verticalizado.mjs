@@ -1,4 +1,4 @@
-import {mkdir,writeFile} from 'node:fs/promises';
+import {mkdir,readFile,writeFile} from 'node:fs/promises';
 import path from 'node:path';
 
 const token=process.env.NOTION_TOKEN?.trim();
@@ -85,5 +85,20 @@ const snapshot={
 };
 
 await mkdir(path.dirname(outputPath),{recursive:true});
+const previousSnapshot=await readPreviousSnapshot(outputPath);
+if(previousSnapshot?.generatedAt&&snapshotContent(previousSnapshot)===snapshotContent(snapshot)){
+  snapshot.generatedAt=previousSnapshot.generatedAt;
+}
 await writeFile(outputPath,JSON.stringify(snapshot,null,2)+'\n','utf8');
 console.log(`Edital SEEDF sanitizado: ${axes.length} eixos exportados para ${outputPath}.`);
+
+async function readPreviousSnapshot(filePath){
+  try{return JSON.parse(await readFile(filePath,'utf8'));}
+  catch(error){
+    if(error?.code==='ENOENT')return null;
+    throw error;
+  }
+}
+function snapshotContent(value){
+  return JSON.stringify(value,(key,nested)=>key==='generatedAt'?undefined:nested);
+}

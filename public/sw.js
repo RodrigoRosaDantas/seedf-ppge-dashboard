@@ -27,7 +27,7 @@ const CORE_ASSETS = [
 self.addEventListener("install", (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME)
-      .then((cache) => cache.addAll(CORE_ASSETS).catch(() => undefined))
+      .then((cache) => cache.addAll(CORE_ASSETS))
       .then(() => self.skipWaiting()),
   );
 });

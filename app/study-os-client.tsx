@@ -648,7 +648,7 @@ export default function StudyOsClient({ view, basePrefix }: Props) {
             <div><span>SEEDF / {title}</span><strong>{intel.state.phase} · {intel.state.cycle}</strong></div>
           </div>
           <div className="os-sync">
-            <span><i></i>{lastSync?new Date(lastSync).toLocaleString("pt-BR",{timeZone:"America/Sao_Paulo"}):"sem sincronização"}</span>
+            <span><i></i>{lastSync?`Versão dos dados · ${new Date(lastSync).toLocaleString("pt-BR",{timeZone:"America/Sao_Paulo"})}`:"versão dos dados indisponível"}</span>
             <button aria-label="Atualizar dados" onClick={()=>setRefreshKey((value)=>value+1)}><RefreshCcw size={16}/></button>
           </div>
         </header>

@@ -273,6 +273,8 @@ test("published shell includes an offline registration path", async () => {
   assert.match(serviceWorker, /isStableStudyAsset/);
   assert.match(serviceWorker, /fetch\(request, \{ cache: "no-store" \}\)/);
   assert.match(serviceWorker, /cache\.put\(request, copy\)\)\.catch/);
+  assert.match(serviceWorker, /cache\.addAll\(CORE_ASSETS\)/);
+  assert.doesNotMatch(serviceWorker, /cache\.addAll\(CORE_ASSETS\)\.catch/);
   assert.match(registration, /serviceWorker[\s\S]*\.register/);
   assert.match(registration, /updateViaCache: "none"/);
   assert.match(registration, /registration\.update\(\)/);
@@ -298,11 +300,28 @@ test("law page enhancement keeps the brand theme metadata", async () => {
   assert.match(source, /name="theme-color"/);
 });
 
-test("the Pages workflow runs source tests before build and rendered tests after build", async () => {
-  const workflow = await read(".github/workflows/deploy-pages.yml");
-  assert.match(workflow, /npm run test:source/);
-  assert.match(workflow, /npm run build/);
-  assert.match(workflow, /npm run test:rendered/);
+test("the Pages workflow validates the exact final artifact before publishing", async () => {
+  const [workflow, serviceWorker] = await Promise.all([
+    read(".github/workflows/deploy-pages.yml"),
+    read("public/sw.js"),
+  ]);
+  const sourceIndex = workflow.indexOf("npm run test:source");
+  const buildIndex = workflow.indexOf("npm run build");
+  const prepareIndex = workflow.indexOf("node scripts/prepare-github-pages.mjs");
+  const enhanceIndex = workflow.indexOf("node scripts/enhance-leis-pages.mjs");
+  const renderedIndex = workflow.indexOf("npm run test:rendered");
+  const uploadIndex = workflow.indexOf("actions/upload-pages-artifact@");
+  assert.ok(sourceIndex >= 0 && sourceIndex < buildIndex);
+  assert.ok(buildIndex < prepareIndex && prepareIndex < enhanceIndex);
+  assert.ok(enhanceIndex < renderedIndex && renderedIndex < uploadIndex);
+
+  const coreAssetsMatch = serviceWorker.match(/const CORE_ASSETS = \[([\s\S]*?)\];/);
+  assert.ok(coreAssetsMatch, "service worker must expose CORE_ASSETS");
+  const coreAssets = [...coreAssetsMatch[1].matchAll(/"\.\/([^"]*)"/g)].map((match) => match[1]);
+  for (const asset of coreAssets) {
+    const publishedPath = asset === "" ? '""' : '"' + asset + '"';
+    assert.ok(workflow.includes(publishedPath), "published smoke must cover core asset: " + (asset || "/"));
+  }
 });
 
 test("the Notion workflow reacts to every snapshot synchronizer", async () => {
@@ -319,4 +338,50 @@ test("Visual QA tolerates transient Chrome startup without weakening layout asse
   assert.match(source, /poll<150/);
   assert.match(source, /stdio:\["ignore","ignore","pipe"\]/);
   assert.match(source, /Chrome DevTools não iniciou após 3 tentativas/);
+});
+
+
+test("stable snapshot timestamps are presented as data-version timestamps", async () => {
+  const [lawsPage, cockpit, enhancer, studyOs] = await Promise.all([
+    read("app/leis/page.tsx"),
+    read("scripts/build-leis-cockpit.mjs"),
+    read("scripts/enhance-leis-pages.mjs"),
+    read("app/study-os-client.tsx"),
+  ]);
+  assert.match(lawsPage, /Versão dos dados/);
+  assert.match(cockpit, /Versão dos dados/);
+  assert.match(enhancer, /Versão dos dados/);
+  assert.match(studyOs, /Versão dos dados/);
+  assert.doesNotMatch(lawsPage, /Notion → GitHub · \{formatDate\(snapshot\?\.source\.synced_at\)\}/);
+});
+
+
+test("Pages push deployments checkout the exact triggering SHA", async () => {
+  const workflow = await read(".github/workflows/deploy-pages.yml");
+  assert.match(workflow, /ref: \$\{\{ github\.event_name == 'push' && github\.sha \|\| 'main' \}\}/);
+});
+
+
+test("unchanged projected edital snapshots keep a stable generatedAt version", async () => {
+  const source = await read("scripts/export-edital-verticalizado.mjs");
+  assert.match(source, /readPreviousSnapshot\(outputPath\)/);
+  assert.match(source, /snapshotContent\(previousSnapshot\)===snapshotContent\(snapshot\)/);
+  assert.match(source, /key==='generatedAt'\?undefined:nested/);
+  assert.match(source, /snapshot\.generatedAt=previousSnapshot\.generatedAt/);
+});
+
+
+test("GitHub Actions use current Node 24-compatible action majors", async () => {
+  const workflows = await Promise.all([
+    read(".github/workflows/quality.yml"),
+    read(".github/workflows/deploy-pages.yml"),
+    read(".github/workflows/sync-notion.yml"),
+  ]);
+  const joined = workflows.join("\n");
+  assert.doesNotMatch(joined, /actions\/(?:checkout|setup-node|upload-artifact)@v4/);
+  assert.match(joined, /actions\/checkout@v7/);
+  assert.match(joined, /actions\/setup-node@v7/);
+  assert.match(joined, /actions\/upload-artifact@v7/);
+  assert.match(joined, /actions\/upload-pages-artifact@v5/);
+  assert.match(joined, /actions\/deploy-pages@v5/);
 });
