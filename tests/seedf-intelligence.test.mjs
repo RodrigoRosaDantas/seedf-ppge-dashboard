@@ -90,6 +90,20 @@ test("sessão interrompida vira RETOMAR SESSÃO e precede D01", () => {
   assert.match(result.nextAction.eyebrow,/RETOMAR/);
 });
 
+test("sessão interrompida de lei suspensa não vira retomada", () => {
+  const data=fixture();
+  data.lawsSnapshot.laws=[
+    {code:"L25",title:"ECA",action:"Radar / monitorar",strategic_status:"Radar — suspenso até edital"},
+    {code:"L01",title:"CF/88",action:"Estudar agora"},
+  ];
+  data.snapshot.execution.leis_primeiro.sessions=[
+    {id:"s25",page_code:"L25",date:"2026-09-23",title:"L25",completed:false,questions_done:5},
+  ];
+  const result=buildSeedfIntelligence(data);
+  assert.equal(result.interruptedSessions.length,0);
+  assert.notEqual(result.nextAction.kind,"resume");
+});
+
 test("sessão concluída não vira retomada", () => {
   const data=fixture();
   data.snapshot.execution.leis_primeiro.sessions=[{id:"s1",page_code:"L01",date:"2026-09-23",title:"L01",completed:true,questions_done:0}];
