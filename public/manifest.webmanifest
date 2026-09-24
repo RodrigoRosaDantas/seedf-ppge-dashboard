@@ -1,6 +1,6 @@
 {
   "background_color": "#071824",
-  "description": "Study OS do SEEDF: decisão, evidência, continuidade e análise sobre o Notion.",
+  "description": "Central de comando SEEDF: próxima ação, continuidade, desempenho e evidências.",
   "display": "standalone",
   "icons": [
     {
@@ -11,7 +11,7 @@
     }
   ],
   "lang": "pt-BR",
-  "name": "SEEDF PPGE — Dashboard PRO",
+  "name": "SEEDF PPGE — Central de Comando",
   "scope": "./",
   "short_name": "SEEDF PPGE",
   "start_url": "./",
