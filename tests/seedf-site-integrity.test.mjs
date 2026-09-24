@@ -81,7 +81,8 @@ test("publishes open law sessions as in progress without counting unfinished stu
   assert.match(publisher, /studyDisplayStatus\(law\)/);
   assert.match(enhancer, /openStudySessionsForLaw\(execution\.sessions \|\| \[\], law\.code\)/);
   assert.match(enhancer, /sessões contabilizadas/);
-  assert.match(enhancer, /sessão\(ões\) em aberto/);
+  assert.match(enhancer, /openSessions\.length === 1 \? "sessão em aberto" : "sessões em aberto"/);
+  assert.match(enhancer, /openSessionCompletion/);
 });
 
 test("keeps every Leis Primeiro page aligned with the operational method", async () => {
