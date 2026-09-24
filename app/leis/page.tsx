@@ -525,7 +525,7 @@ export default function LeisPrimeiroPage() {
             <article className="laws-step" key={step}><span>{index + 1}</span><p>{step}</p></article>
           ))}
         </div>
-        <div className="laws-rule"><BookOpenCheck size={18} /><strong>Critério para avançar:</strong><span>{snapshot?.advance_rule || "orientação + 1ª leitura + questões + flashcards + D0; D7/D20 seguem em paralelo."}</span></div>
+        <div className="laws-rule"><BookOpenCheck size={18} /><strong>Critério para avançar:</strong><span>{snapshot?.advance_rule || "Sessão incompleta mantém a Lxx; após conclusão da sessão, a sequência avança. D0 pendente permanece como fechamento/revisão e não retrocede a continuidade; D7/D20 seguem em paralelo."}</span></div>
         </div>
       </details>
 
