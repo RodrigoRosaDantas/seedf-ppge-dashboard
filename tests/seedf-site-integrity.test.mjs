@@ -416,6 +416,41 @@ test("keeps unchanged Notion sync snapshots stable", async () => {
   assert.match(source, /snapshot\.execution\.as_of = previous\.execution\.as_of/);
 });
 
+test("keeps an unfinished law session ahead of the prepared C01 day", async () => {
+  const [snapshotText, syncSource] = await Promise.all([
+    read("public/data/seedf-snapshot.json"),
+    read("scripts/sync-notion.mjs"),
+  ]);
+  const snapshot = JSON.parse(snapshotText);
+  const sessions = snapshot.execution?.leis_primeiro?.sessions || [];
+  const latestIncomplete = sessions
+    .filter((session) =>
+      session.completed === false &&
+      session.page_code &&
+      (session.date ||
+        session.progress ||
+        Number(session.questions_done) > 0 ||
+        Number(session.minutes) > 0 ||
+        Number(session.summary_counter) > 0 ||
+        Number(session.reading_counter) > 0),
+    )
+    .sort((left, right) =>
+      String(right.updated_at || right.date || right.created_at || "").localeCompare(
+        String(left.updated_at || left.date || left.created_at || ""),
+      ),
+    )[0] || null;
+
+  if (latestIncomplete) {
+    assert.equal(snapshot.dashboard.next_action, `Retomar ${latestIncomplete.page_code} · sessão incompleta`);
+    assert.equal(snapshot.dashboard.prepared_cycle_day, snapshot.execution?.c01?.active_day || null);
+  } else {
+    assert.equal(snapshot.dashboard.prepared_cycle_day, null);
+    assert.doesNotMatch(snapshot.dashboard.next_action, /^Retomar L\d{2}/);
+  }
+  assert.match(syncSource, /function latestIncompleteLawSession/);
+  assert.match(syncSource, /prepared_cycle_day: preparedCycleDay/);
+});
+
 test("published shell includes an offline registration path", async () => {
   const [manifest, serviceWorker, registration, layout] = await Promise.all([
     read("public/manifest.webmanifest"),
