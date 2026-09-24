@@ -5,7 +5,7 @@
     "database_id": "49157e87d33a4fa590edfdb4b84dbc46",
     "database_url": "https://app.notion.com/p/49157e87d33a4fa590edfdb4b84dbc46",
     "data_source_id": "6b3c940a-a382-419f-9ef6-531a1dc5cad2",
-    "synced_at": "2026-09-24T12:18:20.568Z"
+    "synced_at": "2026-09-24T17:26:54.780Z"
   },
   "summary": {
     "records": 33,
@@ -31,13 +31,11 @@
       "action": "Estudar agora",
       "official_url": "https://www.planalto.gov.br/ccivil_03/constituicao/constituicaocompilado.htm",
       "question_target": 30,
-      "questions_additional": 10,
-      "questions_optional": 0,
-      "target_model": "Base + adicional",
-      "additional_target_cargos": [
-        "Analista - Monitor"
-      ],
-      "operational_question_target": 40,
+      "questions_additional": 0,
+      "questions_optional": 10,
+      "target_model": "Base",
+      "additional_target_cargos": [],
+      "operational_question_target": 30,
       "questions_done": 40,
       "hits": 37,
       "errors": 3,
@@ -61,10 +59,10 @@
       "d20": false,
       "next_review": null,
       "next_step": "3 · Ler lei seca",
-      "cut": "Núcleo: arts. 205–214 e 37–41. Analista - Monitor amplia arts. 1º–13 e 226–230, com bloco suplementar próprio.",
+      "cut": "Núcleo ativo: arts. 205–214 e 37–41. O antigo recorte suplementar de Monitor (arts. 1º–13 e 226–230) permanece apenas como acervo opcional para eventual reativação do cargo.",
       "alert": "Texto constitucional compilado vigente. Atenção às atualizações recentes do recorte: EC nº 135/2024 alterou o art. 212-A e o §11 do art. 37; EC nº 138/2025 alterou o art. 37, XVI, b, permitindo professor + outro cargo de qualquer natureza, com compatibilidade de horários e observância do teto.",
       "block": "Bloco 01; Gestor retoma arts. 165–169 em G3",
-      "observations": "Ler educação como bloco contínuo; depois Administração/servidores. Não ler a CF inteira. L01 reforçada em 16/09/2026 com arts. 206, 208, 211, 212, 212-A, 37 e 41; mantém 30 itens do núcleo. Para Analista - Monitor, acrescentar leitura dos arts. 1º–13 e 226–230 + 10 itens suplementares + flashcards específicos. Material validado com texto constitucional compilado e EC 135/2024 e EC 138/2025.",
+      "observations": "Pós-TR 3/2026: L01 permanece ativa com meta obrigatória de 30 itens do núcleo. O suplemento de 10 itens de Monitor foi efetivamente realizado em 21/09/2026 e seu histórico permanece preservado, mas não integra novas metas enquanto Monitor estiver suspenso. Não alterar registros/resultado já executados.",
       "complementary_sources": "EC nº 135/2024: https://www.planalto.gov.br/ccivil_03/constituicao/emendas/emc/emc135.htm | EC nº 138/2025: https://www.planalto.gov.br/ccivil_03/constituicao/emendas/emc/emc138.htm",
       "last_read": null,
       "last_audit": "2026-09-24"
@@ -1316,7 +1314,7 @@
       "next_review": null,
       "next_step": "Radar / monitorar",
       "cut": "P0 Monitor: arts. 1º–6º; 15–18-B; 53–59; 70–70-B; 98–101; 129–136. Atualizações 2025/2026: assistência afetiva; art. 11-A; art. 56 IV; art. 89-A; art. 136; Lei nº 15.487/2026. Proteger: idade; prioridade absoluta; educação; dever de comunicação; medidas de proteção; Conselho Tutelar; Monitor protege/comunica, não investiga nem pune informalmente.",
-      "alert": "ECA vigente no texto compilado. Rechecagem em 11/09/2026: o texto atualizado já incorpora a Lei nº 15.487/2026, de 06/08/2026. A Lei nº 15.450/2026 permanece em vigência condicionada por 180 dias desde a publicação de 01/07/2026 e ainda não deve ser tratada como regra vigente. Usar sempre o texto compilado.",
+      "alert": "ECA vigente no texto compilado. Rechecagem em 24/09/2026: o texto atualizado incorpora alterações de 2026 já vigentes. A Lei nº 15.450/2026 permanece em vacatio legis de 180 dias desde a publicação de 01/07/2026 e ainda não deve ser tratada como regra vigente; usar sempre o texto compilado.",
       "block": "M1",
       "observations": "Pós-TR 3/2026: ECA permanece preservado como conteúdo histórico de Monitor, mas a carga específica fica suspensa até o edital. Não apagar material, questões ou histórico.",
       "complementary_sources": "Câmara dos Deputados — texto atualizado do ECA: https://www2.camara.leg.br/legin/fed/lei/1990/lei-8069-13-julho-1990-372211-normaatualizada-pl.html | Lei nº 15.413/2026 — art. 11-A/saúde mental | Lei nº 15.426/2026 — Conselhos dos Direitos/art. 89-A | Lei nº 15.450/2026 — alteração em vacatio legis | Lei nº 15.487/2026 — enfrentamento da violência sexual contra criança/adolescente, inclusive digital/IA.",
@@ -1473,7 +1471,7 @@
       "cut": "P1 Monitor: arts. 1º–8º; art. 10; arts. 11–21; arts. 22–26. Proteger: modalidade transversal; público; matrícula sem laudo; enturmação 1–3 + Estratégia de Matrícula anual; estudo de caso/CEE; PEI; avaliação biopsicossocial; terminalidade específica; AEE complementar × suplementar; PAEE sem laudo; sala de recursos; apoio escolar; art. 26 com alcance além do público estrito do art. 2º.",
       "alert": "Resolução CEDF nº 3/2023 vigente e sem revogação expressa. Rechecagem em 11/09/2026: não foi localizada alteração específica posterior; atos da SEEDF de 2026 continuam aplicando expressamente a norma. Deve ser interpretada em compatibilidade com os Decretos nº 12.686/2025 e nº 12.773/2025, sem restringir direitos assegurados pela política nacional vigente.",
       "block": "M4",
-      "observations": "Pós-TR 3/2026: norma específica do ramo Monitor. Conteúdo e histórico preservados; carga obrigatória suspensa até edital.",
+      "observations": "Pós-TR 3/2026: Resolução CEDF nº 3/2023 preservada como conteúdo histórico específico de Monitor. Sem dívida de estudo, D0/D7/D20 ou bateria obrigatória enquanto o cargo permanecer em Radar.",
       "complementary_sources": "SINJ — texto compilado da Resolução CEDF nº 3/2023: https://www.sinj.df.gov.br/sinj/Norma/d60155c3955b4a7194228b5f7fcfa580/Resolu_o_3_19_12_2023.html | SINJ — detalhes da norma, situação sem revogação expressa e revogação da Resolução CEDF nº 1/2017: https://www.sinj.df.gov.br/sinj/DetalhesDeNorma.aspx?id_norma=d60155c3955b4a7194228b5f7fcfa580 | Atos SEEDF de 2026 continuam aplicando a Resolução nº 3/2023, inclusive quanto ao PEI.",
       "last_read": null,
       "last_audit": "2026-09-24"
@@ -1524,7 +1522,7 @@
       "cut": "Arts. 1º–6º e 8º–10; concepção de criança, currículo, princípios, proposta pedagógica, avaliação e transição na Educação Infantil.",
       "alert": "Usar como referência normativa da Educação Infantil e confrontar com alterações posteriores do sistema educacional quando o edital sair.",
       "block": "M5",
-      "observations": "Pós-TR 3/2026: DCNEI permanece no acervo de Monitor, sem consumir carga prioritária de Gestor/Apoio antes do edital.",
+      "observations": "Pós-TR 3/2026: DCNEI preservada como conteúdo histórico específico de Monitor. Sem dívida de estudo, D0/D7/D20 ou bateria obrigatória enquanto o cargo permanecer em Radar.",
       "complementary_sources": "",
       "last_read": null,
       "last_audit": "2026-09-24"
@@ -1579,7 +1577,7 @@
       "cut": "Atendimento prioritário, acessibilidade, barreiras e regulamentação histórica; usar como complemento à LBI.",
       "alert": "Base histórica ainda útil, mas subordinada à LBI e às normas atuais de inclusão.",
       "block": "M5",
-      "observations": "Pós-TR 3/2026: bloco L30+L31+L32 de acessibilidade específica de Monitor sai da fila obrigatória. Material e bloco compartilhado continuam preservados para reativação.",
+      "observations": "Pós-TR 3/2026: bloco L30+L31+L32 de acessibilidade específica de Monitor saiu da fila obrigatória. As 10 questões antigas permanecem preservadas como opcionais; não gerar D0/D7/D20 nem dívida de estudo enquanto Monitor estiver suspenso.",
       "complementary_sources": "Lei nº 10.048/2000: https://www.planalto.gov.br/ccivil_03/leis/l10048.htm | Decreto nº 5.296/2004: https://www.planalto.gov.br/ccivil_03/_ato2004-2006/2004/decreto/d5296.htm",
       "last_read": null,
       "last_audit": "2026-09-24"
@@ -1628,7 +1626,7 @@
       "next_review": null,
       "next_step": "Radar / monitorar",
       "cut": "Identificação, atendimento e direitos educacionais de estudantes com altas habilidades ou superdotação; conexão com Educação Especial.",
-      "alert": "Norma nova de 2026 e diretamente aderente ao eixo de Educação Especial; elevar a P1/P0 se aparecer no edital.",
+      "alert": "Norma vigente de 2026 e aderente à Educação Especial. Enquanto Monitor estiver em Radar, preservar sem carga obrigatória; reclassificar apenas se o edital ou ato oficial justificar.",
       "block": "M6",
       "observations": "Pós-TR 3/2026: norma nova de altas habilidades permanece preservada no Radar de Monitor; deixou de ter meta ativa enquanto a preparação específica do cargo estiver suspensa.",
       "complementary_sources": "",
@@ -1679,9 +1677,9 @@
       "next_review": null,
       "next_step": "Radar / monitorar",
       "cut": "Art. 14, §6º, acrescentado ao ECA; estudar apenas como atualização futura enquanto não entrar em vigor.",
-      "alert": "Publicada no DOU de 01/07/2026. O art. 2º prevê vacatio legis de 180 dias; pela regra de contagem da LC nº 95/1998, a vigência começa em 28/12/2026. Em 11/09/2026 ainda não é regra vigente do ECA.",
+      "alert": "Publicada no DOU de 01/07/2026. O art. 2º prevê vacatio legis de 180 dias; pela regra de contagem aplicável, a vigência começa em 28/12/2026. Em 24/09/2026 ainda não é regra vigente do ECA.",
       "block": "M6",
-      "observations": "Pós-TR 3/2026: permanece no Radar de Monitor. A vigência normativa deve continuar sendo monitorada, mas não entra na carga prioritária dos cargos ativos.",
+      "observations": "Pós-TR 3/2026: permanece no Radar de Monitor. Em 24/09/2026 segue em vacatio legis e fora da carga prioritária dos cargos ativos. Quando entrar em vigor, atualizar o ECA compilado e reavaliar apenas se houver aderência ao edital.",
       "complementary_sources": "",
       "last_read": null,
       "last_audit": "2026-09-24"
