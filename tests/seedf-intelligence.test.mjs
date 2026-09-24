@@ -281,6 +281,19 @@ test("risco de cobertura usa somente o denominador ativo", () => {
   assert.deepEqual(risk.evidence,["0/2 itens ativos marcados como cobertos"]);
 });
 
+test("escopo ativo zero não reaproveita o total histórico como denominador", () => {
+  const data=fixture();
+  data.editalSnapshot.axes=[
+    {topic:"Radar",subject:"Monitor",documentaryStrength:"🟡 Radar provável",covered:false},
+    {topic:"Suspenso",subject:"Monitor",documentaryStrength:"⏸️ Suspenso",covered:false},
+    {topic:"Fora",subject:"Outras",documentaryStrength:"🔴 Fora do escopo atual",covered:false},
+  ];
+  const result=buildSeedfIntelligence(data);
+  assert.equal(result.coverage.edital.total,3);
+  assert.equal(result.coverage.edital.activeTotal,0);
+  assert.equal(result.risks.some((item)=>item.id==="coverage-edital"),false);
+});
+
 test("desempenho ativo alimenta evidência e total global sem contar Radar", () => {
   const data=fixture();
   data.lawsSnapshot.laws=[
