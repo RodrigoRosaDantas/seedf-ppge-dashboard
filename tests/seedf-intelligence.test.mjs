@@ -109,12 +109,34 @@ test("erro aberto permanece ativo", () => {
   assert.equal(buildSeedfIntelligence(data).activeErrors.length,1);
 });
 
+test("erro aberto de Radar permanece preservado sem virar fragilidade ativa", () => {
+  const data=fixture();
+  data.snapshot.execution.leis_primeiro.errors=[
+    {id:"e1",status:"Em andamento",strategic_use:"Radar suspenso",date:"2026-09-22",title:"erro Monitor",recurrence:1},
+  ];
+  const result=buildSeedfIntelligence(data);
+  assert.equal(result.activeErrors.length,0);
+  assert.equal(result.suspendedErrors.length,1);
+  assert.notEqual(result.nextAction.kind,"error");
+});
+
 test("revisão vencida influencia decisão quando não há retomada", () => {
   const data=fixture();
   data.legislationBank.rows=[{codes:["L01"],record_kind:"trilha",study_phase:"Em estudo",questions_done:10,sessions_done:1,d0:true,d7:false,d20:false,next_review:"2026-09-20"}];
   const result=buildSeedfIntelligence(data);
   assert.equal(result.nextAction.kind,"review");
   assert.equal(result.reviews[0].state,"atrasado");
+});
+
+test("lei suspensa não cria D0, D7 ou revisão vencida", () => {
+  const data=fixture();
+  data.legislationBank.rows=[{
+    codes:["L25"],record_kind:"trilha",strategic_status:"Radar — suspenso até edital",
+    study_phase:"Em estudo",questions_done:25,sessions_done:1,d0:false,d7:false,d20:false,next_review:"2026-09-20",
+  }];
+  const result=buildSeedfIntelligence(data);
+  assert.equal(result.reviews.length,0);
+  assert.notEqual(result.nextAction.kind,"review");
 });
 
 test("revisão concluída deixa de criar pendência D0", () => {
@@ -136,6 +158,24 @@ test("questões praticadas geram evidência apenas com resultado calculável", (
   const result=buildSeedfIntelligence(data);
   assert.equal(result.coverage.law.practiced,1);
   assert.equal(result.coverage.law.evidenced,1);
+});
+
+test("L01 usa somente a bateria ativa quando suplemento Monitor está em Radar", () => {
+  const data=fixture();
+  data.snapshot.execution.leis_primeiro.question_records=[
+    {id:"q-core",day_id:"LP-20260921-L01-R1",page_code:"L01",strategic_use:"Ativo",planned:30,done:30,correct:29,errors:1,doubts:0},
+    {id:"q-monitor",day_id:"LP-20260921-L01-R1",page_code:"L01",strategic_use:"Radar suspenso",planned:10,done:10,correct:8,errors:2,doubts:0},
+  ];
+  data.snapshot.execution.leis_primeiro.sessions=[
+    {page_code:"L01",date:"2026-09-21",completed:true,questions_done:40,correct:37,errors:3},
+  ];
+  const result=buildSeedfIntelligence(data);
+  assert.equal(result.lawPerformance.length,1);
+  assert.equal(result.lawPerformance[0].questions,30);
+  assert.equal(result.lawPerformance[0].correct,29);
+  assert.equal(result.lawPerformance[0].errors,1);
+  assert.equal(result.lawPerformance[0].source,"questões ativas");
+  assert.equal(result.lawPerformance[0].accuracy,29/30*100);
 });
 
 test("grande amostra pode ser força sem exigir 100%", () => {
@@ -178,6 +218,23 @@ test("piora consistente impede declaração de força", () => {
 test("impacto do edital sozinho não cria fragilidade", () => {
   const result=buildSeedfIntelligence(fixture());
   assert.equal(result.weaknesses.length,0);
+});
+
+test("cobertura distingue total histórico de escopo ativo pós-TR", () => {
+  const data=fixture();
+  data.editalSnapshot.axes=[
+    {topic:"A",subject:"Português",documentaryStrength:"🚨 Confirmado pelo TR atual",covered:false},
+    {topic:"B",subject:"Administração Geral",documentaryStrength:"🟢 Base histórica forte",covered:false},
+    {topic:"C",subject:"Radar",documentaryStrength:"🟡 Radar provável",covered:false},
+    {topic:"D",subject:"Monitor",documentaryStrength:"⏸️ Suspenso",covered:false},
+    {topic:"E",subject:"Governança",documentaryStrength:"🔴 Fora do escopo atual",covered:false},
+  ];
+  const result=buildSeedfIntelligence(data);
+  assert.equal(result.coverage.edital.total,5);
+  assert.equal(result.coverage.edital.activeTotal,2);
+  assert.equal(result.coverage.edital.radar,1);
+  assert.equal(result.coverage.edital.suspended,1);
+  assert.equal(result.coverage.edital.outside,1);
 });
 
 test("contador ausente permanece desconhecido na soma global", () => {
