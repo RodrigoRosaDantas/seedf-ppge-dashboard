@@ -4,8 +4,22 @@ import path from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
 import * as vm from "node:vm";
+import { leisPrimeiroSequence, normalizeLeisPrimeiroId, pageCodeFromExecutionId } from "../lib/leis-primeiro-ids.mjs";
 
 const root = fileURLToPath(new URL("..", import.meta.url));
+
+test("normalizes current Leitura IDs and preserves legacy R IDs", () => {
+  assert.equal(normalizeLeisPrimeiroId("LP-20260921-L01-L1"), "LP-20260921-L01-L1");
+  assert.equal(normalizeLeisPrimeiroId("lp-20260921-l01-l1"), "LP-20260921-L01-L1");
+  assert.equal(normalizeLeisPrimeiroId("LP-20260921-L01-R1"), "LP-20260921-L01-R1");
+  assert.equal(normalizeLeisPrimeiroId("LP-20260921-L01-R2"), "LP-20260921-L01-R2");
+  assert.equal(normalizeLeisPrimeiroId("LP-20260921-L01-S1"), null);
+  assert.equal(pageCodeFromExecutionId("LP-20260921-L01-L1"), "L01");
+  assert.equal(pageCodeFromExecutionId("LP-20260921-L01-R1"), "L01");
+  assert.equal(leisPrimeiroSequence("LP-20260921-L01-L1"), 1);
+  assert.equal(leisPrimeiroSequence("LP-20260921-L01-R2"), 2);
+  assert.equal(leisPrimeiroSequence("invalid"), 0);
+});
 
 async function read(relativePath) {
   return readFile(path.join(root, relativePath), "utf8");
@@ -87,14 +101,22 @@ test("keeps every Leis Primeiro page aligned with the operational method", async
   assert.equal(l01?.d0, false);
   assert.equal(l02?.status, "Leitura 1");
   assert.equal(l02?.summaries_done, 0);
+  assert.equal(l02?.summary_number, null);
   assert.equal(l02?.readings_done, 1);
   assert.equal(l02?.reading_number, 1);
+  assert.equal(l02?.questions_done, 30);
+  assert.equal(l02?.active_questions_planned, 30);
+  assert.equal(l02?.active_questions_correct, 22);
+  assert.equal(l02?.active_questions_errors, 8);
+  assert.equal(l02?.operational_target_total, 30);
   assert.equal(l01Bank?.status, "Leitura 1");
   assert.equal(l01Bank?.study_phase, "Em estudo");
   assert.equal(l01Bank?.summaries_done, 0);
   assert.equal(l01Bank?.summary_number, null);
   assert.equal(l01Bank?.readings_done, 1);
   assert.equal(l01Bank?.reading_number, 1);
+  assert.equal(l01Bank?.question_target, 30);
+  assert.equal(l01Bank?.questions_optional, 10);
   assert.equal(l01Bank?.questions_done, 40);
   assert.equal(l01Bank?.hits, 37);
   assert.equal(l01Bank?.errors, 3);
@@ -104,6 +126,11 @@ test("keeps every Leis Primeiro page aligned with the operational method", async
   assert.equal(l02Bank?.summary_number, null);
   assert.equal(l02Bank?.readings_done, 1);
   assert.equal(l02Bank?.reading_number, 1);
+  assert.equal(l02Bank?.question_target, 30);
+  assert.equal(l02Bank?.questions_optional, 0);
+  assert.equal(l02Bank?.questions_done, 30);
+  assert.equal(l02Bank?.hits, 22);
+  assert.equal(l02Bank?.errors, 8);
   assert.equal(l02Bank?.last_read, "2026-09-22");
 
   const l01Day = dataset.execution.days.find((day) => day.page_code === "L01");
@@ -111,9 +138,15 @@ test("keeps every Leis Primeiro page aligned with the operational method", async
   assert.equal(l01Day?.title, "2026-09-21 — Leis Primeiro · L01 · Leitura 1");
   assert.equal(l01Day?.summary_number, null);
   assert.equal(l01Day?.reading_number, 1);
-  assert.equal(dataset.execution.totals.done, 40);
-  assert.equal(dataset.execution.totals.correct, 37);
-  assert.equal(dataset.execution.totals.errors, 3);
+  assert.equal(dataset.execution.totals.done, 70);
+  assert.equal(dataset.execution.totals.correct, 59);
+  assert.equal(dataset.execution.totals.errors, 11);
+  const l02Day = dataset.execution.days.find((day) => day.page_code === "L02");
+  assert.equal(l02Day?.day_id, "LP-20260922-L02-L1");
+  assert.equal(l02Day?.title, "2026-09-22 — Leis Primeiro · L02 · Leitura 1");
+  assert.equal(l02Day?.summary_number, null);
+  assert.equal(l02Day?.reading_number, 1);
+  assert.deepEqual([l02Day?.planned, l02Day?.done, l02Day?.correct, l02Day?.errors], [30, 30, 22, 8]);
 
   const l01Session = dataset.execution.sessions.find((session) => session.page_code === "L01");
   assert.equal(l01Session?.title, "2026-09-21 · L01 · D0 · leitura 1 + questões");
@@ -123,6 +156,15 @@ test("keeps every Leis Primeiro page aligned with the operational method", async
   assert.equal(l01Session?.questions_done, 40);
   assert.equal(l01Session?.correct, 37);
   assert.equal(l01Session?.errors, 3);
+
+  const l02Session = dataset.execution.sessions.find((session) => session.page_code === "L02");
+  assert.equal(l02Session?.title, "2026-09-22 · L02 · D0 · primeira leitura");
+  assert.equal(l02Session?.session_type, "Lei seca — primeira leitura");
+  assert.equal(l02Session?.summary_counter, null);
+  assert.equal(l02Session?.reading_counter, 1);
+  assert.equal(l02Session?.questions_done, 30);
+  assert.equal(l02Session?.correct, 22);
+  assert.equal(l02Session?.errors, 8);
 
   const l01Rows = dataset.execution.question_records.filter((row) => row.page_code === "L01");
   const l01Core = l01Rows.find((row) => row.strategic_use === "Ativo");
@@ -137,6 +179,11 @@ test("keeps every Leis Primeiro page aligned with the operational method", async
   assert.equal(l01Errors.get("L01-Q28")?.strategic_use, "Ativo");
   assert.equal(l01Errors.get("L01-Q36")?.strategic_use, "Radar suspenso");
   assert.equal(l01Errors.get("L01-Q37")?.strategic_use, "Radar suspenso");
+  const l02Errors = dataset.execution.errors.filter((error) => error.page_code === "L02");
+  assert.deepEqual(l02Errors.map((error) => error.question_id).sort(), [
+    "L02-Q01", "L02-Q08", "L02-Q12", "L02-Q13", "L02-Q19", "L02-Q23", "L02-Q26", "L02-Q27",
+  ]);
+  assert.ok(l02Errors.every((error) => error.strategic_use === "Ativo" && error.day_id === "LP-20260922-L02-L1"));
   assert.ok(!JSON.stringify(dataset.execution).includes("LP-20260921-L01-R1"));
   assert.ok(!JSON.stringify(dataset.execution).includes("L01 · Resumo 1"));
 
@@ -146,6 +193,16 @@ test("keeps every Leis Primeiro page aligned with the operational method", async
   assert.equal(dashboardSession?.summary_counter, 0);
   assert.equal(dashboardSession?.reading_counter, 1);
   assert.equal(dashboardSnapshot.execution.leis_primeiro.session_totals.readings, 2);
+  assert.equal(dashboardSnapshot.execution.leis_primeiro.question_rows, 3);
+  assert.deepEqual(
+    [dashboardSnapshot.execution.leis_primeiro.totals.done, dashboardSnapshot.execution.leis_primeiro.totals.correct, dashboardSnapshot.execution.leis_primeiro.totals.errors],
+    [70, 59, 11],
+  );
+  assert.ok(dashboardSnapshot.execution.leis_primeiro.days.some((day) => day.day_id === "LP-20260922-L02-L1"));
+  const unfinishedL03 = dashboardSnapshot.execution.leis_primeiro.sessions.find((session) => session.page_code === "L03");
+  assert.equal(unfinishedL03?.completed, false);
+  assert.equal(unfinishedL03?.session_counter, 0);
+  assert.equal(unfinishedL03?.questions_done, null);
 });
 
 test("keeps Leis Primeiro execution semantics separated by Dia ID", async () => {

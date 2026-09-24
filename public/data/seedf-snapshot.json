@@ -6,8 +6,8 @@
     "page_id": "3d4cf5a2-6731-8106-a2c9-c97816aa6cf5",
     "page_url": "https://app.notion.com/p/SEEDF-PPGE-Gestor-Analista-Monitor-Dashboard-PRO-3d4cf5a267318106a2c9c97816aa6cf5",
     "last_edited_time": "2026-09-24T12:08:00.000Z",
-    "synced_at": "2026-09-24T17:25:11.073Z",
-    "content_hash": "c465462cee9762caf0659b817a8bcd86866395555ab9e2393b3c0fd2156ef255",
+    "synced_at": "2026-09-24T20:37:25.408Z",
+    "content_hash": "e2b119cb79a56e153e00edcef9c7781ff8f3ac20335b2b84a292e95b9d260d4d",
     "status": "synced"
   },
   "dashboard": {
@@ -579,7 +579,7 @@
     ]
   },
   "execution": {
-    "as_of": "2026-09-24T17:25:11.068Z",
+    "as_of": "2026-09-24T20:37:25.402Z",
     "c01": {
       "days": [
         {
@@ -1012,6 +1012,28 @@
     "leis_primeiro": {
       "days": [
         {
+          "day_id": "LP-20260922-L02-L1",
+          "trail": "Leis Primeiro",
+          "title": "2026-09-22 — Leis Primeiro · L02 · Leitura 1",
+          "page_code": "L02",
+          "progress": "Leitura 1",
+          "summary_number": null,
+          "reading_number": 1,
+          "status": "Concluído",
+          "phase": "Fase 1",
+          "type": "Temático",
+          "planned": 30,
+          "done": 30,
+          "correct": 22,
+          "errors": 8,
+          "doubts": 0,
+          "minutes": null,
+          "precision": 0.7333333333333333,
+          "href": "https://app.notion.com/p/3d8cf5a2673181d98092e1bf6378badb",
+          "executed_at": "2026-09-22",
+          "created_at": null
+        },
+        {
           "day_id": "LP-20260921-L01-L1",
           "trail": "Leis Primeiro",
           "title": "2026-09-21 — Leis Primeiro · L01 · Leitura 1",
@@ -1036,19 +1058,19 @@
         }
       ],
       "totals": {
-        "planned": 40,
-        "done": 40,
-        "correct": 37,
-        "errors": 3,
+        "planned": 70,
+        "done": 70,
+        "correct": 59,
+        "errors": 11,
         "doubts": 0,
-        "minutes": 60,
-        "precision": 0.925
+        "minutes": null,
+        "precision": 0.8428571428571429
       },
       "statuses": {
-        "Concluído": 1
+        "Concluído": 2
       },
       "active_day_id": null,
-      "question_rows": 2,
+      "question_rows": 3,
       "question_records": [
         {
           "id": "3e2cf5a2-6731-817f-a902-e6bd7ab2ffc0",
@@ -1083,10 +1105,203 @@
           "errors": 1,
           "doubts": 0,
           "precision": 0.9666666666666667
+        },
+        {
+          "id": "3e4cf5a2-6731-8186-b1fa-e5c89898c381",
+          "url": "https://app.notion.com/p/3e4cf5a267318186b1fae5c89898c381",
+          "day_id": "LP-20260922-L02-L1",
+          "page_code": "L02",
+          "title": "L02 — LDB — D0 — bateria obrigatória",
+          "discipline": "Legislação Educacional",
+          "subject": "Lei nº 9.394/1996 — LDB \\| D0",
+          "strategic_use": "Ativo",
+          "date": "2026-09-22",
+          "planned": 30,
+          "done": 30,
+          "correct": 22,
+          "errors": 8,
+          "doubts": 0,
+          "precision": 0.7333333333333333
         }
       ],
-      "error_count": 3,
+      "error_count": 11,
       "errors": [
+        {
+          "id": "3e5cf5a2-6731-8134-ac00-f31a7b841bdd",
+          "url": "https://app.notion.com/p/3e5cf5a267318134ac00f31a7b841bdd",
+          "day_id": "LP-20260922-L02-L1",
+          "page_code": "L02",
+          "question_id": "L02-Q01",
+          "title": "L02-Q01 — educação escolar e instituições próprias",
+          "subject": "LDB — art. 1º, §1º — educação escolar",
+          "discipline": "Legislação Educacional",
+          "reason": null,
+          "pattern": "Lei seca",
+          "severity": null,
+          "review": "D0",
+          "status": "Em andamento",
+          "strategic_use": "Ativo",
+          "recurrence": 1,
+          "flashcard": false,
+          "next_review": null,
+          "date": "2026-09-22",
+          "rule": "A LDB disciplina a educação escolar, que se desenvolve predominantemente por meio do ensino em instituições próprias.",
+          "observations": "Erro real da bateria obrigatória da L02, questão 1. Resposta enviada: E; gabarito: C. Sem dúvida marcada. Motivo e gravidade não inferidos."
+        },
+        {
+          "id": "3e5cf5a2-6731-81cb-9dde-f0b10dbd264d",
+          "url": "https://app.notion.com/p/3e5cf5a2673181cb9ddef0b10dbd264d",
+          "day_id": "LP-20260922-L02-L1",
+          "page_code": "L02",
+          "question_id": "L02-Q08",
+          "title": "L02-Q08 — proposta pedagógica do estabelecimento",
+          "subject": "LDB — art. 12 — incumbências do estabelecimento",
+          "discipline": "Legislação Educacional",
+          "reason": null,
+          "pattern": "Lei seca",
+          "severity": null,
+          "review": "D0",
+          "status": "Em andamento",
+          "strategic_use": "Ativo",
+          "recurrence": 1,
+          "flashcard": false,
+          "next_review": null,
+          "date": "2026-09-22",
+          "rule": "Entre as incumbências dos estabelecimentos de ensino está elaborar e executar sua proposta pedagógica.",
+          "observations": "Erro real da bateria obrigatória da L02, questão 8. Resposta enviada: E; gabarito: C. Sem dúvida marcada. Motivo e gravidade não inferidos."
+        },
+        {
+          "id": "3e5cf5a2-6731-81aa-a469-e63f15fed9a5",
+          "url": "https://app.notion.com/p/3e5cf5a2673181aaa469e63f15fed9a5",
+          "day_id": "LP-20260922-L02-L1",
+          "page_code": "L02",
+          "question_id": "L02-Q12",
+          "title": "L02-Q12 — frequência mínima de 75%",
+          "subject": "LDB — art. 24 — frequência para aprovação",
+          "discipline": "Legislação Educacional",
+          "reason": null,
+          "pattern": "Lei seca",
+          "severity": null,
+          "review": "D0",
+          "status": "Em andamento",
+          "strategic_use": "Ativo",
+          "recurrence": 1,
+          "flashcard": true,
+          "next_review": null,
+          "date": "2026-09-22",
+          "rule": "Nos ensinos fundamental e médio, exige-se frequência mínima de 75% do total de horas letivas para aprovação, observadas as regras aplicáveis.",
+          "observations": "Erro real da bateria obrigatória da L02, questão 12. Resposta enviada: E; gabarito: C. Sem dúvida marcada. Motivo e gravidade não inferidos."
+        },
+        {
+          "id": "3e5cf5a2-6731-8134-80ba-e25cad0d4f66",
+          "url": "https://app.notion.com/p/3e5cf5a26731813480bae25cad0d4f66",
+          "day_id": "LP-20260922-L02-L1",
+          "page_code": "L02",
+          "question_id": "L02-Q13",
+          "title": "L02-Q13 — avaliação na Educação Infantil",
+          "subject": "LDB — art. 31 — avaliação sem promoção",
+          "discipline": "Legislação Educacional",
+          "reason": null,
+          "pattern": "Lei seca",
+          "severity": null,
+          "review": "D0",
+          "status": "Em andamento",
+          "strategic_use": "Ativo",
+          "recurrence": 1,
+          "flashcard": false,
+          "next_review": null,
+          "date": "2026-09-22",
+          "rule": "Na Educação Infantil, a avaliação ocorre mediante acompanhamento e registro do desenvolvimento, sem objetivo de promoção, inclusive para acesso ao Ensino Fundamental.",
+          "observations": "Erro real da bateria obrigatória da L02, questão 13. Resposta enviada: C; gabarito: E. Sem dúvida marcada. Motivo e gravidade não inferidos."
+        },
+        {
+          "id": "3e5cf5a2-6731-814b-ba29-ec43d6af0085",
+          "url": "https://app.notion.com/p/3e5cf5a26731814bba29ec43d6af0085",
+          "day_id": "LP-20260922-L02-L1",
+          "page_code": "L02",
+          "question_id": "L02-Q19",
+          "title": "L02-Q19 — base nacional comum e parte diversificada",
+          "subject": "LDB — art. 26 — currículos",
+          "discipline": "Legislação Educacional",
+          "reason": null,
+          "pattern": "Lei seca",
+          "severity": null,
+          "review": "D0",
+          "status": "Em andamento",
+          "strategic_use": "Ativo",
+          "recurrence": 1,
+          "flashcard": true,
+          "next_review": null,
+          "date": "2026-09-22",
+          "rule": "Os currículos da Educação Infantil, do Ensino Fundamental e do Ensino Médio têm base nacional comum, complementada por parte diversificada.",
+          "observations": "Erro real da bateria obrigatória da L02, questão 19. Resposta enviada: E; gabarito: C. Sem dúvida marcada. Motivo e gravidade não inferidos."
+        },
+        {
+          "id": "3e5cf5a2-6731-8169-a878-cb730a097224",
+          "url": "https://app.notion.com/p/3e5cf5a267318169a878cb730a097224",
+          "day_id": "LP-20260922-L02-L1",
+          "page_code": "L02",
+          "question_id": "L02-Q23",
+          "title": "L02-Q23 — terminalidade específica e aceleração",
+          "subject": "LDB — art. 59, II — Educação Especial",
+          "discipline": "Legislação Educacional",
+          "reason": null,
+          "pattern": "Lei seca",
+          "severity": null,
+          "review": "D0",
+          "status": "Em andamento",
+          "strategic_use": "Ativo",
+          "recurrence": 1,
+          "flashcard": true,
+          "next_review": null,
+          "date": "2026-09-22",
+          "rule": "Os sistemas de ensino devem assegurar terminalidade específica a educandos que, em razão de suas deficiências, não atinjam o nível exigido para concluir o Ensino Fundamental e aceleração para os superdotados concluírem em menor tempo o programa escolar.",
+          "observations": "Erro real da bateria obrigatória da L02, questão 23. Resposta enviada: E; gabarito: C. Sem dúvida marcada. Motivo e gravidade não inferidos."
+        },
+        {
+          "id": "3e5cf5a2-6731-8197-ac53-ea43d068cdef",
+          "url": "https://app.notion.com/p/3e5cf5a267318197ac53ea43d068cdef",
+          "day_id": "LP-20260922-L02-L1",
+          "page_code": "L02",
+          "question_id": "L02-Q26",
+          "title": "L02-Q26 — professor da Educação Infantil \\| atualização 2026",
+          "subject": "LDB — art. 61, §2º — professor da Educação Infantil",
+          "discipline": "Legislação Educacional",
+          "reason": null,
+          "pattern": "Lei seca",
+          "severity": null,
+          "review": "D0",
+          "status": "Em andamento",
+          "strategic_use": "Ativo",
+          "recurrence": 1,
+          "flashcard": true,
+          "next_review": null,
+          "date": "2026-09-22",
+          "rule": "Após a Lei nº 15.326/2026, para enquadramento na carreira do magistério, a LDB considera professores da Educação Infantil os profissionais que exercem função docente diretamente com as crianças, possuem a formação legal exigida e foram aprovados em concurso público, independentemente da denominação do cargo.",
+          "observations": "Erro real da bateria obrigatória da L02, questão 26. Resposta enviada: E; gabarito: C. Item de atualização legislativa de 2026. Sem dúvida marcada. Motivo e gravidade não inferidos."
+        },
+        {
+          "id": "3e5cf5a2-6731-81c6-b914-f9d0963c6804",
+          "url": "https://app.notion.com/p/3e5cf5a2673181c6b914f9d0963c6804",
+          "day_id": "LP-20260922-L02-L1",
+          "page_code": "L02",
+          "question_id": "L02-Q27",
+          "title": "L02-Q27 — ingresso no magistério público",
+          "subject": "LDB — art. 67, I — ingresso no magistério público",
+          "discipline": "Legislação Educacional",
+          "reason": null,
+          "pattern": "Lei seca",
+          "severity": null,
+          "review": "D0",
+          "status": "Em andamento",
+          "strategic_use": "Ativo",
+          "recurrence": 1,
+          "flashcard": true,
+          "next_review": null,
+          "date": "2026-09-22",
+          "rule": "A valorização dos profissionais da educação inclui ingresso exclusivamente por concurso público de provas e títulos.",
+          "observations": "Erro real da bateria obrigatória da L02, questão 27. Resposta enviada: E; gabarito: C. Sem dúvida marcada. Motivo e gravidade não inferidos."
+        },
         {
           "id": "3e2cf5a2-6731-8169-9c50-c9fc2d60319b",
           "url": "https://app.notion.com/p/L01-Q28-publicidade-oficial-e-promo-o-pessoal-3e2cf5a2673181699c50c9fc2d60319b",
@@ -1154,7 +1369,7 @@
           "observations": "Erro da questão 37 da bateria suplementar de Analista Monitor. Origem: Leitura 1 da L01. Não foi criado novo flashcard porque a L01 já possuía cartão equivalente."
         }
       ],
-      "latest_day_id": "LP-20260921-L01-L1",
+      "latest_day_id": "LP-20260922-L02-L1",
       "sessions": [
         {
           "id": "3e4cf5a2-6731-81df-9296-e5e993f40f22",
@@ -1217,7 +1432,7 @@
         {
           "id": "3e2cf5a2-6731-8161-8647-fa2bb4594fcd",
           "title": "2026-09-21 · L01 · D0 · leitura 1 + questões",
-          "url": "https://app.notion.com/p/3e2cf5a2673181618647fa2bb4594fcd",
+          "url": "https://app.notion.com/p/2026-09-21-L01-D0-leitura-1-quest-es-3e2cf5a2673181618647fa2bb4594fcd",
           "date": "2026-09-21",
           "page_code": "L01",
           "stage": "D0",
@@ -1241,7 +1456,7 @@
           "precision": 0.925,
           "href": "https://app.notion.com/p/3d8cf5a267318133b196fddf1efde990",
           "created_at": "2026-09-21T17:10:00.000Z",
-          "updated_at": "2026-09-24T19:34:13.157Z"
+          "updated_at": "2026-09-24T19:34:00.000Z"
         }
       ],
       "session_totals": {
@@ -1255,7 +1470,7 @@
         "flashcards": null,
         "precision": null
       },
-      "as_of": "2026-09-24T17:25:11.068Z"
+      "as_of": "2026-09-24T20:37:25.402Z"
     }
   },
   "notice": "Snapshot público sanitizado. O conteúdo completo continua no Notion; materiais, fontes e execução do C01 são indexados para consulta."

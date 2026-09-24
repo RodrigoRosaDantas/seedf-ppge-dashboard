@@ -1,6 +1,7 @@
 import { createHash } from "node:crypto";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { leisPrimeiroSequence, normalizeLeisPrimeiroId, pageCodeFromExecutionId } from "../lib/leis-primeiro-ids.mjs";
 
 const DEFAULT_PAGE_ID = "3d4cf5a2-6731-8106-a2c9-c97816aa6cf5";
 const MATERIALS_PAGE_ID = "3d4cf5a2-6731-81a4-a51f-eed1c396c77b";
@@ -597,20 +598,6 @@ function parseLegislationSession(page) {
 function normalizeC01Day(value) {
   const match = String(value || "").match(/(?:^|\s)C01-D(0[1-9]|1[0-4])(?=$|[\s—–-])/i);
   return match ? `D${match[1]}` : null;
-}
-
-function normalizeLeisPrimeiroId(value) {
-  const match = String(value || "").trim().match(/^LP-(\d{8})-(L\d{2})-R(\d+)$/i);
-  return match ? `LP-${match[1]}-${match[2].toUpperCase()}-R${match[3]}` : null;
-}
-
-function pageCodeFromExecutionId(value) {
-  return normalizeLeisPrimeiroId(value)?.match(/-(L\d{2})-/)?.[1] || "";
-}
-
-function leisPrimeiroSequence(value) {
-  const match = normalizeLeisPrimeiroId(value)?.match(/-R(\d+)$/i);
-  return match ? Number(match[1]) : 0;
 }
 
 function compareLeisPrimeiroDays(left, right) {
