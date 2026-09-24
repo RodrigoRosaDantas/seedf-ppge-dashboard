@@ -4,7 +4,7 @@
   "title": "SEEDF — Edital Projetado + Cargos-meta",
   "version": "v0.2",
   "kind": "projected",
-  "generatedAt": "2026-09-24T12:18:21.122Z",
+  "generatedAt": "2026-09-24T17:26:55.317Z",
   "source": {
     "type": "notion",
     "dataSourceId": "8ffe0436-8013-4a34-97f9-b9f9ed67b6c3",
@@ -15,18 +15,19 @@
     "official": false,
     "note": "Edital projetado pré-edital. Base histórica, atualização obrigatória e radar provável permanecem identificados separadamente."
   },
-  "axisCount": 63,
+  "axisCount": 64,
   "layers": {
     "Base histórica": 45,
     "Atualização obrigatória": 17,
-    "Radar provável": 1
+    "Radar provável": 1,
+    "Fora do escopo atual": 1
   },
   "subjects": {
     "Administração Geral": 8,
     "Administração Pública": 1,
     "AFO": 1,
     "Arquivologia": 1,
-    "Direito Administrativo": 9,
+    "Direito Administrativo": 8,
     "Direito Constitucional": 5,
     "ECA e Direitos": 4,
     "Gestão de Pessoas": 3,
@@ -36,7 +37,7 @@
     "Legislação Educacional": 7,
     "Licitações e Contratos": 1,
     "Materiais e Patrimônio": 2,
-    "Outras": 2,
+    "Outras": 4,
     "Políticas Públicas": 3,
     "Português": 10
   },
@@ -382,24 +383,6 @@
       "observations": "Base jurídica já construída, mas precisa ser recalibrada para o edital SEEDF.",
       "sourceUrl": "https://economia.df.gov.br/documents/d/seec/dodf-122-01-07-2022-integra",
       "sourceLastEditedAt": "2026-09-24T11:58:00.000Z"
-    },
-    {
-      "id": "3e5cf5a2-6731-810c-b00d-cd23ac305f62",
-      "topic": "Lei DF nº 6.805/2021 — requisitos legais do conteúdo do concurso",
-      "subtopic": "Alterações da Lei DF nº 4.949/2012 relacionadas a conteúdo obrigatório em concursos distritais; usar o texto vigente e o recorte expressamente incorporado pela documentação atual.",
-      "subject": "Direito Administrativo",
-      "cargos": [
-        "Núcleo comum"
-      ],
-      "sourceBase": "Ato oficial concurso atual",
-      "layer": "Atualização obrigatória",
-      "priority": "Alta",
-      "action": "Lei seca",
-      "covered": false,
-      "domainState": "Reforço",
-      "observations": "Pós-TR 3/2026: registrar como requisito legal/documental do desenho do concurso. Não confundir esta linha de governança normativa com confirmação automática de todo conteúdo dos editais anteriores.",
-      "sourceUrl": "https://www.sinj.df.gov.br/sinj/Norma/1f6d15e63b3a4c669755b05d2e6b320e/Lei_6805_25_01_2021.html",
-      "sourceLastEditedAt": "2026-09-24T12:01:00.000Z"
     },
     {
       "id": "3d4cf5a2-6731-81d4-a2d3-cd1b32c03289",
@@ -934,23 +917,58 @@
       "sourceLastEditedAt": "2026-09-24T11:58:00.000Z"
     },
     {
-      "id": "3d4cf5a2-6731-8188-97f7-d54ecba709d2",
-      "topic": "Segurança, ergonomia e primeiros socorros no ambiente escolar",
-      "subtopic": "Segurança do trabalho; ergonomia; primeiros socorros no ambiente escolar.",
+      "id": "3e5cf5a2-6731-810c-b00d-cd23ac305f62",
+      "topic": "Lei DF nº 6.805/2021 — governança procedimental do concurso",
+      "subtopic": "Altera a Lei DF nº 4.949/2012 em regras procedimentais do concurso, como critérios de correção/pontuação, fundamentação de anulações e recursos. Sua citação no TR não a transforma, por si só, em conteúdo programático para o candidato.",
       "subject": "Outras",
       "cargos": [
-        "Analista — Monitor",
         "Núcleo comum"
       ],
       "sourceBase": "Ato oficial concurso atual",
-      "layer": "Base histórica",
-      "priority": "Crítica",
-      "action": "Revisão curta",
+      "layer": "Fora do escopo atual",
+      "priority": "Baixa",
+      "action": "Monitorar",
       "covered": false,
       "domainState": "Reforço",
-      "observations": "Pós-TR 3/2026: somente PRIMEIROS SOCORROS está expressamente sinalizado no documento atual e passa ao núcleo comum. Segurança/ergonomia permanecem como base histórica de Monitor e não recebem confirmação automática.",
+      "observations": "Auditoria 24/09/2026: reclassificada como norma de governança/procedimento do certame, e não como matéria confirmada. Manter como referência jurídica do projeto; só migrar para conteúdo de estudo se o edital futuro a inserir expressamente no programa.",
+      "sourceUrl": "https://www.sinj.df.gov.br/sinj/Norma/1f6d15e63b3a4c669755b05d2e6b320e/Lei_6805_25_01_2021.html",
+      "sourceLastEditedAt": "2026-09-24T12:57:00.000Z"
+    },
+    {
+      "id": "3d4cf5a2-6731-8188-97f7-d54ecba709d2",
+      "topic": "Primeiros socorros no ambiente escolar",
+      "subtopic": "Noções e procedimentos de primeiros socorros aplicáveis ao contexto escolar, conforme recorte a ser definido pelo edital.",
+      "subject": "Outras",
+      "cargos": [
+        "Núcleo comum"
+      ],
+      "sourceBase": "Ato oficial concurso atual",
+      "layer": "Atualização obrigatória",
+      "priority": "Crítica",
+      "action": "Teoria direcionada",
+      "covered": false,
+      "domainState": "Reforço",
+      "observations": "Pós-TR nº 3/2026: PRIMEIROS SOCORROS é o conteúdo expressamente sinalizado no desenho atual e passa ao núcleo comum. Segurança do trabalho e ergonomia foram separados para não herdarem confirmação documental indevida.",
+      "sourceUrl": "https://www.educacao.df.gov.br/documents/d/seedf/termo_de_referencia_3-2026_23set26-pdf",
+      "sourceLastEditedAt": "2026-09-24T12:57:00.000Z"
+    },
+    {
+      "id": "3e5cf5a2-6731-8126-9369-d0e412ec2ff8",
+      "topic": "Segurança do trabalho e ergonomia no ambiente escolar",
+      "subtopic": "Segurança do trabalho e ergonomia no contexto escolar — conteúdo histórico do edital de Monitor, sem confirmação no TR nº 3/2026.",
+      "subject": "Outras",
+      "cargos": [
+        "Analista — Monitor"
+      ],
+      "sourceBase": "Edital 2016 — Monitor",
+      "layer": "Base histórica",
+      "priority": "Baixa",
+      "action": "Monitorar",
+      "covered": false,
+      "domainState": "Reforço",
+      "observations": "Separado em 24/09/2026 da antiga linha que misturava segurança, ergonomia e primeiros socorros. Conteúdo exclusivamente histórico de Monitor; preservado em Radar e fora da carga prioritária até edital.",
       "sourceUrl": "https://cdn.cebraspe.org.br/concursos/SEE_16_DF/arquivos/ED_1_SEE_DF_2016___ABERTURA.PDF",
-      "sourceLastEditedAt": "2026-09-24T12:01:00.000Z"
+      "sourceLastEditedAt": "2026-09-24T12:57:00.000Z"
     },
     {
       "id": "3d4cf5a2-6731-81eb-9732-cc4e83242d84",
@@ -991,8 +1009,8 @@
     },
     {
       "id": "3e5cf5a2-6731-811c-bad2-cd2fc444b089",
-      "topic": "Plano Distrital de Políticas para as Mulheres — II PDPM",
-      "subtopic": "II Plano Distrital de Políticas para as Mulheres; estudar o recorte que vier a ser delimitado no edital, usando a base normativa oficial vigente.",
+      "topic": "Plano Distrital de Políticas para as Mulheres — PDPM | transição II → III",
+      "subtopic": "Conhecimento do Plano Distrital de Política para Mulheres, exigido pela Portaria SEEC nº 271/2021 e expressamente sinalizado no TR nº 3/2026. O II PDPM 2020–2023 é referência histórica aprovada pelo Decreto nº 42.590/2021; monitorar a instituição do III PDPM e usar a versão que o edital/ato vigente determinar.",
       "subject": "Políticas Públicas",
       "cargos": [
         "Núcleo comum"
@@ -1003,9 +1021,9 @@
       "action": "Lei seca",
       "covered": false,
       "domainState": "Manutenção",
-      "observations": "Pós-TR 3/2026: PDPM expressamente sinalizado. Decreto DF nº 42.590/2021 é a base oficial do II PDPM. Reaproveitar familiaridade da preparação SEDES apenas para calibrar carga; não importar desempenho.",
-      "sourceUrl": "https://www.sinj.df.gov.br/sinj/Norma/85eba02ace75477997b3e4b91ee27d9d/Decreto_42590_07_10_2021.html",
-      "sourceLastEditedAt": "2026-09-24T12:01:00.000Z"
+      "observations": "Correção de auditoria 24/09/2026: a referência normativa obrigatória para concursos é a Portaria SEEC nº 271/2021, sem revogação expressa, que exige conhecimento do PDPM. Não tratar o II PDPM 2020–2023 como plano temporalmente vigente; ele permanece referência histórica. O III PDPM segue em monitoramento. Reaproveitar SEDES sem importar desempenho.",
+      "sourceUrl": "https://www.sinj.df.gov.br/sinj/Norma/c594b64d12d0467ab61cd421022e712d/Portaria_271_07_10_2021",
+      "sourceLastEditedAt": "2026-09-24T12:34:00.000Z"
     },
     {
       "id": "3d4cf5a2-6731-81ed-a527-f60c9c5bb69b",
