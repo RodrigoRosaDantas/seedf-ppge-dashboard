@@ -185,7 +185,8 @@ async function buildSnapshot(token: string): Promise<DashboardSnapshot> {
       projected_questions: 425,
       executed_questions: executedQuestions,
       verticalized_axes: 64,
-      jobs: 2,\n      radar_jobs: 1,
+      jobs: 2,
+      radar_jobs: 1,
     },
     materials,
     execution,
@@ -765,6 +766,7 @@ type DashboardSnapshot = {
     executed_questions: number | null;
     verticalized_axes: number;
     jobs: number;
+    radar_jobs?: number;
   };
   materials: MaterialsSnapshot | null;
   execution: ExecutionSnapshot | null;
