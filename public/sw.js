@@ -1,4 +1,4 @@
-const CACHE_NAME = "seedf-pages-v4";
+const CACHE_NAME = "seedf-pages-v5";
 const CORE_ASSETS = [
   "./",
   "./manifest.webmanifest",
@@ -8,9 +8,19 @@ const CORE_ASSETS = [
   "./leis-enhanced.css",
   "./leis/index.html",
   "./leis/flashcards/index.html",
+  "./hoje/index.html",
+  "./mentor/index.html",
+  "./desempenho/index.html",
+  "./riscos/index.html",
+  "./erros/index.html",
+  "./revisoes/index.html",
+  "./edital/index.html",
+  "./qualidade/index.html",
+  "./trilha/index.html",
   "./data/seedf-snapshot.json",
   "./data/leis-primeiro.json",
   "./data/legislation-bank.json",
+  "./data/seedf-edital.json",
   "./data/leis-primeiro-flashcards.json",
 ];
 

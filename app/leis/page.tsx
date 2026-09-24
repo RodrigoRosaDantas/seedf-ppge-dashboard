@@ -204,8 +204,9 @@ function isRadarLaw(law: Law) {
 }
 
 function numberValue(value: number | string | null | undefined) {
+  if (value === null || value === undefined || value === "") return null;
   const parsed = Number(value);
-  return Number.isFinite(parsed) ? parsed : 0;
+  return Number.isFinite(parsed) ? parsed : null;
 }
 
 function operationalUnits(laws: Law[]) {
@@ -221,28 +222,48 @@ function operationalUnits(laws: Law[]) {
 function studyState(law: Law) {
   const questionTarget = numberValue(law.operational_target_total ?? law.question_target);
   const questionsDone = numberValue(law.questions_done);
-  const flashcardsDone = Boolean(law.flashcards_done);
+  const flashcardsDone = law.flashcards_done === true;
   const summariesDone = numberValue(law.summaries_done);
   const readingsDone = numberValue(law.readings_done);
-  const orientation = Boolean(law.orientation_read);
-  const d0 = Boolean(law.d0);
+  const orientation = law.orientation_read === true;
+  const d0 = law.d0 === true;
+  const hasSummary = summariesDone !== null && summariesDone > 0;
+  const hasReading = readingsDone !== null && readingsDone > 0;
+  const questionsComplete = questionTarget !== null && questionsDone !== null && questionTarget > 0 && questionsDone >= questionTarget;
   const complete = !isRadarLaw(law)
     && orientation
-    && summariesDone > 0
-    && readingsDone > 0
-    && questionsDone >= questionTarget
+    && hasSummary
+    && hasReading
+    && questionsComplete
     && flashcardsDone
     && d0;
   let nextStep = law.next_step || "1 · Ler orientação";
   if (isRadarLaw(law)) nextStep = law.action || "Radar / monitorar";
   else if (!orientation) nextStep = "1 · Ler orientação";
-  else if (!summariesDone) nextStep = "2 · Estudar resumo/material (não conta como lei seca)";
-  else if (!readingsDone) nextStep = "3 · Ler a lei seca na fonte oficial";
-  else if (questionsDone < questionTarget) nextStep = `4 · Fazer questões (${questionsDone}/${questionTarget})`;
+  else if (!hasSummary) nextStep = summariesDone === null ? "2 · Resumo/material — dado ainda não informado" : "2 · Estudar resumo/material (não conta como lei seca)";
+  else if (!hasReading) nextStep = readingsDone === null ? "3 · Lei seca — dado ainda não informado" : "3 · Ler a lei seca na fonte oficial";
+  else if (!questionsComplete) {
+    nextStep = questionTarget === null || questionsDone === null
+      ? "4 · Questões — amostra ainda não calculável"
+      : "4 · Fazer questões (" + questionsDone + "/" + questionTarget + ")";
+  }
   else if (!flashcardsDone) nextStep = law.shared_block ? "5 · Fazer/revisar flashcards do bloco M5" : "5 · Fazer/revisar flashcards";
   else if (!d0) nextStep = "6 · Fechar D0";
   else nextStep = "Bloco fechado · seguir para a próxima norma";
-  return { complete, questionTarget, questionsDone, flashcardsDone, summariesDone, readingsDone, orientation, d0, nextStep };
+  return {
+    complete,
+    questionTarget,
+    questionsDone,
+    flashcardsDone,
+    summariesDone,
+    readingsDone,
+    orientation,
+    d0,
+    nextStep,
+    hasSummary,
+    hasReading,
+    questionsComplete,
+  };
 }
 
 function lawComplete(law: Law) {
@@ -252,9 +273,9 @@ function lawComplete(law: Law) {
 function studyStageNumber(law: Law) {
   const state = studyState(law);
   if (!state.orientation) return 1;
-  if (!state.summariesDone) return 2;
-  if (!state.readingsDone) return 3;
-  if (state.questionsDone < state.questionTarget) return 4;
+  if (!state.hasSummary) return 2;
+  if (!state.hasReading) return 3;
+  if (!state.questionsComplete) return 4;
   if (!state.flashcardsDone) return 5;
   return 6;
 }
@@ -364,25 +385,25 @@ export default function LeisPrimeiroPage() {
         <div className="laws-hero-copy">
           <p className="laws-kicker">⚖️ TRILHA OPERACIONAL · SEEDF PPGE</p>
           <h1>Leis Primeiro<span className="laws-hero-dot">.</span></h1>
-          <p className="laws-lead">A fila de leitura, questões e revisão do SEEDF. Abra a norma e leia o material local no próprio site. Se o site estiver indisponível, use o Notion como plano B.</p>
+          <p className="laws-lead">A fila de leitura, questões e revisão do SEEDF. O Notion é a fonte operacional canônica; o site organiza a execução, interpreta os registros e mantém a leitura local disponível.</p>
           <div className="laws-hero-thesis"><span>LER</span><i>→</i><span>RESPONDER</span><i>→</i><span>REVISAR</span></div>
-          <div className="laws-hero-meta"><span className="laws-live-dot" /><span>Leitura principal: site</span><span className="laws-meta-separator">·</span><span>Fallback: Notion</span></div>
+          <div className="laws-hero-meta"><span className="laws-live-dot" /><span>Fonte canônica: Notion</span><span className="laws-meta-separator">·</span><span>Camada de execução: site</span></div>
           <div className="laws-hero-actions">
             <a className="laws-primary" href={currentLaw ? `./${currentLaw.code.toLowerCase()}/` : "#mapa-detalhado"}>▶️ Continuar {currentLaw?.code || "a trilha"}</a>
             <a className="laws-secondary" href="#trilha">Ver trilha ↓</a>
             <a className="laws-secondary" href="./flashcards/">🧠 Abrir flashcards</a>
-            <a className="laws-secondary" href={snapshot?.source.page_url || "https://app.notion.com/p/3d8cf5a26731817c89f4f4907d14a701"} target="_blank" rel="noreferrer">Plano B · Notion ↗</a>
+            <a className="laws-secondary" href={snapshot?.source.page_url || "https://app.notion.com/p/3d8cf5a26731817c89f4f4907d14a701"} target="_blank" rel="noreferrer">Registro vivo · Notion ↗</a>
           </div>
         </div>
         <aside className="laws-next-card">
           <div className="laws-next-top"><div><p className="laws-kicker">PRÓXIMA AÇÃO</p><span>Bloco atual · {currentLaw?.code || "—"}</span></div><span className="laws-next-badge">{String(currentStage).padStart(2, "0")} / 06</span></div>
           <div className="laws-next-law"><span className="laws-next-code">{currentLaw?.code || "—"}</span><h2>{currentLaw?.title || "Aguardando dados"}</h2></div>
-          <div className="laws-next-context"><span>{currentLaw ? `${currentLaw.code} / ${snapshot?.laws.length || 34}` : "—"}</span><span>{currentState?.questionTarget || 0} questões-meta</span><span>{currentLaw?.group || "Aguardando"}</span></div>
+          <div className="laws-next-context"><span>{currentLaw ? `${currentLaw.code} / ${snapshot?.laws.length || 34}` : "—"}</span><span>{currentState?.questionTarget ?? "—"} questões-meta</span><span>{currentLaw?.group || "Aguardando"}</span></div>
           <div className="laws-next-focus"><span>{String(currentStage).padStart(2, "0")}</span><div><small>FAÇA AGORA</small><strong>{currentStep}</strong></div></div>
           <p>Resumo e leitura de lei seca são eventos distintos. Feche D0 somente após cumprir os requisitos reais da Lxx; D7/D20 seguem em paralelo.</p>
           <div className="laws-checkpoints">{currentChecks.map(({ label, done }) => <span className={`laws-checkpoint ${done ? "is-done" : ""}`} key={label}>{done ? "✓" : "○"} {label}</span>)}</div>
           <a className="laws-next-cta" href={currentLaw ? `./${currentLaw.code.toLowerCase()}/` : "#mapa-detalhado"}>Abrir norma <span aria-hidden="true">↗</span></a>
-          <a className="laws-next-notion" href={currentLaw?.notion_url || snapshot?.source.page_url || "#"} target="_blank" rel="noreferrer">Plano B · abrir no Notion ↗</a>
+          <a className="laws-next-notion" href={currentLaw?.notion_url || snapshot?.source.page_url || "#"} target="_blank" rel="noreferrer">Registro vivo · abrir no Notion ↗</a>
         </aside>
       </section>
 
@@ -410,8 +431,8 @@ export default function LeisPrimeiroPage() {
         <section className="laws-panel" id="historico-leis">
           <div className="laws-heading"><div><p className="laws-kicker">HISTÓRICO REAL · LEIS PRIMEIRO</p><h2>Última execução registrada</h2><p>Resumo, leitura de lei seca, questões e erros permanecem separados pelo Dia ID.</p></div><span className="laws-heading-note">{latestExecution.day_id}</span></div>
           <div className="laws-status-strip">
-            <article className="laws-stat-progress"><div className="laws-stat-top"><span className="laws-stat-icon">R</span><span>RESUMO × LEI</span></div><strong>{latestExecution.summary_number || 0} / {latestExecution.reading_number || 0}</strong><small>resumo nº / leitura nº · leitura real não é inferida</small></article>
-            <article className="laws-stat-questions"><div className="laws-stat-top"><span className="laws-stat-icon">Q</span><span>QUESTÕES</span></div><strong>{latestExecution.done || 0}/{latestExecution.planned || 0}</strong><small>{latestExecution.correct || 0} acertos · {formatPercent(latestExecution.precision)}</small></article>
+            <article className="laws-stat-progress"><div className="laws-stat-top"><span className="laws-stat-icon">R</span><span>RESUMO × LEI</span></div><strong>{latestExecution.summary_number ?? "—"} / {latestExecution.reading_number ?? "—"}</strong><small>resumo nº / leitura nº · leitura real não é inferida</small></article>
+            <article className="laws-stat-questions"><div className="laws-stat-top"><span className="laws-stat-icon">Q</span><span>QUESTÕES</span></div><strong>{latestExecution.done ?? "—"}/{latestExecution.planned ?? "—"}</strong><small>{latestExecution.correct ?? "—"} acertos · {formatPercent(latestExecution.precision)}</small></article>
             <article className="laws-stat-map"><div className="laws-stat-top"><span className="laws-stat-icon">E</span><span>CADERNO DE ERROS</span></div><strong>{latestErrors.length}</strong><small>erros vinculados por Dia ID</small></article>
             <article className="laws-stat-source"><div className="laws-stat-top"><span className="laws-stat-icon">D0</span><span>D0 DA NORMA</span></div><strong>{latestLaw?.d0 ? "Concluído" : "Pendente"}</strong><small>Flashcards: {latestLaw?.flashcards_done ? "feitos" : "pendentes"} · sem meta numérica</small></article>
           </div>
@@ -492,7 +513,7 @@ export default function LeisPrimeiroPage() {
           <label className="laws-select"><ShieldCheck size={16} /><select value={priority} onChange={(event) => setPriority(event.target.value)} aria-label="Filtrar por prioridade">{priorities.map((item) => <option key={item}>{item}</option>)}</select></label>
         </div>
 
-        {error ? <div className="laws-error"><CircleAlert size={18} /> O snapshot do site não carregou. O Notion continua disponível como plano B pelo botão acima.</div> : null}
+        {error ? <div className="laws-error"><CircleAlert size={18} /> O snapshot do site não carregou. Consulte a fonte operacional canônica no Notion pelo botão acima.</div> : null}
         {!snapshot && !error ? <div className="laws-loading">Carregando a trilha operacional…</div> : null}
         {snapshot && filtered.length === 0 ? <div className="laws-empty">Nenhuma norma corresponde aos filtros atuais.</div> : null}
 
