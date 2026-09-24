@@ -506,7 +506,7 @@ function EditalView({ intel, data }: { intel: any; data: Payload }) {
               <strong className="os-big-number">{axes.length}</strong>
               <span>item(ns) verticalizado(s) · {activeAxes.length} ativo(s)</span>
               <small>Cobertos no ativo: {known ? covered + "/" + activeAxes.length : "—"}</small>
-              <small>Força: {[...new Set(axes.map((axis)=>axis.documentaryStrength).filter(Boolean))].join(" · ") || "—"}</small>
+              <small>Força/camada: {[...new Set(axes.map((axis)=>axis.documentaryStrength || axis.layer).filter(Boolean))].join(" · ") || "—"}</small>
             </article>;
           })}
         </div>
