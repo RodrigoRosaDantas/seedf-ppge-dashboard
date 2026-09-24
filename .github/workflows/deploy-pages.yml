@@ -55,13 +55,13 @@ jobs:
           GITHUB_PAGES: "1"
           GITHUB_PAGES_BASE_PATH: /${{ github.event.repository.name }}
 
-      - name: Rendered regression tests
-        run: npm run test:rendered
-
       - name: Prepare Pages output
         run: |
           node scripts/prepare-github-pages.mjs
           node scripts/enhance-leis-pages.mjs
+
+      - name: Rendered regression tests · final artifact
+        run: npm run test:rendered
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
@@ -86,7 +86,7 @@ jobs:
         run: |
           set -euo pipefail
           BASE="${BASE_URL%/}/"
-          for path in "" "hoje/" "mentor/" "leis/" "leis/l01/" "revisoes/" "erros/" "desempenho/" "riscos/" "edital/" "qualidade/" "trilha/" "data/seedf-snapshot.json" "data/leis-primeiro.json" "data/seedf-edital.json" "manifest.webmanifest" "sw.js" "404.html"; do
+          for path in "" "hoje/" "mentor/" "leis/" "leis/l01/" "leis/flashcards/" "revisoes/" "erros/" "desempenho/" "riscos/" "edital/" "qualidade/" "trilha/" "data/seedf-snapshot.json" "data/leis-primeiro.json" "data/legislation-bank.json" "data/seedf-edital.json" "data/leis-primeiro-flashcards.json" "manifest.webmanifest" "favicon.svg" "reading-preferences.css" "reading-preferences.js" "leis-enhanced.css" "sw.js" "404.html"; do
             echo "smoke: ${BASE}${path}"
             curl --fail --silent --show-error --retry 5 --retry-delay 3 --retry-all-errors "${BASE}${path}" >/dev/null
           done

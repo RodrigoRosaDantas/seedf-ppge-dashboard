@@ -273,6 +273,8 @@ test("published shell includes an offline registration path", async () => {
   assert.match(serviceWorker, /isStableStudyAsset/);
   assert.match(serviceWorker, /fetch\(request, \{ cache: "no-store" \}\)/);
   assert.match(serviceWorker, /cache\.put\(request, copy\)\)\.catch/);
+  assert.match(serviceWorker, /cache\.addAll\(CORE_ASSETS\)/);
+  assert.doesNotMatch(serviceWorker, /cache\.addAll\(CORE_ASSETS\)\.catch/);
   assert.match(registration, /serviceWorker[\s\S]*\.register/);
   assert.match(registration, /updateViaCache: "none"/);
   assert.match(registration, /registration\.update\(\)/);
@@ -298,11 +300,28 @@ test("law page enhancement keeps the brand theme metadata", async () => {
   assert.match(source, /name="theme-color"/);
 });
 
-test("the Pages workflow runs source tests before build and rendered tests after build", async () => {
-  const workflow = await read(".github/workflows/deploy-pages.yml");
-  assert.match(workflow, /npm run test:source/);
-  assert.match(workflow, /npm run build/);
-  assert.match(workflow, /npm run test:rendered/);
+test("the Pages workflow validates the exact final artifact before publishing", async () => {
+  const [workflow, serviceWorker] = await Promise.all([
+    read(".github/workflows/deploy-pages.yml"),
+    read("public/sw.js"),
+  ]);
+  const sourceIndex = workflow.indexOf("npm run test:source");
+  const buildIndex = workflow.indexOf("npm run build");
+  const prepareIndex = workflow.indexOf("node scripts/prepare-github-pages.mjs");
+  const enhanceIndex = workflow.indexOf("node scripts/enhance-leis-pages.mjs");
+  const renderedIndex = workflow.indexOf("npm run test:rendered");
+  const uploadIndex = workflow.indexOf("actions/upload-pages-artifact@v3");
+  assert.ok(sourceIndex >= 0 && sourceIndex < buildIndex);
+  assert.ok(buildIndex < prepareIndex && prepareIndex < enhanceIndex);
+  assert.ok(enhanceIndex < renderedIndex && renderedIndex < uploadIndex);
+
+  const coreAssetsMatch = serviceWorker.match(/const CORE_ASSETS = \[([\s\S]*?)\];/);
+  assert.ok(coreAssetsMatch, "service worker must expose CORE_ASSETS");
+  const coreAssets = [...coreAssetsMatch[1].matchAll(/"\.\/([^"]*)"/g)].map((match) => match[1]);
+  for (const asset of coreAssets) {
+    const publishedPath = asset === "" ? '""' : '"' + asset + '"';
+    assert.ok(workflow.includes(publishedPath), "published smoke must cover core asset: " + (asset || "/"));
+  }
 });
 
 test("the Notion workflow reacts to every snapshot synchronizer", async () => {
