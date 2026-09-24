@@ -182,10 +182,10 @@ async function buildSnapshot(token: string): Promise<DashboardSnapshot> {
         firstMatch(sourceText, /Próxima ação operacional:\s*([^\.\n]+)/i) ||
         "D01 · Português fino + LDB",
       planned_questions: firstNumber(sourceText, /metas fixas somam\s*([\d.]+)\s*questões/i) || 385,
-      projected_questions: 455,
+      projected_questions: 425,
       executed_questions: executedQuestions,
-      verticalized_axes: 60,
-      jobs: 3,
+      verticalized_axes: 64,
+      jobs: 2,\n      radar_jobs: 1,
     },
     materials,
     execution,
