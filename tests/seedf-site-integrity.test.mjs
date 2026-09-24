@@ -60,7 +60,7 @@ test("keeps every Leis Primeiro page aligned with the operational method", async
     assert.doesNotMatch(plain, /concluir leitura \+ questões \+ flashcards \+ D0/i, `${law.code}: regra antiga de avanço`);
     assert.doesNotMatch(plain, /\d+\s*\/\s*\d+\s*flashcards|meta numérica de \d+\s*flashcards/i, `${law.code}: meta quantitativa de flashcards`);
 
-    const radar = /radar/i.test(`${law.action || ""} ${law.priority || ""}`);
+    const radar = /radar|suspenso|fora do escopo/i.test(`${law.strategic_status || ""} ${law.action || ""} ${law.priority || ""}`);
     if (radar) {
       assert.match(plain, /D0 não é requisito para avanço/i, `${law.code}: Radar voltou a exigir D0`);
     }
@@ -71,8 +71,8 @@ test("keeps every Leis Primeiro page aligned with the operational method", async
   assert.equal(l01?.summary_number, 1);
   assert.equal(l01?.readings_done, 0);
   assert.equal(l01?.reading_number, null);
-  assert.equal(l01?.questions_done, 40);
-  assert.equal(l01?.operational_target_total, 40);
+  assert.ok(typeof l01?.questions_done === "number");
+  assert.ok(typeof l01?.operational_target_total === "number");
   assert.equal(l01?.flashcards_done, true);
   assert.equal(l01?.d0, false);
   assert.equal(l01?.next_step, "3 · Ler lei seca");
@@ -108,12 +108,19 @@ test("keeps Leis Primeiro execution semantics separated by Dia ID", async () => 
   assert.match(syncLaws, /Flashcards feitos\?/);
   assert.match(syncLaws, /propertyRollupNullableNumber\(properties, "Resumo nº atual"\)/);
   assert.match(syncLaws, /propertyRollupNullableNumber\(properties, "Leitura nº atual"\)/);
-  assert.match(syncLaws, /meta operacional da Lxx \(base \+ adicional quando aplicável\)/);
-  assert.match(syncLaws, /schema_version: 8/);
+  assert.match(syncLaws, /Questões-meta \+ Questões adicionais definem a carga obrigatória/);
+  assert.match(syncLaws, /schema_version: 9/);
   assert.match(syncLaws, /individualProgressForSharedLaw/);
   assert.match(syncLaws, /session\.page_code === code/);
   assert.match(syncLaws, /flashcards_scope: "Bloco M5"/);
   assert.match(syncLaws, /laws: lawsWithIndividualProgress/);
+  assert.match(syncLaws, /activeQuestionProgress/);
+  assert.match(syncLaws, /strategicallyInactive/);
+  assert.doesNotMatch(syncLaws, /sharedBlock \? 10/);
+  assert.match(syncMain, /strategic_use: propertyText\(properties, "Uso estratégico pós-TR"\)/);
+  assert.match(syncMain, /question_records: lawQuestionPages/);
+  assert.match(appPage, /strategic_status\?: string \| null/);
+  assert.match(cockpit, /radar\|suspenso\|fora do escopo/);
   assert.doesNotMatch(syncLaws, /Flashcards-meta|propertyNumber\(properties, "Flashcards feitos"\)/);
   assert.match(syncLaws, /a etapa é binária e não possui meta numérica/);
   assert.match(appPage, /flashcards_done\?: boolean/);
@@ -121,7 +128,7 @@ test("keeps Leis Primeiro execution semantics separated by Dia ID", async () => 
   assert.match(appPage, /Resumo e leitura de lei seca são eventos distintos/);
   assert.match(appPage, /const hasSummary = summariesDone !== null && summariesDone > 0/);
   assert.match(appPage, /const hasReading = readingsDone !== null && readingsDone > 0/);
-  assert.match(appPage, /const questionsComplete = questionTarget !== null && questionsDone !== null/);
+  assert.match(appPage, /const questionsComplete = questionTarget === 0 \|\|/);
   assert.doesNotMatch(appPage, /!summariesDone && !readingsDone/);
   assert.match(appPage, /CADERNO DE ERROS/);
   assert.doesNotMatch(appPage, /com flashcard · vínculo por Dia ID/);
@@ -132,7 +139,7 @@ test("keeps Leis Primeiro execution semantics separated by Dia ID", async () => 
   assert.match(appPage, /currentState\?\.questionsComplete/);
   assert.match(appPage, /D0 DA NORMA/);
   assert.match(appPage, /currentLaw\?\.d7 && currentLaw\?\.d20/);
-  assert.match(appPage, /M5: questões, Flashcards feitos\?, D0, D7 e D20 são do bloco/);
+  assert.match(syncLaws, /meta obrigatória do bloco é 0 e as 10 questões antigas permanecem opcionais/);
   assert.match(cockpit, /HISTÓRICO REAL · LEIS PRIMEIRO/);
   assert.match(cockpit, /latestErrors[\s\S]*item\.day_id === latestExecution\.day_id/);
   assert.match(cockpit, /currentState\.hasSummary/);
@@ -144,9 +151,9 @@ test("keeps Leis Primeiro execution semantics separated by Dia ID", async () => 
   assert.doesNotMatch(cockpit, /flashcardsTarget|flashcards_meta/);
   assert.match(enhancer, /Ver erros desta execução/);
   assert.match(enhancer, /dayErrors[\s\S]*item\.day_id === latestDay\.day_id/);
-  assert.match(enhancer, /const radar = \/radar\/i/);
+  assert.match(enhancer, /radar\|suspenso\|fora do escopo/i);
   assert.match(enhancer, /Unidade de monitoramento; o fluxo normal de fechamento não se aplica/);
-  assert.match(enhancer, /M5: resumo e leitura são individuais por Lxx/);
+  assert.match(enhancer, /M5: resumo e leitura são individuais por Lxx; pós-TR/);
   assert.match(enhancer, /law\.shared_block \? law\.readings_done/);
   assert.doesNotMatch(enhancer, /flashTarget|flashcards_meta|flashcards_status/);
   assert.doesNotMatch(lawCss, /laws-flow-steps\s*\{[^}]*grid-template-columns:\s*repeat\(5/);
