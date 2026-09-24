@@ -627,10 +627,6 @@ function propertyNumeric(properties, name) {
   return null;
 }
 
-function propertyNumber(properties, name) {
-  return propertyNumeric(properties, name);
-}
-
 function firstKnownNumber(properties, names) {
   for (const name of names) {
     const value = propertyNumeric(properties, name);

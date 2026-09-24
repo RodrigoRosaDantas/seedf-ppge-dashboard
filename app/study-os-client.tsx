@@ -1,5 +1,7 @@
 "use client";
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { useEffect, useMemo, useState } from "react";
 import {
   AlertTriangle,
@@ -10,8 +12,6 @@ import {
   CheckCircle2,
   ChevronRight,
   CircleAlert,
-  ClipboardCheck,
-  FileCheck2,
   Gauge,
   Home,
   Layers3,
@@ -131,12 +131,12 @@ function toneForState(state: string) {
   return "neutral";
 }
 
-function actionIcon(kind: string) {
-  if (kind === "resume") return TimerReset;
-  if (kind === "review") return RefreshCcw;
-  if (kind === "error") return CircleAlert;
-  if (kind === "law") return BookOpenCheck;
-  return Target;
+function ActionIcon({ kind }: { kind: string }) {
+  if (kind === "resume") return <TimerReset size={24} />;
+  if (kind === "review") return <RefreshCcw size={24} />;
+  if (kind === "error") return <CircleAlert size={24} />;
+  if (kind === "law") return <BookOpenCheck size={24} />;
+  return <Target size={24} />;
 }
 
 function resolveHref(basePrefix: string, href: string | null | undefined) {
@@ -201,10 +201,9 @@ function ErrorState({ message }: { message: string }) {
 }
 
 function DecisionCard({ intel, basePrefix }: { intel: any; basePrefix: string }) {
-  const Icon = actionIcon(intel.nextAction.kind);
   return (
     <section className="os-decision">
-      <div className="os-decision-icon"><Icon size={24} /></div>
+      <div className="os-decision-icon"><ActionIcon kind={intel.nextAction.kind} /></div>
       <div className="os-decision-copy">
         <span className="os-eyebrow">{intel.nextAction.eyebrow}</span>
         <h2>{intel.nextAction.title}</h2>
@@ -240,7 +239,7 @@ function Agenda({ intel, basePrefix, limit }: { intel: any; basePrefix: string; 
   );
 }
 
-function HomeView({ intel, data, basePrefix }: { intel: any; data: Payload; basePrefix: string }) {
+function HomeView({ intel, basePrefix }: { intel: any; basePrefix: string }) {
   const law = intel.coverage.law;
   const topWeakness = intel.weaknesses[0];
   const topStrength = intel.strengths[0];
@@ -565,7 +564,7 @@ function TrailView({ intel, data, basePrefix }: { intel:any; data:Payload; baseP
 }
 
 function ViewContent({ view, intel, data, basePrefix }: {view:StudyOsView;intel:any;data:Payload;basePrefix:string}) {
-  if (view === "home") return <HomeView intel={intel} data={data} basePrefix={basePrefix}/>;
+  if (view === "home") return <HomeView intel={intel} basePrefix={basePrefix}/>;
   if (view === "today") return <TodayView intel={intel} basePrefix={basePrefix}/>;
   if (view === "mentor") return <MentorView intel={intel} basePrefix={basePrefix}/>;
   if (view === "performance") return <PerformanceView intel={intel} data={data} basePrefix={basePrefix}/>;

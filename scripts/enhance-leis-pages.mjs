@@ -13,7 +13,6 @@ const rowByOrder = new Map(rows.map((row) => [Number(row.operational_order), row
 function esc(value = "") { return String(value).replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#39;"); }
 function n(value) { const x = Number(value); return Number.isFinite(x) ? x : 0; }
 function pct(done, target) { return target > 0 ? Math.max(0, Math.min(100, Math.round((done / target) * 100))) : 0; }
-function fmt(value) { if (value === null || value === undefined || value === "") return "—"; if (typeof value === "number") return Number.isInteger(value) ? String(value) : value.toFixed(1).replace(".", ","); return String(value); }
 function accuracy(value) { if (value === null || value === undefined || value === "") return "—"; let x = Number(value); if (!Number.isFinite(x)) return esc(value); if (x >= 0 && x <= 1) x *= 100; return `${x.toFixed(x % 1 ? 1 : 0).replace(".", ",")}%`; }
 function date(value) { if (!value) return "—"; const m = String(value).slice(0,10).match(/^(\d{4})-(\d{2})-(\d{2})$/); return m ? `${m[3]}/${m[2]}/${m[1]}` : esc(value); }
 function priorityClass(value="") { return String(value).normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,""); }
@@ -58,23 +57,6 @@ function operationalMarkup(law, row) {
   const action = row?.action || law.action || law.status || "Estudar";
   const radar = /radar/i.test(`${action} ${law.priority || ""}`);
   const latestDay = (execution.days || []).find((day) => day.page_code === law.code) || null;
-  const sessionMatchesExecution = (session, day) => {
-    if (session.page_code !== day.page_code) return false;
-    if (day.executed_at && session.date !== day.executed_at) return false;
-    if (day.summary_number != null && session.summary_number !== day.summary_number) return false;
-    if (day.reading_number != null && session.reading_number !== day.reading_number) return false;
-    return true;
-  };
-  const latestSession = latestDay
-    ? (execution.sessions || []).find((session) => sessionMatchesExecution(session, latestDay))
-      || (
-        latestDay.summary_number == null && latestDay.reading_number == null
-          ? (execution.sessions || []).find((session) => session.page_code === law.code && (!latestDay.executed_at || session.date === latestDay.executed_at))
-            || (execution.sessions || []).find((session) => session.page_code === law.code)
-            || null
-          : null
-      )
-    : null;
   const dayErrors = latestDay ? (execution.errors || []).filter((item) => item.day_id === latestDay.day_id) : [];
   const errorItems = dayErrors.map((item) => `<li><b>${esc(item.question_id || "Erro")}</b> — ${esc(item.subject || item.title || "Erro registrado")} <small>· ${esc(item.review || "sem revisão")} · reincidência ${n(item.recurrence)}${item.flashcard ? " · flashcard" : ""}</small></li>`).join("");
   const executionCard = latestDay ? `<article class="study-ops-card"><span class="eyebrow">Última execução · Dia ID</span><div class="big"><strong style="font-size:14px">${esc(latestDay.day_id)}</strong></div><div class="ops-grid"><div class="ops-mini"><b>${n(latestDay.done)}/${n(latestDay.planned)}</b><small>questões</small></div><div class="ops-mini"><b>${dayErrors.length}</b><small>erros</small></div><div class="ops-mini"><b>${flashcards ? "✓" : "○"}</b><small>${law.shared_block ? "flashcards M5" : "flashcards feitos"}</small></div></div>${dayErrors.length ? `<details><summary>Ver erros desta execução</summary><ul>${errorItems}</ul></details>` : `<p class="ops-next">Nenhum erro vinculado a esta execução.</p>`}</article>` : "";

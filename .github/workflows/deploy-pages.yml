@@ -39,8 +39,17 @@ jobs:
       - name: Make build scripts executable
         run: chmod +x scripts/sites-env.sh scripts/build-verified.sh
 
-      - name: Build and test static export
-        run: npm test
+      - name: Quality gate
+        run: |
+          npm run lint
+          npm run type-check
+          npm run audit:deps
+          npm run validate:snapshot
+          npm run security:audit
+          npm run test:unit
+
+      - name: Build static export
+        run: npm run build
         env:
           GITHUB_PAGES: "1"
           GITHUB_PAGES_BASE_PATH: /${{ github.event.repository.name }}
@@ -65,3 +74,25 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+      - name: Smoke published site
+        env:
+          BASE_URL: ${{ steps.deployment.outputs.page_url }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE="${BASE_URL%/}/"
+          for path in "" "hoje/" "mentor/" "leis/" "leis/l01/" "revisoes/" "erros/" "desempenho/" "riscos/" "edital/" "qualidade/" "trilha/" "data/seedf-snapshot.json" "data/leis-primeiro.json" "data/seedf-edital.json" "manifest.webmanifest" "sw.js" "404.html"; do
+            echo "smoke: ${BASE}${path}"
+            curl --fail --silent --show-error --retry 5 --retry-delay 3 --retry-all-errors "${BASE}${path}" >/dev/null
+          done
+          HTML="$(curl --fail --silent --show-error "${BASE}")"
+          ASSET="$(printf '%s' "$HTML" | grep -oE '(src|href)="[^"]+\.(js|css)"' | head -n 1 | cut -d'"' -f2 || true)"
+          test -n "$ASSET"
+          if [[ "$ASSET" == /* ]]; then
+            ORIGIN="$(printf '%s' "$BASE" | sed -E 's#(https?://[^/]+).*#\1#')"
+            curl --fail --silent --show-error --retry 3 "${ORIGIN}${ASSET}" >/dev/null
+          else
+            curl --fail --silent --show-error --retry 3 "${BASE}${ASSET}" >/dev/null
+          fi
+          echo "Published smoke OK: $BASE"

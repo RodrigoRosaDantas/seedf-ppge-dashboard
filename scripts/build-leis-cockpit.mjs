@@ -226,23 +226,6 @@ export async function buildLeisCockpit(sourceHtml) {
   const currentChecks = current ? `${checkpoint("Orientação", currentState.orientation)}${checkpoint("Resumo", currentState.summariesDone > 0)}${checkpoint("Lei seca", currentState.readingsDone > 0)}${checkpoint("Questões", currentState.questionsDone >= currentState.questionTarget && currentState.questionTarget > 0)}${checkpoint("Flashcards", currentState.flashcardsDone)}${checkpoint("D0", currentState.d0)}${checkpoint("D7/D20", currentState.d7 && currentState.d20)}` : checkpoint("Sincronização", false);
   const latestExecution = snapshot.execution?.days?.[0] || null;
   const latestLaw = latestExecution ? laws.find((law) => law.code === latestExecution.page_code) : null;
-  const sessionMatchesExecution = (session, day) => {
-    if (session.page_code !== day.page_code) return false;
-    if (day.executed_at && session.date !== day.executed_at) return false;
-    if (day.summary_number != null && session.summary_number !== day.summary_number) return false;
-    if (day.reading_number != null && session.reading_number !== day.reading_number) return false;
-    return true;
-  };
-  const latestSession = latestExecution
-    ? snapshot.execution?.sessions?.find((session) => sessionMatchesExecution(session, latestExecution))
-      || (
-        latestExecution.summary_number == null && latestExecution.reading_number == null
-          ? snapshot.execution?.sessions?.find((session) => session.page_code === latestExecution.page_code && (!latestExecution.executed_at || session.date === latestExecution.executed_at))
-            || snapshot.execution?.sessions?.find((session) => session.page_code === latestExecution.page_code)
-            || null
-          : null
-      )
-    : null;
   const latestErrors = latestExecution ? (snapshot.execution?.errors || []).filter((item) => item.day_id === latestExecution.day_id) : [];
   const formatExecutionPercent = (value) => {
     const parsed = Number(value);

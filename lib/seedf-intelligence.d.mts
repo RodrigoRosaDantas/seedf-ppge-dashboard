@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export type Confidence = {
   key: "none" | "tiny" | "small" | "moderate" | "strong";
   label: string;
