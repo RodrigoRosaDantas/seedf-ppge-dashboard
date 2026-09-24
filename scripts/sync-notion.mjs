@@ -26,7 +26,7 @@ const META_BY_DAY = {
   D10: "35 questões",
   D11: "35 questões",
   D12: "35 questões",
-  D13: "30 questões",
+  D13: "0 questões · nova bateria pendente",
   D14: "40 questões · adaptativo",
 };
 
@@ -141,6 +141,8 @@ const syncedAt =
     ? previous.source.synced_at
     : new Date().toISOString();
 
+const fixedQuestions = execution?.c01?.totals?.fixed_meta ?? firstNumber(sourceText, /metas fixas somam\s*([\d.]+)\s*questões/i) ?? 355;
+
 const snapshot = {
   schema_version: 3,
   source: {
@@ -159,12 +161,12 @@ const snapshot = {
     next_action:
       firstMatch(sourceText, /Próxima ação operacional:\s*([^\.\n]+)/i) ||
       "D01 · Português fino + LDB",
-    planned_questions:
-      firstNumber(sourceText, /metas fixas somam\s*([\d.]+)\s*questões/i) || 385,
-    projected_questions: 455,
+    planned_questions: fixedQuestions,
+    projected_questions: fixedQuestions + 70,
     executed_questions: execution?.c01?.totals?.done ?? (sourceText.includes("Ainda não há desempenho SEEDF executado") ? 0 : null),
-    verticalized_axes: 60,
-    jobs: 3,
+    verticalized_axes: 64,
+    jobs: 2,
+    radar_jobs: 1,
   },
   materials: materials || previous?.materials || null,
   execution,
@@ -321,8 +323,8 @@ function buildExecutionSnapshot(dayPages, questionPages, errorPages, legislation
     .sort(compareLeisPrimeiroDays);
 
   const lawQuestionPages = questionPages
-    .map((page) => ({ page, day_id: normalizeLeisPrimeiroId(propertyText(page.properties, "Dia ID")) }))
-    .filter((item) => Boolean(item.day_id));
+    .map(parseLeisPrimeiroQuestion)
+    .filter(Boolean);
   const currentErrors = currentErrorPages
     .map(({ page }) => parseC01Error(page))
     .filter(Boolean)
@@ -386,6 +388,7 @@ function buildExecutionSnapshot(dayPages, questionPages, errorPages, legislation
       statuses: lawStatuses,
       active_day_id: lawDays.find((day) => /próximo|andamento/i.test(day.status))?.day_id || null,
       question_rows: lawQuestionPages.length,
+      question_records: lawQuestionPages,
       error_count: lawErrors.length,
       errors: lawErrors,
       latest_day_id: lawDays[0]?.day_id || null,
@@ -465,6 +468,34 @@ function parseLeisPrimeiroDay(page) {
   };
 }
 
+function parseLeisPrimeiroQuestion(page) {
+  const properties = page.properties || {};
+  const dayId = normalizeLeisPrimeiroId(propertyText(properties, "Dia ID"));
+  if (!dayId) return null;
+  const planned = propertyNumeric(properties, "Meta de questões");
+  const done = propertyNumeric(properties, "Questões feitas");
+  const correct = propertyNumeric(properties, "Acertos");
+  const errors = propertyNumeric(properties, "Erros");
+  const doubts = propertyNumeric(properties, "Acertos com dúvida");
+  return {
+    id: page.id,
+    url: page.url || notionPageUrl(page.id),
+    day_id: dayId,
+    page_code: pageCodeFromExecutionId(dayId),
+    title: propertyText(properties, "Atividade") || propertyText(properties, "Questões") || dayId,
+    discipline: propertyText(properties, "Matéria") || null,
+    subject: propertyText(properties, "Assunto") || null,
+    strategic_use: propertyText(properties, "Uso estratégico pós-TR") || null,
+    date: propertyDate(properties, "Data"),
+    planned,
+    done,
+    correct,
+    errors,
+    doubts,
+    precision: precision(correct, done),
+  };
+}
+
 function parseC01Error(page) {
   const properties = page.properties || {};
   const day = normalizeC01Day(
@@ -486,6 +517,7 @@ function parseC01Error(page) {
     severity: propertyText(properties, "Gravidade") || null,
     review: propertyText(properties, "Revisão") || null,
     status: propertyText(properties, "Status") || null,
+    strategic_use: propertyText(properties, "Uso estratégico pós-TR") || null,
     recurrence: propertyNumeric(properties, "Reincidência"),
     flashcard: propertyCheckbox(properties, "Flashcard?"),
     next_review: propertyDate(properties, "Próxima revisão"),
@@ -514,6 +546,7 @@ function parseLeisPrimeiroError(page) {
     severity: propertyText(properties, "Gravidade") || null,
     review: propertyText(properties, "Revisão") || null,
     status: propertyText(properties, "Status") || null,
+    strategic_use: propertyText(properties, "Uso estratégico pós-TR") || null,
     recurrence: propertyNumeric(properties, "Reincidência"),
     flashcard: propertyCheckbox(properties, "Flashcard?"),
     next_review: propertyDate(properties, "Próxima revisão"),
