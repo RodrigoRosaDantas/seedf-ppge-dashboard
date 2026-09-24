@@ -141,7 +141,9 @@ const syncedAt =
     ? previous.source.synced_at
     : new Date().toISOString();
 
-const fixedQuestions = execution?.c01?.totals?.fixed_meta ?? firstNumber(sourceText, /metas fixas somam\s*([\d.]+)\s*questões/i) ?? 355;\n\nconst snapshot = {
+const fixedQuestions = execution?.c01?.totals?.fixed_meta ?? firstNumber(sourceText, /metas fixas somam\s*([\d.]+)\s*questões/i) ?? 355;
+
+const snapshot = {
   schema_version: 3,
   source: {
     kind: "notion",
