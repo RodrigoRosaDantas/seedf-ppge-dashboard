@@ -104,6 +104,8 @@ type LeisExecution = {
     summary_number?: number | null;
     reading_number?: number | null;
     created_at?: string | null;
+    updated_at?: string | null;
+    completed?: boolean;
     questions_done?: number;
     correct?: number;
     errors?: number;
@@ -122,6 +124,7 @@ type LeisExecution = {
     severity?: string | null;
     review?: string | null;
     status?: string | null;
+    strategic_use?: string | null;
     recurrence?: number;
     flashcard?: boolean;
     next_review?: string | null;
@@ -209,6 +212,62 @@ function operationalUnits(laws: Law[]) {
     seen.add(key);
     return true;
   });
+}
+
+function lawHasProgress(law: Law) {
+  return Boolean(
+    (numberValue(law.sessions_done) ?? 0) > 0 ||
+    (numberValue(law.questions_done) ?? 0) > 0 ||
+    (numberValue(law.summaries_done) ?? 0) > 0 ||
+    (numberValue(law.readings_done) ?? 0) > 0 ||
+    law.orientation_read ||
+    law.d0 ||
+    law.study_phase === "Em estudo" ||
+    law.study_phase === "Resumo estudado"
+  );
+}
+
+function sessionHasExecution(session: NonNullable<LeisExecution["sessions"]>[number]) {
+  return Boolean(
+    session.date ||
+    session.progress ||
+    session.completed === true ||
+    (numberValue(session.questions_done) ?? 0) > 0 ||
+    (numberValue(session.summary_number) ?? 0) > 0 ||
+    (numberValue(session.reading_number) ?? 0) > 0
+  );
+}
+
+function continuityLaw(laws: Law[], sessions: LeisExecution["sessions"] = []) {
+  const executable = operationalUnits(laws);
+  if (!executable.length) return null;
+
+  const relevantSessions = [...(sessions || [])]
+    .filter((session) =>
+      session.page_code &&
+      sessionHasExecution(session) &&
+      executable.some((law) => law.code.toUpperCase() === String(session.page_code).toUpperCase())
+    )
+    .sort((left, right) =>
+      String(right.date || right.updated_at || right.created_at || "").localeCompare(
+        String(left.date || left.updated_at || left.created_at || "")
+      )
+    );
+
+  const latest = relevantSessions[0] || null;
+  if (latest?.page_code) {
+    const index = executable.findIndex((law) => law.code.toUpperCase() === String(latest.page_code).toUpperCase());
+    if (index >= 0) {
+      if (latest.completed !== true) return executable[index];
+      return executable[index + 1] || null;
+    }
+  }
+
+  let furthestStarted = -1;
+  executable.forEach((law, index) => {
+    if (lawHasProgress(law)) furthestStarted = index;
+  });
+  return furthestStarted >= 0 ? executable[furthestStarted] : executable[0];
 }
 
 function studyState(law: Law) {
@@ -319,7 +378,7 @@ export default function LeisPrimeiroPage() {
     .map((name) => ({ name, laws: filtered.filter((law) => law.group === name) }))
     .filter((item) => item.laws.length);
   const executableLaws = operationalUnits(snapshot?.laws || []);
-  const currentLaw = executableLaws.find((law) => !lawComplete(law)) || executableLaws[0] || null;
+  const currentLaw = continuityLaw(snapshot?.laws || [], snapshot?.execution?.sessions || []);
   const currentState = currentLaw ? studyState(currentLaw) : null;
   const completedBlocks = executableLaws.filter(lawComplete).length;
   const currentStep = currentState?.nextStep || "Aguardando sincronização";
@@ -343,7 +402,11 @@ export default function LeisPrimeiroPage() {
   const latestExecution = snapshot?.execution?.days?.[0] || null;
   const latestLaw = latestExecution ? snapshot?.laws.find((law) => law.code === latestExecution.page_code) : null;
   const latestErrors = latestExecution
-    ? (snapshot?.execution?.errors || []).filter((item) => item.day_id === latestExecution.day_id)
+    ? (snapshot?.execution?.errors || []).filter(
+        (item) =>
+          item.day_id === latestExecution.day_id &&
+          !/radar|suspenso|historico/i.test(String(item.strategic_use || ""))
+      )
     : [];
 
   const currentChecks = [
@@ -423,14 +486,14 @@ export default function LeisPrimeiroPage() {
       ) : null}
 
       <section className="laws-panel laws-track-panel" id="trilha">
-        <div className="laws-heading"><div><p className="laws-kicker">MAPA DE DECISÃO</p><h2>Por onde continuar</h2><p>Escolha a trilha pelo cargo. Cada cartão já aponta para a próxima norma pendente.</p></div><span className="laws-heading-note">{executableLaws.length} blocos operacionais</span></div>
+        <div className="laws-heading"><div><p className="laws-kicker">MAPA DE DECISÃO</p><h2>Por onde continuar</h2><p>Escolha a trilha pelo cargo. Cada cartão aponta para a continuidade canônica por sessões reais; D0 pendente permanece como fechamento paralelo.</p></div><span className="laws-heading-note">{executableLaws.length} blocos operacionais</span></div>
         <div className="laws-track-grid">
           {groupNames.map((name, index) => {
             const groupLaws = snapshot?.laws.filter((law) => law.group === name) || [];
             const executable = operationalUnits(groupLaws);
             const radars = groupLaws.filter(isRadarLaw);
             const completed = executable.filter(lawComplete).length;
-            const pending = executable.find((law) => !lawComplete(law));
+            const pending = continuityLaw(groupLaws, snapshot?.execution?.sessions || []);
             const range = groupLaws.length ? `${groupLaws[0].code}–${groupLaws[groupLaws.length - 1].code}` : "—";
             const progress = completionPercent(completed, executable.length);
             return <article className="laws-track-card" data-track-group={name} key={name}>
@@ -507,13 +570,15 @@ export default function LeisPrimeiroPage() {
                 {section.laws.map((law) => {
                   const isOpen = expanded === law.code;
                   const auditDate = formatAuditDate(law.last_audit);
+                  const requiredQuestions = law.operational_target_total ?? law.question_target ?? 0;
+                  const optionalQuestions = law.questions_optional ?? 0;
                   return (
                     <article className={`law-card law-priority-${slug(law.priority)}`} key={law.code}>
                       <div className="law-card-top">
                         <span className="law-code">{law.code}</span>
                         <div className="law-badges">
                           <span className={`laws-chip priority-${slug(law.priority)}`}>{priorityShort(law.priority)}</span>
-                          <span className="laws-chip laws-chip-meta">{law.shared_block ? `${law.question_target}q · M5 10q` : `${law.question_target ?? 0} questões`}</span>
+                          <span className="laws-chip laws-chip-meta">{requiredQuestions} obrigatórias{optionalQuestions ? ` + ${optionalQuestions} opcionais` : ""}</span>
                         </div>
                       </div>
                       <h4>{law.title}</h4>
