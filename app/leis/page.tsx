@@ -189,7 +189,7 @@ function priorityShort(value?: string) {
 }
 
 function isRadarLaw(law: Law) {
-  return /radar/i.test(`${law.action || ""} ${law.priority || ""}`);
+  return /radar|suspenso|fora do escopo/i.test(`${law.strategic_status || ""} ${law.action || ""} ${law.priority || ""}`);
 }
 
 function numberValue(value: number | string | null | undefined) {
@@ -218,7 +218,7 @@ function studyState(law: Law) {
   const d0 = law.d0 === true;
   const hasSummary = summariesDone !== null && summariesDone > 0;
   const hasReading = readingsDone !== null && readingsDone > 0;
-  const questionsComplete = questionTarget !== null && questionsDone !== null && questionTarget > 0 && questionsDone >= questionTarget;
+  const questionsComplete = questionTarget === 0 || (questionTarget !== null && questionsDone !== null && questionTarget > 0 && questionsDone >= questionTarget);
   const complete = !isRadarLaw(law)
     && orientation
     && hasSummary
@@ -331,8 +331,8 @@ export default function LeisPrimeiroPage() {
   ];
   const radarLaws = snapshot?.laws.filter(isRadarLaw) || [];
   const groupNames = groups.slice(1);
-  const totalQuestions = (snapshot?.laws || []).reduce(
-    (sum, law) => sum + (law.shared_block && law.code !== "L30" ? 0 : (law.operational_target_total ?? law.question_target ?? 0)),
+  const totalQuestions = executableLaws.reduce(
+    (sum, law) => sum + (law.operational_target_total ?? law.question_target ?? 0),
     0,
   );
   const mappedRecords = snapshot?.summary.mapped_law_records ?? snapshot?.summary.mapped_operational_records ?? 32;
@@ -377,7 +377,7 @@ export default function LeisPrimeiroPage() {
         <aside className="laws-next-card">
           <div className="laws-next-top"><div><p className="laws-kicker">PRÓXIMA AÇÃO</p><span>Bloco atual · {currentLaw?.code || "—"}</span></div><span className="laws-next-badge">{String(currentStage).padStart(2, "0")} / 06</span></div>
           <div className="laws-next-law"><span className="laws-next-code">{currentLaw?.code || "—"}</span><h2>{currentLaw?.title || "Aguardando dados"}</h2></div>
-          <div className="laws-next-context"><span>{currentLaw ? `${currentLaw.code} / ${snapshot?.laws.length || 34}` : "—"}</span><span>{currentState?.questionTarget ?? "—"} questões-meta</span><span>{currentLaw?.group || "Aguardando"}</span></div>
+          <div className="laws-next-context"><span>{currentLaw ? `${currentLaw.code} / ${snapshot?.laws.length || 34}` : "—"}</span><span>{currentState?.questionTarget ?? "—"} obrigatórias{currentLaw?.questions_optional ? ` + ${currentLaw.questions_optional} opcionais` : ""}</span><span>{currentLaw?.group || "Aguardando"}</span></div>
           <div className="laws-next-focus"><span>{String(currentStage).padStart(2, "0")}</span><div><small>FAÇA AGORA</small><strong>{currentStep}</strong></div></div>
           <p>Resumo e leitura de lei seca são eventos distintos. Feche D0 somente após cumprir os requisitos reais da Lxx; D7/D20 seguem em paralelo.</p>
           <div className="laws-checkpoints">{currentChecks.map(({ label, done }) => <span className={`laws-checkpoint ${done ? "is-done" : ""}`} key={label}>{done ? "✓" : "○"} {label}</span>)}</div>
@@ -401,7 +401,7 @@ export default function LeisPrimeiroPage() {
 
       <section className="laws-status-strip" aria-label="Estado da trilha">
         <article className="laws-stat-progress"><div className="laws-stat-top"><span className="laws-stat-icon">01</span><span>BLOCOS FECHADOS</span></div><strong>{completedBlocks}/{executableLaws.length}</strong><small>por D0 · D7/D20 não bloqueiam</small></article>
-        <article className="laws-stat-questions"><div className="laws-stat-top"><span className="laws-stat-icon">02</span><span>QUESTÕES DE META</span></div><strong>{snapshot ? totalQuestions : "—"}</strong><small>na sequência executável</small></article>
+        <article className="laws-stat-questions"><div className="laws-stat-top"><span className="laws-stat-icon">02</span><span>QUESTÕES DE META</span></div><strong>{snapshot ? totalQuestions : "—"}</strong><small>obrigatórias · Radar/opcionais fora da dívida</small></article>
         <article className="laws-stat-map"><div className="laws-stat-top"><span className="laws-stat-icon">03</span><span>NORMAS NO MAPA</span></div><strong>{snapshot?.summary.pages ?? 34}</strong><small>L01–L34 · 4 trilhas</small></article>
         <article className="laws-stat-source"><div className="laws-stat-top"><span className="laws-stat-icon">04</span><span>FONTE VIVA</span></div><strong>Notion</strong><small>{mappedRecords} mapeados · {radarRecords} radar</small></article>
       </section>
