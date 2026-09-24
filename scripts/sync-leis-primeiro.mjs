@@ -151,6 +151,26 @@ try {
   }
 } catch {}
 
+function strategicallyInactive(value) {
+  const key = String(value || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+  return /radar|suspenso|historico|fora do escopo/.test(key);
+}
+
+function activeQuestionProgress(code) {
+  const rows = (execution?.question_records || []).filter(
+    (row) => row.page_code === code && !strategicallyInactive(row.strategic_use),
+  );
+  if (!rows.length) return null;
+  const sum = (key) => rows.reduce((total, row) => total + Number(row[key] || 0), 0);
+  return {
+    questions_done: sum("done"),
+    active_questions_planned: sum("planned"),
+    active_questions_correct: sum("correct"),
+    active_questions_errors: sum("errors"),
+    active_questions_doubts: sum("doubts"),
+  };
+}
+
 function individualProgressForSharedLaw(code) {
   const sessions = (execution?.sessions || []).filter((session) => session.page_code === code);
   const summariesDone = sessions.reduce((sum, session) => sum + Number(session.summary_counter || 0), 0);
@@ -167,8 +187,9 @@ function individualProgressForSharedLaw(code) {
   };
 }
 
-const lawsWithIndividualProgress = laws.map((law) =>
-  law.shared_block
+const lawsWithIndividualProgress = laws.map((law) => {
+  const activeQuestions = activeQuestionProgress(law.code);
+  const base = law.shared_block
     ? {
         ...law,
         ...individualProgressForSharedLaw(law.code),
@@ -177,8 +198,9 @@ const lawsWithIndividualProgress = laws.map((law) =>
     : {
         ...law,
         flashcards_scope: "Norma",
-      },
-);
+      };
+  return activeQuestions ? { ...base, ...activeQuestions } : base;
+});
 
 const snapshot = {
   schema_version: 9,
