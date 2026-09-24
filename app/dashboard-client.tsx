@@ -272,7 +272,7 @@ const jobs = [
     code: "C",
     title: "Analista PPGE",
     subtitle: "Monitor",
-    priority: "Peso controlado",
+    priority: "Radar suspenso",
     tone: "violet",
     source: "SEEDF 2016 + carreira atual",
   },
@@ -671,11 +671,11 @@ function SectionHeading({ eyebrow, title, description, action }: { eyebrow: stri
 
 function Overview({ onNavigate, snapshot }: { onNavigate: (section: SectionId) => void; snapshot: DashboardSnapshot | null }) {
   const nextAction = snapshot?.dashboard.next_action ?? "D01 · Português fino + LDB";
-  const plannedQuestions = snapshot?.dashboard.planned_questions ?? 385;
-  const projectedQuestions = snapshot?.dashboard.projected_questions ?? 455;
+  const plannedQuestions = snapshot?.dashboard.planned_questions ?? 355;
+  const projectedQuestions = snapshot?.dashboard.projected_questions ?? 425;
   const executedQuestions = snapshot?.dashboard.executed_questions ?? 0;
-  const verticalizedAxes = snapshot?.dashboard.verticalized_axes ?? 60;
-  const jobsCount = snapshot?.dashboard.jobs ?? 3;
+  const verticalizedAxes = snapshot?.dashboard.verticalized_axes ?? 64;
+  const jobsCount = snapshot?.dashboard.jobs ?? 2;
   const executionRate = plannedQuestions > 0 ? Math.round((executedQuestions / plannedQuestions) * 100) : 0;
   return (
     <>
@@ -705,7 +705,7 @@ function Overview({ onNavigate, snapshot }: { onNavigate: (section: SectionId) =
         <StatCard icon={Layers3} label="Eixos verticalizados" value={String(verticalizedAxes)} detail="24 manutenção · 25 reforço · 11 novos" tone="blue" />
         <StatCard icon={Target} label="Carga fixa do C01" value={String(plannedQuestions)} detail="Questões sincronizadas do Notion" tone="gold" />
         <StatCard icon={TrendingUp} label="Projeção do C01" value={`≈ ${projectedQuestions}`} detail="Inclui checkpoints adaptativos" tone="teal" />
-        <StatCard icon={GraduationCap} label="Cargos-meta" value={String(jobsCount)} detail="Gestor + dois Analistas PPGE" tone="violet" />
+        <StatCard icon={GraduationCap} label="Cargos-meta" value={String(jobsCount)} detail="Gestor + Apoio ativos · Monitor em Radar" tone="violet" />
       </section>
 
       <section className="content-grid two-thirds">
@@ -1081,8 +1081,8 @@ function Jobs() {
 function Progress({ snapshot }: { snapshot?: DashboardSnapshot | null }) {
   const execution = snapshot?.execution?.c01;
   const totals = execution?.totals;
-  const fixedPlanned = totals?.fixed_meta ?? snapshot?.dashboard.planned_questions ?? 385;
-  const projectedPlanned = totals?.planned ?? snapshot?.dashboard.projected_questions ?? 455;
+  const fixedPlanned = totals?.fixed_meta ?? snapshot?.dashboard.planned_questions ?? 355;
+  const projectedPlanned = totals?.planned ?? snapshot?.dashboard.projected_questions ?? 425;
   const done = totals?.done ?? snapshot?.dashboard.executed_questions ?? 0;
   const precisionValue = totals?.precision ?? null;
   const errorBank = execution?.error_count ?? 0;
