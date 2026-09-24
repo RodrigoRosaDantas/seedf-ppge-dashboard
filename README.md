@@ -1,40 +1,32 @@
-# SEEDF PPGE — Dashboard PRO
+# SEEDF PPGE — Central de Comando
 
-Dashboard privado de preparação pré-edital para:
+Painel público de preparação pré-edital para:
 
 - Gestor PPGE — Administração — **ativo**;
 - Analista PPGE — Apoio Administrativo — **ativo**;
-- Analista PPGE — Monitor — **Radar suspenso**, com histórico preservado.
+- Analista PPGE — Monitor — preservado em **Radar**, sem dívida ativa enquanto suspenso.
 
-O Notion SEEDF é a fonte operacional. Este site é a camada de execução e visualização, com dados, métricas e identidade separados dos projetos TDAS, EDAS e TJDFT.
+O Notion SEEDF é a fonte operacional. O site oferece a camada de execução, continuidade e análise, com dados e identidade separados dos projetos TDAS, EDAS e TJDFT.
 
-## Estado pós-TR nº 3/2026
+## Regras operacionais preservadas
 
-- Fase 1 ativa;
-- foco operacional: Gestor Administração + Apoio Administrativo;
-- Monitor preservado em Radar, sem dívida de execução enquanto suspenso;
-- C01 com **355 questões fixas ativas** e projeção operacional de **≈425** com D07/D14;
-- D13 pós-TR: DF/RIDE + PDPM + Lei Maria da Penha + primeiros socorros, com nova bateria ainda pendente;
-- Edital verticalizado com **64 eixos**, distinguindo força documental, Radar, suspensão e fora do escopo.
-- A camada de site preserva histórico de Monitor sem convertê-lo em dívida, revisão ou prioridade ativa.
+- Uma sessão real iniciada e não concluída continua sendo a próxima ação.
+- A etapa ativa do C01 fica preparada enquanto houver uma sessão aberta do Leis Primeiro.
+- Leitura, prática, evidência e consolidação permanecem estados distintos.
+- O histórico de Radar não vira prioridade nem dívida ativa.
+- O painel mantém o edital em 64 eixos, o D13 com alvo de zero questões até nova bateria e o diagnóstico DSE03 suspenso.
+
+## Dados e publicação
+
+O workflow **Sync SEEDF dashboard from Notion** lê a página operacional com o secret `SEEDF` do GitHub Actions e publica snapshots sanitizados em `public/data/`. A sincronização programada roda a cada 15 minutos na branch `main`. O token não é enviado ao navegador.
+
+O botão de atualização do site recarrega os snapshots publicados pelo GitHub Pages. Ele não consulta o Notion diretamente. Alterações feitas numa branch ou pull request só aparecem no site público depois de chegarem à `main` e serem publicadas pelo GitHub Pages.
+
+Para configurar a sincronização, adicione o token de leitura do Notion em **Settings → Secrets and variables → Actions** com o nome `SEEDF`, conecte a integração à página operacional e execute o workflow uma vez.
 
 ## Desenvolvimento
 
 ```bash
+npm test
 npm run build
 ```
-
-## Integração ao vivo Notion → GitHub Pages
-
-O site consulta uma Edge Function protegida, que lê somente a página operacional do Notion e devolve um snapshot sanitizado. O conteúdo completo e o token do Notion nunca chegam ao navegador.
-
-Há também um backup versionado em `public/data/seedf-snapshot.json`, atualizado pelo workflow `Sync SEEDF dashboard from Notion`. Assim, o site continua funcional mesmo quando a API estiver temporariamente indisponível.
-
-Para ativar a sincronização ao vivo:
-
-1. Crie um token de leitura no Notion e conecte a integração à página SEEDF.
-2. No GitHub, mantenha o secret `SEEDF` em **Settings → Secrets and variables → Actions**.
-3. No projeto [Supabase](https://supabase.com/dashboard/project/fqqkkyusnzhuuizahkww/functions/secrets), crie o secret `SEEDF` com o mesmo valor do token. Nunca coloque o token no código ou em mensagens.
-4. Execute manualmente o workflow uma vez; depois o backup roda a cada 15 minutos.
-
-O botão **Atualizar** consulta a API do Notion na hora. Se a API falhar, ele utiliza o último snapshot publicado pelo GitHub e identifica essa situação na interface.
