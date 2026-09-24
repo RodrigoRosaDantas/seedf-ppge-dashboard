@@ -1,6 +1,7 @@
 import { createHash } from "node:crypto";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { leisPrimeiroSequence, normalizeLeisPrimeiroId, pageCodeFromExecutionId } from "../lib/leis-primeiro-ids.mjs";
 
 const DEFAULT_PAGE_ID = "3d4cf5a2-6731-8106-a2c9-c97816aa6cf5";
 const MATERIALS_PAGE_ID = "3d4cf5a2-6731-81a4-a51f-eed1c396c77b";
@@ -143,11 +144,35 @@ const syncedAt =
 
 const fixedQuestions = execution?.c01?.totals?.fixed_meta ?? firstNumber(sourceText, /metas fixas somam\s*([\d.]+)\s*questões/i) ?? 355;
 
+function latestIncompleteLawSession(data) {
+  return [...(data?.leis_primeiro?.sessions || [])]
+    .filter((session) =>
+      session.completed === false &&
+      session.page_code &&
+      (
+        session.date ||
+        session.progress ||
+        Number(session.questions_done) > 0 ||
+        Number(session.minutes) > 0 ||
+        Number(session.summary_counter) > 0 ||
+        Number(session.reading_counter) > 0
+      ),
+    )
+    .sort((left, right) =>
+      String(right.updated_at || right.date || right.created_at || "").localeCompare(
+        String(left.updated_at || left.date || left.created_at || ""),
+      ),
+    )[0] || null;
+}
+
+const incompleteLawSession = latestIncompleteLawSession(execution);
+const preparedCycleDay = incompleteLawSession ? execution?.c01?.active_day || null : null;
+
 const snapshot = {
   schema_version: 3,
   source: {
     kind: "notion",
-    title: pageTitle(page) || "SEEDF — PPGE | Dashboard PRO",
+    title: pageTitle(page) || "SEEDF — PPGE | Central de Comando",
     page_id: pageId,
     page_url: page.url || `https://www.notion.so/${pageId.replaceAll("-", "")}`,
     last_edited_time: page.last_edited_time || null,
@@ -158,9 +183,11 @@ const snapshot = {
   dashboard: {
     phase: firstMatch(sourceText, /Fase atual:\s*(Fase\s+\d+)/i) || "Fase 1",
     cycle: cycleLabel(sourceText),
-    next_action:
-      firstMatch(sourceText, /Próxima ação operacional:\s*([^\.\n]+)/i) ||
-      "D01 · Português fino + LDB",
+    next_action: incompleteLawSession
+      ? `Retomar ${incompleteLawSession.page_code} · sessão incompleta`
+      : firstMatch(sourceText, /Próxima ação operacional:\s*([^\.\n]+)/i) ||
+        "D01 · Português fino + LDB",
+    prepared_cycle_day: preparedCycleDay,
     planned_questions: fixedQuestions,
     projected_questions: fixedQuestions + 70,
     executed_questions: execution?.c01?.totals?.done ?? (sourceText.includes("Ainda não há desempenho SEEDF executado") ? 0 : null),
@@ -597,20 +624,6 @@ function parseLegislationSession(page) {
 function normalizeC01Day(value) {
   const match = String(value || "").match(/(?:^|\s)C01-D(0[1-9]|1[0-4])(?=$|[\s—–-])/i);
   return match ? `D${match[1]}` : null;
-}
-
-function normalizeLeisPrimeiroId(value) {
-  const match = String(value || "").trim().match(/^LP-(\d{8})-(L\d{2})-R(\d+)$/i);
-  return match ? `LP-${match[1]}-${match[2].toUpperCase()}-R${match[3]}` : null;
-}
-
-function pageCodeFromExecutionId(value) {
-  return normalizeLeisPrimeiroId(value)?.match(/-(L\d{2})-/)?.[1] || "";
-}
-
-function leisPrimeiroSequence(value) {
-  const match = normalizeLeisPrimeiroId(value)?.match(/-R(\d+)$/i);
-  return match ? Number(match[1]) : 0;
 }
 
 function compareLeisPrimeiroDays(left, right) {

@@ -86,6 +86,62 @@ function operationalUnits(laws = []) {
   });
 }
 
+function lawHasProgress(law) {
+  return Boolean(
+    (number(law.sessions_done) ?? 0) > 0 ||
+    (number(law.questions_done) ?? 0) > 0 ||
+    (number(law.summaries_done) ?? 0) > 0 ||
+    (number(law.readings_done) ?? 0) > 0 ||
+    law.orientation_read ||
+    law.d0 ||
+    law.study_phase === "Em estudo" ||
+    law.study_phase === "Resumo estudado"
+  );
+}
+
+function sessionHasExecution(session) {
+  return Boolean(
+    session?.date ||
+    session?.progress ||
+    session?.completed === true ||
+    (number(session?.questions_done) ?? 0) > 0 ||
+    (number(session?.summary_number) ?? 0) > 0 ||
+    (number(session?.reading_number) ?? 0) > 0
+  );
+}
+
+function continuityLaw(laws = [], sessions = []) {
+  const executable = operationalUnits(laws);
+  if (!executable.length) return null;
+
+  const relevantSessions = [...sessions]
+    .filter((session) =>
+      session?.page_code &&
+      sessionHasExecution(session) &&
+      executable.some((law) => String(law.code).toUpperCase() === String(session.page_code).toUpperCase())
+    )
+    .sort((left, right) =>
+      String(right.date || right.updated_at || right.created_at || "").localeCompare(
+        String(left.date || left.updated_at || left.created_at || "")
+      )
+    );
+
+  const latest = relevantSessions[0] || null;
+  if (latest?.page_code) {
+    const index = executable.findIndex((law) => String(law.code).toUpperCase() === String(latest.page_code).toUpperCase());
+    if (index >= 0) {
+      if (latest.completed !== true) return executable[index];
+      return executable[index + 1] || null;
+    }
+  }
+
+  let furthestStarted = -1;
+  executable.forEach((law, index) => {
+    if (lawHasProgress(law)) furthestStarted = index;
+  });
+  return furthestStarted >= 0 ? executable[furthestStarted] : executable[0];
+}
+
 function rowForLaw(law, rowsByCode) {
   return rowsByCode.get(law.code) || null;
 }
@@ -151,12 +207,12 @@ function buildStudyFlow(state) {
   </section>`;
 }
 
-function buildTrackCard(group, index, laws, rowsByCode) {
+function buildTrackCard(group, index, laws, rowsByCode, sessions = []) {
   const groupLaws = laws.filter((law) => law.group === group);
   const executable = operationalUnits(groupLaws);
   const radars = groupLaws.filter(radarLaw);
   const completed = executable.filter((law) => stateFor(law, rowForLaw(law, rowsByCode)).complete).length;
-  const pending = executable.find((law) => !stateFor(law, rowForLaw(law, rowsByCode)).complete);
+  const pending = continuityLaw(groupLaws, sessions);
   const headline = pending ? `${pending.code} · ${pending.title}` : (executable.length ? "Grupo concluído" : "Somente monitoramento");
   const href = pending ? `./${lawSlug(pending)}/` : "#mapa-detalhado";
   const action = pending ? `Abrir ${pending.code} →` : "Ver grupo →";
@@ -182,8 +238,9 @@ function buildMapRow(law, rowsByCode) {
   const target = state.questionTarget;
   const searchText = [law.code, law.title, law.group, law.priority, law.action, law.cut, law.alert, law.block, law.observations, row?.next_step].filter(Boolean).join(" ").toLocaleLowerCase("pt-BR");
   const status = radar ? "Radar" : state.complete ? "D0 fechado" : (row?.action || law.action || law.status || "Estudar");
-  const questionProgress = law.shared_block ? `M5 ${state.questionsDone}/10 · ${number(law.question_target)}q desta lei` : `questões ${state.questionsDone}/${target}`;
-  const shared = law.shared_block ? `<span class="laws-map-note">Bloco M5 · 10 questões · flashcards/D0/D7/D20 do bloco · resumo/leitura por Lxx</span>` : "";
+  const optionalQuestions = number(law.questions_optional ?? row?.questions_optional) ?? 0;
+  const questionProgress = law.shared_block ? `M5 ${state.questionsDone}/${target ?? 0} obrigatórias${optionalQuestions ? ` + ${optionalQuestions} opcionais` : ""}` : `questões ${state.questionsDone}/${target}`;
+  const shared = law.shared_block ? `<span class="laws-map-note">Bloco M5 · ${target ?? 0} obrigatórias${optionalQuestions ? ` + ${optionalQuestions} opcionais` : ""} · D0/D7/D20 só quando o bloco estiver ativo</span>` : "";
   return `<article class="laws-map-row ${radar ? "is-radar" : ""}" data-law-card data-law-group="${escapeHtml(law.group)}" data-priority="${escapeHtml(law.priority || "")}" data-search="${escapeHtml(searchText)}">
     <div class="laws-map-main"><a href="./${escapeHtml(lawSlug(law))}/"><span class="law-code">${code}</span><strong>${escapeHtml(law.title)}</strong></a><span class="laws-chip priority-${priorityClass(law.priority)}">${escapeHtml(compactPriority(law.priority))}</span></div>
     <div class="laws-map-meta"><span>${escapeHtml(law.group)}</span><span>${escapeHtml(status)}</span><span>${escapeHtml(radar ? "monitoramento" : questionProgress)}</span></div>
@@ -216,7 +273,8 @@ export async function buildLeisCockpit(sourceHtml) {
   }
   const groups = ["Núcleo comum", "Gestor — Administração", "Apoio Administrativo", "Monitor"];
   const executable = operationalUnits(laws);
-  const current = executable.find((law) => !stateFor(law, rowForLaw(law, rowsByCode)).complete) || executable[0] || laws[0];
+  const sessions = Array.isArray(snapshot.execution?.sessions) ? snapshot.execution.sessions : [];
+  const current = continuityLaw(laws, sessions);
   const currentState = current ? stateFor(current, rowForLaw(current, rowsByCode)) : { nextStep: "Aguardando sincronização" };
   const completed = executable.filter((law) => stateFor(law, rowForLaw(law, rowsByCode)).complete).length;
   const totalQuestions = operationalUnits(laws).reduce((sum, law) => sum + number(law.operational_target_total ?? law.question_target), 0);
@@ -224,7 +282,7 @@ export async function buildLeisCockpit(sourceHtml) {
   const radarRecords = snapshot.summary?.radar_records ?? (Array.isArray(snapshot.radars) ? snapshot.radars.length : 1);
   const radarLaws = laws.filter(radarLaw);
   const externalRadars = Array.isArray(snapshot.radars) ? snapshot.radars : [];
-  const trackMarkup = groups.map((group, index) => buildTrackCard(group, index, laws, rowsByCode)).join("");
+  const trackMarkup = groups.map((group, index) => buildTrackCard(group, index, laws, rowsByCode, sessions)).join("");
   const mapMarkup = groups.map((group) => `<section class="laws-map-group" data-law-group-block><div class="laws-group-title"><h3>${escapeHtml(group)}</h3><span>${laws.filter((law) => law.group === group).length} normas</span></div><div class="laws-map-list">${laws.filter((law) => law.group === group).map((law) => buildMapRow(law, rowsByCode)).join("")}</div></section>`).join("");
   const sequence = (snapshot.study_sequence || []).map((step) => `<li>${escapeHtml(step)}</li>`).join("");
   const auditNotes = (snapshot.audit_notes || []).map((note) => `<li>${escapeHtml(note)}</li>`).join("");
@@ -256,10 +314,10 @@ html,body{margin:0;min-height:100%;background:#07111f}body{font-family:ui-sans-s
 ${buildStudyFlow(currentState)}
 <section class="laws-status-strip" aria-label="Estado da trilha"><article class="laws-stat-progress"><div class="laws-stat-top"><span class="laws-stat-icon">01</span><span>BLOCOS FECHADOS</span></div><strong>${completed}/${executable.length}</strong><small>por D0 · D7/D20 não bloqueiam</small></article><article class="laws-stat-questions"><div class="laws-stat-top"><span class="laws-stat-icon">02</span><span>QUESTÕES DE META</span></div><strong>${totalQuestions}</strong><small>na sequência executável</small></article><article class="laws-stat-map"><div class="laws-stat-top"><span class="laws-stat-icon">03</span><span>NORMAS NO MAPA</span></div><strong>${laws.length}</strong><small>L01–L34 · 4 trilhas</small></article><article class="laws-stat-source"><div class="laws-stat-top"><span class="laws-stat-icon">04</span><span>FONTE VIVA</span></div><strong>Notion</strong><small>${mapped} mapeados · ${radarRecords} radar</small></article></section>
 ${executionMarkup}
-<section class="laws-panel laws-track-panel" id="trilha"><div class="laws-heading"><div><p class="laws-kicker">MAPA DE DECISÃO</p><h2>Por onde continuar</h2><p>Escolha a trilha pelo cargo. Cada cartão já aponta para a próxima norma pendente.</p></div><span class="laws-heading-note">${executable.length} blocos operacionais</span></div><div class="laws-track-grid">${trackMarkup}</div></section>
+<section class="laws-panel laws-track-panel" id="trilha"><div class="laws-heading"><div><p class="laws-kicker">MAPA DE DECISÃO</p><h2>Por onde continuar</h2><p>Escolha a trilha pelo cargo. Cada cartão aponta para a continuidade canônica por sessões reais; D0 pendente permanece como fechamento paralelo.</p></div><span class="laws-heading-note">${executable.length} blocos operacionais</span></div><div class="laws-track-grid">${trackMarkup}</div></section>
 <nav class="laws-quick-nav" aria-label="Atalhos da trilha"><a class="laws-quick-link" href="#mapa-detalhado"><span class="laws-quick-icon">⌕</span><span><b>Localizar uma norma</b><small>Mapa detalhado e filtros</small></span><span class="laws-quick-arrow">↗</span></a><a class="laws-quick-link" href="#radar"><span class="laws-quick-icon">◎</span><span><b>Ver Radar</b><small>Atualizações fora da fila</small></span><span class="laws-quick-arrow">↗</span></a><a class="laws-quick-link" href="#banco-legislacao"><span class="laws-quick-icon">▦</span><span><b>Consultar o banco</b><small>Metas, revisões e registros</small></span><span class="laws-quick-arrow">↗</span></a><a class="laws-quick-link" href="./flashcards/"><span class="laws-quick-icon">▣</span><span><b>Estudar com cards</b><small>Revisão com repetição espaçada</small></span><span class="laws-quick-arrow">↗</span></a></nav>
 <section class="laws-panel laws-radar" id="radar"><div class="laws-heading"><div><p class="laws-kicker">RADAR · FORA DA FILA DIÁRIA</p><h2>Monitorar sem disputar atenção</h2><p>Itens de vigência, carreira e atualização normativa permanecem separados da execução.</p></div><span class="laws-chip priority-radar">${radarLaws.length + externalRadars.length} itens</span></div><div class="laws-radar-list">${radarMarkup}</div></section>
-<details class="laws-panel laws-disclosure laws-method-disclosure"><summary><span><b>📖 COMO ESTUDAR</b><strong>Fluxo de uma norma</strong></span><span>abrir método + regras</span></summary><div class="laws-disclosure-body"><ol>${sequence}</ol><p class="laws-rule"><strong>Regra de avanço:</strong> ${escapeHtml(snapshot.advance_rule || "orientação + 1ª leitura + questões + flashcards + D0; D7/D20 seguem em paralelo.")}</p><p class="laws-rule"><strong>Exceções pós-TR:</strong> L30–L32 (M5), L33 e L34 estão fora da dívida obrigatória enquanto suspensos; suas questões antigas permanecem opcionais/históricas. Meta 0 é respeitada literalmente.</p></div></details>
+<details class="laws-panel laws-disclosure laws-method-disclosure"><summary><span><b>📖 COMO ESTUDAR</b><strong>Fluxo de uma norma</strong></span><span>abrir método + regras</span></summary><div class="laws-disclosure-body"><ol>${sequence}</ol><p class="laws-rule"><strong>Regra de avanço:</strong> ${escapeHtml(snapshot.advance_rule || "Sessão incompleta mantém a Lxx; após conclusão da sessão, a sequência avança. D0 pendente permanece como fechamento/revisão e não retrocede a continuidade; D7/D20 seguem em paralelo.")}</p><p class="laws-rule"><strong>Exceções pós-TR:</strong> L30–L32 (M5), L33 e L34 estão fora da dívida obrigatória enquanto suspensos; suas questões antigas permanecem opcionais/históricas. Meta 0 é respeitada literalmente.</p></div></details>
 <details class="laws-panel laws-disclosure laws-map-panel" id="mapa-detalhado"><summary><span><b>📚 CONSULTA RÁPIDA</b><strong>Mapa detalhado L01–L34</strong><small>Uma linha por norma: ação, prioridade, meta e revisões.</small></span><span>abrir mapa</span></summary><div class="laws-disclosure-body"><div class="laws-heading"><div><p class="laws-kicker">TODAS AS NORMAS</p><h2>Mapa detalhado</h2><p>Use os filtros quando precisar localizar uma lei, um cargo ou um alerta específico.</p></div><span class="laws-result-count" aria-live="polite"><span id="result-count">${laws.length}</span> de ${laws.length}</span></div><div class="laws-toolbar"><label class="laws-search">⌕ <input id="law-search" placeholder="Buscar LDB, ECA, LRF, LAI..." aria-label="Buscar legislação"></label><label class="laws-select">☷ <select id="group-filter" aria-label="Filtrar por trilha"><option value="">Todos os grupos</option>${groups.map((group) => `<option value="${escapeHtml(group)}">${escapeHtml(group)}</option>`).join("")}</select></label><label class="laws-select">◈ <select id="priority-filter" aria-label="Filtrar por prioridade"><option value="">Todas prioridades</option><option>P0 - Nuclear</option><option>P1 - Alta</option><option>P2 - Complementar</option><option>Radar forte</option><option>Radar</option></select></label></div><div id="laws-empty" class="laws-empty">Nenhuma norma corresponde aos filtros.</div><div class="laws-map-groups">${mapMarkup}</div></div></details>
 <details class="laws-panel laws-disclosure laws-audit" id="auditoria"><summary><span><b>🔎 AUDITORIA E INTEGRIDADE</b><strong>O que está preservado</strong></span><span>abrir conferência</span></summary><div class="laws-disclosure-body"><ul>${auditNotes}</ul><p>O Notion permanece a fonte operacional canônica; o site hospeda a leitura e interpreta os registros. A fonte jurídica continua sendo o texto oficial vigente.</p></div></details>
 <div class="static-note">Leitura local: snapshots publicados no GitHub Pages. Fonte operacional canônica: Notion. Nenhum controle visual substitui o registro operacional.</div><footer class="laws-footer"><span>SEEDF PPGE · Leis Primeiro</span><span>Fonte operacional: Notion · Camada de leitura: site · Fonte jurídica: texto oficial vigente</span></footer></main>

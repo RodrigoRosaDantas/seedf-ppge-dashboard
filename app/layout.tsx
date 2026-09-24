@@ -8,8 +8,8 @@ const siteBasePath =
     : "";
 
 export const metadata: Metadata = {
-  title: "SEEDF PPGE — Dashboard PRO",
-  description: "Central de comando pré-edital SEEDF: Gestor PPGE — Administração e Analista PPGE — Apoio Administrativo ativos; Analista PPGE — Monitor preservado em Radar.",
+  title: "SEEDF PPGE — Central de Comando",
+  description: "Painel público de preparação pré-edital SEEDF com próxima ação, continuidade, desempenho e evidências sincronizadas do Notion.",
   other: {
     "codex-preview": "development",
     "theme-color": "#071824",

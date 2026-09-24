@@ -88,6 +88,11 @@ test("sessão interrompida vira RETOMAR SESSÃO e precede D01", () => {
   const result=buildSeedfIntelligence(data);
   assert.equal(result.nextAction.kind,"resume");
   assert.match(result.nextAction.eyebrow,/RETOMAR/);
+  assert.equal(result.nextAction.title,"L01 · retomar sessão incompleta");
+  assert.equal(result.agenda.some((item)=>item.kind==="legislação"),false);
+  const preparedDay=result.agenda.find((item)=>item.kind==="sessão");
+  assert.equal(preparedDay.state,"preparado");
+  assert.match(preparedDay.detail,/aguarda concluir a sessão aberta L01/i);
 });
 
 test("sessão interrompida de lei suspensa não vira retomada", () => {
@@ -177,8 +182,8 @@ test("questões praticadas geram evidência apenas com resultado calculável", (
 test("L01 usa somente a bateria ativa quando suplemento Monitor está em Radar", () => {
   const data=fixture();
   data.snapshot.execution.leis_primeiro.question_records=[
-    {id:"q-core",day_id:"LP-20260921-L01-R1",page_code:"L01",strategic_use:"Ativo",planned:30,done:30,correct:29,errors:1,doubts:0},
-    {id:"q-monitor",day_id:"LP-20260921-L01-R1",page_code:"L01",strategic_use:"Radar suspenso",planned:10,done:10,correct:8,errors:2,doubts:0},
+    {id:"q-core",day_id:"LP-20260921-L01-L1",page_code:"L01",strategic_use:"Ativo",planned:30,done:30,correct:29,errors:1,doubts:0},
+    {id:"q-monitor",day_id:"LP-20260921-L01-L1",page_code:"L01",strategic_use:"Radar suspenso",planned:10,done:10,correct:8,errors:2,doubts:0},
   ];
   data.snapshot.execution.leis_primeiro.sessions=[
     {page_code:"L01",date:"2026-09-21",completed:true,questions_done:40,correct:37,errors:3},
@@ -281,6 +286,19 @@ test("risco de cobertura usa somente o denominador ativo", () => {
   assert.deepEqual(risk.evidence,["0/2 itens ativos marcados como cobertos"]);
 });
 
+test("escopo ativo zero não reaproveita o total histórico como denominador", () => {
+  const data=fixture();
+  data.editalSnapshot.axes=[
+    {topic:"Radar",subject:"Monitor",documentaryStrength:"🟡 Radar provável",covered:false},
+    {topic:"Suspenso",subject:"Monitor",documentaryStrength:"⏸️ Suspenso",covered:false},
+    {topic:"Fora",subject:"Outras",documentaryStrength:"🔴 Fora do escopo atual",covered:false},
+  ];
+  const result=buildSeedfIntelligence(data);
+  assert.equal(result.coverage.edital.total,3);
+  assert.equal(result.coverage.edital.activeTotal,0);
+  assert.equal(result.risks.some((item)=>item.id==="coverage-edital"),false);
+});
+
 test("desempenho ativo alimenta evidência e total global sem contar Radar", () => {
   const data=fixture();
   data.lawsSnapshot.laws=[
@@ -289,8 +307,8 @@ test("desempenho ativo alimenta evidência e total global sem contar Radar", () 
   ];
   data.snapshot.execution.leis_primeiro.totals={done:40};
   data.snapshot.execution.leis_primeiro.question_records=[
-    {day_id:"LP-20260921-L01-R1",page_code:"L01",strategic_use:"Ativo",date:"2026-09-21",done:30,correct:29,errors:1},
-    {day_id:"LP-20260921-L01-R1",page_code:"L01",strategic_use:"Radar suspenso",date:"2026-09-21",done:10,correct:8,errors:2},
+    {day_id:"LP-20260921-L01-L1",page_code:"L01",strategic_use:"Ativo",date:"2026-09-21",done:30,correct:29,errors:1},
+    {day_id:"LP-20260921-L01-L1",page_code:"L01",strategic_use:"Radar suspenso",date:"2026-09-21",done:10,correct:8,errors:2},
   ];
   data.snapshot.execution.leis_primeiro.sessions=[
     {page_code:"L01",date:"2026-09-21",completed:true,questions_done:40,correct:37,errors:3},
