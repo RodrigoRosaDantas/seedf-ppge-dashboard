@@ -1069,7 +1069,8 @@
           "next_review": null,
           "date": "2026-09-21",
           "rule": "A publicidade de atos, programas, obras, serviços e campanhas dos órgãos públicos deve ter caráter educativo, informativo ou de orientação social e não pode conter nomes, símbolos ou imagens que caracterizem promoção pessoal de autoridades ou servidores.",
-          "observations": "Erro da questão 28 da bateria núcleo comum. Origem: Resumo 1 da L01. Flashcard gerado na L01. Pós-TR nº 3/2026: permanece ativo por pertencer ao núcleo comum."
+          "observations": "Erro da questão 28 da bateria núcleo comum. Origem: Resumo 1 da L01. Flashcard gerado na L01. Pós-TR nº 3/2026: permanece ativo por pertencer ao núcleo comum.",
+          "strategic_use": "Ativo"
         },
         {
           "id": "3e2cf5a2-6731-8196-aa94-cff901e91274",
@@ -1090,7 +1091,8 @@
           "next_review": null,
           "date": "2026-09-21",
           "rule": "A família, base da sociedade, tem especial proteção do Estado.",
-          "observations": "Erro da questão 36 da bateria suplementar de Analista Monitor. Origem: Resumo 1 da L01. Flashcard gerado na L01. Pós-TR nº 3/2026: preservar como erro pedagógico real, mas sem gerar D0/D7/D20 ou prioridade ativa enquanto Monitor permanecer em Radar."
+          "observations": "Erro da questão 36 da bateria suplementar de Analista Monitor. Origem: Resumo 1 da L01. Flashcard gerado na L01. Pós-TR nº 3/2026: preservar como erro pedagógico real, mas sem gerar D0/D7/D20 ou prioridade ativa enquanto Monitor permanecer em Radar.",
+          "strategic_use": "Radar suspenso"
         },
         {
           "id": "3e2cf5a2-6731-8130-a39e-f377ca6e1083",
@@ -1111,7 +1113,8 @@
           "next_review": null,
           "date": "2026-09-21",
           "rule": "É dever da família, da sociedade e do Estado assegurar, com absoluta prioridade, os direitos da criança, do adolescente e do jovem previstos no art. 227.",
-          "observations": "Erro da questão 37 da bateria suplementar de Analista Monitor. Origem: Resumo 1 da L01. Não foi criado novo flashcard porque a L01 já possuía cartão equivalente. Pós-TR nº 3/2026: preservar como erro pedagógico real, mas sem gerar D0/D7/D20 ou prioridade ativa enquanto Monitor permanecer em Radar."
+          "observations": "Erro da questão 37 da bateria suplementar de Analista Monitor. Origem: Resumo 1 da L01. Não foi criado novo flashcard porque a L01 já possuía cartão equivalente. Pós-TR nº 3/2026: preservar como erro pedagógico real, mas sem gerar D0/D7/D20 ou prioridade ativa enquanto Monitor permanecer em Radar.",
+          "strategic_use": "Radar suspenso"
         }
       ],
       "latest_day_id": "LP-20260921-L01-R1",
@@ -1214,7 +1217,39 @@
         "doubts": null,
         "flashcards": null,
         "precision": null
-      }
+      },
+      "question_records": [
+        {
+          "id": "l01-core-20260921",
+          "day_id": "LP-20260921-L01-R1",
+          "page_code": "L01",
+          "title": "L01 · núcleo comum · 30 itens",
+          "discipline": "Direito Constitucional",
+          "subject": "CF/88 — núcleo comum",
+          "strategic_use": "Ativo",
+          "planned": 30,
+          "done": 30,
+          "correct": 29,
+          "errors": 1,
+          "doubts": 0,
+          "precision": 0.9666666666666667
+        },
+        {
+          "id": "l01-monitor-20260921",
+          "day_id": "LP-20260921-L01-R1",
+          "page_code": "L01",
+          "title": "L01 · suplemento Monitor · 10 itens",
+          "discipline": "Direito Constitucional",
+          "subject": "CF/88 — suplemento Monitor",
+          "strategic_use": "Radar suspenso",
+          "planned": 10,
+          "done": 10,
+          "correct": 8,
+          "errors": 2,
+          "doubts": 0,
+          "precision": 0.8
+        }
+      ]
     }
   },
   "notice": "Snapshot público sanitizado. O conteúdo completo continua no Notion; materiais, fontes e execução do C01 são indexados para consulta."
