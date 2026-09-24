@@ -369,3 +369,19 @@ test("unchanged projected edital snapshots keep a stable generatedAt version", a
   assert.match(source, /key==='generatedAt'\?undefined:nested/);
   assert.match(source, /snapshot\.generatedAt=previousSnapshot\.generatedAt/);
 });
+
+
+test("GitHub Actions use current Node 24-compatible action majors", async () => {
+  const workflows = await Promise.all([
+    read(".github/workflows/quality.yml"),
+    read(".github/workflows/deploy-pages.yml"),
+    read(".github/workflows/sync-notion.yml"),
+  ]);
+  const joined = workflows.join("\n");
+  assert.doesNotMatch(joined, /actions\/(?:checkout|setup-node|upload-artifact)@v4/);
+  assert.match(joined, /actions\/checkout@v7/);
+  assert.match(joined, /actions\/setup-node@v7/);
+  assert.match(joined, /actions\/upload-artifact@v7/);
+  assert.match(joined, /actions\/upload-pages-artifact@v5/);
+  assert.match(joined, /actions\/deploy-pages@v5/);
+});
