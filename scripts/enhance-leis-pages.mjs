@@ -1,5 +1,6 @@
 import { access, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { openStudySessionsForLaw } from "../lib/law-study-state.mjs";
 
 const out = path.resolve("dist/client/leis");
 const lawsSnapshot = JSON.parse(await readFile(path.resolve("public/data/leis-primeiro.json"), "utf8"));
@@ -49,6 +50,7 @@ function operationalMarkup(law, row) {
   const readingsDone = n(law.shared_block ? law.readings_done : (row?.readings_done ?? law.readings_done));
   const readingNumber = n(law.shared_block ? law.reading_number : (row?.reading_number ?? law.reading_number));
   const sessionsDone = n(law.shared_block ? law.sessions_done : (row?.sessions_done ?? law.sessions_done));
+  const openSessions = openStudySessionsForLaw(execution.sessions || [], law.code);
   const orientation = Boolean(row?.orientation_read ?? law.orientation_read);
   const d0 = Boolean(row?.d0 ?? law.d0);
   const d7 = Boolean(row?.d7 ?? law.d7);
@@ -80,7 +82,7 @@ function operationalMarkup(law, row) {
       : "Resumo e lei seca são eventos separados.";
   return `<section class="study-enhanced-ops" aria-label="Painel operacional sincronizado do Notion">
     <article class="study-ops-card study-ops-focus"><span class="eyebrow">Próxima ação</span><div class="big"><strong style="font-size:17px">${esc(nextStep)}</strong></div><p class="ops-next">${esc(action)} · ${esc(actionNote)}</p><a class="ops-primary" href="#study-content">Ir para o material ↓</a><div class="ops-checklist">${checklist}</div></article>
-    <article class="study-ops-card"><span class="eyebrow">Resumo × lei seca</span><div class="ops-grid"><div class="ops-mini"><b>${summariesDone}</b><small>resumos</small></div><div class="ops-mini"><b>${readingsDone}</b><small>leituras</small></div><div class="ops-mini"><b>${sessionsDone}</b><small>sessões</small></div></div><p class="ops-next">Atual: resumo ${summaryNumber || "—"} · leitura ${readingNumber || "—"}. Estudar esta página não incrementa leitura da norma.</p></article>
+    <article class="study-ops-card"><span class="eyebrow">Resumo × lei seca</span><div class="ops-grid"><div class="ops-mini"><b>${summariesDone}</b><small>resumos</small></div><div class="ops-mini"><b>${readingsDone}</b><small>leituras</small></div><div class="ops-mini"><b>${sessionsDone}</b><small>sessões contabilizadas</small></div></div><p class="ops-next">Atual: resumo ${summaryNumber || "—"} · leitura ${readingNumber || "—"}. Estudar esta página não incrementa leitura da norma.</p>${openSessions.length ? `<p class="ops-next">${openSessions.length} sessão(ões) em aberto: ${openSessions.map((session) => session.url ? `<a href="${esc(session.url)}" target="_blank" rel="noreferrer">${esc(session.title || `Registro ${law.code}`)} ↗</a>` : esc(session.title || `Registro ${law.code}`)).join(" · ")}. Ainda não concluída(s).</p>` : ""}</article>
     <article class="study-ops-card"><span class="eyebrow">Questões</span><div class="big"><strong>${done}</strong><span>de ${target || "—"}</span></div><div class="ops-progress"><span style="width:${pct(done,target)}%"></span></div><div class="ops-grid"><div class="ops-mini"><b>${n(row?.hits)}</b><small>acertos</small></div><div class="ops-mini"><b>${n(row?.errors)}</b><small>erros</small></div><div class="ops-mini"><b>${accuracy(row?.accuracy)}</b><small>precisão</small></div></div></article>
     <article class="study-ops-card"><span class="eyebrow">Revisões</span><div class="ops-grid"><div class="ops-mini"><b>${date(row?.next_review)}</b><small>próx. revisão</small></div><div class="ops-mini"><b>${d7 ? "✓" : "○"}</b><small>D7</small></div><div class="ops-mini"><b>${d20 ? "✓" : "○"}</b><small>D20</small></div></div><p class="ops-next">D7 e D20 seguem em paralelo e não bloqueiam a próxima norma.</p></article>
     ${executionCard}
