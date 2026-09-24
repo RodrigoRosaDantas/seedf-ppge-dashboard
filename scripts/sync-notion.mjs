@@ -486,6 +486,7 @@ function parseLeisPrimeiroQuestion(page) {
     discipline: propertyText(properties, "Matéria") || null,
     subject: propertyText(properties, "Assunto") || null,
     strategic_use: propertyText(properties, "Uso estratégico pós-TR") || null,
+    date: propertyDate(properties, "Data"),
     planned,
     done,
     correct,
