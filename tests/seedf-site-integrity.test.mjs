@@ -339,3 +339,18 @@ test("Visual QA tolerates transient Chrome startup without weakening layout asse
   assert.match(source, /stdio:\["ignore","ignore","pipe"\]/);
   assert.match(source, /Chrome DevTools não iniciou após 3 tentativas/);
 });
+
+
+test("stable snapshot timestamps are presented as data-version timestamps", async () => {
+  const [lawsPage, cockpit, enhancer, studyOs] = await Promise.all([
+    read("app/leis/page.tsx"),
+    read("scripts/build-leis-cockpit.mjs"),
+    read("scripts/enhance-leis-pages.mjs"),
+    read("app/study-os-client.tsx"),
+  ]);
+  assert.match(lawsPage, /Versão dos dados/);
+  assert.match(cockpit, /Versão dos dados/);
+  assert.match(enhancer, /Versão dos dados/);
+  assert.match(studyOs, /Versão dos dados/);
+  assert.doesNotMatch(lawsPage, /Notion → GitHub · \{formatDate\(snapshot\?\.source\.synced_at\)\}/);
+});
