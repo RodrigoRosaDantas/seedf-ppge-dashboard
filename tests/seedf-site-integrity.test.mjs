@@ -44,7 +44,7 @@ test("keeps local law reading payload with Notion as the canonical operational s
   assert.match(publisher, /Registro vivo · Notion/);
   assert.match(cockpit, /Fonte canônica: Notion/);
   assert.match(cockpit, /Camada de leitura: site/);
-  assert.match(enhancer, /fonte operacional: Notion/i);
+  assert.match(enhancer, /Painel operacional sincronizado do Notion/);
   assert.match(appPage, /Fonte canônica: Notion/);
 });
 test("keeps every Leis Primeiro page aligned with the operational method", async () => {
