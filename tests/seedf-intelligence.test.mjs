@@ -192,6 +192,21 @@ test("L01 usa somente a bateria ativa quando suplemento Monitor está em Radar",
   assert.equal(result.lawPerformance[0].accuracy,29/30*100);
 });
 
+test("baterias ativas preservam tendência temporal por data real", () => {
+  const data=fixture();
+  data.snapshot.execution.leis_primeiro.question_records=[
+    {day_id:"LP-20260901-L01-R1",page_code:"L01",strategic_use:"Ativo",date:"2026-09-01",done:20,correct:20,errors:0},
+    {day_id:"LP-20260905-L01-R2",page_code:"L01",strategic_use:"Ativo",date:"2026-09-05",done:20,correct:19,errors:1},
+    {day_id:"LP-20260910-L01-R3",page_code:"L01",strategic_use:"Ativo",date:"2026-09-10",done:20,correct:17,errors:3},
+    {day_id:"LP-20260915-L01-R4",page_code:"L01",strategic_use:"Ativo",date:"2026-09-15",done:20,correct:16,errors:4},
+  ];
+  const result=buildSeedfIntelligence(data);
+  assert.equal(result.lawPerformance[0].questions,80);
+  assert.equal(result.lawPerformance[0].confidence.key,"strong");
+  assert.equal(result.lawPerformance[0].trend.key,"worsening");
+  assert.equal(result.lawPerformance[0].strength,null);
+});
+
 test("grande amostra pode ser força sem exigir 100%", () => {
   const data=fixture();
   data.snapshot.execution.leis_primeiro.sessions=[
