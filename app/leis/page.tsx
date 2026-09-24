@@ -38,6 +38,8 @@ type Law = {
   operational_target_total?: number;
   cargos?: string[];
   action?: string;
+  documentary_strength?: string | null;
+  strategic_status?: string | null;
   cut?: string;
   alert?: string;
   block?: string;
