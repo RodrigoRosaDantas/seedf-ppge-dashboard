@@ -14,6 +14,7 @@ on:
   workflow_dispatch:
 
 permissions:
+  actions: write
   contents: write
 
 concurrency:
@@ -52,14 +53,23 @@ jobs:
           node scripts/export-edital-verticalizado.mjs
 
       - name: Commit snapshots when changed
+        id: commit_snapshots
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add public/data/seedf-snapshot.json public/data/leis-primeiro.json public/data/legislation-bank.json public/data/seedf-edital.json
           if git diff --cached --quiet; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
             echo "No public snapshot changes detected."
             exit 0
           fi
           git commit -m "chore: sync SEEDF dashboard snapshot"
           git pull --rebase origin main
           git push origin HEAD:main
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+
+      - name: Publish changed snapshots
+        if: steps.commit_snapshots.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run deploy-pages.yml --ref main --repo "$GITHUB_REPOSITORY"
