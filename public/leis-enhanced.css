@@ -1311,3 +1311,12 @@
     flex: 1 1 100%;
   }
 }
+
+/* Keep every top-level laws section on one centered page grid. */
+.laws-cockpit > * {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 1220px;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
