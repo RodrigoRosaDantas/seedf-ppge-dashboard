@@ -1551,3 +1551,5 @@
   .laws-cockpit .laws-radar-actions a { padding: 7px 8px; font-size: 9px; }
   .laws-role-card > strong { font-size: 17px; }
 }
+/* Preserve readable contrast on the Radar item count. */
+.laws-cockpit .laws-radar .laws-chip { color: #167b6d !important; }
