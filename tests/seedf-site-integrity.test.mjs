@@ -513,7 +513,7 @@ test("published shell includes an offline registration path", async () => {
   const manifestValue = JSON.parse(manifest);
   assert.equal(manifestValue.display, "standalone");
   assert.equal(manifestValue.orientation, "any");
-  assert.match(serviceWorker, /seedf-pages-v5/);
+  assert.match(serviceWorker, /seedf-pages-v6/);
   assert.match(serviceWorker, /reading-preferences\.js/);
   assert.match(serviceWorker, /reading-preferences\.css/);
   assert.match(serviceWorker, /function networkFirst/);
