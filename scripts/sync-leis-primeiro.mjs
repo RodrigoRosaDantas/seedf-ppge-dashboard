@@ -58,8 +58,8 @@ const childPages = [...pageBlocks, ...archivedLawBlocks]
   .sort((a, b) => Number(a.code.slice(1)) - Number(b.code.slice(1)));
 
 const lawCodesFrom = (blocks) => blocks
-  .filter((block) => block.type === "child_page" && /^L\\d{2}\\b/i.test(block.child_page?.title || ""))
-  .map((block) => (block.child_page.title.match(/^(L\\d{2})\\b/i)?.[1] || "").toUpperCase())
+  .filter((block) => block.type === "child_page" && /^L\d{2}\b/i.test(block.child_page?.title || ""))
+  .map((block) => (block.child_page.title.match(/^(L\d{2})\b/i)?.[1] || "").toUpperCase())
   .sort();
 const directLawCodes = lawCodesFrom(pageBlocks);
 const archivedLawCodes = lawCodesFrom(archivedLawBlocks);
