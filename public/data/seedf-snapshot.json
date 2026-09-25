@@ -2,12 +2,12 @@
   "schema_version": 3,
   "source": {
     "kind": "notion",
-    "title": "SEEDF — PPGE | Gestor + Analista + Monitor | Dashboard PRO",
+    "title": "SEEDF — PPGE | Gestor + Analista Apoio Administrativo | Dashboard PRO",
     "page_id": "3d4cf5a2-6731-8106-a2c9-c97816aa6cf5",
-    "page_url": "https://app.notion.com/p/SEEDF-PPGE-Gestor-Analista-Monitor-Dashboard-PRO-3d4cf5a267318106a2c9c97816aa6cf5",
-    "last_edited_time": "2026-09-24T12:08:00.000Z",
-    "synced_at": "2026-09-24T20:37:25.408Z",
-    "content_hash": "e2b119cb79a56e153e00edcef9c7781ff8f3ac20335b2b84a292e95b9d260d4d",
+    "page_url": "https://app.notion.com/p/SEEDF-PPGE-Gestor-Analista-Apoio-Administrativo-Dashboard-PRO-3d4cf5a267318106a2c9c97816aa6cf5",
+    "last_edited_time": "2026-09-25T17:01:00.000Z",
+    "synced_at": "2026-09-25T17:13:23.230Z",
+    "content_hash": "0c892888f884b9d5668b030a462c4b5038849651aa395e375b458e57f599dbb3",
     "status": "synced"
   },
   "dashboard": {
@@ -580,7 +580,7 @@
     ]
   },
   "execution": {
-    "as_of": "2026-09-24T20:37:25.402Z",
+    "as_of": "2026-09-25T17:13:23.225Z",
     "c01": {
       "days": [
         {
