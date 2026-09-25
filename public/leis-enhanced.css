@@ -1320,3 +1320,234 @@
   margin-left: auto !important;
   margin-right: auto !important;
 }
+
+/* Radar and role map: compact cards with clear ownership and readable actions. */
+.laws-cockpit > .laws-radar {
+  padding: 24px !important;
+  border-color: #d6e3df !important;
+  border-radius: 19px !important;
+  background: linear-gradient(150deg, #ffffff 0%, #f5faf8 100%) !important;
+  box-shadow: 0 12px 28px rgba(16, 42, 53, .07) !important;
+}
+.laws-cockpit .laws-radar > .laws-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 18px;
+  margin: 0 0 17px;
+  padding: 0 0 16px;
+  border-bottom: 1px solid #e2ebe8;
+}
+.laws-cockpit .laws-radar .laws-kicker {
+  margin: 0 0 7px;
+  color: #188775;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: .15em;
+}
+.laws-cockpit .laws-radar .laws-heading h2 {
+  margin: 0;
+  color: #163742 !important;
+  font-size: clamp(21px, 2.2vw, 27px);
+  line-height: 1.18;
+}
+.laws-cockpit .laws-radar .laws-heading p:not(.laws-kicker) {
+  max-width: 68ch;
+  margin: 7px 0 0;
+  color: #647a7d !important;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.laws-cockpit .laws-radar .laws-chip {
+  flex: 0 0 auto;
+  padding: 9px 12px;
+  border: 1px solid #bfe5da;
+  border-radius: 999px;
+  background: #effaf6;
+  color: #167b6d;
+  font-size: 10px;
+  font-weight: 900;
+  white-space: nowrap;
+}
+.laws-cockpit .laws-radar-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 11px;
+  margin-top: 0;
+}
+.laws-cockpit .laws-radar-item {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr);
+  align-content: space-between;
+  gap: 13px;
+  min-width: 0;
+  min-height: 132px;
+  padding: 14px 15px !important;
+  border: 1px solid #dbe7e4 !important;
+  border-radius: 14px;
+  background: #ffffff;
+  box-shadow: 0 5px 13px rgba(16, 42, 53, .045);
+}
+.laws-cockpit .laws-radar-item > div:first-child {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr);
+  align-content: start;
+  align-items: start;
+  column-gap: 10px;
+  row-gap: 5px;
+  min-width: 0;
+}
+.laws-cockpit .laws-radar-item .law-code {
+  display: inline-flex;
+  grid-column: 1;
+  grid-row: 1 / span 2;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  min-height: 29px;
+  padding: 0 6px;
+  border: 1px solid #bfe5da;
+  border-radius: 8px;
+  background: #effaf6;
+  color: #167b6d;
+  font-size: 10px;
+  font-weight: 900;
+}
+.laws-cockpit .laws-radar-item strong {
+  grid-column: 2;
+  min-width: 0;
+  color: #1c414b !important;
+  font-size: 13px;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+.laws-cockpit .laws-radar-item small {
+  grid-column: 2;
+  color: #718689 !important;
+  font-size: 10px;
+  line-height: 1.35;
+}
+.laws-cockpit .laws-radar-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  gap: 7px;
+  width: auto;
+  margin-left: 52px;
+}
+.laws-cockpit .laws-radar-actions a {
+  flex: 0 1 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 32px;
+  padding: 7px 10px;
+  border: 1px solid #c8e4dd;
+  border-radius: 9px;
+  background: #f3faf7;
+  color: #157769;
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 1.2;
+  text-align: center;
+  text-decoration: none;
+}
+.laws-cockpit .laws-radar-actions a:hover {
+  border-color: #8dcbbb;
+  background: #e8f7f1;
+}
+.laws-track-panel .laws-role-map {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin: 18px 0 13px;
+}
+.laws-role-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 7px;
+  min-width: 0;
+  padding: 17px 18px;
+  border: 1px solid #d8e6e2;
+  border-top: 3px solid #2bb59f;
+  border-radius: 14px;
+  background: linear-gradient(155deg, #ffffff 0%, #f5faf8 100%);
+  box-shadow: 0 6px 16px rgba(16, 42, 53, .045);
+}
+.laws-role-card.is-gestor { border-top-color: #efb54c; }
+.laws-role-card.is-apoio { border-top-color: #52b9d8; }
+.laws-role-eyebrow {
+  color: #6b8584;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: .12em;
+  line-height: 1.3;
+}
+.laws-role-card h3 {
+  margin: 0;
+  color: #244650;
+  font-size: 13px;
+  line-height: 1.3;
+}
+.laws-role-card > strong {
+  color: #126f65;
+  font-size: 20px;
+  letter-spacing: -.035em;
+  line-height: 1.15;
+  overflow-wrap: anywhere;
+}
+.laws-role-card.is-gestor > strong { color: #956316; }
+.laws-role-card.is-apoio > strong { color: #206e87; }
+.laws-role-card p {
+  margin: 0;
+  color: #687e81;
+  font-size: 10px;
+  line-height: 1.45;
+}
+.laws-role-card > small {
+  color: #718689;
+  font-size: 9px;
+  font-weight: 800;
+}
+.laws-radar-note {
+  margin: 0 0 19px;
+  padding: 10px 13px;
+  border: 1px solid #ddd5f3;
+  border-radius: 10px;
+  background: #f7f4ff;
+  color: #675398;
+  font-size: 10px;
+  line-height: 1.5;
+}
+.laws-radar-note strong { color: #584286; }
+.laws-track-range {
+  max-width: 100%;
+  white-space: normal !important;
+  text-align: right;
+}
+@media (max-width: 960px) {
+  .laws-track-panel .laws-role-map { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .laws-role-card.is-common { grid-column: 1 / -1; }
+}
+@media (max-width: 780px) {
+  .laws-cockpit > .laws-radar { padding: 17px !important; }
+  .laws-cockpit .laws-radar > .laws-heading { align-items: flex-start; gap: 10px; }
+  .laws-cockpit .laws-radar-list { grid-template-columns: 1fr; gap: 9px; }
+  .laws-cockpit .laws-radar-item { min-height: 0; padding: 12px !important; }
+  .laws-track-panel .laws-role-map { grid-template-columns: 1fr; gap: 8px; margin: 14px 0 10px; }
+  .laws-role-card.is-common { grid-column: auto; }
+  .laws-role-card { padding: 14px; gap: 6px; }
+  .laws-role-card > strong { font-size: 18px; }
+  .laws-radar-note { margin-bottom: 15px; }
+}
+@media (max-width: 430px) {
+  .laws-cockpit > .laws-radar { padding: 14px !important; }
+  .laws-cockpit .laws-radar .laws-heading h2 { font-size: 21px; }
+  .laws-cockpit .laws-radar .laws-heading p:not(.laws-kicker) { font-size: 12px; }
+  .laws-cockpit .laws-radar-item > div:first-child { grid-template-columns: 38px minmax(0, 1fr); column-gap: 8px; }
+  .laws-cockpit .laws-radar-item .law-code { width: 38px; }
+  .laws-cockpit .laws-radar-actions { margin-left: 46px; }
+  .laws-cockpit .laws-radar-actions a { padding: 7px 8px; font-size: 9px; }
+  .laws-role-card > strong { font-size: 17px; }
+}
