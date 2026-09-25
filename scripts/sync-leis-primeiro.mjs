@@ -2,6 +2,7 @@ import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 const LEIS_PAGE_ID = "3d8cf5a2-6731-817c-89f4-f4907d14a701";
+const MONITOR_LAW_ARCHIVE_PAGE_ID = "3e6cf5a2-6731-8171-a8a2-df1d85266452";
 const EXECUTION_PAGE_ID = "3d4cf5a2-6731-8150-87fc-c1ec3783f65c";
 const LEGISLATION_DATA_SOURCE_ID = "6b3c940a-a382-419f-9ef6-531a1dc5cad2";
 const NOTION_API_BASE = "https://api.notion.com/v1";
@@ -33,9 +34,10 @@ const request = async (endpoint, init = {}, attempt = 0) => {
   return JSON.parse(body);
 };
 
-const [page, pageBlocks, databasePages] = await Promise.all([
+const [page, pageBlocks, archivedLawBlocks, databasePages] = await Promise.all([
   request(`/pages/${LEIS_PAGE_ID}`),
   getAllChildren(LEIS_PAGE_ID),
+  getAllChildren(MONITOR_LAW_ARCHIVE_PAGE_ID),
   queryDataSource(LEGISLATION_DATA_SOURCE_ID),
 ]);
 
@@ -43,7 +45,8 @@ if (compactId(page.parent?.page_id) !== compactId(EXECUTION_PAGE_ID)) {
   throw new Error("Leis Primeiro must remain a direct child of Execução diária | SEEDF PPGE.");
 }
 
-const childPages = pageBlocks
+// Monitor-only laws live in the archive group but remain available to their public reference routes.
+const childPages = [...pageBlocks, ...archivedLawBlocks]
   .filter((block) => block.type === "child_page" && /^L\d{2}\b/i.test(block.child_page?.title || ""))
   .map((block) => ({
     page_id: block.id,
