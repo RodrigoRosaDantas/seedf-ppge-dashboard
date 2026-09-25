@@ -38,8 +38,8 @@ function ensureThemeColor(html) {
     : html.replace("</head>", '<meta name="theme-color" content="#071824"></head>');
 }
 
-function cssLink(prefix) { return `<link rel="stylesheet" href="${prefix}leis-enhanced.css?v=20260925c">`; }
-function readerCssLink(prefix) { return `<link rel="stylesheet" href="${prefix}reading-preferences.css?v=20260925c">`; }
+function cssLink(prefix) { return `<link rel="stylesheet" href="${prefix}leis-enhanced.css?v=20260925d">`; }
+function readerCssLink(prefix) { return `<link rel="stylesheet" href="${prefix}reading-preferences.css?v=20260925d">`; }
 function readerScript(prefix) { return `<script src="${prefix}reading-preferences.js"></script>`; }
 
 function operationalMarkup(law, row) {
