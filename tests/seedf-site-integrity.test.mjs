@@ -89,6 +89,14 @@ test("keeps every Leis Primeiro page aligned with the operational method", async
   const dataset = JSON.parse(await read("public/data/leis-primeiro.json"));
   assert.equal(dataset.laws.length, 34);
 
+  const activeSharedLaws = dataset.laws.filter((law) => ["L26", "L27"].includes(law.code));
+  assert.deepEqual(activeSharedLaws.map((law) => law.group), ["Núcleo comum", "Núcleo comum"]);
+  assert.ok(activeSharedLaws.every((law) => law.cargos.includes("Núcleo comum") && law.cargos.includes("Analista - Monitor")));
+
+  const monitorTrack = dataset.laws.filter((law) => law.group === "Monitor");
+  assert.deepEqual(monitorTrack.map((law) => law.code), ["L25", "L28", "L29", "L30", "L31", "L32", "L33", "L34"]);
+  assert.ok(monitorTrack.every((law) => /radar|suspenso/i.test(`${law.strategic_status || ""} ${law.action || ""}`)));
+
   for (const law of dataset.laws) {
     const html = law.content_html || "";
     const plain = html.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ");
