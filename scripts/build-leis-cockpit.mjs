@@ -207,6 +207,18 @@ function buildStudyFlow(state) {
   </section>`;
 }
 
+function lawCodeSummary(laws = []) {
+  const numbers = [...new Set(laws.map((law) => Number(String(law.code || "").match(/^L(\d+)$/i)?.[1])).filter(Number.isFinite))].sort((left, right) => left - right);
+  const ranges = [];
+  for (const value of numbers) {
+    const last = ranges[ranges.length - 1];
+    if (last && value === last[1] + 1) last[1] = value;
+    else ranges.push([value, value]);
+  }
+  const label = (value) => `L${String(value).padStart(2, "0")}`;
+  return ranges.map(([start, end]) => start === end ? label(start) : `${label(start)}–${label(end)}`).join(" · ") || "—";
+}
+
 function buildTrackCard(group, index, laws, rowsByCode, sessions = []) {
   const groupLaws = laws.filter((law) => law.group === group);
   const executable = operationalUnits(groupLaws);
@@ -217,7 +229,7 @@ function buildTrackCard(group, index, laws, rowsByCode, sessions = []) {
   const href = pending ? `./${lawSlug(pending)}/` : "#mapa-detalhado";
   const action = pending ? `Abrir ${pending.code} →` : "Ver grupo →";
   const radarLabel = radars.length ? ` · ${radars.length} radar` : "";
-  const range = groupLaws.length ? `${groupLaws[0].code}–${groupLaws[groupLaws.length - 1].code}` : "—";
+  const range = lawCodeSummary(executable);
   const completion = percent(completed, executable.length);
   const status = pending ? `Próxima: ${pending.code}` : (executable.length ? "Trilha concluída" : "Acompanhar");
   return `<article class="laws-track-card" data-track-group="${escapeHtml(group)}">
@@ -228,6 +240,27 @@ function buildTrackCard(group, index, laws, rowsByCode, sessions = []) {
     <div class="laws-track-progress" aria-label="${completion}% concluído"><span style="width:${completion}%"></span></div>
     <div class="laws-track-foot"><small>${completion}% do grupo</small><a href="${escapeHtml(href)}"><span>${escapeHtml(action)}</span><span aria-hidden="true">↗</span></a></div>
   </article>`;
+}
+
+function buildRoleMap(activeGroups, laws, radarLaws, externalRadars) {
+  const cards = activeGroups.map((group) => {
+    const groupLaws = operationalUnits(laws.filter((law) => law.group === group));
+    const config = group === "Núcleo comum"
+      ? { className: "is-common", eyebrow: "COMUM A GESTOR E APOIO", title: "Núcleo comum", detail: "Base compartilhada pelas duas trilhas; L26–L27 são referências transversais ativas." }
+      : group === "Gestor — Administração"
+        ? { className: "is-gestor", eyebrow: "CONTEÚDO ESPECÍFICO", title: "Gestor — Administração", detail: "Leis específicas da trilha de Gestão — Administração." }
+        : { className: "is-apoio", eyebrow: "CONTEÚDO ESPECÍFICO", title: "Analista de Apoio Administrativo", detail: "Leis específicas do cargo de Analista de Apoio Administrativo." };
+    return `<article class="laws-role-card ${config.className}">
+      <span class="laws-role-eyebrow">${escapeHtml(config.eyebrow)}</span>
+      <h3>${escapeHtml(config.title)}</h3>
+      <strong>${escapeHtml(lawCodeSummary(groupLaws))}</strong>
+      <p>${escapeHtml(config.detail)}</p>
+      <small>${groupLaws.length} leis ativas</small>
+    </article>`;
+  }).join("");
+  const radarCodes = [lawCodeSummary(radarLaws), ...externalRadars.map((radar) => `R${radar.operational_order}`)].filter((value) => value !== "—").join(" · ");
+  return `<div class="laws-role-map" aria-label="Divisão das leis comuns e por cargo">${cards}</div>
+    <p class="laws-radar-note"><strong>Fora da fila diária · Radar:</strong> ${escapeHtml(radarCodes)}. Não entra nas metas ativas.</p>`;
 }
 
 function buildMapRow(law, rowsByCode) {
@@ -284,6 +317,7 @@ export async function buildLeisCockpit(sourceHtml) {
   const radarRecords = snapshot.summary?.radar_records ?? (Array.isArray(snapshot.radars) ? snapshot.radars.length : 1);
   const radarLaws = laws.filter(radarLaw);
   const externalRadars = Array.isArray(snapshot.radars) ? snapshot.radars : [];
+  const roleMap = buildRoleMap(activeGroups, laws, radarLaws, externalRadars);
   const trackMarkup = activeGroups.map((group, index) => buildTrackCard(group, index, laws, rowsByCode, sessions)).join("");
   const mapMarkup = mapGroups.map((group) => `<section class="laws-map-group" data-law-group-block><div class="laws-group-title"><h3>${escapeHtml(groupLabel(group))}</h3><span>${laws.filter((law) => law.group === group).length} normas</span></div><div class="laws-map-list">${laws.filter((law) => law.group === group).map((law) => buildMapRow(law, rowsByCode)).join("")}</div></section>`).join("");
   const sequence = (snapshot.study_sequence || []).map((step) => `<li>${escapeHtml(step)}</li>`).join("");
@@ -316,7 +350,7 @@ html,body{margin:0;min-height:100%;background:#07111f}body{font-family:ui-sans-s
 ${buildStudyFlow(currentState)}
 <section class="laws-status-strip" aria-label="Estado da trilha"><article class="laws-stat-progress"><div class="laws-stat-top"><span class="laws-stat-icon">01</span><span>BLOCOS FECHADOS</span></div><strong>${completed}/${executable.length}</strong><small>por D0 · D7/D20 não bloqueiam</small></article><article class="laws-stat-questions"><div class="laws-stat-top"><span class="laws-stat-icon">02</span><span>QUESTÕES DE META</span></div><strong>${totalQuestions}</strong><small>na sequência executável</small></article><article class="laws-stat-map"><div class="laws-stat-top"><span class="laws-stat-icon">03</span><span>NORMAS NO MAPA</span></div><strong>${laws.length}</strong><small>${executable.length} ativas · ${radarLaws.length} em Radar</small></article><article class="laws-stat-source"><div class="laws-stat-top"><span class="laws-stat-icon">04</span><span>FONTE VIVA</span></div><strong>Notion</strong><small>${mapped} registros ligados às Lxx · + ${radarRecords} fora da numeração</small></article></section>
 ${executionMarkup}
-<section class="laws-panel laws-track-panel" id="trilha"><div class="laws-heading"><div><p class="laws-kicker">MAPA DE DECISÃO</p><h2>Por onde continuar</h2><p>Escolha a trilha pelo cargo. Cada cartão aponta para a continuidade canônica por sessões reais; D0 pendente permanece como fechamento paralelo.</p></div><span class="laws-heading-note">${executable.length} blocos operacionais</span></div><div class="laws-track-grid">${trackMarkup}</div></section>
+<section class="laws-panel laws-track-panel" id="trilha"><div class="laws-heading"><div><p class="laws-kicker">MAPA DE DECISÃO</p><h2>Por onde continuar</h2><p>A divisão por cargo está abaixo. A próxima ação considera os registros reais; D0 pendente permanece como fechamento paralelo.</p></div><span class="laws-heading-note">${executable.length} blocos operacionais</span></div>${roleMap}<div class="laws-track-grid">${trackMarkup}</div></section>
 <nav class="laws-quick-nav" aria-label="Atalhos da trilha"><a class="laws-quick-link" href="#mapa-detalhado"><span class="laws-quick-icon">⌕</span><span><b>Localizar uma norma</b><small>Mapa detalhado e filtros</small></span><span class="laws-quick-arrow">↗</span></a><a class="laws-quick-link" href="#radar"><span class="laws-quick-icon">◎</span><span><b>Ver Radar</b><small>Atualizações fora da fila</small></span><span class="laws-quick-arrow">↗</span></a><a class="laws-quick-link" href="#banco-legislacao"><span class="laws-quick-icon">▦</span><span><b>Consultar o banco</b><small>Metas, revisões e registros</small></span><span class="laws-quick-arrow">↗</span></a><a class="laws-quick-link" href="./flashcards/"><span class="laws-quick-icon">▣</span><span><b>Estudar com cards</b><small>Revisão com repetição espaçada</small></span><span class="laws-quick-arrow">↗</span></a></nav>
 <section class="laws-panel laws-radar" id="radar"><div class="laws-heading"><div><p class="laws-kicker">RADAR · FORA DA FILA DIÁRIA</p><h2>Monitorar sem disputar atenção</h2><p>Itens de vigência, carreira e atualização normativa permanecem separados da execução.</p></div><span class="laws-chip priority-radar">${radarLaws.length + externalRadars.length} itens</span></div><div class="laws-radar-list">${radarMarkup}</div></section>
 <details class="laws-panel laws-disclosure laws-method-disclosure"><summary><span><b>📖 COMO ESTUDAR</b><strong>Fluxo de uma norma</strong></span><span>abrir método + regras</span></summary><div class="laws-disclosure-body"><ol>${sequence}</ol><p class="laws-rule"><strong>Regra de avanço:</strong> ${escapeHtml(snapshot.advance_rule || "Sessão incompleta mantém a Lxx; após conclusão da sessão, a sequência avança. D0 pendente permanece como fechamento/revisão e não retrocede a continuidade; D7/D20 seguem em paralelo.")}</p><p class="laws-rule"><strong>Exceções pós-TR:</strong> L30–L32 (M5), L33 e L34 estão fora da dívida obrigatória enquanto suspensos; suas questões antigas permanecem opcionais/históricas. Meta 0 é respeitada literalmente.</p></div></details>
