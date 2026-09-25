@@ -57,6 +57,21 @@ const childPages = [...pageBlocks, ...archivedLawBlocks]
   .filter((item) => item.code)
   .sort((a, b) => Number(a.code.slice(1)) - Number(b.code.slice(1)));
 
+const lawCodesFrom = (blocks) => blocks
+  .filter((block) => block.type === "child_page" && /^L\\d{2}\\b/i.test(block.child_page?.title || ""))
+  .map((block) => (block.child_page.title.match(/^(L\\d{2})\\b/i)?.[1] || "").toUpperCase())
+  .sort();
+const directLawCodes = lawCodesFrom(pageBlocks);
+const archivedLawCodes = lawCodesFrom(archivedLawBlocks);
+const expectedArchivedLawCodes = ["L25", "L28", "L29", "L30", "L31", "L32", "L33", "L34"];
+if (directLawCodes.length !== 26) throw new Error(`Expected 26 direct L pages, found ${directLawCodes.length}.`);
+if (JSON.stringify(archivedLawCodes) !== JSON.stringify(expectedArchivedLawCodes)) {
+  throw new Error(`Expected archived Monitor law pages ${expectedArchivedLawCodes.join(", ")}, found ${archivedLawCodes.join(", ")}.`);
+}
+if (new Set([...directLawCodes, ...archivedLawCodes]).size !== 34) {
+  throw new Error("The active and archived law sources must contain 34 unique L pages.");
+}
+
 const bankRows = databasePages.map(parseBankRow).filter(Boolean).sort((a, b) => a.operational_order - b.operational_order);
 const mappedRows = bankRows.filter((row) => row.operational_order < 900);
 const radarRows = bankRows.filter((row) => row.operational_order >= 900);
