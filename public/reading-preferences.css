@@ -282,7 +282,9 @@ html[data-reduce-motion="true"] *::after { animation-duration: .01ms !important;
 
 @media (max-width: 700px) {
   .reading-settings-trigger { min-width: 34px; padding-inline: 8px; }
-  .reading-settings-trigger-text { display: none; }
+  .reading-settings-trigger { min-width: auto; padding-inline: 8px; gap: 4px; }
+  .reading-settings-trigger-icon { display: inline-block; }
+  .reading-settings-trigger-text { display: inline; font-size: 9px; }
   .reading-settings-panel { position: fixed; top: 70px; right: 12px; }
   .laws-topbar-tools,
   .study-top-tools { max-width: 68%; align-items: flex-start; }
