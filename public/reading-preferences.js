@@ -80,7 +80,7 @@
   }
 
   function settingMarkup(id) {
-    return `<button type="button" class="reading-settings-trigger" aria-expanded="false" aria-controls="${id}" title="Abrir configurações de conforto"><span class="reading-settings-trigger-icon" aria-hidden="true">◐</span><span class="reading-settings-trigger-text">Conforto</span></button>
+    return `<button type="button" class="reading-settings-trigger" aria-expanded="false" aria-controls="${id}" title="Abrir configurações de conforto"><span class="reading-settings-trigger-icon" aria-hidden="true">Aa</span><span class="reading-settings-trigger-text">Conforto</span></button>
       <div class="reading-settings-panel" id="${id}" hidden>
         <div class="reading-settings-heading"><strong>Conforto de leitura</strong><small>Salvo neste aparelho</small></div>
         <label class="reading-settings-field"><span>Aparência</span><select data-reading-appearance aria-label="Escolher aparência"><option value="system">Sistema</option><option value="light">Clara</option><option value="dark">Escura</option><option value="sepia">Conforto (sépia)</option></select></label>

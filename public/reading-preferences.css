@@ -52,7 +52,7 @@ html[data-color-mode] { background: var(--reader-bg) !important; }
   transition: .18s ease;
 }
 .reading-settings-trigger:hover { color: var(--reader-accent); border-color: var(--reader-accent); transform: translateY(-1px); }
-.reading-settings-trigger-icon { font-size: 15px; line-height: 1; }
+.reading-settings-trigger-icon { font-size: 12px; font-weight: 900; letter-spacing: -.04em; line-height: 1; }
 .reading-settings-panel {
   position: absolute;
   top: calc(100% + 10px);

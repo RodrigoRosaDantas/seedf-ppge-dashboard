@@ -156,7 +156,9 @@ type Snapshot = {
   audit_notes?: string[];
 };
 
-const groups = ["Todos", "Núcleo comum", "Gestor — Administração", "Apoio Administrativo", "Monitor"];
+const activeGroups = ["Núcleo comum", "Gestor — Administração", "Apoio Administrativo"];
+const groups = ["Todos", ...activeGroups, "Monitor"];
+const groupLabel = (value: string) => value === "Monitor" ? "Radar — Monitor (acervo)" : value;
 const priorities = ["Todas", "P0 - Nuclear", "P1 - Alta", "P2 - Complementar", "Radar forte", "Radar"];
 
 function slug(value = "") {
@@ -392,7 +394,7 @@ export default function LeisPrimeiroPage() {
     ["D0", "fechar o bloco"],
   ];
   const radarLaws = snapshot?.laws.filter(isRadarLaw) || [];
-  const groupNames = groups.slice(1);
+  const groupNames = activeGroups;
   const totalQuestions = executableLaws.reduce(
     (sum, law) => sum + (law.operational_target_total ?? law.question_target ?? 0),
     0,
@@ -468,8 +470,8 @@ export default function LeisPrimeiroPage() {
       <section className="laws-status-strip" aria-label="Estado da trilha">
         <article className="laws-stat-progress"><div className="laws-stat-top"><span className="laws-stat-icon">01</span><span>BLOCOS FECHADOS</span></div><strong>{completedBlocks}/{executableLaws.length}</strong><small>por D0 · D7/D20 não bloqueiam</small></article>
         <article className="laws-stat-questions"><div className="laws-stat-top"><span className="laws-stat-icon">02</span><span>QUESTÕES DE META</span></div><strong>{snapshot ? totalQuestions : "—"}</strong><small>obrigatórias · Radar/opcionais fora da dívida</small></article>
-        <article className="laws-stat-map"><div className="laws-stat-top"><span className="laws-stat-icon">03</span><span>NORMAS NO MAPA</span></div><strong>{snapshot?.summary.pages ?? 34}</strong><small>L01–L34 · 4 trilhas</small></article>
-        <article className="laws-stat-source"><div className="laws-stat-top"><span className="laws-stat-icon">04</span><span>FONTE VIVA</span></div><strong>Notion</strong><small>{mappedRecords} mapeados · {radarRecords} radar</small></article>
+        <article className="laws-stat-map"><div className="laws-stat-top"><span className="laws-stat-icon">03</span><span>NORMAS NO MAPA</span></div><strong>{snapshot?.summary.pages ?? 34}</strong><small>{executableLaws.length} ativas · {radarLaws.length} em Radar</small></article>
+        <article className="laws-stat-source"><div className="laws-stat-top"><span className="laws-stat-icon">04</span><span>FONTE VIVA</span></div><strong>Notion</strong><small>{mappedRecords} registros ligados às Lxx · + {radarRecords} fora da numeração</small></article>
       </section>
 
       {latestExecution ? (
@@ -554,7 +556,7 @@ export default function LeisPrimeiroPage() {
 
         <div className="laws-toolbar">
           <label className="laws-search"><Search size={17} /><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Buscar LDB, ECA, LRF, LAI..." aria-label="Buscar legislação" /></label>
-          <label className="laws-select"><Filter size={16} /><select value={group} onChange={(event) => setGroup(event.target.value)} aria-label="Filtrar por trilha">{groups.map((item) => <option key={item}>{item}</option>)}</select></label>
+          <label className="laws-select"><Filter size={16} /><select value={group} onChange={(event) => setGroup(event.target.value)} aria-label="Filtrar por trilha">{groups.map((item) => <option key={item} value={item}>{groupLabel(item)}</option>)}</select></label>
           <label className="laws-select"><ShieldCheck size={16} /><select value={priority} onChange={(event) => setPriority(event.target.value)} aria-label="Filtrar por prioridade">{priorities.map((item) => <option key={item}>{item}</option>)}</select></label>
         </div>
 
@@ -565,7 +567,7 @@ export default function LeisPrimeiroPage() {
         <div className="laws-groups">
           {grouped.map((section) => (
             <section className="laws-group" key={section.name}>
-              <div className="laws-group-title"><h3>{section.name}</h3><span>{section.laws.length} normas</span></div>
+              <div className="laws-group-title"><h3>{groupLabel(section.name)}</h3><span>{section.laws.length} normas</span></div>
               <div className="laws-grid">
                 {section.laws.map((law) => {
                   const isOpen = expanded === law.code;

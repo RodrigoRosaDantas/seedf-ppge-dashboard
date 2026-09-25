@@ -6,6 +6,7 @@ import { fileURLToPath } from "node:url";
 import * as vm from "node:vm";
 import { leisPrimeiroSequence, normalizeLeisPrimeiroId, pageCodeFromExecutionId } from "../lib/leis-primeiro-ids.mjs";
 import { openStudySessionsForLaw, studyDisplayStatus } from "../lib/law-study-state.mjs";
+import { buildLeisCockpit } from "../scripts/build-leis-cockpit.mjs";
 
 const root = fileURLToPath(new URL("..", import.meta.url));
 
@@ -62,6 +63,25 @@ test("keeps local law reading payload with Notion as the canonical operational s
   assert.match(enhancer, /Painel operacional sincronizado do Notion/);
   assert.match(appPage, /Fonte canônica: Notion/);
 });
+test("renders Monitor laws as a Radar archive outside the active tracks", async () => {
+  const dataset = JSON.parse(await read("public/data/leis-primeiro.json"));
+  const html = await buildLeisCockpit("<!doctype html><html><head></head><body></body></html>");
+  const trackPanel = html.match(/<section class="laws-panel laws-track-panel" id="trilha">([\s\S]*?)<\/section>/)?.[1] || "";
+  const radarPanel = html.match(/<section class="laws-panel laws-radar" id="radar">([\s\S]*?)<\/section>/)?.[1] || "";
+  const radarCodes = dataset.laws
+    .filter((law) => /radar|suspenso|fora do escopo/i.test(`${law.strategic_status || ""} ${law.action || ""} ${law.priority || ""}`))
+    .map((law) => law.code);
+  const activeLawCount = dataset.laws.length - radarCodes.length;
+  const externalRadarCount = dataset.radars?.length || 0;
+
+  assert.equal((trackPanel.match(/class="laws-track-card"/g) || []).length, 3);
+  assert.doesNotMatch(trackPanel, /Monitor/);
+  assert.match(html, /<option value="Monitor">Radar — Monitor \(acervo\)<\/option>/);
+  assert.equal((radarPanel.match(/class="laws-radar-item"/g) || []).length, radarCodes.length + externalRadarCount);
+  for (const code of radarCodes) assert.ok(radarPanel.includes('<span class="law-code">' + code + '</span>'), code + " must remain available in Radar");
+  assert.ok(html.includes("<small>" + activeLawCount + " ativas · " + radarCodes.length + " em Radar</small>"));
+});
+
 test("publishes open law sessions as in progress without counting unfinished study", async () => {
   const dataset = JSON.parse(await read("public/data/leis-primeiro.json"));
   const law = dataset.laws.find((item) => item.code === "L03");

@@ -20,12 +20,22 @@ await withChrome(async({page})=>{
       for(const [width,height] of sizes){
         await browser.cdp.send("Emulation.setDeviceMetricsOverride",{width,height,deviceScaleFactor:1,mobile:width<=520});
         await browser.navigate(base+route);
+        let pageReadiness=null;
+        if(routeName==="leis"){
+          pageReadiness=await browser.cdp.evaluate("new Promise(resolve=>{let attempt=0;const inspect=()=>{const tracks=[...document.querySelectorAll('.laws-track-card')].map(node=>node.textContent.trim());const icon=document.querySelector('.reading-settings-trigger-icon')?.textContent.trim()||'';const archive=[...document.querySelectorAll('#group-filter option')].find(option=>option.value==='Monitor')?.textContent.trim()||'';const sync=document.querySelector('.laws-sync')?.textContent.trim()||'';const metric=document.querySelector('.laws-stat-map small')?.textContent.trim()||'';const ready=Boolean(document.querySelector('.laws-cockpit')&&tracks.length&&icon&&archive&&sync);if(ready||attempt>=60)return resolve({ready,tracks,icon,archive,sync,metric});attempt+=1;setTimeout(inspect,50)};inspect()})");
+          if(!pageReadiness?.ready) failures.push("leis "+width+"x"+height+" conteúdo não carregou por completo");
+          if(pageReadiness?.tracks?.length!==3||pageReadiness.tracks.some(name=>/Monitor/i.test(name))) failures.push("leis "+width+"x"+height+" Monitor apareceu como trilha ativa");
+          if(pageReadiness?.icon!=="Aa") failures.push("leis "+width+"x"+height+" controle de conforto sem ícone legível");
+          if(!/Radar.*acervo/i.test(pageReadiness?.archive||"")) failures.push("leis "+width+"x"+height+" acervo Monitor sem rótulo de Radar");
+          if(!pageReadiness?.sync?.includes("Versão dos dados")) failures.push("leis "+width+"x"+height+" versão sincronizada não visível");
+          if(!/ativas.*Radar/i.test(pageReadiness?.metric||"")) failures.push("leis "+width+"x"+height+" resumo não identifica ativas e Radar");
+        }
         const status=await browser.cdp.evaluate("({title:document.title,width:document.documentElement.scrollWidth,viewport:window.innerWidth,body:(document.body.innerText||'').slice(0,500)})");
         const overflow=Number(status.width)>Number(status.viewport)+2;
         const image=await browser.cdp.send("Page.captureScreenshot",{format:"png",captureBeyondViewport:false});
         const filename="artifacts/visual/"+routeName+"-"+width+"x"+height+".png";
         await writeFile(filename,Buffer.from(image.data,"base64"));
-        report.push({route:route||"/",width,height,overflow,title:status.title});
+        report.push({route:route||"/",width,height,overflow,title:status.title,readiness:pageReadiness});
         if(overflow) failures.push(routeName+" "+width+"x"+height+" scrollWidth="+status.width+" viewport="+status.viewport);
       }
     }
@@ -36,4 +46,4 @@ if(failures.length){
   console.error("Overflow horizontal detectado:\n"+failures.join("\n"));
   process.exit(1);
 }
-console.log("Visual QA: "+report.length+" screenshots, 12 rotas x 6 resoluções, sem overflow horizontal.");
+console.log("Visual QA: "+report.length+" screenshots, 12 rotas x 6 resoluções, sem overflow; /leis/ conferida por Radar, sincronização e controles móveis.");
