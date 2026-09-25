@@ -107,11 +107,12 @@ const laws = childPages.map((child) => {
   const row = rowsByOrder.get(operationalOrder);
   if (!row) throw new Error(`No mapped row for ${child.code} (order ${operationalOrder}).`);
   const sharedBlock = number >= 30 && number <= 32;
+  const group = (row.cargos || []).includes("Núcleo comum") ? "Núcleo comum" : groupFor(number);
   return {
     code: child.code,
     page_id: child.page_id,
     title: child.title,
-    group: groupFor(number),
+    group,
     notion_url: child.notion_url,
     internal_path: `./${child.code.toLowerCase()}/`,
     bank_record_url: row.url,
