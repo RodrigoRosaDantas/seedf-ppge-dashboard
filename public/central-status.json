@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "projectId": "seedf",
+  "publishedAt": "2026-09-27",
+  "source": {
+    "kind": "public-project-state",
+    "ref": "data/seedf-snapshot.json#dashboard",
+    "status": "synced",
+    "updatedAt": "2026-09-25T17:37:28.856Z"
+  },
+  "state": {
+    "phase": "Fase 1",
+    "cycle": "Ciclo 01",
+    "currentUnit": "L03",
+    "nextAction": "Retomar L03 · sessão incompleta",
+    "nextActionKind": "operational",
+    "alerts": []
+  }
+}
