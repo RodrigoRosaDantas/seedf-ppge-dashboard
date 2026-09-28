@@ -6,8 +6,8 @@
     "page_id": "3d4cf5a2-6731-8106-a2c9-c97816aa6cf5",
     "page_url": "https://app.notion.com/p/SEEDF-PPGE-Gestor-Analista-Apoio-Administrativo-Dashboard-PRO-3d4cf5a267318106a2c9c97816aa6cf5",
     "last_edited_time": "2026-09-25T17:01:00.000Z",
-    "synced_at": "2026-09-28T14:28:26.800Z",
-    "content_hash": "50bea32a863a5fa561d2e4899701665112c7bd1cfb7769c89957867e21f25926",
+    "synced_at": "2026-09-28T20:19:42.933Z",
+    "content_hash": "3f65097a8ac7323a6a1415bf3a7cf2564731bdbd7955538900f1a4b85fdeeece",
     "status": "synced"
   },
   "dashboard": {
@@ -580,7 +580,7 @@
     ]
   },
   "execution": {
-    "as_of": "2026-09-28T14:28:26.793Z",
+    "as_of": "2026-09-28T20:19:42.927Z",
     "c01": {
       "days": [
         {
@@ -1013,6 +1013,29 @@
     "leis_primeiro": {
       "days": [
         {
+          "day_id": "LP-20260928-L04-L1",
+          "trail": "Leis Primeiro",
+          "title": "2026-09-28 — Leis Primeiro · L04 · Questões",
+          "page_code": "L04",
+          "progress": "Questões",
+          "summary_number": null,
+          "reading_number": null,
+          "status": "Concluído",
+          "phase": null,
+          "type": "Temático",
+          "planned": 20,
+          "done": 20,
+          "correct": 15,
+          "errors": 5,
+          "doubts": 0,
+          "minutes": null,
+          "precision": 0.75,
+          "href": "https://app.notion.com/p/3d8cf5a2673181c7a523d8caf7ea91a8",
+          "executed_at": "2026-09-28",
+          "created_at": "2026-09-28T17:47:00.000Z",
+          "updated_at": "2026-09-28T17:47:00.000Z"
+        },
+        {
           "day_id": "LP-20260922-L02-L1",
           "trail": "Leis Primeiro",
           "title": "2026-09-22 — Leis Primeiro · L02 · Leitura 1",
@@ -1060,20 +1083,37 @@
         }
       ],
       "totals": {
-        "planned": 70,
-        "done": 70,
-        "correct": 59,
-        "errors": 11,
+        "planned": 90,
+        "done": 90,
+        "correct": 74,
+        "errors": 16,
         "doubts": 0,
         "minutes": null,
-        "precision": 0.8428571428571429
+        "precision": 0.8222222222222222
       },
       "statuses": {
-        "Concluído": 2
+        "Concluído": 3
       },
       "active_day_id": null,
-      "question_rows": 3,
+      "question_rows": 4,
       "question_records": [
+        {
+          "id": "3e9cf5a2-6731-8103-aa77-c4316156e029",
+          "url": "https://app.notion.com/p/L04-PNE-D0-bateria-obrigat-ria-3e9cf5a267318103aa77c4316156e029",
+          "day_id": "LP-20260928-L04-L1",
+          "page_code": "L04",
+          "title": "L04 — PNE — D0 — bateria obrigatória",
+          "discipline": "Legislação Educacional",
+          "subject": "Lei nº 15.388/2026 — Plano Nacional de Educação",
+          "strategic_use": "Ativo",
+          "date": "2026-09-28",
+          "planned": 20,
+          "done": 20,
+          "correct": 15,
+          "errors": 5,
+          "doubts": 0,
+          "precision": 0.75
+        },
         {
           "id": "3e4cf5a2-6731-8186-b1fa-e5c89898c381",
           "url": "https://app.notion.com/p/L02-LDB-D0-bateria-obrigat-ria-3e4cf5a267318186b1fae5c89898c381",
@@ -1126,8 +1166,118 @@
           "precision": 0.9666666666666667
         }
       ],
-      "error_count": 11,
+      "error_count": 16,
       "errors": [
+        {
+          "id": "3e9cf5a2-6731-81f4-b47a-fecbb5b365c6",
+          "url": "https://app.notion.com/p/L04-Q02-meta-estrat-gia-3e9cf5a2673181f4b47afecbb5b365c6",
+          "day_id": "LP-20260928-L04-L1",
+          "page_code": "L04",
+          "question_id": "L04-Q02",
+          "title": "L04-Q02 — meta × estratégia",
+          "subject": "PNE — art. 2º — diferença entre meta e estratégia",
+          "discipline": "Legislação Educacional",
+          "reason": null,
+          "pattern": "Conceito",
+          "severity": null,
+          "review": "D0",
+          "status": "Em andamento",
+          "strategic_use": "Ativo",
+          "recurrence": 1,
+          "flashcard": true,
+          "next_review": null,
+          "date": "2026-09-28",
+          "rule": "Meta é referência qualitativa ou quantitativa usada para verificar o alcance do objetivo em prazo determinado; estratégia é a ação proposta para atingir objetivos e metas.",
+          "observations": "Erro real da bateria obrigatória da L04, questão 2. Resposta enviada: C; gabarito: E. Sem dúvida marcada. O cartão-base 'diferença entre meta e estratégia' já existe na própria L04 e foi reaproveitado; não contar como flashcard novo desta sessão. Motivo e gravidade não inferidos."
+        },
+        {
+          "id": "3e9cf5a2-6731-8125-8f7d-e3e681337171",
+          "url": "https://app.notion.com/p/L04-Q05-atores-do-monitoramento-e-avalia-o-3e9cf5a2673181258f7de3e681337171",
+          "day_id": "LP-20260928-L04-L1",
+          "page_code": "L04",
+          "question_id": "L04-Q05",
+          "title": "L04-Q05 — atores do monitoramento e avaliação",
+          "subject": "PNE — art. 8º — monitoramento e avaliação",
+          "discipline": "Legislação Educacional",
+          "reason": null,
+          "pattern": "Lei seca",
+          "severity": null,
+          "review": "D0",
+          "status": "Em andamento",
+          "strategic_use": "Ativo",
+          "recurrence": 1,
+          "flashcard": true,
+          "next_review": null,
+          "date": "2026-09-28",
+          "rule": "O monitoramento e a avaliação do PNE envolvem MEC, CNE, Comissão de Educação da Câmara, Comissão de Educação e Cultura do Senado e Fórum Nacional de Educação.",
+          "observations": "Erro real da bateria obrigatória da L04, questão 5. Resposta enviada: E; gabarito: C. Sem dúvida marcada. Motivo e gravidade não inferidos."
+        },
+        {
+          "id": "3e9cf5a2-6731-81d5-805e-d48cf3493e2a",
+          "url": "https://app.notion.com/p/L04-Q14-primeiro-monitoramento-em-18-meses-3e9cf5a2673181d5805ed48cf3493e2a",
+          "day_id": "LP-20260928-L04-L1",
+          "page_code": "L04",
+          "question_id": "L04-Q14",
+          "title": "L04-Q14 — primeiro monitoramento em 18 meses",
+          "subject": "PNE — art. 30 — primeiro monitoramento",
+          "discipline": "Legislação Educacional",
+          "reason": null,
+          "pattern": "Lei seca",
+          "severity": null,
+          "review": "D0",
+          "status": "Em andamento",
+          "strategic_use": "Ativo",
+          "recurrence": 1,
+          "flashcard": true,
+          "next_review": null,
+          "date": "2026-09-28",
+          "rule": "A primeira publicação do monitoramento das metas pelo Inep ocorrerá após 18 meses do início da vigência da Lei.",
+          "observations": "Erro real da bateria obrigatória da L04, questão 14. Resposta enviada: E; gabarito: C. Sem dúvida marcada. Motivo e gravidade não inferidos."
+        },
+        {
+          "id": "3e9cf5a2-6731-8177-9e0f-cc6965233015",
+          "url": "https://app.notion.com/p/L04-Q16-primeiro-plano-de-a-es-em-at-6-meses-3e9cf5a2673181779e0fcc6965233015",
+          "day_id": "LP-20260928-L04-L1",
+          "page_code": "L04",
+          "question_id": "L04-Q16",
+          "title": "L04-Q16 — primeiro plano de ações em até 6 meses",
+          "subject": "PNE — art. 33 — primeiro plano de ações educacionais",
+          "discipline": "Legislação Educacional",
+          "reason": null,
+          "pattern": "Lei seca",
+          "severity": null,
+          "review": "D0",
+          "status": "Em andamento",
+          "strategic_use": "Ativo",
+          "recurrence": 1,
+          "flashcard": true,
+          "next_review": null,
+          "date": "2026-09-28",
+          "rule": "O primeiro plano de ações educacionais de cada ente deve ser formalizado em até 6 meses contados da publicação do respectivo plano de educação.",
+          "observations": "Erro real da bateria obrigatória da L04, questão 16. Resposta enviada: E; gabarito: C. Sem dúvida marcada. Motivo e gravidade não inferidos."
+        },
+        {
+          "id": "3e9cf5a2-6731-81c8-9094-dea1c4955a96",
+          "url": "https://app.notion.com/p/L04-Q18-limite-de-2-3-para-intera-o-com-educandos-3e9cf5a2673181c89094dea1c4955a96",
+          "day_id": "LP-20260928-L04-L1",
+          "page_code": "L04",
+          "question_id": "L04-Q18",
+          "title": "L04-Q18 — limite de 2/3 para interação com educandos",
+          "subject": "PNE — Meta 17.c — carga horária do magistério",
+          "discipline": "Legislação Educacional",
+          "reason": null,
+          "pattern": "Lei seca",
+          "severity": null,
+          "review": "D0",
+          "status": "Em andamento",
+          "strategic_use": "Ativo",
+          "recurrence": 1,
+          "flashcard": true,
+          "next_review": null,
+          "date": "2026-09-28",
+          "rule": "A Meta 17.c adota como referência, para os planos de carreira, limite máximo de 2/3 da carga horária dos profissionais do magistério para atividades de interação com os educandos.",
+          "observations": "Erro real da bateria obrigatória da L04, questão 18. Resposta enviada: E; gabarito: C. Sem dúvida marcada. Motivo e gravidade não inferidos."
+        },
         {
           "id": "3e5cf5a2-6731-8134-ac00-f31a7b841bdd",
           "url": "https://app.notion.com/p/L02-Q01-educa-o-escolar-e-institui-es-pr-prias-3e5cf5a267318134ac00f31a7b841bdd",
@@ -1371,8 +1521,37 @@
           "observations": "Erro da questão 37 da bateria suplementar de Analista Monitor. Origem: Leitura 1 da L01. Não foi criado novo flashcard porque a L01 já possuía cartão equivalente."
         }
       ],
-      "latest_day_id": "LP-20260922-L02-L1",
+      "latest_day_id": "LP-20260928-L04-L1",
       "sessions": [
+        {
+          "id": "3e9cf5a2-6731-81f6-bd46-d8b0495604f9",
+          "title": "2026-09-28 · L04 · D0 · bateria obrigatória",
+          "url": "https://app.notion.com/p/2026-09-28-L04-D0-bateria-obrigat-ria-3e9cf5a2673181f6bd46d8b0495604f9",
+          "date": "2026-09-28",
+          "page_code": "L04",
+          "stage": "D0",
+          "session_type": "Questões / diagnóstico",
+          "modality": "Questões / diagnóstico",
+          "progress": "Questões",
+          "source": "Questões",
+          "summary_number": null,
+          "reading_number": null,
+          "summary_counter": 0,
+          "reading_counter": 0,
+          "session_counter": 1,
+          "completed": true,
+          "questions_planned": 20,
+          "questions_done": 20,
+          "correct": 15,
+          "errors": 5,
+          "doubts": 0,
+          "flashcards": 4,
+          "minutes": null,
+          "precision": 0.75,
+          "href": "https://app.notion.com/p/3d8cf5a2673181c7a523d8caf7ea91a8",
+          "created_at": "2026-09-28T14:38:00.000Z",
+          "updated_at": "2026-09-28T17:48:00.000Z"
+        },
         {
           "id": "3e4cf5a2-6731-81df-9296-e5e993f40f22",
           "title": "2026-09-23 · L03 · D0 · primeira leitura",
@@ -1462,15 +1641,15 @@
         }
       ],
       "session_totals": {
-        "sessions": 3,
+        "sessions": 4,
         "summaries": null,
         "readings": 3,
-        "questions": 95,
-        "correct": 82,
-        "errors": 13,
+        "questions": 115,
+        "correct": 97,
+        "errors": 18,
         "doubts": 0,
-        "flashcards": 9,
-        "precision": 0.8631578947368421
+        "flashcards": 13,
+        "precision": 0.8434782608695652
       }
     }
   },

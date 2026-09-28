@@ -5,7 +5,7 @@
     "database_id": "49157e87d33a4fa590edfdb4b84dbc46",
     "database_url": "https://app.notion.com/p/49157e87d33a4fa590edfdb4b84dbc46",
     "data_source_id": "6b3c940a-a382-419f-9ef6-531a1dc5cad2",
-    "synced_at": "2026-09-28T14:30:41.002Z"
+    "synced_at": "2026-09-28T20:21:23.724Z"
   },
   "summary": {
     "records": 33,
@@ -202,7 +202,7 @@
       "record_kind": "trilha",
       "title": "Lei nº 15.388/2026 — Plano Nacional de Educação",
       "priority": "P0 - Nuclear",
-      "status": "Não iniciado",
+      "status": "Questões",
       "study_phase": "Não iniciado",
       "action": "Estudar agora",
       "documentary_strength": "🟢 Base histórica forte",
@@ -214,11 +214,11 @@
       "target_model": "Base",
       "additional_target_cargos": [],
       "operational_question_target": 20,
-      "questions_done": 0,
-      "hits": 0,
-      "errors": 0,
+      "questions_done": 20,
+      "hits": 15,
+      "errors": 5,
       "doubtful_hits": 0,
-      "accuracy": 0,
+      "accuracy": 75,
       "flashcards_done": false,
       "cargos": [
         "Núcleo comum",
@@ -231,7 +231,7 @@
       "summary_number": null,
       "readings_done": 0,
       "reading_number": null,
-      "sessions_done": 0,
+      "sessions_done": 1,
       "d0": false,
       "d7": false,
       "d20": false,
@@ -243,7 +243,7 @@
       "observations": "L04 auditada operacionalmente em 11/09/2026. Página convertida em material executável com 20 itens C/E próprios, distribuídos em 7 itens dos arts. 1º–15, 5 dos arts. 16–27, 4 dos arts. 28–37 e 4 do Anexo I, com gabarito recolhido. Flashcards existentes são normativos e focados em prazos, conceitos, competências e metas. Não usar o PNE 2014–2024 como base atual de lei seca.",
       "complementary_sources": "Câmara dos Deputados — texto atualizado da Lei nº 15.388/2026: https://www2.camara.leg.br/legin/fed/lei/2026/lei-15388-14-abril-2026-798950-normaatualizada-pl.html | Presidência da República — republicação do Anexo II em 17/04/2026 por inexatidão material: https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2026/ret/lei15388-26-rep.htm | Senado Federal — dados e publicações oficiais da norma: https://legis.senado.leg.br/norma/43047141",
       "last_read": null,
-      "last_audit": "2026-09-24"
+      "last_audit": "2026-09-28"
     },
     {
       "page_id": "3d8cf5a2-6731-8139-a7b4-cc710093085d",
