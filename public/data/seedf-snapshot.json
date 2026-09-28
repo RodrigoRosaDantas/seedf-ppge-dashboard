@@ -6,8 +6,8 @@
     "page_id": "3d4cf5a2-6731-8106-a2c9-c97816aa6cf5",
     "page_url": "https://app.notion.com/p/SEEDF-PPGE-Gestor-Analista-Apoio-Administrativo-Dashboard-PRO-3d4cf5a267318106a2c9c97816aa6cf5",
     "last_edited_time": "2026-09-25T17:01:00.000Z",
-    "synced_at": "2026-09-28T20:19:42.933Z",
-    "content_hash": "3f65097a8ac7323a6a1415bf3a7cf2564731bdbd7955538900f1a4b85fdeeece",
+    "synced_at": "2026-09-28T21:26:02.017Z",
+    "content_hash": "95774e8bd953fef9dcbbec69a9b61752f912bf7d00687b8610afd9bf02ee90e2",
     "status": "synced"
   },
   "dashboard": {
@@ -580,7 +580,7 @@
     ]
   },
   "execution": {
-    "as_of": "2026-09-28T20:19:42.927Z",
+    "as_of": "2026-09-28T21:26:02.010Z",
     "c01": {
       "days": [
         {
@@ -1036,6 +1036,29 @@
           "updated_at": "2026-09-28T17:47:00.000Z"
         },
         {
+          "day_id": "LP-20260923-L03-L1",
+          "trail": "Leis Primeiro",
+          "title": "2026-09-23 — Leis Primeiro · L03 · Leitura 1",
+          "page_code": "L03",
+          "progress": "Leitura 1",
+          "summary_number": null,
+          "reading_number": 1,
+          "status": "Concluído",
+          "phase": "Fase 1",
+          "type": "Temático",
+          "planned": 25,
+          "done": 25,
+          "correct": 23,
+          "errors": 2,
+          "doubts": 0,
+          "minutes": null,
+          "precision": 0.92,
+          "href": "https://app.notion.com/p/3d8cf5a267318146b405d71a373c0a4d",
+          "executed_at": "2026-09-23",
+          "created_at": "2026-09-28T21:24:00.000Z",
+          "updated_at": "2026-09-28T21:24:00.000Z"
+        },
+        {
           "day_id": "LP-20260922-L02-L1",
           "trail": "Leis Primeiro",
           "title": "2026-09-22 — Leis Primeiro · L02 · Leitura 1",
@@ -1083,19 +1106,19 @@
         }
       ],
       "totals": {
-        "planned": 90,
-        "done": 90,
-        "correct": 74,
-        "errors": 16,
+        "planned": 115,
+        "done": 115,
+        "correct": 97,
+        "errors": 18,
         "doubts": 0,
         "minutes": null,
-        "precision": 0.8222222222222222
+        "precision": 0.8434782608695652
       },
       "statuses": {
-        "Concluído": 3
+        "Concluído": 4
       },
       "active_day_id": null,
-      "question_rows": 4,
+      "question_rows": 5,
       "question_records": [
         {
           "id": "3e9cf5a2-6731-8103-aa77-c4316156e029",
@@ -1113,6 +1136,23 @@
           "errors": 5,
           "doubts": 0,
           "precision": 0.75
+        },
+        {
+          "id": "3e9cf5a2-6731-8120-bb84-e496b7a2589a",
+          "url": "https://app.notion.com/p/L03-Regimento-Escolar-D0-bateria-obrigat-ria-3e9cf5a267318120bb84e496b7a2589a",
+          "day_id": "LP-20260923-L03-L1",
+          "page_code": "L03",
+          "title": "L03 — Regimento Escolar — D0 — bateria obrigatória",
+          "discipline": "Legislação Educacional",
+          "subject": "Portaria SEEDF nº 15/2015 — Regimento Escolar da Rede Pública",
+          "strategic_use": "Ativo",
+          "date": "2026-09-23",
+          "planned": 25,
+          "done": 25,
+          "correct": 23,
+          "errors": 2,
+          "doubts": 0,
+          "precision": 0.92
         },
         {
           "id": "3e4cf5a2-6731-8186-b1fa-e5c89898c381",
@@ -1166,7 +1206,7 @@
           "precision": 0.9666666666666667
         }
       ],
-      "error_count": 16,
+      "error_count": 18,
       "errors": [
         {
           "id": "3e9cf5a2-6731-81f4-b47a-fecbb5b365c6",
@@ -1277,6 +1317,50 @@
           "date": "2026-09-28",
           "rule": "A Meta 17.c adota como referência, para os planos de carreira, limite máximo de 2/3 da carga horária dos profissionais do magistério para atividades de interação com os educandos.",
           "observations": "Erro real da bateria obrigatória da L04, questão 18. Resposta enviada: E; gabarito: C. Sem dúvida marcada. Motivo e gravidade não inferidos."
+        },
+        {
+          "id": "3e9cf5a2-6731-81ec-9b4c-e6a900a66d9e",
+          "url": "https://app.notion.com/p/L03-Q06-composi-o-da-equipe-gestora-3e9cf5a2673181ec9b4ce6a900a66d9e",
+          "day_id": "LP-20260923-L03-L1",
+          "page_code": "L03",
+          "question_id": "L03-Q06",
+          "title": "L03-Q06 — composição da equipe gestora",
+          "subject": "Regimento Escolar — equipe gestora conforme modulação",
+          "discipline": "Legislação Educacional",
+          "reason": null,
+          "pattern": "Lei seca",
+          "severity": null,
+          "review": "D0",
+          "status": "Em andamento",
+          "strategic_use": "Ativo",
+          "recurrence": 1,
+          "flashcard": true,
+          "next_review": null,
+          "date": "2026-09-23",
+          "rule": "A equipe gestora é composta por Diretor, Vice-Diretor, Supervisores e Chefe de Secretaria, conforme a modulação da unidade escolar.",
+          "observations": "Erro real da bateria obrigatória da L03, questão 6. O cartão reaplicável correspondente foi gerado na sessão. Motivo e gravidade não inferidos."
+        },
+        {
+          "id": "3e9cf5a2-6731-8194-bcb7-f064129f9e34",
+          "url": "https://app.notion.com/p/L03-Q19-avan-o-de-estudos-e-conclus-o-da-Educa-o-B-sica-3e9cf5a267318194bcb7f064129f9e34",
+          "day_id": "LP-20260923-L03-L1",
+          "page_code": "L03",
+          "question_id": "L03-Q19",
+          "title": "L03-Q19 — avanço de estudos e conclusão da Educação Básica",
+          "subject": "Regimento Escolar — avanço de estudos",
+          "discipline": "Legislação Educacional",
+          "reason": null,
+          "pattern": "Lei seca",
+          "severity": null,
+          "review": "D0",
+          "status": "Em andamento",
+          "strategic_use": "Ativo",
+          "recurrence": 1,
+          "flashcard": true,
+          "next_review": null,
+          "date": "2026-09-23",
+          "rule": "O avanço de estudos não pode ser utilizado com o objetivo de concluir a Educação Básica.",
+          "observations": "Erro real da bateria obrigatória da L03, questão 19. O cartão reaplicável correspondente foi gerado na sessão. Motivo e gravidade não inferidos."
         },
         {
           "id": "3e5cf5a2-6731-8134-ac00-f31a7b841bdd",
