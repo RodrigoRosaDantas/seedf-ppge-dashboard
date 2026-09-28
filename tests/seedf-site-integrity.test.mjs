@@ -195,9 +195,18 @@ test("keeps every Leis Primeiro page aligned with the operational method", async
   assert.equal(l01Day?.title, "2026-09-21 — Leis Primeiro · L01 · Leitura 1");
   assert.equal(l01Day?.summary_number, null);
   assert.equal(l01Day?.reading_number, 1);
-  assert.equal(dataset.execution.totals.done, 70);
-  assert.equal(dataset.execution.totals.correct, 59);
-  assert.equal(dataset.execution.totals.errors, 11);
+  const executionDayTotals = (dataset.execution.days || []).reduce(
+    (totals, day) => ({
+      done: totals.done + (Number(day.done) || 0),
+      correct: totals.correct + (Number(day.correct) || 0),
+      errors: totals.errors + (Number(day.errors) || 0),
+    }),
+    { done: 0, correct: 0, errors: 0 },
+  );
+  assert.deepEqual(
+    [dataset.execution.totals.done, dataset.execution.totals.correct, dataset.execution.totals.errors],
+    [executionDayTotals.done, executionDayTotals.correct, executionDayTotals.errors],
+  );
   const l02Day = dataset.execution.days.find((day) => day.page_code === "L02");
   assert.equal(l02Day?.day_id, "LP-20260922-L02-L1");
   assert.equal(l02Day?.title, "2026-09-22 — Leis Primeiro · L02 · Leitura 1");
