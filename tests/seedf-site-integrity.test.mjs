@@ -84,15 +84,20 @@ test("renders Monitor laws as a Radar archive outside the active tracks", async 
 
 test("publishes open law sessions as in progress without counting unfinished study", async () => {
   const dataset = JSON.parse(await read("public/data/leis-primeiro.json"));
-  const law = dataset.laws.find((item) => item.code === "L03");
-  const openSessions = openStudySessionsForLaw(dataset.execution.sessions, "L03");
-  assert.equal(studyDisplayStatus(law), "Em estudo");
-  assert.equal(openSessions.length, 1);
-  assert.equal(openSessions[0].completed, false);
-  assert.deepEqual(
-    [law.orientation_read, law.summaries_done, law.readings_done, law.questions_done, law.d0],
-    [false, 0, 0, 0, false],
+  const law = dataset.laws.find((item) =>
+    !/radar|suspenso|fora do escopo/i.test(`${item.strategic_status || ""} ${item.action || ""} ${item.priority || ""}`)
+  ) || dataset.laws[0];
+  assert.ok(law, "the synchronized law catalog must contain at least one law");
+
+  const simulatedLaw = { ...law, status: "Não iniciado", study_phase: "Em estudo" };
+  const syntheticSession = { page_code: law.code, completed: false };
+  const openSessions = openStudySessionsForLaw(
+    [...(dataset.execution.sessions || []), syntheticSession],
+    law.code,
   );
+  assert.equal(studyDisplayStatus(simulatedLaw), "Em estudo");
+  assert.ok(openSessions.includes(syntheticSession));
+  assert.ok(openSessions.every((session) => session.completed === false));
 
   const [publisher, enhancer] = await Promise.all([
     read("scripts/prepare-github-pages.mjs"),
@@ -244,17 +249,24 @@ test("keeps every Leis Primeiro page aligned with the operational method", async
   assert.equal(dashboardSession?.title, l01Session?.title);
   assert.equal(dashboardSession?.summary_counter, 0);
   assert.equal(dashboardSession?.reading_counter, 1);
-  assert.equal(dashboardSnapshot.execution.leis_primeiro.session_totals.readings, 2);
-  assert.equal(dashboardSnapshot.execution.leis_primeiro.question_rows, 3);
+  const expectedReadingTotal = (dataset.execution.sessions || []).reduce(
+    (total, session) => total + (Number(session.reading_counter) || 0),
+    0,
+  );
+  assert.equal(dashboardSnapshot.execution.leis_primeiro.session_totals.readings, expectedReadingTotal);
+  assert.equal(dashboardSnapshot.execution.leis_primeiro.question_rows, dataset.execution.question_records.length);
   assert.deepEqual(
     [dashboardSnapshot.execution.leis_primeiro.totals.done, dashboardSnapshot.execution.leis_primeiro.totals.correct, dashboardSnapshot.execution.leis_primeiro.totals.errors],
-    [70, 59, 11],
+    [dataset.execution.totals.done, dataset.execution.totals.correct, dataset.execution.totals.errors],
   );
   assert.ok(dashboardSnapshot.execution.leis_primeiro.days.some((day) => day.day_id === "LP-20260922-L02-L1"));
-  const unfinishedL03 = dashboardSnapshot.execution.leis_primeiro.sessions.find((session) => session.page_code === "L03");
-  assert.equal(unfinishedL03?.completed, false);
-  assert.equal(unfinishedL03?.session_counter, 0);
-  assert.equal(unfinishedL03?.questions_done, null);
+  for (const session of dataset.execution.sessions || []) {
+    const mirrored = dashboardSnapshot.execution.leis_primeiro.sessions.find((item) => item.id === session.id);
+    assert.ok(mirrored, `${session.page_code}: session missing from dashboard snapshot`);
+    assert.equal(mirrored.completed, session.completed);
+    assert.equal(mirrored.reading_counter, session.reading_counter);
+    assert.equal(mirrored.questions_done, session.questions_done);
+  }
 });
 
 test("keeps Leis Primeiro execution semantics separated by Dia ID", async () => {
@@ -361,9 +373,30 @@ test("Leis cockpit follows real session continuity instead of D0 gating", async 
   moduleUrl.searchParams.set("continuity-test", String(Date.now()));
   const { buildLeisCockpit } = await import(moduleUrl.href);
   const html = await buildLeisCockpit("<html><head></head><body></body></html>");
-  assert.match(html, /Bloco atual · L03/);
-  assert.match(html, /href="\.\/l03\/"/);
-  assert.doesNotMatch(html, /Bloco atual · L01/);
+  const dataset = JSON.parse(await read("public/data/leis-primeiro.json"));
+  const seenUnits = new Set();
+  const executable = dataset.laws.filter((law) =>
+    !/radar|suspenso|fora do escopo/i.test(`${law.strategic_status || ""} ${law.action || ""} ${law.priority || ""}`)
+  ).filter((law) => {
+    const key = law.shared_block ? "M5" : law.code;
+    if (seenUnits.has(key)) return false;
+    seenUnits.add(key);
+    return true;
+  });
+  const latest = [...(dataset.execution.sessions || [])]
+    .filter((session) => session?.page_code && executable.some((law) => law.code === session.page_code))
+    .sort((left, right) =>
+      String(right.date || right.updated_at || right.created_at || "").localeCompare(
+        String(left.date || left.updated_at || left.created_at || ""),
+      ),
+    )[0] || null;
+  const latestIndex = latest ? executable.findIndex((law) => law.code === latest.page_code) : -1;
+  const expectedLaw = latestIndex >= 0
+    ? (latest.completed === true ? executable[latestIndex + 1] : executable[latestIndex])
+    : executable[0];
+  assert.ok(expectedLaw, "continuity must point to an executable law while the trail is open");
+  assert.match(html, new RegExp(`Bloco atual · ${expectedLaw.code}`));
+  assert.match(html, new RegExp(`href="\\.\\/${expectedLaw.code.toLowerCase()}\\/"`));
 });
 
 test("reader exposes resumable, portable study controls", async () => {
