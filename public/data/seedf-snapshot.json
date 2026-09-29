@@ -6,15 +6,15 @@
     "page_id": "3d4cf5a2-6731-8106-a2c9-c97816aa6cf5",
     "page_url": "https://app.notion.com/p/SEEDF-PPGE-Gestor-Analista-Apoio-Administrativo-Dashboard-PRO-3d4cf5a267318106a2c9c97816aa6cf5",
     "last_edited_time": "2026-09-25T17:01:00.000Z",
-    "synced_at": "2026-09-29T13:51:25.017Z",
-    "content_hash": "de7769a857100ee1e5f863362f95bf7e1c9cca72fd9b6ad3309667bb830d5b3d",
+    "synced_at": "2026-09-29T18:24:49.031Z",
+    "content_hash": "1f5d431714cd7046ad982bc6ba9151ae303b744e7cd0bd40e0ac92f39dd69e5f",
     "status": "synced"
   },
   "dashboard": {
     "phase": "Fase 1",
     "cycle": "Ciclo 01",
-    "next_action": "Retomar L05 · sessão incompleta",
-    "prepared_cycle_day": "D01",
+    "next_action": "D01 · Português fino + LDB",
+    "prepared_cycle_day": null,
     "planned_questions": 355,
     "projected_questions": 425,
     "executed_questions": 0,
@@ -580,7 +580,7 @@
     ]
   },
   "execution": {
-    "as_of": "2026-09-29T13:51:25.011Z",
+    "as_of": "2026-09-29T18:24:49.025Z",
     "c01": {
       "days": [
         {
@@ -1622,19 +1622,19 @@
           "reading_number": null,
           "summary_counter": 0,
           "reading_counter": 0,
-          "session_counter": 0,
-          "completed": false,
+          "session_counter": 1,
+          "completed": true,
           "questions_planned": 30,
-          "questions_done": null,
-          "correct": null,
-          "errors": null,
-          "doubts": null,
-          "flashcards": null,
+          "questions_done": 30,
+          "correct": 26,
+          "errors": 4,
+          "doubts": 0,
+          "flashcards": 4,
           "minutes": null,
-          "precision": null,
+          "precision": 0.8666666666666667,
           "href": "https://app.notion.com/p/3d8cf5a26731815d897de73fd0bd8ed6",
           "created_at": "2026-09-29T12:56:00.000Z",
-          "updated_at": "2026-09-29T12:56:00.000Z"
+          "updated_at": "2026-09-29T17:21:00.000Z"
         },
         {
           "id": "3e9cf5a2-6731-81f6-bd46-d8b0495604f9",
@@ -1754,15 +1754,15 @@
         }
       ],
       "session_totals": {
-        "sessions": 4,
+        "sessions": 5,
         "summaries": null,
         "readings": 3,
-        "questions": null,
-        "correct": null,
-        "errors": null,
-        "doubts": null,
-        "flashcards": null,
-        "precision": null
+        "questions": 145,
+        "correct": 123,
+        "errors": 22,
+        "doubts": 0,
+        "flashcards": 17,
+        "precision": 0.8482758620689655
       }
     }
   },
