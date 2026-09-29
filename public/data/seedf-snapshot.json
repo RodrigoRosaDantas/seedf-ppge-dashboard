@@ -6,15 +6,15 @@
     "page_id": "3d4cf5a2-6731-8106-a2c9-c97816aa6cf5",
     "page_url": "https://app.notion.com/p/SEEDF-PPGE-Gestor-Analista-Apoio-Administrativo-Dashboard-PRO-3d4cf5a267318106a2c9c97816aa6cf5",
     "last_edited_time": "2026-09-25T17:01:00.000Z",
-    "synced_at": "2026-09-28T21:26:02.017Z",
-    "content_hash": "95774e8bd953fef9dcbbec69a9b61752f912bf7d00687b8610afd9bf02ee90e2",
+    "synced_at": "2026-09-29T13:51:25.017Z",
+    "content_hash": "de7769a857100ee1e5f863362f95bf7e1c9cca72fd9b6ad3309667bb830d5b3d",
     "status": "synced"
   },
   "dashboard": {
     "phase": "Fase 1",
     "cycle": "Ciclo 01",
-    "next_action": "D01 · Português fino + LDB",
-    "prepared_cycle_day": null,
+    "next_action": "Retomar L05 · sessão incompleta",
+    "prepared_cycle_day": "D01",
     "planned_questions": 355,
     "projected_questions": 425,
     "executed_questions": 0,
@@ -580,7 +580,7 @@
     ]
   },
   "execution": {
-    "as_of": "2026-09-28T21:26:02.010Z",
+    "as_of": "2026-09-29T13:51:25.011Z",
     "c01": {
       "days": [
         {
@@ -1608,6 +1608,35 @@
       "latest_day_id": "LP-20260928-L04-L1",
       "sessions": [
         {
+          "id": "3eacf5a2-6731-81c1-8a44-dc3ca616029d",
+          "title": "2026-09-29 · L05 · D0 · bateria obrigatória",
+          "url": "https://app.notion.com/p/2026-09-29-L05-D0-bateria-obrigat-ria-3eacf5a2673181c18a44dc3ca616029d",
+          "date": "2026-09-29",
+          "page_code": "L05",
+          "stage": "D0",
+          "session_type": "Questões / diagnóstico",
+          "modality": "Questões / diagnóstico",
+          "progress": "Questões",
+          "source": "Questões",
+          "summary_number": null,
+          "reading_number": null,
+          "summary_counter": 0,
+          "reading_counter": 0,
+          "session_counter": 0,
+          "completed": false,
+          "questions_planned": 30,
+          "questions_done": null,
+          "correct": null,
+          "errors": null,
+          "doubts": null,
+          "flashcards": null,
+          "minutes": null,
+          "precision": null,
+          "href": "https://app.notion.com/p/3d8cf5a26731815d897de73fd0bd8ed6",
+          "created_at": "2026-09-29T12:56:00.000Z",
+          "updated_at": "2026-09-29T12:56:00.000Z"
+        },
+        {
           "id": "3e9cf5a2-6731-81f6-bd46-d8b0495604f9",
           "title": "2026-09-28 · L04 · D0 · bateria obrigatória",
           "url": "https://app.notion.com/p/2026-09-28-L04-D0-bateria-obrigat-ria-3e9cf5a2673181f6bd46d8b0495604f9",
@@ -1728,12 +1757,12 @@
         "sessions": 4,
         "summaries": null,
         "readings": 3,
-        "questions": 115,
-        "correct": 97,
-        "errors": 18,
-        "doubts": 0,
-        "flashcards": 13,
-        "precision": 0.8434782608695652
+        "questions": null,
+        "correct": null,
+        "errors": null,
+        "doubts": null,
+        "flashcards": null,
+        "precision": null
       }
     }
   },
