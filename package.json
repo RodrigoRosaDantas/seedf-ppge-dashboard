@@ -22,7 +22,7 @@
     "e2e": "node scripts/e2e-study-os.mjs",
     "quality": "npm run lint && npm run type-check && npm run validate:snapshot && npm run security:audit && npm run test:unit",
     "audit:toolchain": "npm audit --audit-level=critical",
-    "test:source": "node --test tests/seedf-intelligence.test.mjs tests/seedf-site-integrity.test.mjs",
+    "test:source": "node --test tests/seedf-intelligence.test.mjs tests/seedf-site-integrity.test.mjs tests/leis-primeiro-progress.test.mjs",
     "test:rendered": "node --test tests/rendered-html.test.mjs tests/ui-components.test.mjs"
   },
   "dependencies": {
