@@ -60,3 +60,47 @@ body{overflow-x:hidden}
 }
 @media(max-width:370px){.os-content{padding-left:10px;padding-right:10px}.os-metrics-grid{grid-template-columns:1fr}.os-quality-summary{grid-template-columns:1fr 1fr}.os-bottom-nav span{font-size:7px}}
 @media(prefers-reduced-motion:reduce){.os-spin{animation:none}.os-sidebar{transition:none}}
+
+.os-text-button{padding:0;border:0;background:transparent;font:inherit;cursor:pointer}
+.os-reader-backdrop{position:fixed;inset:0;z-index:90;display:grid;place-items:center;padding:18px;background:rgba(7,24,33,.52);backdrop-filter:blur(5px)}
+.os-reader{width:min(920px,100%);max-height:calc(100vh - 36px);overflow:auto;padding:26px;border:1px solid #dce7e9;border-radius:18px;background:#fff;box-shadow:0 28px 80px rgba(8,33,42,.28)}
+.os-reader-head{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;padding-bottom:16px;border-bottom:1px solid #e7edef}
+.os-reader-head h2{margin:5px 0 6px;color:#173945;font-size:clamp(24px,4vw,36px);line-height:1.08;letter-spacing:-.035em}
+.os-reader-head small{display:block;color:#72868e;font-size:10px}
+.os-reader-close{display:grid;place-items:center;width:38px;height:38px;flex:0 0 auto;border:1px solid #dbe6e8;border-radius:10px;color:#45616b;background:#fff;cursor:pointer}
+.os-reader-state{display:flex;align-items:center;gap:11px;margin-top:20px;padding:16px;border:1px solid #dce8e9;border-radius:12px;color:#58727b;background:#f8fbfb}
+.os-reader-state strong{color:#173945;font-size:12px}
+.os-reader-state span{display:block;margin-top:3px;color:#7d8f96;font-size:9px}
+.os-reader-error{border-color:#f0d0ca;background:#fff8f6}
+.os-reader-error svg{color:#c96352}
+.os-reader-body{margin-top:22px;color:#213d47;font-size:13px;line-height:1.72}
+.os-reader-body h2{margin:28px 0 10px;color:#173945;font-size:22px;line-height:1.18}
+.os-reader-body h3{margin:23px 0 8px;color:#173945;font-size:16px}
+.os-reader-body p{margin:0 0 13px}
+.os-reader-body ul,.os-reader-body ol{margin:8px 0 16px;padding-left:22px}
+.os-reader-body li{margin:6px 0}
+.os-reader-body blockquote{margin:17px 0;padding:13px 15px;border-left:3px solid #20aa9a;border-radius:0 10px 10px 0;color:#536b74;background:#f3fbf9}
+.os-reader-body .study-callout{margin:17px 0;padding:14px 16px;border:1px solid #eadfca;border-radius:11px;background:#fffaf1}
+.os-reader-body .study-toggle{margin:14px 0;border:1px solid #dfe8ea;border-radius:10px;background:#fbfdfe}
+.os-reader-body .study-toggle summary{padding:12px 14px;cursor:pointer;font-weight:800}
+.os-reader-body .study-toggle>:not(summary){margin-left:14px;margin-right:14px}
+.os-reader-body .study-table-wrap{overflow-x:auto;margin:16px 0;border:1px solid #dfe8ea;border-radius:10px}
+.os-reader-body table{width:100%;min-width:540px;border-collapse:collapse;font-size:11px}
+.os-reader-body th,.os-reader-body td{padding:9px 11px;border-bottom:1px solid #e5edef;text-align:left;vertical-align:top}
+.os-reader-body th{background:#f4f8f9}
+.os-reader-body pre{overflow-x:auto;padding:13px;border-radius:10px;color:#eef9f7;background:#0b2733}
+.os-reader-body a{color:#0d847d;font-weight:800;text-underline-offset:3px}
+.os-reader-body img{display:block;max-width:100%;height:auto;margin:15px auto;border-radius:10px}
+.os-reader-body .study-media-note{margin:14px 0;padding:11px 13px;border:1px dashed #d6e1e4;border-radius:10px;color:#71858d;background:#fafcfd}
+.os-reader-actions{display:flex;justify-content:flex-end;gap:9px;flex-wrap:wrap;margin-top:24px;padding-top:16px;border-top:1px solid #e7edef}
+.os-reader-primary,.os-reader-secondary{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:40px;padding:0 14px;border-radius:9px;font-size:10px;font-weight:900;text-decoration:none;cursor:pointer}
+.os-reader-primary{border:1px solid #0d837b;color:#fff;background:#0d837b}
+.os-reader-secondary{border:1px solid #dbe6e8;color:#36545e;background:#fff}
+@media(max-width:820px){
+  .os-reader-backdrop{align-items:end;padding:8px}
+  .os-reader{max-height:calc(100vh - 16px);padding:20px 16px;border-radius:16px}
+  .os-reader-head h2{font-size:26px}
+  .os-reader-body{font-size:12px}
+  .os-reader-actions{display:grid;grid-template-columns:1fr}
+  .os-reader-primary,.os-reader-secondary{width:100%}
+}
