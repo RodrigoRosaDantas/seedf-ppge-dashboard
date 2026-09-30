@@ -5,7 +5,7 @@
     "database_id": "49157e87d33a4fa590edfdb4b84dbc46",
     "database_url": "https://app.notion.com/p/49157e87d33a4fa590edfdb4b84dbc46",
     "data_source_id": "6b3c940a-a382-419f-9ef6-531a1dc5cad2",
-    "synced_at": "2026-09-30T18:35:47.154Z"
+    "synced_at": "2026-09-30T21:03:51.360Z"
   },
   "summary": {
     "records": 33,
@@ -326,11 +326,11 @@
       "target_model": "Base",
       "additional_target_cargos": [],
       "operational_question_target": 20,
-      "questions_done": 0,
-      "hits": 0,
-      "errors": 0,
+      "questions_done": 20,
+      "hits": 19,
+      "errors": 1,
       "doubtful_hits": 0,
-      "accuracy": 0,
+      "accuracy": 95,
       "flashcards_done": false,
       "cargos": [
         "Núcleo comum",
@@ -340,10 +340,10 @@
       ],
       "orientation_read": false,
       "summaries_done": 0,
-      "summary_number": 1,
+      "summary_number": null,
       "readings_done": 0,
       "reading_number": null,
-      "sessions_done": 0,
+      "sessions_done": 1,
       "d0": false,
       "d7": false,
       "d20": false,

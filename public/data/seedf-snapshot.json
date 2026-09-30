@@ -6,15 +6,15 @@
     "page_id": "3d4cf5a2-6731-8106-a2c9-c97816aa6cf5",
     "page_url": "https://app.notion.com/p/SEEDF-PPGE-Gestor-Analista-Apoio-Administrativo-Dashboard-PRO-3d4cf5a267318106a2c9c97816aa6cf5",
     "last_edited_time": "2026-09-25T17:01:00.000Z",
-    "synced_at": "2026-09-30T18:33:57.527Z",
-    "content_hash": "a28e2b8a6456b964cfcc5a1f26e2616b2b396be923d6035c8c3003b069acb15e",
+    "synced_at": "2026-09-30T21:02:10.723Z",
+    "content_hash": "7e49aad2ccbe27e750f0733b2b91c3a5222955c566ee90953b02afd94cb8f8bd",
     "status": "synced"
   },
   "dashboard": {
     "phase": "Fase 1",
     "cycle": "Ciclo 01",
-    "next_action": "Retomar L06 · sessão incompleta",
-    "prepared_cycle_day": "D01",
+    "next_action": "D01 · Português fino + LDB",
+    "prepared_cycle_day": null,
     "planned_questions": 355,
     "projected_questions": 425,
     "executed_questions": 0,
@@ -580,7 +580,7 @@
     ]
   },
   "execution": {
-    "as_of": "2026-09-30T18:33:57.519Z",
+    "as_of": "2026-09-30T21:02:10.717Z",
     "c01": {
       "days": [
         {
@@ -588,7 +588,7 @@
           "day_id": "C01-D01",
           "trail": "Ciclo principal",
           "title": "C01-D01 — Português fino + LDB",
-          "status": "Próximo",
+          "status": "Em andamento",
           "type": "Temático",
           "order": 1,
           "planned": 25,
@@ -600,9 +600,9 @@
           "precision": null,
           "progress": 0,
           "href": "https://app.notion.com/p/3d4cf5a2673181fabef1f407c2451392",
-          "executed_at": null,
+          "executed_at": "2026-09-30",
           "created_at": "2026-09-08T00:34:00.000Z",
-          "updated_at": "2026-09-21T18:17:00.000Z"
+          "updated_at": "2026-09-30T20:51:00.000Z"
         },
         {
           "day": "D02",
@@ -1002,7 +1002,7 @@
         }
       ],
       "statuses": {
-        "Próximo": 1,
+        "Em andamento": 1,
         "Não iniciado": 13
       },
       "active_day": "D01",
@@ -1737,32 +1737,32 @@
       "sessions": [
         {
           "id": "3ebcf5a2-6731-81b7-a6f3-f375833e3b07",
-          "title": "2026-09-30 · L06 · D0 · resumo 1 + questões",
-          "url": "https://app.notion.com/p/2026-09-30-L06-D0-resumo-1-quest-es-3ebcf5a2673181b7a6f3f375833e3b07",
+          "title": "2026-09-30 · L06 · D0 · bateria obrigatória",
+          "url": "https://app.notion.com/p/2026-09-30-L06-D0-bateria-obrigat-ria-3ebcf5a2673181b7a6f3f375833e3b07",
           "date": "2026-09-30",
           "page_code": "L06",
           "stage": "D0",
-          "session_type": "Estudo de resumo",
-          "modality": "Resumo / material",
-          "progress": "Resumo 1",
-          "source": "Material anotado",
-          "summary_number": 1,
+          "session_type": "Questões / diagnóstico",
+          "modality": "Questões / diagnóstico",
+          "progress": "Questões",
+          "source": "Questões",
+          "summary_number": null,
           "reading_number": null,
           "summary_counter": 0,
           "reading_counter": 0,
-          "session_counter": 0,
-          "completed": false,
+          "session_counter": 1,
+          "completed": true,
           "questions_planned": 20,
-          "questions_done": null,
-          "correct": null,
-          "errors": null,
-          "doubts": null,
-          "flashcards": null,
+          "questions_done": 20,
+          "correct": 19,
+          "errors": 1,
+          "doubts": 0,
+          "flashcards": 1,
           "minutes": null,
-          "precision": null,
+          "precision": 0.95,
           "href": "https://app.notion.com/p/3d8cf5a2673181ef8a87eca0d26dc32f",
           "created_at": "2026-09-30T14:30:00.000Z",
-          "updated_at": "2026-09-30T14:30:00.000Z"
+          "updated_at": "2026-09-30T20:32:00.000Z"
         },
         {
           "id": "3eacf5a2-6731-81c1-8a44-dc3ca616029d",
@@ -1911,15 +1911,15 @@
         }
       ],
       "session_totals": {
-        "sessions": 5,
+        "sessions": 6,
         "summaries": null,
         "readings": 3,
-        "questions": null,
-        "correct": null,
-        "errors": null,
-        "doubts": null,
-        "flashcards": null,
-        "precision": null
+        "questions": 165,
+        "correct": 142,
+        "errors": 23,
+        "doubts": 0,
+        "flashcards": 18,
+        "precision": 0.8606060606060606
       }
     }
   },
