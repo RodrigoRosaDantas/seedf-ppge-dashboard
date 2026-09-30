@@ -651,10 +651,13 @@ function TrailView({ intel, data, basePrefix }: { intel:any; data:Payload; baseP
   };
 
   useEffect(()=>{
-    const code=new URL(window.location.href).searchParams.get("material")?.toUpperCase()||"";
-    if(!/^D(0[1-9]|1[0-4])$/.test(code)) return;
-    const day=days.find((item:any)=>String(item.day).toUpperCase()===code);
-    if(day) setSelectedDay(materialForDay(day));
+    const frame=window.requestAnimationFrame(()=>{
+      const code=new URL(window.location.href).searchParams.get("material")?.toUpperCase()||"";
+      if(!/^D(0[1-9]|1[0-4])$/.test(code)) return;
+      const day=days.find((item:any)=>String(item.day).toUpperCase()===code);
+      if(day) setSelectedDay(materialForDay(day));
+    });
+    return ()=>window.cancelAnimationFrame(frame);
   // The query parameter is read once when the Trail view is mounted.
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[]);
