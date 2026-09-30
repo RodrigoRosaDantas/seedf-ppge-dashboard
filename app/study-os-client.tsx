@@ -630,6 +630,35 @@ function TrailView({ intel, data, basePrefix }: { intel:any; data:Payload; baseP
   const days=data.snapshot?.execution?.c01?.days || [];
   const materials=data.snapshot?.materials?.days || [];
   const [selectedDay,setSelectedDay]=useState<any|null>(null);
+
+  const materialForDay=(day:any)=>({
+    ...day,
+    material:materials.find((item:any)=>String(item.day).toUpperCase()===String(day.day).toUpperCase())||null,
+  });
+
+  const openDayMaterial=(day:any)=>{
+    setSelectedDay(materialForDay(day));
+    const url=new URL(window.location.href);
+    url.searchParams.set("material",String(day.day).toUpperCase());
+    window.history.replaceState(null,"",url.pathname+url.search+url.hash);
+  };
+
+  const closeDayMaterial=()=>{
+    setSelectedDay(null);
+    const url=new URL(window.location.href);
+    url.searchParams.delete("material");
+    window.history.replaceState(null,"",url.pathname+url.search+url.hash);
+  };
+
+  useEffect(()=>{
+    const code=new URL(window.location.href).searchParams.get("material")?.toUpperCase()||"";
+    if(!/^D(0[1-9]|1[0-4])$/.test(code)) return;
+    const day=days.find((item:any)=>String(item.day).toUpperCase()===code);
+    if(day) setSelectedDay(materialForDay(day));
+  // The query parameter is read once when the Trail view is mounted.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[]);
+
   return (
     <>
       <section className="os-grid os-grid-2">
@@ -656,7 +685,7 @@ function TrailView({ intel, data, basePrefix }: { intel:any; data:Payload; baseP
               <button
                 type="button"
                 className="os-text-link os-text-button"
-                onClick={()=>setSelectedDay({...day,material:materials.find((item:any)=>String(item.day).toUpperCase()===String(day.day).toUpperCase())||null})}
+                onClick={()=>openDayMaterial(day)}
               >
                 Ler material →
               </button>
@@ -664,7 +693,7 @@ function TrailView({ intel, data, basePrefix }: { intel:any; data:Payload; baseP
           ))}
         </div>
       </section>
-      {selectedDay ? <StudyOsMaterialReader day={selectedDay} onClose={()=>setSelectedDay(null)} /> : null}
+      {selectedDay ? <StudyOsMaterialReader day={selectedDay} onClose={closeDayMaterial} /> : null}
     </>
   );
 }
