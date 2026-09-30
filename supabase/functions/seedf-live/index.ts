@@ -1,3 +1,5 @@
+/* Notion property bags are schema-dependent at this adapter boundary. */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 
 const NOTION_API_BASE = "https://api.notion.com/v1";
@@ -521,9 +523,6 @@ function firstKnownNumber(p: Record<string, any>, names: string[]) {
   return 0;
 }
 
-function richTextPlain(items: Array<Record<string, any>> = []) {
-  return items.map((item) => item.plain_text || item.text?.content || "").join("");
-}
 function safeExternalUrl(value: string) {
   if (!value) return "";
   try {
