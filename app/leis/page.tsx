@@ -11,6 +11,7 @@ import {
   Filter,
   Search,
   ShieldCheck,
+  RefreshCw,
 } from "lucide-react";
 import "./leis.css";
 
@@ -132,6 +133,13 @@ type LeisExecution = {
   }>;
 };
 
+type LiveLeisPayload = {
+  mode: "leis";
+  synced_at: string;
+  laws: Array<Partial<Law> & { code: string }>;
+  execution?: Partial<LeisExecution> | null;
+};
+
 type Snapshot = {
   schema_version?: number;
   source: {
@@ -160,6 +168,8 @@ const activeGroups = ["Núcleo comum", "Gestor — Administração", "Apoio Admi
 const groups = ["Todos", ...activeGroups, "Monitor"];
 const groupLabel = (value: string) => value === "Monitor" ? "Radar — Monitor (acervo)" : value;
 const priorities = ["Todas", "P0 - Nuclear", "P1 - Alta", "P2 - Complementar", "Radar forte", "Radar"];
+const LIVE_SEEDF_CONTENT_API_URL = "https://fqqkkyusnzhuuizahkww.supabase.co/functions/v1/seedf-live";
+const LIVE_SEEDF_API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYXNlIiwicmVmIjoiZnFxa2t5dXNuemh1dWl6YWhxd3ciLCJyb2xlIjoiYW5vbiIsImlhdCI6MTc4NTcyMjA1OSwiZXhwIjoyMTAxMjk4MDU5fQ.YZd0d4XsFHFT6uETemPZdcDc9t0pQUn8_XmNFHx7hJ0";
 
 function slug(value = "") {
   return value
@@ -344,21 +354,67 @@ export default function LeisPrimeiroPage() {
   const [group, setGroup] = useState("Todos");
   const [priority, setPriority] = useState("Todas");
   const [expanded, setExpanded] = useState<string | null>(null);
+  const [syncing, setSyncing] = useState(false);
+  const [liveMode, setLiveMode] = useState(false);
+
+  const mergeLiveProgress = (base: Snapshot, live: LiveLeisPayload): Snapshot => {
+    const liveByCode = new Map(live.laws.map((law) => [law.code, law]));
+    return {
+      ...base,
+      source: { ...base.source, synced_at: live.synced_at },
+      laws: base.laws.map((law) => ({ ...law, ...(liveByCode.get(law.code) || {}) })),
+      execution: live.execution
+        ? { ...(base.execution || {}), ...live.execution, errors: base.execution?.errors || [] }
+        : base.execution,
+    };
+  };
+
+  const refreshLive = async (force = true) => {
+    setSyncing(true);
+    try {
+      const response = await fetch(
+        `${LIVE_SEEDF_CONTENT_API_URL}?mode=leis${force ? "&refresh=1" : ""}&ts=${Date.now()}`,
+        {
+          cache: "no-store",
+          headers: {
+            Accept: "application/json",
+            apikey: LIVE_SEEDF_API_KEY,
+            Authorization: `Bearer ${LIVE_SEEDF_API_KEY}`,
+          },
+        },
+      );
+      if (!response.ok) throw new Error("sincronização ao vivo indisponível");
+      const live = await response.json() as LiveLeisPayload;
+      setSnapshot((base) => base ? mergeLiveProgress(base, live) : base);
+      setLiveMode(true);
+      setError(false);
+    } catch {
+      setError(true);
+    } finally {
+      setSyncing(false);
+    }
+  };
 
   useEffect(() => {
     let cancelled = false;
-    fetch(`../data/leis-primeiro.json?ts=${Date.now()}`, { cache: "no-store" })
-      .then((response) => {
+    const initialize = async () => {
+      try {
+        const response = await fetch(`../data/leis-primeiro.json?ts=${Date.now()}`, { cache: "no-store" });
         if (!response.ok) throw new Error("snapshot indisponível");
-        return response.json();
-      })
-      .then((value: Snapshot) => {
-        if (!cancelled) setSnapshot(value);
-      })
-      .catch(() => {
+        const value = await response.json() as Snapshot;
+        if (!cancelled) {
+          setSnapshot(value);
+          setError(false);
+        }
+      } catch {
         if (!cancelled) setError(true);
-      });
+      }
+      if (!cancelled) void refreshLive(false);
+    };
+    void initialize();
     return () => { cancelled = true; };
+    // A sincronização ao vivo é disparada uma vez após carregar o snapshot estático.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const filtered = useMemo(() => {
@@ -425,7 +481,7 @@ export default function LeisPrimeiroPage() {
     <main className="laws-page laws-cockpit">
       <header className="laws-topbar">
         <a className="laws-back" href="../"><ArrowLeft size={17} /> Dashboard SEEDF</a>
-        <div className="laws-topbar-tools"><div className="reading-settings-host" data-reading-settings /><div className="laws-sync"><span className="laws-live-dot" /> Versão dos dados · {formatDate(snapshot?.source.synced_at)}</div></div>
+        <div className="laws-topbar-tools"><div className="reading-settings-host" data-reading-settings /><div className={`laws-sync ${error ? "is-error" : ""}`}><span className="laws-live-dot" /> {liveMode ? "Notion ao vivo" : "Versão dos dados"} · {formatDate(snapshot?.source.synced_at)}</div><button className={`laws-sync-button ${syncing ? "is-syncing" : ""}`} type="button" onClick={() => void refreshLive(true)} disabled={syncing} aria-label="Sincronizar Leis Primeiro com o Notion agora"><RefreshCw size={15} /><span>{syncing ? "Sincronizando…" : "Sincronizar agora"}</span></button></div>
       </header>
 
       <section className="laws-hero laws-cockpit-hero">
