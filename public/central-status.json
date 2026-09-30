@@ -12,7 +12,7 @@
     "phase": "Fase 1",
     "cycle": "Leis Primeiro",
     "currentUnit": "L05",
-    "nextAction": "L05 — LC DF nº 840/2011 | Regime Jurídico dos Servidores do Distrito Federal",
+    "nextAction": "L06 — Lei Orgânica do Distrito Federal | Administração + Servidores + Educação",
     "nextActionKind": "planned",
     "alerts": [
       "L05: 30 questões e 26 acertos registrados; leitura/material e D0 continuam pendentes."
@@ -24,7 +24,7 @@
     "updatedAt": "2026-09-29T18:24:49.031Z",
     "trail": "Leis Primeiro",
     "lastCompletedUnit": "L03",
-    "nextUnit": "L05",
+    "nextUnit": "L06",
     "lastStudiedAt": "2026-09-29",
     "questionsDone": 145,
     "correct": 123,
@@ -37,7 +37,7 @@
     "completedSessions": 5,
     "totalSessions": 34,
     "notes": [
-      "Próxima lei não iniciada no banco: L05.",
+      "Próxima lei não iniciada no banco: L06.",
       "L05: 30 questões e 26 acertos registrados; leitura/material e D0 continuam pendentes."
     ]
   }
