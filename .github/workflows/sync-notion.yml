@@ -9,6 +9,7 @@ on:
       - "scripts/sync-legislation-bank.mjs"
       - "scripts/export-edital-verticalizado.mjs"
       - "scripts/build-central-status.mjs"
+      - "lib/leis-primeiro-ids.mjs"
       - ".github/workflows/sync-notion.yml"
   schedule:
     - cron: "*/15 * * * *"
