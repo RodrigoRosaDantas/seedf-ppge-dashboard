@@ -51,6 +51,9 @@ type Payload = {
   edital: any;
 };
 
+const LIVE_SEEDF_CONTENT_API_URL = "https://fqqkkyusnzhuuizahkww.supabase.co/functions/v1/seedf-live";
+const LIVE_SEEDF_API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZxcWtreXVzbnpodXVpemFoa3d3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU3MjIwNTksImV4cCI6MjEwMTI5ODA1OX0.YZd0d4XsFHFT6uETemPZdcDc9t0pQUn8_XmNFHx7hJ0";
+
 const viewTitle: Record<StudyOsView, string> = {
   home: "Início",
   today: "Hoje",
@@ -539,8 +542,94 @@ function QualityView({ intel }: { intel: any }) {
   );
 }
 
+
+function StudyOsMaterialReader({
+  day,
+  onClose,
+}: {
+  day: any;
+  onClose: () => void;
+}) {
+  const [payload,setPayload]=useState<any|null>(null);
+  const [loading,setLoading]=useState(true);
+  const [readerError,setReaderError]=useState("");
+
+  useEffect(()=>{
+    let alive=true;
+    async function load(){
+      setLoading(true);
+      setReaderError("");
+      try{
+        const code=String(day?.day||"").toUpperCase();
+        const response=await fetch(
+          LIVE_SEEDF_CONTENT_API_URL+"?mode=material&day="+encodeURIComponent(code)+"&refresh=1&ts="+Date.now(),
+          {
+            cache:"no-store",
+            headers:{
+              Accept:"application/json",
+              apikey:LIVE_SEEDF_API_KEY,
+              Authorization:"Bearer "+LIVE_SEEDF_API_KEY,
+            },
+          },
+        );
+        if(!response.ok) throw new Error("Material HTTP "+response.status+".");
+        const value=await response.json();
+        if(alive) setPayload(value);
+      }catch(cause){
+        if(alive) setReaderError(cause instanceof Error?cause.message:"Material indisponível.");
+      }finally{
+        if(alive) setLoading(false);
+      }
+    }
+    void load();
+    return ()=>{alive=false;};
+  },[day]);
+
+  useEffect(()=>{
+    const handler=(event:KeyboardEvent)=>{if(event.key==="Escape") onClose();};
+    document.addEventListener("keydown",handler);
+    return ()=>document.removeEventListener("keydown",handler);
+  },[onClose]);
+
+  const sourceUrl=payload?.source_url||day?.material?.href||day?.href||null;
+  const title=payload?.title||day?.material?.title||String(day?.title||day?.day||"Material").replace(/^C01-D\d+\s*[—-]\s*/,"");
+  return (
+    <div className="os-reader-backdrop" role="presentation" onMouseDown={(event)=>{if(event.target===event.currentTarget) onClose();}}>
+      <section className="os-reader" role="dialog" aria-modal="true" aria-labelledby="os-reader-title" onMouseDown={(event)=>event.stopPropagation()}>
+        <header className="os-reader-head">
+          <div>
+            <span className="os-eyebrow">{day?.day} · MATERIAL DO DIA</span>
+            <h2 id="os-reader-title">{title}</h2>
+            <small>{payload?.synced_at?"Notion ao vivo · "+new Date(payload.synced_at).toLocaleString("pt-BR",{timeZone:"America/Sao_Paulo"}):"Leitura dentro do site"}</small>
+          </div>
+          <button type="button" className="os-reader-close" onClick={onClose} aria-label="Fechar material"><X size={18}/></button>
+        </header>
+
+        {loading ? (
+          <div className="os-reader-state"><RefreshCcw className="os-spin" size={20}/><strong>Carregando material atualizado…</strong></div>
+        ) : null}
+
+        {readerError ? (
+          <div className="os-reader-state os-reader-error"><CircleAlert size={20}/><div><strong>Não foi possível abrir o material dentro do site.</strong><span>{readerError}</span></div></div>
+        ) : null}
+
+        {!loading && payload?.content_html ? (
+          <article className="os-reader-body" dangerouslySetInnerHTML={{__html:payload.content_html}} />
+        ) : null}
+
+        <footer className="os-reader-actions">
+          <button type="button" className="os-reader-secondary" onClick={onClose}>Fechar</button>
+          {sourceUrl ? <a className="os-reader-primary" href={sourceUrl} target="_blank" rel="noreferrer">Fonte original no Notion <ArrowRight size={14}/></a> : null}
+        </footer>
+      </section>
+    </div>
+  );
+}
+
 function TrailView({ intel, data, basePrefix }: { intel:any; data:Payload; basePrefix:string }) {
   const days=data.snapshot?.execution?.c01?.days || [];
+  const materials=data.snapshot?.materials?.days || [];
+  const [selectedDay,setSelectedDay]=useState<any|null>(null);
   return (
     <>
       <section className="os-grid os-grid-2">
@@ -564,11 +653,18 @@ function TrailView({ intel, data, basePrefix }: { intel:any; data:Payload; baseP
               <div className="os-card-top"><span className="os-chip os-chip-neutral">{day.day}</span><span>{day.status}</span></div>
               <h4>{String(day.title || day.day).replace(/^C01-D\d+\s*[—-]\s*/,"")}</h4>
               <div className="os-card-stats"><span>{formatNumber(day.done)}/{formatNumber(day.planned)} questões</span><span>{day.executed_at ? formatDate(day.executed_at) : "não executado"}</span></div>
-              <SmartLink href={day.href} basePrefix={basePrefix} className="os-text-link">Registro vivo →</SmartLink>
+              <button
+                type="button"
+                className="os-text-link os-text-button"
+                onClick={()=>setSelectedDay({...day,material:materials.find((item:any)=>String(item.day).toUpperCase()===String(day.day).toUpperCase())||null})}
+              >
+                Ler material →
+              </button>
             </article>
           ))}
         </div>
       </section>
+      {selectedDay ? <StudyOsMaterialReader day={selectedDay} onClose={()=>setSelectedDay(null)} /> : null}
     </>
   );
 }
