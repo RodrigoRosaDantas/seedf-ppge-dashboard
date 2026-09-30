@@ -81,6 +81,16 @@ type MaterialPreview = {
   legislation?: LegislationItem;
 };
 
+type LiveMaterialPayload = {
+  mode: "material";
+  day: string;
+  title: string;
+  source_url: string;
+  last_edited_time: string | null;
+  synced_at: string;
+  content_html: string;
+};
+
 type FutureMaterial = {
   label: string;
   detail: string;
@@ -186,6 +196,7 @@ type DashboardSnapshot = {
 };
 
 const LIVE_NOTION_API_URL = "https://fqqkkyusnzhuuizahkww.supabase.co/functions/v1/seedf-notion";
+const LIVE_SEEDF_CONTENT_API_URL = "https://fqqkkyusnzhuuizahkww.supabase.co/functions/v1/seedf-live";
 // Public Supabase anon key: it gates the read-only function; the Notion token never reaches the browser.
 const LIVE_NOTION_API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZxcWtreXVzbnpodXVpemFoa3d3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU3MjIwNTksImV4cCI6MjEwMTI5ODA1OX0.YZd0d4XsFHFT6uETemPZdcDc9t0pQUn8_XmNFHx7hJ0";
 
@@ -1032,6 +1043,7 @@ function StudyFocusTimer() {
 function StudyToday() {
   const [checked, setChecked] = useState<string[]>([]);
   const [checklistHydrated, setChecklistHydrated] = useState(false);
+  const [selectedMaterial, setSelectedMaterial] = useState<MaterialPreview | null>(null);
 
   useEffect(() => {
     try {
@@ -1063,7 +1075,7 @@ function StudyToday() {
 
   const progress = Math.round((checked.length / D01_CHECKLIST.length) * 100);
 
-  return <div className="inner-page"><section className="page-intro"><div><p className="eyebrow">EXECUÇÃO DIÁRIA · SEEDF</p><h1>D01 · Português fino + LDB</h1><p>O primeiro dia não precisa ser perfeito. Precisa ser registrado.</p></div><StatusPill tone="gold">Próximo</StatusPill></section><section className="content-grid two-thirds study-layout"><div className="panel study-main-panel"><div className="study-progress-head"><div><p className="eyebrow">CHECKLIST DE EXECUÇÃO</p><h2>Feche o dia na ordem certa</h2></div><strong>{progress}%</strong></div><div className="progress-track"><span style={{ width: String(progress) + "%" }} /></div><div className="checklist">{D01_CHECKLIST.map((item) => { const isChecked = checked.includes(item.id); return <button type="button" className={"check-row " + (isChecked ? "is-checked" : "")} key={item.id} aria-pressed={isChecked} onClick={() => setChecked((current) => isChecked ? current.filter((id) => id !== item.id) : [...current, item.id])}><span className="checkbox">{isChecked && <Check size={14} />}</span><span className="check-copy"><strong>{item.label}</strong><small>{item.detail}</small></span><ChevronRight size={17} /></button>; })}</div><StudyFocusTimer /><div className="study-source-links"><p className="eyebrow">MATERIAL DO DIA</p><div><a className="resource-link" href={d01NotionPage} target="_blank" rel="noreferrer">Abrir D01 completo no Notion <ArrowRight size={15} /></a><a className="resource-link" href={ldbOfficialUrl} target="_blank" rel="noreferrer">Abrir LDB compilada <ArrowRight size={15} /></a></div></div></div><aside className="panel day-rule-panel"><div className="day-badge">D01</div><p className="eyebrow">REGRA DO DIA</p><h3>Estude, registre, feche.</h3><p>O Banco de Dias agrega os números a partir das linhas detalhadas do Banco de Controle de Questões. Não lance os totais duas vezes.</p><div className="rule-list"><div><Check size={15} /> Dias não estudados não viram atraso.</div><div><Check size={15} /> D07 só nasce dos resultados de D01–D06.</div><div><Check size={15} /> O site não cria desempenho sem dado real.</div></div></aside></section><section className="panel next-days-panel"><SectionHeading eyebrow="SEQUÊNCIA" title="O C01 já está preparado" description="Os próximos dias permanecem não iniciados até a execução real." /><div className="day-strip">{dayRows.slice(0, 7).map((row) => <DayCard row={row} key={row.day} />)}</div></section></div>;
+  return <div className="inner-page"><section className="page-intro"><div><p className="eyebrow">EXECUÇÃO DIÁRIA · SEEDF</p><h1>D01 · Português fino + LDB</h1><p>O primeiro dia não precisa ser perfeito. Precisa ser registrado.</p></div><StatusPill tone="gold">Próximo</StatusPill></section><section className="content-grid two-thirds study-layout"><div className="panel study-main-panel"><div className="study-progress-head"><div><p className="eyebrow">CHECKLIST DE EXECUÇÃO</p><h2>Feche o dia na ordem certa</h2></div><strong>{progress}%</strong></div><div className="progress-track"><span style={{ width: String(progress) + "%" }} /></div><div className="checklist">{D01_CHECKLIST.map((item) => { const isChecked = checked.includes(item.id); return <button type="button" className={"check-row " + (isChecked ? "is-checked" : "")} key={item.id} aria-pressed={isChecked} onClick={() => setChecked((current) => isChecked ? current.filter((id) => id !== item.id) : [...current, item.id])}><span className="checkbox">{isChecked && <Check size={14} />}</span><span className="check-copy"><strong>{item.label}</strong><small>{item.detail}</small></span><ChevronRight size={17} /></button>; })}</div><StudyFocusTimer /><div className="study-source-links"><p className="eyebrow">MATERIAL DO DIA</p><div><button className="resource-link resource-link-button" type="button" onClick={() => setSelectedMaterial({ ...studyMaterials[0], label: "D01", legislation: legislationPlan[0] })}>Ler D01 dentro do site <ArrowRight size={15} /></button><a className="resource-link" href={d01NotionPage} target="_blank" rel="noreferrer">Fonte original no Notion <ArrowRight size={15} /></a><a className="resource-link" href={ldbOfficialUrl} target="_blank" rel="noreferrer">Abrir LDB compilada <ArrowRight size={15} /></a></div></div></div><aside className="panel day-rule-panel"><div className="day-badge">D01</div><p className="eyebrow">REGRA DO DIA</p><h3>Estude, registre, feche.</h3><p>O Banco de Dias agrega os números a partir das linhas detalhadas do Banco de Controle de Questões. Não lance os totais duas vezes.</p><div className="rule-list"><div><Check size={15} /> Dias não estudados não viram atraso.</div><div><Check size={15} /> D07 só nasce dos resultados de D01–D06.</div><div><Check size={15} /> O site não cria desempenho sem dado real.</div></div></aside></section><section className="panel next-days-panel"><SectionHeading eyebrow="SEQUÊNCIA" title="O C01 já está preparado" description="Os próximos dias permanecem não iniciados até a execução real." /><div className="day-strip">{dayRows.slice(0, 7).map((row) => <DayCard row={row} key={row.day} />)}</div></section>{selectedMaterial ? <MaterialReaderModal material={selectedMaterial} onClose={() => setSelectedMaterial(null)} /> : null}</div>;
 }
 function DayCard({ row }: { row: typeof dayRows[number] }) {
   return <article className={`day-card day-${row.state}`}><div className="day-card-top"><strong>{row.day}</strong><span className="day-state-dot" /></div><h3>{row.label}</h3><p>{row.detail}</p><span>{row.meta}</span></article>;
@@ -1153,6 +1165,78 @@ function toneForSequence(order: number): MaterialsTone {
   if (order <= 14) return "coral";
   if (order <= 17) return "violet";
   return "teal";
+}
+
+
+function MaterialReaderModal({ material, onClose }: { material: MaterialPreview; onClose: () => void }) {
+  const [payload, setPayload] = useState<LiveMaterialPayload | null>(null);
+  const [loading, setLoading] = useState(/^D\d{2}$/i.test(material.label));
+  const [error, setError] = useState(false);
+  const isDailyMaterial = /^D\d{2}$/i.test(material.label);
+
+  useEffect(() => {
+    if (!isDailyMaterial) return;
+    let cancelled = false;
+    const load = async () => {
+      setLoading(true);
+      setError(false);
+      try {
+        const response = await fetch(`${LIVE_SEEDF_CONTENT_API_URL}?mode=material&day=${encodeURIComponent(material.label)}&refresh=1&ts=${Date.now()}`, {
+          cache: "no-store",
+          headers: {
+            Accept: "application/json",
+            apikey: LIVE_NOTION_API_KEY,
+            Authorization: `Bearer ${LIVE_NOTION_API_KEY}`,
+          },
+        });
+        if (!response.ok) throw new Error("Material indisponível");
+        const next = await response.json() as LiveMaterialPayload;
+        if (!cancelled) setPayload(next);
+      } catch {
+        if (!cancelled) setError(true);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    };
+    void load();
+    return () => { cancelled = true; };
+  }, [isDailyMaterial, material.label]);
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") onClose();
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [onClose]);
+
+  return (
+    <div className="material-modal-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) onClose(); }}>
+      <section className={`material-modal material-reader-modal material-modal-${material.tone}`} role="dialog" aria-modal="true" aria-labelledby="material-modal-title" onMouseDown={(event) => event.stopPropagation()}>
+        <div className="material-modal-top">
+          <div><p className="eyebrow">{material.label} · LEITURA NO SITE</p><h2 id="material-modal-title">{payload?.title || material.title}</h2></div>
+          <button className="secondary-button material-modal-close" type="button" onClick={onClose} aria-label="Fechar visualização do material"><X size={17} /></button>
+        </div>
+        <div className="material-modal-meta"><StatusPill tone={material.tone}>{material.meta}</StatusPill>{payload?.synced_at ? <span className="material-live-badge"><span className="live-dot" /> Notion ao vivo · {formatSnapshotDate(payload.synced_at)}</span> : null}</div>
+        {loading ? <div className="material-reader-state"><RefreshCw className="is-spinning" size={20} /><strong>Carregando material atualizado do Notion…</strong></div> : null}
+        {error ? <div className="material-reader-state material-reader-error"><CircleAlert size={20} /><div><strong>Não consegui carregar a leitura ao vivo.</strong><p>Você ainda pode abrir a fonte original no Notion.</p></div></div> : null}
+        {!loading && payload?.content_html ? <article className="material-reader-content" dangerouslySetInnerHTML={{ __html: payload.content_html }} /> : null}
+        {!loading && !payload?.content_html && !error ? <p className="material-modal-detail">{material.detail}</p> : null}
+        {material.legislation ? (
+          <div className="material-modal-reading">
+            <p className="eyebrow">ROTEIRO LEGISLATIVO VINCULADO</p>
+            <h3>{material.legislation.title}</h3>
+            <p>{material.legislation.detail}</p>
+            {material.legislation.links.length > 0 ? <div className="law-links material-modal-links">{material.legislation.links.map((link) => <a href={link.href} target="_blank" rel="noreferrer" key={link.href}>{link.label} <ArrowRight size={13} /></a>)}</div> : null}
+          </div>
+        ) : null}
+        <div className="material-modal-actions">
+          <button className="secondary-button" type="button" onClick={onClose}>Fechar</button>
+          <a className="primary-button" href={payload?.source_url || material.href} target="_blank" rel="noreferrer">Fonte original no Notion <ArrowRight size={15} /></a>
+        </div>
+      </section>
+    </div>
+  );
 }
 
 function Materials({ snapshot }: { snapshot?: DashboardSnapshot | null }) {
@@ -1451,66 +1535,7 @@ function Materials({ snapshot }: { snapshot?: DashboardSnapshot | null }) {
         <div className="note-icon"><CircleAlert size={19} /></div>
         <div><p className="eyebrow">REGRA-MÃE</p><h3>Fonte oficial atualizada prevalece sobre resumo antigo.</h3><p>O site abre os resumos e as leis vinculadas; o Notion mantém o conteúdo completo e o GitHub conserva o backup quando a consulta ao vivo estiver indisponível.</p></div>
       </section>
-      {selectedMaterial ? (
-        <div
-          className="material-modal-backdrop"
-          role="presentation"
-          onMouseDown={(event) => {
-            if (event.target === event.currentTarget) setSelectedMaterial(null);
-          }}
-        >
-          <section
-            className={`material-modal material-modal-${selectedMaterial.tone}`}
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="material-modal-title"
-            onMouseDown={(event) => event.stopPropagation()}
-          >
-            <div className="material-modal-top">
-              <div>
-                <p className="eyebrow">{selectedMaterial.label} · LEITURA NO SITE</p>
-                <h2 id="material-modal-title">{selectedMaterial.title}</h2>
-              </div>
-              <button
-                className="secondary-button material-modal-close"
-                type="button"
-                onClick={() => setSelectedMaterial(null)}
-                aria-label="Fechar visualização do material"
-              >
-                <X size={17} />
-              </button>
-            </div>
-            <div className="material-modal-meta"><StatusPill tone={selectedMaterial.tone}>{selectedMaterial.meta}</StatusPill></div>
-            <p className="material-modal-detail">{selectedMaterial.detail}</p>
-            {selectedMaterial.legislation ? (
-              <div className="material-modal-reading">
-                <p className="eyebrow">ROTEIRO LEGISLATIVO VINCULADO</p>
-                <h3>{selectedMaterial.legislation.title}</h3>
-                <p>{selectedMaterial.legislation.detail}</p>
-                {selectedMaterial.legislation.links.length > 0 ? (
-                  <div className="law-links material-modal-links">
-                    {selectedMaterial.legislation.links.map((link) => (
-                      <a href={link.href} target="_blank" rel="noreferrer" key={link.href}>
-                        {link.label} <ArrowRight size={13} />
-                      </a>
-                    ))}
-                  </div>
-                ) : null}
-              </div>
-            ) : null}
-            <div className="material-modal-note">
-              <CircleAlert size={17} />
-              <span>Este é o resumo público sincronizado. Para conferir o conteúdo integral e a versão mais recente, use a fonte do Notion.</span>
-            </div>
-            <div className="material-modal-actions">
-              <button className="secondary-button" type="button" onClick={() => setSelectedMaterial(null)}>Fechar</button>
-              <a className="primary-button" href={selectedMaterial.href} target="_blank" rel="noreferrer">
-                Ver fonte no Notion <ArrowRight size={15} />
-              </a>
-            </div>
-          </section>
-        </div>
-      ) : null}
+      {selectedMaterial ? <MaterialReaderModal material={selectedMaterial} onClose={() => setSelectedMaterial(null)} /> : null}
     </div>
   );
 }
@@ -1542,6 +1567,7 @@ export default function Home() {
   const refreshSnapshot = useCallback(async () => {
     setRefreshing(true);
     setSyncError(false);
+    setLastUpdated("Notion · sincronizando agora...");
     try {
       const candidate = await readSnapshot(`${LIVE_NOTION_API_URL}?refresh=1`, {
         headers: {
@@ -1606,5 +1632,5 @@ export default function Home() {
   }, [readSnapshot, refreshSnapshot]);
   const activeLabel = navigation.find((item) => item.id === section)?.label ?? "Visão geral";
   const nextAction = snapshot?.dashboard.next_action ?? "D01 · Português fino + LDB";
-  return <main className="site-shell"><aside id="seedf-sidebar" className={`sidebar ${menuOpen ? "sidebar-open" : ""}`}><div className="brand-block"><div className="brand-mark"><img src="./favicon.svg" alt="" aria-hidden="true" /></div><div><strong>SEEDF</strong><span>PPGE · Dashboard PRO</span></div><button type="button" className="close-menu" onClick={() => setMenuOpen(false)} aria-label="Fechar menu" aria-controls="seedf-sidebar"><X size={18} /></button></div><div className="sidebar-context"><span className="live-dot" /> Pré-edital 2026/2027</div><nav className="main-nav" aria-label="Navegação principal">{navigation.map((item) => { const Icon = item.icon; const active = section === item.id; return <button type="button" className={`nav-item ${active ? "nav-active" : ""}`} key={item.id} onClick={() => handleNavigate(item.id)} aria-current={active ? "page" : undefined} aria-controls="dashboard-section"><Icon size={18} /><span>{item.label}</span>{active && <span className="nav-indicator" />}</button>; })}</nav><div className="sidebar-bottom"><div className="sidebar-card"><p className="eyebrow">PRÓXIMA AÇÃO</p><strong>{nextAction}</strong><button onClick={() => handleNavigate("estudar")}>Abrir execução <ArrowRight size={15} /></button></div><div className="sidebar-footer"><span className="source-dot" /> Notion como fonte operacional canônica</div></div></aside>{menuOpen && <button className="scrim" onClick={() => setMenuOpen(false)} aria-label="Fechar menu" />}<div className="main-column"><header className="topbar"><div className="topbar-left"><button type="button" className="menu-button" onClick={() => setMenuOpen(true)} aria-label="Abrir menu" aria-expanded={menuOpen} aria-controls="seedf-sidebar"><Menu size={20} /></button><div><span className="breadcrumb">SEEDF PPGE</span><strong>{activeLabel}</strong></div></div><div className="topbar-actions"><span className={`sync-label ${syncError ? "sync-error" : syncMode === "fallback" ? "sync-fallback" : ""}`}><span className="source-dot" /> {lastUpdated}</span><ReadingSettings /><button className={`refresh-button ${refreshing ? "is-refreshing" : ""}`} onClick={refreshSnapshot} disabled={refreshing} aria-label="Atualizar dados do Notion" title="Consultar a API do Notion agora"><RefreshCw size={17} /></button></div></header><div className="page-content" id="dashboard-section" tabIndex={-1}>{section === "inicio" && <Overview onNavigate={handleNavigate} snapshot={snapshot} />}{section === "estudar" && <StudyToday />}{section === "fases" && <Phases />}{section === "cargos" && <Jobs />}{section === "progresso" && <Progress snapshot={snapshot} />}{section === "materiais" && <Materials snapshot={snapshot} />}</div><footer className="site-footer"><span>SEEDF PPGE · Projeto exclusivo</span><span>{syncMode === "live" ? `Notion ao vivo · ${formatSnapshotDate(snapshot?.source?.synced_at ?? null)}` : syncMode === "fallback" ? `Backup do GitHub · ${formatSnapshotDate(snapshot?.source?.synced_at ?? null)}` : "Notion · indisponível"}</span></footer></div></main>;
+  return <main className="site-shell"><aside id="seedf-sidebar" className={`sidebar ${menuOpen ? "sidebar-open" : ""}`}><div className="brand-block"><div className="brand-mark"><img src="./favicon.svg" alt="" aria-hidden="true" /></div><div><strong>SEEDF</strong><span>PPGE · Dashboard PRO</span></div><button type="button" className="close-menu" onClick={() => setMenuOpen(false)} aria-label="Fechar menu" aria-controls="seedf-sidebar"><X size={18} /></button></div><div className="sidebar-context"><span className="live-dot" /> Pré-edital 2026/2027</div><nav className="main-nav" aria-label="Navegação principal">{navigation.map((item) => { const Icon = item.icon; const active = section === item.id; return <button type="button" className={`nav-item ${active ? "nav-active" : ""}`} key={item.id} onClick={() => handleNavigate(item.id)} aria-current={active ? "page" : undefined} aria-controls="dashboard-section"><Icon size={18} /><span>{item.label}</span>{active && <span className="nav-indicator" />}</button>; })}</nav><div className="sidebar-bottom"><div className="sidebar-card"><p className="eyebrow">PRÓXIMA AÇÃO</p><strong>{nextAction}</strong><button onClick={() => handleNavigate("estudar")}>Abrir execução <ArrowRight size={15} /></button></div><div className="sidebar-footer"><span className="source-dot" /> Notion como fonte operacional canônica</div></div></aside>{menuOpen && <button className="scrim" onClick={() => setMenuOpen(false)} aria-label="Fechar menu" />}<div className="main-column"><header className="topbar"><div className="topbar-left"><button type="button" className="menu-button" onClick={() => setMenuOpen(true)} aria-label="Abrir menu" aria-expanded={menuOpen} aria-controls="seedf-sidebar"><Menu size={20} /></button><div><span className="breadcrumb">SEEDF PPGE</span><strong>{activeLabel}</strong></div></div><div className="topbar-actions"><span className={`sync-label ${syncError ? "sync-error" : syncMode === "fallback" ? "sync-fallback" : ""}`}><span className="source-dot" /> {lastUpdated}</span><ReadingSettings /><button className={`refresh-button ${refreshing ? "is-refreshing" : ""}`} onClick={refreshSnapshot} disabled={refreshing} aria-label="Sincronizar o site com o Notion agora" title="Forçar leitura atualizada do Notion"><RefreshCw size={17} /><span>{refreshing ? "Sincronizando…" : "Sincronizar agora"}</span></button></div></header><div className="page-content" id="dashboard-section" tabIndex={-1}>{section === "inicio" && <Overview onNavigate={handleNavigate} snapshot={snapshot} />}{section === "estudar" && <StudyToday />}{section === "fases" && <Phases />}{section === "cargos" && <Jobs />}{section === "progresso" && <Progress snapshot={snapshot} />}{section === "materiais" && <Materials snapshot={snapshot} />}</div><footer className="site-footer"><span>SEEDF PPGE · Projeto exclusivo</span><span>{syncMode === "live" ? `Notion ao vivo · ${formatSnapshotDate(snapshot?.source?.synced_at ?? null)}` : syncMode === "fallback" ? `Backup do GitHub · ${formatSnapshotDate(snapshot?.source?.synced_at ?? null)}` : "Notion · indisponível"}</span></footer></div></main>;
 }
