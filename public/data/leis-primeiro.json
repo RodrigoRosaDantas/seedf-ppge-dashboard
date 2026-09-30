@@ -6,7 +6,7 @@
     "page_id": "3d8cf5a2-6731-817c-89f4-f4907d14a701",
     "page_url": "https://app.notion.com/p/Leis-Primeiro-SEEDF-leitura-quest-es-flashcards-3d8cf5a26731817c89f4f4907d14a701",
     "last_edited_time": "2026-09-25T17:52:00.000Z",
-    "synced_at": "2026-09-30T03:24:24.349Z",
+    "synced_at": "2026-09-30T18:35:46.526Z",
     "data_source_id": "6b3c940a-a382-419f-9ef6-531a1dc5cad2",
     "internal_pages": true
   },
@@ -759,6 +759,35 @@
     "latest_day_id": "LP-20260929-L05-Q1",
     "sessions": [
       {
+        "id": "3ebcf5a2-6731-81b7-a6f3-f375833e3b07",
+        "title": "2026-09-30 · L06 · D0 · resumo 1 + questões",
+        "url": "https://app.notion.com/p/2026-09-30-L06-D0-resumo-1-quest-es-3ebcf5a2673181b7a6f3f375833e3b07",
+        "date": "2026-09-30",
+        "page_code": "L06",
+        "stage": "D0",
+        "session_type": "Estudo de resumo",
+        "modality": "Resumo / material",
+        "progress": "Resumo 1",
+        "source": "Material anotado",
+        "summary_number": 1,
+        "reading_number": null,
+        "summary_counter": 0,
+        "reading_counter": 0,
+        "session_counter": 0,
+        "completed": false,
+        "questions_planned": 20,
+        "questions_done": null,
+        "correct": null,
+        "errors": null,
+        "doubts": null,
+        "flashcards": null,
+        "minutes": null,
+        "precision": null,
+        "href": "https://app.notion.com/p/3d8cf5a2673181ef8a87eca0d26dc32f",
+        "created_at": "2026-09-30T14:30:00.000Z",
+        "updated_at": "2026-09-30T14:30:00.000Z"
+      },
+      {
         "id": "3eacf5a2-6731-81c1-8a44-dc3ca616029d",
         "title": "2026-09-29 · L05 · D0 · bateria obrigatória",
         "url": "https://app.notion.com/p/2026-09-29-L05-D0-bateria-obrigat-ria-3eacf5a2673181c18a44dc3ca616029d",
@@ -908,14 +937,14 @@
       "sessions": 5,
       "summaries": null,
       "readings": 3,
-      "questions": 145,
-      "correct": 123,
-      "errors": 22,
-      "doubts": 0,
-      "flashcards": 17,
-      "precision": 0.8482758620689655
+      "questions": null,
+      "correct": null,
+      "errors": null,
+      "doubts": null,
+      "flashcards": null,
+      "precision": null
     },
-    "as_of": "2026-09-29T18:24:49.025Z"
+    "as_of": "2026-09-30T18:33:57.519Z"
   },
   "laws": [
     {
@@ -1202,7 +1231,7 @@
       "status": "Não iniciado",
       "study_phase": "Não iniciado",
       "summaries_done": 0,
-      "summary_number": null,
+      "summary_number": 1,
       "readings_done": 0,
       "reading_number": null,
       "sessions_done": 0,

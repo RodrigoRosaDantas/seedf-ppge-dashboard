@@ -1,31 +1,29 @@
 {
   "schemaVersion": 1,
   "projectId": "seedf",
-  "publishedAt": "2026-09-29",
+  "publishedAt": "2026-09-30",
   "source": {
     "kind": "public-project-state",
     "ref": "data/seedf-snapshot.json#execution.leis_primeiro",
     "status": "synced",
-    "updatedAt": "2026-09-29T18:24:49.031Z"
+    "updatedAt": "2026-09-30T18:33:57.527Z"
   },
   "state": {
     "phase": "Fase 1",
     "cycle": "Leis Primeiro",
-    "currentUnit": "L05",
+    "currentUnit": "L06",
     "nextAction": "L06 — Lei Orgânica do Distrito Federal | Administração + Servidores + Educação",
     "nextActionKind": "planned",
-    "alerts": [
-      "L05: 30 questões e 26 acertos registrados; leitura/material e D0 continuam pendentes."
-    ]
+    "alerts": []
   },
   "study": {
     "evidence": "confirmed",
     "sourceRef": "data/seedf-snapshot.json#execution.leis_primeiro",
-    "updatedAt": "2026-09-29T18:24:49.031Z",
+    "updatedAt": "2026-09-30T18:33:57.527Z",
     "trail": "Leis Primeiro",
     "lastCompletedUnit": "L03",
     "nextUnit": "L06",
-    "lastStudiedAt": "2026-09-29",
+    "lastStudiedAt": "2026-09-30",
     "questionsDone": 145,
     "correct": 123,
     "errors": 22,
@@ -37,8 +35,7 @@
     "completedSessions": 5,
     "totalSessions": 34,
     "notes": [
-      "Próxima lei não iniciada no banco: L06.",
-      "L05: 30 questões e 26 acertos registrados; leitura/material e D0 continuam pendentes."
+      "Próxima lei não iniciada no banco: L06."
     ]
   }
 }

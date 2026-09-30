@@ -5,7 +5,7 @@
     "database_id": "49157e87d33a4fa590edfdb4b84dbc46",
     "database_url": "https://app.notion.com/p/49157e87d33a4fa590edfdb4b84dbc46",
     "data_source_id": "6b3c940a-a382-419f-9ef6-531a1dc5cad2",
-    "synced_at": "2026-09-29T18:26:42.168Z"
+    "synced_at": "2026-09-30T18:35:47.154Z"
   },
   "summary": {
     "records": 33,
@@ -340,7 +340,7 @@
       ],
       "orientation_read": false,
       "summaries_done": 0,
-      "summary_number": null,
+      "summary_number": 1,
       "readings_done": 0,
       "reading_number": null,
       "sessions_done": 0,
