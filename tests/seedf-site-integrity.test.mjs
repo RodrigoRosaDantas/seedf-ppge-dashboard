@@ -63,6 +63,30 @@ test("keeps local law reading payload with Notion as the canonical operational s
   assert.match(enhancer, /Painel operacional sincronizado do Notion/);
   assert.match(appPage, /Fonte canônica: Notion/);
 });
+test("routes study reading through the site and keeps Notion as an explicit source only", async () => {
+  const [intelligence, studyOs, dashboard, liveReader] = await Promise.all([
+    read("lib/seedf-intelligence.mjs"),
+    read("app/study-os-client.tsx"),
+    read("app/dashboard-client.tsx"),
+    read("supabase/functions/seedf-live/index.ts"),
+  ]);
+
+  assert.match(intelligence, /function dayMaterialHref/);
+  assert.match(intelligence, /"trilha\/\?material="/);
+  assert.doesNotMatch(intelligence, /href: activeDay\.href \|\| null/);
+
+  assert.match(studyOs, /searchParams\.get\("material"\)/);
+  assert.match(studyOs, /Ler material →/);
+  assert.match(studyOs, /StudyOsMaterialReader/);
+  assert.doesNotMatch(studyOs, />Registro vivo →<\/SmartLink>/);
+
+  assert.match(dashboard, /Abrir material no site/);
+  assert.match(dashboard, /\(\?:D\\d\{2\}\|MS\\d\{2\}\)/);
+  assert.match(liveReader, /SEQUENTIAL_MATERIALS_PAGE_ID/);
+  assert.match(liveReader, /MS\(\?:0\[1-9\]\|1\\d\|2\[0-2\]\)/);
+  assert.match(liveReader, /buildMaterial\(code: string/);
+});
+
 test("renders Monitor laws as a Radar archive outside the active tracks", async () => {
   const dataset = JSON.parse(await read("public/data/leis-primeiro.json"));
   const html = await buildLeisCockpit("<!doctype html><html><head></head><body></body></html>");
