@@ -1,5 +1,5 @@
 import { readFile, writeFile } from "node:fs/promises";
-import { deriveLeisPrimeiroProgress } from "../lib/leis-primeiro-contract.mjs";
+import { deriveLeisPrimeiroNextLaw, deriveLeisPrimeiroProgress } from "../lib/leis-primeiro-contract.mjs";
 
 const ROOT = new URL("../", import.meta.url);
 const snapshot = JSON.parse(await readFile(new URL("public/data/seedf-snapshot.json", ROOT), "utf8"));
@@ -7,7 +7,7 @@ const laws = JSON.parse(await readFile(new URL("public/data/leis-primeiro.json",
 const lp = snapshot?.execution?.leis_primeiro || {};
 const days = Array.isArray(lp.days) ? lp.days : [];
 const progress = deriveLeisPrimeiroProgress(lp);
-const nextLaw = (Array.isArray(laws?.laws) ? laws.laws : []).filter(x => x?.study_phase === "Não iniciado").sort((a,b)=>(a.operational_order ?? 999)-(b.operational_order ?? 999))[0] || null;
+const nextLaw = deriveLeisPrimeiroNextLaw(laws?.laws);
 const errors = Array.isArray(lp.errors) ? lp.errors : [];
 const futureReviews = errors.map(x=>x?.next_review).filter(Boolean).sort();
 const nowDate = new Date().toISOString().slice(0,10);

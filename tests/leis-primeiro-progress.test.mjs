@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { deriveLeisPrimeiroProgress } from "../lib/leis-primeiro-contract.mjs";
+import { deriveLeisPrimeiroNextLaw, deriveLeisPrimeiroProgress } from "../lib/leis-primeiro-contract.mjs";
 import { leisPrimeiroSequence, normalizeLeisPrimeiroId, pageCodeFromExecutionId } from "../lib/leis-primeiro-ids.mjs";
 
 test("accepts question activity IDs without treating them as reading sequence numbers", () => {
@@ -29,4 +29,21 @@ test("surfaces a completed question session while keeping the law unit incomplet
   assert.equal(progress.completedSessions, 3);
   assert.equal(progress.questionsOnly, true);
   assert.equal(progress.questionOnlyNote, "L05: 30 questões e 26 acertos registrados; leitura/material e D0 continuam pendentes.");
+});
+
+
+test("advances the next action after question activity starts a law", () => {
+  const next = deriveLeisPrimeiroNextLaw([
+    { code: "L05", title: "LC 840/2011", operational_order: 5, study_phase: "Não iniciado", status: "Questões" },
+    { code: "L06", title: "Lei Orgânica do Distrito Federal", operational_order: 6, study_phase: "Não iniciado", status: "Não iniciado" },
+  ]);
+  assert.equal(next?.code, "L06");
+});
+
+test("keeps compatibility with older law snapshots without operational status", () => {
+  const next = deriveLeisPrimeiroNextLaw([
+    { code: "L05", operational_order: 5, study_phase: "Em estudo" },
+    { code: "L06", operational_order: 6, study_phase: "Não iniciado" },
+  ]);
+  assert.equal(next?.code, "L06");
 });
