@@ -5,6 +5,7 @@ import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 const NOTION_API_BASE = "https://api.notion.com/v1";
 const NOTION_VERSION = "2026-03-11";
 const CYCLE_PAGE_ID = "3d4cf5a2-6731-8185-a1c6-da3820a7687b";
+const SEQUENTIAL_MATERIALS_PAGE_ID = "3d4cf5a2-6731-8152-83c2-e9f51eb86cc6";
 const DAYS_DATA_SOURCE_ID = "60966f0a-b3eb-416b-8995-64253ed26a45";
 const QUESTIONS_DATA_SOURCE_ID = "8a241986-94e7-4340-b898-dc905b19fd58";
 const LEGISLATION_DATA_SOURCE_ID = "6b3c940a-a382-419f-9ef6-531a1dc5cad2";
@@ -51,8 +52,8 @@ Deno.serve(async (request) => {
     const notion = createNotionRequest(token);
     let value: unknown;
     if (mode === "material") {
-      if (!/^D(0[1-9]|1[0-4])$/.test(day)) {
-        return json({ error: "Dia inválido." }, 400, headers);
+      if (!/^(?:D(?:0[1-9]|1[0-4])|MS(?:0[1-9]|1\d|2[0-2]))$/.test(day)) {
+        return json({ error: "Código de material inválido." }, 400, headers);
       }
       value = await buildMaterial(day, notion);
     } else if (mode === "leis") {
@@ -71,28 +72,83 @@ Deno.serve(async (request) => {
   }
 });
 
-async function buildMaterial(day: string, notion: NotionRequest) {
-  const children = await getAllChildren(CYCLE_PAGE_ID, notion);
-  const pageBlock = children.find((block) => {
-    if (block.type !== "child_page") return false;
-    const title = String(block.child_page?.title || "");
-    return title.toUpperCase().startsWith(day);
-  });
-  if (!pageBlock) throw new Error(`${day} não localizado no Ciclo 01`);
+async function buildMaterial(code: string, notion: NotionRequest) {
+  if (/^D\d{2}$/.test(code)) {
+    const children = await getAllChildren(CYCLE_PAGE_ID, notion);
+    const pageBlock = children.find((block) => {
+      if (block.type !== "child_page") return false;
+      const title = String(block.child_page?.title || "");
+      return title.toUpperCase().startsWith(code);
+    });
+    if (!pageBlock) throw new Error(`${code} não localizado no Ciclo 01`);
 
-  const [page, tree] = await Promise.all([
-    notion(`/pages/${pageBlock.id}`),
-    getBlockTree(pageBlock.id, notion),
+    const [page, tree] = await Promise.all([
+      notion(`/pages/${pageBlock.id}`),
+      getBlockTree(pageBlock.id, notion),
+    ]);
+    const rawTitle = String(pageBlock.child_page?.title || code);
+    return {
+      mode: "material",
+      day: code,
+      title: rawTitle.replace(/^D\d{2}\s*[—–-]\s*/i, "").trim() || rawTitle,
+      source_url: page.url || notionPageUrl(pageBlock.id),
+      last_edited_time: page.last_edited_time || null,
+      synced_at: new Date().toISOString(),
+      content_html: renderBlocks(tree),
+    };
+  }
+
+  const [page, children] = await Promise.all([
+    notion(`/pages/${SEQUENTIAL_MATERIALS_PAGE_ID}`),
+    getAllChildren(SEQUENTIAL_MATERIALS_PAGE_ID, notion),
   ]);
-  const rawTitle = String(pageBlock.child_page?.title || day);
+  const directPage = children.find((block) => {
+    if (block.type !== "child_page") return false;
+    const title = String(block.child_page?.title || "").trim();
+    return new RegExp(`^(?:\\d+\\.\\s*)?${code}\\b`, "i").test(title);
+  });
+
+  if (directPage) {
+    const [materialPage, tree] = await Promise.all([
+      notion(`/pages/${directPage.id}`),
+      getBlockTree(directPage.id, notion),
+    ]);
+    const rawTitle = String(directPage.child_page?.title || code);
+    return {
+      mode: "material",
+      day: code,
+      title: rawTitle.replace(new RegExp(`^(?:\\d+\\.\\s*)?${code}\\s*[—–-]\\s*`, "i"), "").trim() || rawTitle,
+      source_url: materialPage.url || notionPageUrl(directPage.id),
+      last_edited_time: materialPage.last_edited_time || null,
+      synced_at: new Date().toISOString(),
+      content_html: renderBlocks(tree),
+    };
+  }
+
+  const tree = await getBlockTree(SEQUENTIAL_MATERIALS_PAGE_ID, notion);
+  const start = tree.findIndex((block) => {
+    const text = blockPlainText(block);
+    return new RegExp(`^(?:\\d+\\.\\s*)?${code}\\b`, "i").test(text);
+  });
+  if (start < 0) throw new Error(`${code} não localizado na trilha sequencial`);
+
+  let end = tree.length;
+  for (let index = start + 1; index < tree.length; index += 1) {
+    if (/^(?:\d+\.\s*)?MS\d{2}\b/i.test(blockPlainText(tree[index]))) {
+      end = index;
+      break;
+    }
+  }
+  const selected = tree.slice(start, end);
+  const rawTitle = blockPlainText(selected[0]) || code;
   return {
     mode: "material",
-    day,
-    title: rawTitle.replace(/^D\d{2}\s*[—–-]\s*/i, "").trim() || rawTitle,
-    source_url: page.url || notionPageUrl(pageBlock.id),
+    day: code,
+    title: rawTitle.replace(new RegExp(`^(?:\\d+\\.\\s*)?${code}\\s*[—–-]\\s*`, "i"), "").trim() || rawTitle,
+    source_url: page.url || notionPageUrl(SEQUENTIAL_MATERIALS_PAGE_ID),
     last_edited_time: page.last_edited_time || null,
     synced_at: new Date().toISOString(),
-    content_html: renderBlocks(tree),
+    content_html: renderBlocks(selected),
   };
 }
 
@@ -264,6 +320,18 @@ async function getBlockTree(blockId: string, notion: NotionRequest): Promise<Arr
     return [];
   }));
   return blocks.map((block, index) => ({ ...block, __children: children[index] }));
+}
+
+function blockPlainText(block: Record<string, any>): string {
+  const data = block?.[block?.type] || {};
+  if (Array.isArray(data.rich_text)) {
+    return data.rich_text.map((item: any) => item.plain_text || item.text?.content || "").join("").trim();
+  }
+  if (block.type === "child_page") return String(data.title || "").trim();
+  if (block.type === "table_row" && Array.isArray(data.cells)) {
+    return data.cells.flat().map((item: any) => item.plain_text || item.text?.content || "").join(" ").trim();
+  }
+  return "";
 }
 
 function renderBlocks(blocks: Array<Record<string, any>>): string {
