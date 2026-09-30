@@ -35,7 +35,7 @@ Deno.serve(async (request) => {
   const force = url.searchParams.get("refresh") === "1";
   const day = (url.searchParams.get("day") || "").toUpperCase();
 
-  const key = mode === "material" ? \`material:\${day}\` : mode;
+  const key = mode === "material" ? `material:${day}` : mode;
   const now = Date.now();
   const cached = cache.get(key);
   if (!force && cached && cached.expiresAt > now) {
@@ -76,10 +76,10 @@ async function buildMaterial(day: string, notion: NotionRequest) {
     const title = String(block.child_page?.title || "");
     return title.toUpperCase().startsWith(day);
   });
-  if (!pageBlock) throw new Error(\`\${day} não localizado no Ciclo 01\`);
+  if (!pageBlock) throw new Error(`${day} não localizado no Ciclo 01`);
 
   const [page, tree] = await Promise.all([
-    notion(\`/pages/\${pageBlock.id}\`),
+    notion(`/pages/${pageBlock.id}`),
     getBlockTree(pageBlock.id, notion),
   ]);
   const rawTitle = String(pageBlock.child_page?.title || day);
@@ -205,18 +205,18 @@ function createNotionRequest(token: string): NotionRequest {
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(), 15_000);
       try {
-        const response = await fetch(\`\${NOTION_API_BASE}\${endpoint}\`, {
+        const response = await fetch(`${NOTION_API_BASE}${endpoint}`, {
           ...init,
           signal: controller.signal,
           headers: {
-            Authorization: \`Bearer \${token}\`,
+            Authorization: `Bearer ${token}`,
             "Notion-Version": NOTION_VERSION,
             "Content-Type": "application/json",
             ...(init.headers || {}),
           },
         });
         const body = await response.text();
-        if (!response.ok) throw new Error(\`Notion API returned \${response.status}: \${body.slice(0, 240)}\`);
+        if (!response.ok) throw new Error(`Notion API returned ${response.status}: ${body.slice(0, 240)}`);
         return JSON.parse(body);
       } finally {
         clearTimeout(timeout);
@@ -233,7 +233,7 @@ async function queryDataSource(id: string, notion: NotionRequest) {
   do {
     const body: Record<string, unknown> = { page_size: 100 };
     if (cursor) body.start_cursor = cursor;
-    const response = await notion(\`/data_sources/\${id}/query\`, { method: "POST", body: JSON.stringify(body) });
+    const response = await notion(`/data_sources/${id}/query`, { method: "POST", body: JSON.stringify(body) });
     pages.push(...(response.results || []));
     cursor = response.has_more ? response.next_cursor : null;
   } while (cursor);
@@ -246,7 +246,7 @@ async function getAllChildren(blockId: string, notion: NotionRequest) {
   do {
     const query = new URLSearchParams({ page_size: "100" });
     if (cursor) query.set("start_cursor", cursor);
-    const response = await notion(\`/blocks/\${blockId}/children?\${query}\`);
+    const response = await notion(`/blocks/${blockId}/children?${query}`);
     results.push(...(response.results || []));
     cursor = response.has_more ? response.next_cursor : null;
   } while (cursor);
@@ -274,11 +274,11 @@ function renderBlocks(blocks: Array<Record<string, any>>): string {
       const items: string[] = [];
       while (index < blocks.length && blocks[index].type === type) {
         const item = blocks[index];
-        items.push(\`<li>\${richTextHtml(item[type]?.rich_text)}\${renderBlocks(item.__children || [])}</li>\`);
+        items.push(`<li>${richTextHtml(item[type]?.rich_text)}${renderBlocks(item.__children || [])}</li>`);
         index += 1;
       }
       index -= 1;
-      html += \`<\${tag}>\${items.join("")}</\${tag}>\`;
+      html += `<${tag}>${items.join("")}</${tag}>`;
       continue;
     }
     html += renderBlock(block);
@@ -291,41 +291,41 @@ function renderBlock(block: Record<string, any>): string {
   const data = block[type] || {};
   const text = richTextHtml(data.rich_text);
   const children = renderBlocks(block.__children || []);
-  if (type === "paragraph") return text ? \`<p>\${text}</p>\${children}\` : children;
-  if (type === "heading_1") return \`<h2>\${text}</h2>\${children}\`;
-  if (type === "heading_2") return \`<h2>\${text}</h2>\${children}\`;
-  if (type === "heading_3") return \`<h3>\${text}</h3>\${children}\`;
-  if (type === "quote") return \`<blockquote>\${text}\${children}</blockquote>\`;
+  if (type === "paragraph") return text ? `<p>${text}</p>${children}` : children;
+  if (type === "heading_1") return `<h2>${text}</h2>${children}`;
+  if (type === "heading_2") return `<h2>${text}</h2>${children}`;
+  if (type === "heading_3") return `<h3>${text}</h3>${children}`;
+  if (type === "quote") return `<blockquote>${text}${children}</blockquote>`;
   if (type === "callout") {
-    const icon = data.icon?.type === "emoji" ? \`\${escapeHtml(data.icon.emoji)} \` : "";
-    return \`<aside class="study-callout">\${icon}\${text}\${children}</aside>\`;
+    const icon = data.icon?.type === "emoji" ? `${escapeHtml(data.icon.emoji)} ` : "";
+    return `<aside class="study-callout">${icon}${text}${children}</aside>`;
   }
   if (type === "divider") return "<hr>";
-  if (type === "toggle") return \`<details class="study-toggle"><summary>\${text || "Ver conteúdo"}</summary>\${children}</details>\`;
-  if (type === "to_do") return \`<div class="study-todo"><span>\${data.checked ? "☑" : "☐"}</span><span>\${text}</span></div>\${children}\`;
-  if (type === "code") return \`<pre><code>\${escapeHtml((data.rich_text || []).map((item: any) => item.plain_text || "").join(""))}</code></pre>\${children}\`;
+  if (type === "toggle") return `<details class="study-toggle"><summary>${text || "Ver conteúdo"}</summary>${children}</details>`;
+  if (type === "to_do") return `<div class="study-todo"><span>${data.checked ? "☑" : "☐"}</span><span>${text}</span></div>${children}`;
+  if (type === "code") return `<pre><code>${escapeHtml((data.rich_text || []).map((item: any) => item.plain_text || "").join(""))}</code></pre>${children}`;
   if (type === "table") {
     const rows = (block.__children || []).filter((item: any) => item.type === "table_row").map((row: any, rowIndex: number) => {
       const cells = (row.table_row?.cells || []).map((cell: any[]) => {
         const cellTag = rowIndex === 0 && data.has_column_header ? "th" : "td";
-        return \`<\${cellTag}>\${richTextHtml(cell)}</\${cellTag}>\`;
+        return `<${cellTag}>${richTextHtml(cell)}</${cellTag}>`;
       }).join("");
-      return \`<tr>\${cells}</tr>\`;
+      return `<tr>${cells}</tr>`;
     }).join("");
-    return \`<div class="study-table-wrap"><table>\${rows}</table></div>\`;
+    return `<div class="study-table-wrap"><table>${rows}</table></div>`;
   }
   if (type === "bookmark" || type === "link_preview") {
     const href = safeExternalUrl(data.url || "");
-    return href ? \`<p><a href="\${escapeHtml(href)}" target="_blank" rel="noreferrer">\${escapeHtml(href)} ↗</a></p>\` : children;
+    return href ? `<p><a href="${escapeHtml(href)}" target="_blank" rel="noreferrer">${escapeHtml(href)} ↗</a></p>` : children;
   }
   if (type === "image") {
     const href = data.type === "external" ? safeExternalUrl(data.external?.url || "") : "";
-    if (href) return \`<figure><img src="\${escapeHtml(href)}" alt="" loading="lazy"></figure>\`;
-    return \`<div class="study-media-note">🖼️ Arquivo visual disponível na fonte original do Notion.</div>\`;
+    if (href) return `<figure><img src="${escapeHtml(href)}" alt="" loading="lazy"></figure>`;
+    return `<div class="study-media-note">🖼️ Arquivo visual disponível na fonte original do Notion.</div>`;
   }
-  if (type === "child_page") return \`<div class="study-media-note">📄 \${escapeHtml(data.title || "Página vinculada")} — abra a fonte original se precisar entrar nesta subpágina.</div>\`;
+  if (type === "child_page") return `<div class="study-media-note">📄 ${escapeHtml(data.title || "Página vinculada")} — abra a fonte original se precisar entrar nesta subpágina.</div>`;
   if (type === "synced_block" || type === "column" || type === "column_list") return children;
-  return children || (text ? \`<p>\${text}</p>\` : "");
+  return children || (text ? `<p>${text}</p>` : "");
 }
 
 function richTextHtml(items: Array<Record<string, any>> = []): string {
@@ -334,13 +334,13 @@ function richTextHtml(items: Array<Record<string, any>> = []): string {
       ? escapeHtml(item.equation?.expression || "")
       : escapeHtml(item.plain_text || item.text?.content || "");
     const annotations = item.annotations || {};
-    if (annotations.code) value = \`<code>\${value}</code>\`;
-    if (annotations.bold) value = \`<strong>\${value}</strong>\`;
-    if (annotations.italic) value = \`<em>\${value}</em>\`;
-    if (annotations.underline) value = \`<u>\${value}</u>\`;
-    if (annotations.strikethrough) value = \`<s>\${value}</s>\`;
+    if (annotations.code) value = `<code>${value}</code>`;
+    if (annotations.bold) value = `<strong>${value}</strong>`;
+    if (annotations.italic) value = `<em>${value}</em>`;
+    if (annotations.underline) value = `<u>${value}</u>`;
+    if (annotations.strikethrough) value = `<s>${value}</s>`;
     const href = safeExternalUrl(item.href || item.text?.link?.url || "");
-    return href ? \`<a href="\${escapeHtml(href)}" target="_blank" rel="noreferrer">\${value}</a>\` : value;
+    return href ? `<a href="${escapeHtml(href)}" target="_blank" rel="noreferrer">${value}</a>` : value;
   }).join("");
 }
 
@@ -436,10 +436,10 @@ function parseLawSession(page: Record<string, any>) {
 }
 
 function codesForOperationalOrder(order: number) {
-  if (order >= 1 && order <= 11) return [\`L\${String(order).padStart(2, "0")}\`];
-  if (order >= 101 && order <= 107) return [\`L\${String(order - 89).padStart(2, "0")}\`];
-  if (order >= 201 && order <= 206) return [\`L\${String(order - 182).padStart(2, "0")}\`];
-  if (order >= 301 && order <= 305) return [\`L\${String(order - 276).padStart(2, "0")}\`];
+  if (order >= 1 && order <= 11) return [`L${String(order).padStart(2, "0")}`];
+  if (order >= 101 && order <= 107) return [`L${String(order - 89).padStart(2, "0")}`];
+  if (order >= 201 && order <= 206) return [`L${String(order - 182).padStart(2, "0")}`];
+  if (order >= 301 && order <= 305) return [`L${String(order - 276).padStart(2, "0")}`];
   if (order === 306) return ["L30", "L31", "L32"];
   if (order === 307) return ["L33"];
   if (order === 308) return ["L34"];
@@ -449,7 +449,7 @@ function codesForOperationalOrder(order: number) {
 function normalizeLawId(value: string) {
   const match = String(value || "").trim().match(/^LP-(\d{8})-(L\d{2})-([LR]\d+|Q\d*)$/i);
   if (!match) return null;
-  return \`LP-\${match[1]}-\${match[2].toUpperCase()}-\${match[3].toUpperCase()}\`;
+  return `LP-${match[1]}-${match[2].toUpperCase()}-${match[3].toUpperCase()}`;
 }
 function pageCodeFromLawId(value: string) {
   return normalizeLawId(value)?.match(/-(L\d{2})-/)?.[1] || "";
@@ -542,7 +542,7 @@ function escapeHtml(value = "") {
     .replaceAll("'", "&#39;");
 }
 function notionPageUrl(value: string) {
-  return \`https://app.notion.com/p/\${String(value || "").replaceAll("-", "")}\`;
+  return `https://app.notion.com/p/${String(value || "").replaceAll("-", "")}`;
 }
 function corsHeaders(request: Request) {
   const origin = request.headers.get("Origin") || "";
