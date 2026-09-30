@@ -1170,12 +1170,12 @@ function toneForSequence(order: number): MaterialsTone {
 
 function MaterialReaderModal({ material, onClose }: { material: MaterialPreview; onClose: () => void }) {
   const [payload, setPayload] = useState<LiveMaterialPayload | null>(null);
-  const [loading, setLoading] = useState(/^D\d{2}$/i.test(material.label));
+  const [loading, setLoading] = useState(/^(?:D\d{2}|MS\d{2})$/i.test(material.label));
   const [error, setError] = useState(false);
-  const isDailyMaterial = /^D\d{2}$/i.test(material.label);
+  const isLiveMaterial = /^(?:D\d{2}|MS\d{2})$/i.test(material.label);
 
   useEffect(() => {
-    if (!isDailyMaterial) return;
+    if (!isLiveMaterial) return;
     let cancelled = false;
     const load = async () => {
       setLoading(true);
@@ -1200,7 +1200,7 @@ function MaterialReaderModal({ material, onClose }: { material: MaterialPreview;
     };
     void load();
     return () => { cancelled = true; };
-  }, [isDailyMaterial, material.label]);
+  }, [isLiveMaterial, material.label]);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
