@@ -1013,6 +1013,29 @@
     "leis_primeiro": {
       "days": [
         {
+          "day_id": "LP-20260929-L05-Q1",
+          "trail": "Leis Primeiro",
+          "title": "2026-09-29 — Leis Primeiro · L05 · Questões",
+          "page_code": "L05",
+          "progress": "Questões",
+          "summary_number": null,
+          "reading_number": null,
+          "status": "Concluído",
+          "phase": null,
+          "type": "Temático",
+          "planned": 30,
+          "done": 30,
+          "correct": 26,
+          "errors": 4,
+          "doubts": 0,
+          "minutes": null,
+          "precision": 0.8666666666666667,
+          "href": "https://app.notion.com/p/3d8cf5a26731815d897de73fd0bd8ed6",
+          "executed_at": "2026-09-29",
+          "created_at": "2026-09-29T17:21:00.000Z",
+          "updated_at": "2026-09-29T17:21:00.000Z"
+        },
+        {
           "day_id": "LP-20260928-L04-L1",
           "trail": "Leis Primeiro",
           "title": "2026-09-28 — Leis Primeiro · L04 · Questões",
@@ -1106,20 +1129,37 @@
         }
       ],
       "totals": {
-        "planned": 115,
-        "done": 115,
-        "correct": 97,
-        "errors": 18,
+        "planned": 145,
+        "done": 145,
+        "correct": 123,
+        "errors": 22,
         "doubts": 0,
         "minutes": null,
-        "precision": 0.8434782608695652
+        "precision": 0.8482758620689655
       },
       "statuses": {
-        "Concluído": 4
+        "Concluído": 5
       },
       "active_day_id": null,
-      "question_rows": 5,
+      "question_rows": 6,
       "question_records": [
+        {
+          "id": "3eacf5a2-6731-812d-a8c8-db072af59956",
+          "url": "https://app.notion.com/p/L05-LC-840-2011-D0-bateria-obrigat-ria-3eacf5a26731812da8c8db072af59956",
+          "day_id": "LP-20260929-L05-Q1",
+          "page_code": "L05",
+          "title": "L05 — LC 840/2011 — D0 — bateria obrigatória",
+          "discipline": "LC 840/2011",
+          "subject": "LC DF nº 840/2011 — regime jurídico dos servidores",
+          "strategic_use": null,
+          "date": "2026-09-29",
+          "planned": 30,
+          "done": 30,
+          "correct": 26,
+          "errors": 4,
+          "doubts": 0,
+          "precision": 0.8666666666666667
+        },
         {
           "id": "3e9cf5a2-6731-8103-aa77-c4316156e029",
           "url": "https://app.notion.com/p/L04-PNE-D0-bateria-obrigat-ria-3e9cf5a267318103aa77c4316156e029",
@@ -1206,8 +1246,96 @@
           "precision": 0.9666666666666667
         }
       ],
-      "error_count": 18,
+      "error_count": 22,
       "errors": [
+        {
+          "id": "3eacf5a2-6731-8152-bac0-c996198d33af",
+          "url": "https://app.notion.com/p/L05-Q10-recondu-o-revers-o-3eacf5a267318152bac0c996198d33af",
+          "day_id": "LP-20260929-L05-Q1",
+          "page_code": "L05",
+          "question_id": "L05-Q10",
+          "title": "L05-Q10 — recondução × reversão",
+          "subject": "Formas de retorno — recondução e reversão",
+          "discipline": "LC 840/2011",
+          "reason": null,
+          "pattern": "Conceito",
+          "severity": null,
+          "review": "D0",
+          "status": "Em andamento",
+          "strategic_use": "Ativo",
+          "recurrence": 1,
+          "flashcard": true,
+          "next_review": null,
+          "date": "2026-09-29",
+          "rule": "Recondução é o retorno do servidor estável ao cargo anteriormente ocupado nas hipóteses legais. O retorno do aposentado à atividade é reversão.",
+          "observations": "Na bateria L05 de 29/09/2026, resposta C; gabarito E. Flashcard específico criado na própria L05."
+        },
+        {
+          "id": "3eacf5a2-6731-814e-b8de-de2f3efcbe08",
+          "url": "https://app.notion.com/p/L05-Q21-cancelamento-de-advert-ncia-e-suspens-o-3eacf5a26731814eb8dede2f3efcbe08",
+          "day_id": "LP-20260929-L05-Q1",
+          "page_code": "L05",
+          "question_id": "L05-Q21",
+          "title": "L05-Q21 — cancelamento de advertência e suspensão",
+          "subject": "Regime disciplinar — cancelamento de registros",
+          "discipline": "LC 840/2011",
+          "reason": null,
+          "pattern": "Lei seca",
+          "severity": null,
+          "review": "D0",
+          "status": "Em andamento",
+          "strategic_use": "Ativo",
+          "recurrence": 1,
+          "flashcard": true,
+          "next_review": null,
+          "date": "2026-09-29",
+          "rule": "O registro de advertência pode ser cancelado após 3 anos de efetivo exercício sem nova infração e o de suspensão após 5 anos; o cancelamento não produz efeitos retroativos.",
+          "observations": "Na bateria L05 de 29/09/2026, resposta E; gabarito C. Flashcard específico criado na própria L05."
+        },
+        {
+          "id": "3eacf5a2-6731-81db-bcb2-c23a52b9495c",
+          "url": "https://app.notion.com/p/L05-Q25-prazo-da-sindic-ncia-3eacf5a2673181dbbcb2c23a52b9495c",
+          "day_id": "LP-20260929-L05-Q1",
+          "page_code": "L05",
+          "question_id": "L05-Q25",
+          "title": "L05-Q25 — prazo da sindicância",
+          "subject": "Sindicância — prazo",
+          "discipline": "LC 840/2011",
+          "reason": null,
+          "pattern": "Procedimento",
+          "severity": null,
+          "review": "D0",
+          "status": "Em andamento",
+          "strategic_use": "Ativo",
+          "recurrence": 1,
+          "flashcard": true,
+          "next_review": null,
+          "date": "2026-09-29",
+          "rule": "O prazo para conclusão da sindicância é de até 30 dias, prorrogável por igual período a critério da autoridade competente.",
+          "observations": "Na bateria L05 de 29/09/2026, resposta E; gabarito C. Flashcard específico criado na própria L05."
+        },
+        {
+          "id": "3eacf5a2-6731-812a-9711-ddf993a08a8f",
+          "url": "https://app.notion.com/p/L05-Q26-resultados-da-sindic-ncia-3eacf5a26731812a9711ddf993a08a8f",
+          "day_id": "LP-20260929-L05-Q1",
+          "page_code": "L05",
+          "question_id": "L05-Q26",
+          "title": "L05-Q26 — resultados da sindicância",
+          "subject": "Sindicância — resultados e sanções",
+          "discipline": "LC 840/2011",
+          "reason": null,
+          "pattern": "Procedimento",
+          "severity": null,
+          "review": "D0",
+          "status": "Em andamento",
+          "strategic_use": "Ativo",
+          "recurrence": 1,
+          "flashcard": true,
+          "next_review": null,
+          "date": "2026-09-29",
+          "rule": "Da sindicância pode resultar arquivamento, instauração de PAD ou, observadas as garantias legais, aplicação de advertência ou suspensão de até 30 dias.",
+          "observations": "Na bateria L05 de 29/09/2026, resposta E; gabarito C. Flashcard específico criado na própria L05."
+        },
         {
           "id": "3e9cf5a2-6731-81f4-b47a-fecbb5b365c6",
           "url": "https://app.notion.com/p/L04-Q02-meta-estrat-gia-3e9cf5a2673181f4b47afecbb5b365c6",
@@ -1605,7 +1733,7 @@
           "observations": "Erro da questão 37 da bateria suplementar de Analista Monitor. Origem: Leitura 1 da L01. Não foi criado novo flashcard porque a L01 já possuía cartão equivalente."
         }
       ],
-      "latest_day_id": "LP-20260928-L04-L1",
+      "latest_day_id": "LP-20260929-L05-Q1",
       "sessions": [
         {
           "id": "3eacf5a2-6731-81c1-8a44-dc3ca616029d",

@@ -6,7 +6,7 @@
     "page_id": "3d8cf5a2-6731-817c-89f4-f4907d14a701",
     "page_url": "https://app.notion.com/p/Leis-Primeiro-SEEDF-leitura-quest-es-flashcards-3d8cf5a26731817c89f4f4907d14a701",
     "last_edited_time": "2026-09-25T17:52:00.000Z",
-    "synced_at": "2026-09-29T18:26:41.638Z",
+    "synced_at": "2026-09-30T03:24:24.349Z",
     "data_source_id": "6b3c940a-a382-419f-9ef6-531a1dc5cad2",
     "internal_pages": true
   },
@@ -35,6 +35,29 @@
   "advance_rule": "Sessão incompleta mantém a própria Lxx. Após a sessão ser concluída e registrada, a continuidade pode avançar para a próxima lei; D0 pendente permanece como dívida de fechamento/revisão e não retrocede a sequência. D7/D20 seguem em paralelo.",
   "execution": {
     "days": [
+      {
+        "day_id": "LP-20260929-L05-Q1",
+        "trail": "Leis Primeiro",
+        "title": "2026-09-29 — Leis Primeiro · L05 · Questões",
+        "page_code": "L05",
+        "progress": "Questões",
+        "summary_number": null,
+        "reading_number": null,
+        "status": "Concluído",
+        "phase": null,
+        "type": "Temático",
+        "planned": 30,
+        "done": 30,
+        "correct": 26,
+        "errors": 4,
+        "doubts": 0,
+        "minutes": null,
+        "precision": 0.8666666666666667,
+        "href": "https://app.notion.com/p/3d8cf5a26731815d897de73fd0bd8ed6",
+        "executed_at": "2026-09-29",
+        "created_at": "2026-09-29T17:21:00.000Z",
+        "updated_at": "2026-09-29T17:21:00.000Z"
+      },
       {
         "day_id": "LP-20260928-L04-L1",
         "trail": "Leis Primeiro",
@@ -129,20 +152,37 @@
       }
     ],
     "totals": {
-      "planned": 115,
-      "done": 115,
-      "correct": 97,
-      "errors": 18,
+      "planned": 145,
+      "done": 145,
+      "correct": 123,
+      "errors": 22,
       "doubts": 0,
       "minutes": null,
-      "precision": 0.8434782608695652
+      "precision": 0.8482758620689655
     },
     "statuses": {
-      "Concluído": 4
+      "Concluído": 5
     },
     "active_day_id": null,
-    "question_rows": 5,
+    "question_rows": 6,
     "question_records": [
+      {
+        "id": "3eacf5a2-6731-812d-a8c8-db072af59956",
+        "url": "https://app.notion.com/p/L05-LC-840-2011-D0-bateria-obrigat-ria-3eacf5a26731812da8c8db072af59956",
+        "day_id": "LP-20260929-L05-Q1",
+        "page_code": "L05",
+        "title": "L05 — LC 840/2011 — D0 — bateria obrigatória",
+        "discipline": "LC 840/2011",
+        "subject": "LC DF nº 840/2011 — regime jurídico dos servidores",
+        "strategic_use": null,
+        "date": "2026-09-29",
+        "planned": 30,
+        "done": 30,
+        "correct": 26,
+        "errors": 4,
+        "doubts": 0,
+        "precision": 0.8666666666666667
+      },
       {
         "id": "3e9cf5a2-6731-8103-aa77-c4316156e029",
         "url": "https://app.notion.com/p/L04-PNE-D0-bateria-obrigat-ria-3e9cf5a267318103aa77c4316156e029",
@@ -229,8 +269,96 @@
         "precision": 0.9666666666666667
       }
     ],
-    "error_count": 18,
+    "error_count": 22,
     "errors": [
+      {
+        "id": "3eacf5a2-6731-8152-bac0-c996198d33af",
+        "url": "https://app.notion.com/p/L05-Q10-recondu-o-revers-o-3eacf5a267318152bac0c996198d33af",
+        "day_id": "LP-20260929-L05-Q1",
+        "page_code": "L05",
+        "question_id": "L05-Q10",
+        "title": "L05-Q10 — recondução × reversão",
+        "subject": "Formas de retorno — recondução e reversão",
+        "discipline": "LC 840/2011",
+        "reason": null,
+        "pattern": "Conceito",
+        "severity": null,
+        "review": "D0",
+        "status": "Em andamento",
+        "strategic_use": "Ativo",
+        "recurrence": 1,
+        "flashcard": true,
+        "next_review": null,
+        "date": "2026-09-29",
+        "rule": "Recondução é o retorno do servidor estável ao cargo anteriormente ocupado nas hipóteses legais. O retorno do aposentado à atividade é reversão.",
+        "observations": "Na bateria L05 de 29/09/2026, resposta C; gabarito E. Flashcard específico criado na própria L05."
+      },
+      {
+        "id": "3eacf5a2-6731-814e-b8de-de2f3efcbe08",
+        "url": "https://app.notion.com/p/L05-Q21-cancelamento-de-advert-ncia-e-suspens-o-3eacf5a26731814eb8dede2f3efcbe08",
+        "day_id": "LP-20260929-L05-Q1",
+        "page_code": "L05",
+        "question_id": "L05-Q21",
+        "title": "L05-Q21 — cancelamento de advertência e suspensão",
+        "subject": "Regime disciplinar — cancelamento de registros",
+        "discipline": "LC 840/2011",
+        "reason": null,
+        "pattern": "Lei seca",
+        "severity": null,
+        "review": "D0",
+        "status": "Em andamento",
+        "strategic_use": "Ativo",
+        "recurrence": 1,
+        "flashcard": true,
+        "next_review": null,
+        "date": "2026-09-29",
+        "rule": "O registro de advertência pode ser cancelado após 3 anos de efetivo exercício sem nova infração e o de suspensão após 5 anos; o cancelamento não produz efeitos retroativos.",
+        "observations": "Na bateria L05 de 29/09/2026, resposta E; gabarito C. Flashcard específico criado na própria L05."
+      },
+      {
+        "id": "3eacf5a2-6731-81db-bcb2-c23a52b9495c",
+        "url": "https://app.notion.com/p/L05-Q25-prazo-da-sindic-ncia-3eacf5a2673181dbbcb2c23a52b9495c",
+        "day_id": "LP-20260929-L05-Q1",
+        "page_code": "L05",
+        "question_id": "L05-Q25",
+        "title": "L05-Q25 — prazo da sindicância",
+        "subject": "Sindicância — prazo",
+        "discipline": "LC 840/2011",
+        "reason": null,
+        "pattern": "Procedimento",
+        "severity": null,
+        "review": "D0",
+        "status": "Em andamento",
+        "strategic_use": "Ativo",
+        "recurrence": 1,
+        "flashcard": true,
+        "next_review": null,
+        "date": "2026-09-29",
+        "rule": "O prazo para conclusão da sindicância é de até 30 dias, prorrogável por igual período a critério da autoridade competente.",
+        "observations": "Na bateria L05 de 29/09/2026, resposta E; gabarito C. Flashcard específico criado na própria L05."
+      },
+      {
+        "id": "3eacf5a2-6731-812a-9711-ddf993a08a8f",
+        "url": "https://app.notion.com/p/L05-Q26-resultados-da-sindic-ncia-3eacf5a26731812a9711ddf993a08a8f",
+        "day_id": "LP-20260929-L05-Q1",
+        "page_code": "L05",
+        "question_id": "L05-Q26",
+        "title": "L05-Q26 — resultados da sindicância",
+        "subject": "Sindicância — resultados e sanções",
+        "discipline": "LC 840/2011",
+        "reason": null,
+        "pattern": "Procedimento",
+        "severity": null,
+        "review": "D0",
+        "status": "Em andamento",
+        "strategic_use": "Ativo",
+        "recurrence": 1,
+        "flashcard": true,
+        "next_review": null,
+        "date": "2026-09-29",
+        "rule": "Da sindicância pode resultar arquivamento, instauração de PAD ou, observadas as garantias legais, aplicação de advertência ou suspensão de até 30 dias.",
+        "observations": "Na bateria L05 de 29/09/2026, resposta E; gabarito C. Flashcard específico criado na própria L05."
+      },
       {
         "id": "3e9cf5a2-6731-81f4-b47a-fecbb5b365c6",
         "url": "https://app.notion.com/p/L04-Q02-meta-estrat-gia-3e9cf5a2673181f4b47afecbb5b365c6",
@@ -628,7 +756,7 @@
         "observations": "Erro da questão 37 da bateria suplementar de Analista Monitor. Origem: Leitura 1 da L01. Não foi criado novo flashcard porque a L01 já possuía cartão equivalente."
       }
     ],
-    "latest_day_id": "LP-20260928-L04-L1",
+    "latest_day_id": "LP-20260929-L05-Q1",
     "sessions": [
       {
         "id": "3eacf5a2-6731-81c1-8a44-dc3ca616029d",
@@ -1054,7 +1182,11 @@
       "shared_block": false,
       "shared_codes": [],
       "content_html": "<aside class=\"study-callout\">⚖️ <strong>LEI 05 — NÚCLEO COMUM | P0 (prioridade máxima) — Nuclear</strong><p>A LC (Lei Complementar) nº 840/2011 é a espinha dorsal do regime jurídico dos servidores civis do DF (Distrito Federal). Nesta trilha, estude primeiro <strong>cargo/provimento/vacância → jornada/direitos → deveres → regime disciplinar → sindicância/PAD (processo administrativo disciplinar)</strong>, usando sempre o texto compilado vigente.</p></aside><h2>1. Texto oficial vigente</h2><p><strong>Lei Complementar nº 840, de 23 de dezembro de 2011 — regime jurídico dos servidores públicos civis do Distrito Federal, das autarquias e das fundações públicas distritais.</strong></p><p><a href=\"https://www.sinj.df.gov.br/sinj/Norma/70196/LC_840.html\" target=\"_blank\" rel=\"noreferrer\">📖 Abrir LC nº 840/2011 — texto oficial compilado no SINJ (Sistema Integrado de Normas Jurídicas do Distrito Federal)</a></p><blockquote><strong>Regra:</strong> para literalidade, prevalece o texto compilado do SINJ. A LC sofreu diversas alterações e possui dispositivos afetados por decisões judiciais; não estude por PDF antigo isolado.</blockquote><h2>2. Atualização 2026 — estágio probatório</h2><p>Os <strong>arts. 22 a 31</strong> foram regulamentados pelo <strong>Decreto nº 48.806, de 18/06/2026</strong>.</p><p><a href=\"https://www.sinj.df.gov.br/sinj/Norma/1ea7112d3ff24d658213638f263d87bf/Decreto_48806_18_06_2026.html\" target=\"_blank\" rel=\"noreferrer\">📌 Abrir Decreto nº 48.806/2026 — SINJ</a></p><p><strong>Números que já entram no estudo:</strong> estágio de <strong>3 anos</strong>; avaliações <strong>semestrais até o 30º mês</strong>; avaliação especial nos <strong>4 meses anteriores</strong> ao término; resultado parcial apto com nota <strong>≥ 6</strong>; homologação final e estabilidade ao completar 3 anos de efetivo exercício, descontadas suspensões.</p><h2>3. Mapa dos Títulos II a VII</h2><div class=\"study-table-wrap\"><table><tr><th>Título</th><th>Conteúdo</th><th>Prioridade</th></tr><tr><td>II</td><td>Cargos, provimento, estágio, estabilidade, retorno, remanejamentos e vacância</td><td>P0</td></tr><tr><td>III</td><td>Carreiras, regime e jornada de trabalho</td><td>P1 (prioridade alta)</td></tr><tr><td>IV</td><td>Direitos</td><td>P0/P1 (prioridade máxima/alta)</td></tr><tr><td>V</td><td>Deveres — art. 180</td><td>P0</td></tr><tr><td>VI</td><td>Regime disciplinar — responsabilidades, infrações, sanções e prescrição</td><td>P0</td></tr><tr><td>VII</td><td>Processos de apuração — sindicância e processo disciplinar</td><td>P0</td></tr></table></div><aside class=\"study-callout\">⚠️ <strong>Correção conceitual obrigatória:</strong> Título VI = <strong>Regime Disciplinar</strong>. Título VII = <strong>Processos de Apuração de Infração Disciplinar</strong>. Sindicância e PAD pertencem ao <strong>Título VII</strong>, não ao VI.</aside><h2>4. Como ler a LC 840</h2><ol><li><strong>Passada 1 — vínculo funcional:</strong> arts. 4º–54. Foque concurso, nomeação, posse, exercício, estágio, estabilidade, retorno e vacância.</li><li><strong>Passada 2 — carreira/direitos:</strong> arts. 55–179. Não tente decorar todas as vantagens; priorize jornada, faltas, remuneração, férias, licenças, afastamentos, direito de petição e revisão dos atos.</li><li><strong>Passada 3 — deveres e disciplina:</strong> art. 180 + arts. 181–210. Aqui a leitura literal passa a ser mais importante.</li><li><strong>Passada 4 — apuração:</strong> arts. 211–267. Entenda a lógica da sindicância e do PAD antes de decorar prazos.</li></ol><h2>5. Título II — cargo, provimento e investidura</h2><h3>Arts. 4º a 8º | P0</h3><p>Investidura em cargo efetivo depende de concurso. Cargo em comissão é de livre nomeação/exoneração e se destina a direção, chefia e assessoramento; função de confiança é privativa de servidor efetivo.</p><p><strong>Formas de provimento do art. 8º:</strong> nomeação, reversão, aproveitamento, reintegração e recondução.</p><p><strong>Pegadinha:</strong> não acrescente instituto à lista do art. 8º por analogia com outros estatutos.</p><h3>Posse e exercício — números fortes</h3><ul><li><strong>Posse:</strong> até <strong>30 dias</strong> da publicação da nomeação.</li><li>Só há posse no provimento por <strong>nomeação</strong>.</li><li>Posse pode ocorrer por procuração com poderes específicos.</li><li><strong>Exercício:</strong> efetivo desempenho das atribuições.</li><li>Entrada em exercício: até <strong>5 dias úteis</strong> contados da posse.</li></ul><p><strong>Pegadinha:</strong> nomeação sem posse no prazo → ato deve ser tornado sem efeito; posse sem exercício no prazo → exoneração.</p><h2>6. Estágio probatório e estabilidade</h2><h3>Arts. 22–31 | P0</h3><p>Ao entrar em exercício em cargo efetivo, o servidor cumpre <strong>3 anos</strong> de estágio probatório.</p><p>Fatores legais de avaliação: <strong>assiduidade, pontualidade, disciplina, capacidade de iniciativa, produtividade e responsabilidade</strong>.</p><p>Em acumulação lícita, cada cargo tem estágio próprio; não se aproveitam prazo ou pontuação de um para outro.</p><p>O servidor pode desistir do estágio e ser reconduzido ao cargo anterior em que já possuía estabilidade, mas <strong>não pode fazê-lo enquanto responde a processo disciplinar</strong>.</p><h3>Decreto 48.806/2026</h3><ul><li>avaliações parciais semestrais até o <strong>30º mês</strong>;</li><li>apto na parcial: nota <strong>igual ou superior a 6</strong>;</li><li>avaliação especial nos <strong>4 meses anteriores</strong> ao fim do estágio;</li><li>há hipóteses de suspensão e retomada da contagem;</li><li>aprovado: estabilidade ao completar os 3 anos de efetivo exercício, descontadas suspensões;</li><li>homologação final deve ser publicada no DODF (Diário Oficial do Distrito Federal).</li></ul><h3>Arts. 32–33</h3><p>Estabilidade: servidor efetivo <strong>regularmente aprovado</strong> no estágio adquire estabilidade ao completar <strong>3 anos de efetivo exercício</strong>. Perda do cargo somente nas hipóteses constitucionais.</p><h2>7. Formas de retorno — quadro de proteção</h2><div class=\"study-table-wrap\"><table><tr><th>Instituto</th><th>Quem retorna</th><th>Prazo de retorno ao exercício</th></tr><tr><td>Reversão</td><td>Aposentado que volta à atividade nas hipóteses legais</td><td><strong>15 dias úteis</strong></td></tr><tr><td>Reintegração</td><td>Demitido cuja demissão foi invalidada</td><td><strong>5 dias úteis</strong></td></tr><tr><td>Recondução</td><td>Servidor estável que retorna ao cargo anterior</td><td>Até o <strong>dia seguinte</strong> à ciência</td></tr><tr><td>Aproveitamento</td><td>Servidor em disponibilidade</td><td><strong>30 dias</strong></td></tr></table></div><h3>Art. 37 — recondução</h3><p>Pode decorrer de reprovação no estágio probatório, desistência do estágio, reintegração do anterior ocupante ou invalidação judicial da posse no novo cargo.</p><p><strong>Pegadinha:</strong> primeiro identifique a situação funcional; só depois tente lembrar o nome do instituto.</p><h2>8. Remanejamentos e vacância</h2><h3>Remoção</h3><p>Remoção desloca a <strong>lotação</strong> do servidor no mesmo órgão/autarquia/fundação e na mesma carreira, de uma localidade para outra.</p><h3>Art. 50 — vacância | P0</h3><p>Vacância decorre de: exoneração, demissão, destituição de cargo em comissão, aposentadoria, falecimento e perda do cargo nos demais casos constitucionais.</p><p>O servidor estável que toma posse em outro cargo inacumulável no DF pode pedir vacância do cargo efetivo anterior, observadas as regras do art. 54.</p><p><strong>Pegadinha:</strong> exoneração ≠ demissão. Exoneração não é sanção disciplinar; demissão é.</p><h2>9. Título III — carreira, jornada e faltas</h2><p>Os cargos efetivos são organizados em carreira criada por lei, que fixa denominação, quantitativo, atribuições, requisitos, estrutura remuneratória, critérios de capacitação e regime/jornada.</p><h3>Art. 64 — números clássicos</h3><ul><li><strong>Abandono de cargo:</strong> faltas injustificadas por <strong>mais de 30 dias consecutivos</strong>.</li><li><strong>Inassiduidade habitual:</strong> faltas injustificadas por <strong>mais de 60 dias interpolados em 12 meses</strong>.</li></ul><p><strong>Pegadinha:</strong> não troque consecutivo por interpolado.</p><h2>10. Título IV — direitos | leitura dirigida</h2><p>O Título IV é extenso. Nesta primeira passagem, priorize:</p><ul><li>remuneração/subsídio e vantagens;</li><li>férias;</li><li>licenças e afastamentos;</li><li>concessões;</li><li>direito de petição, pedido de reconsideração e recurso;</li><li>prescrição administrativa;</li><li>revisão/anulação/convalidação de atos.</li></ul><h3>Art. 178 — atos administrativos</h3><p>A Administração deve rever atos ilegais. Defeitos sanáveis podem ser convalidados se não houver lesão ao interesse público nem prejuízo a terceiros.</p><p>O direito de anular ato favorável ao servidor, em regra, decai em <strong>5 anos</strong>, salvo comprovada má-fé.</p><h2>11. Título V — deveres | art. 180 | P0</h2><p>O art. 180 é leitura literal obrigatória. Organize os deveres em cinco grupos:</p><ul><li><strong>desempenho:</strong> zelo, dedicação, atualização, perícia, prudência e diligência;</li><li><strong>legalidade:</strong> observar normas e cumprir ordens, salvo as manifestamente ilegais;</li><li><strong>integridade:</strong> representar contra ilegalidade/omissão/abuso e declarar impedimento/suspeição;</li><li><strong>patrimônio/informação:</strong> economia de material, conservação e sigilo;</li><li><strong>conduta/atendimento:</strong> lealdade, assiduidade, pontualidade, moralidade, civilidade e presteza.</li></ul><p><strong>Pegadinha:</strong> o dever é cumprir ordens superiores <strong>exceto quando manifestamente ilegais</strong>.</p><h2>12. Título VI — Regime Disciplinar | P0</h2><h3>Arts. 181–186 — responsabilidades</h3><p>O servidor pode responder <strong>civil, penal e administrativamente</strong>, e as esferas podem cumular-se e são, em regra, independentes.</p><p>A responsabilidade administrativa é afastada quando a absolvição penal transitada em julgado <strong>nega a existência do fato ou a autoria</strong>.</p><p><strong>Pegadinha:</strong> absolvição penal por qualquer fundamento não apaga automaticamente a responsabilidade administrativa.</p><h3>Infrações</h3><p>A LC classifica infrações em graus/grupos. Na primeira passagem, não tente decorar todas de uma vez. Marque principalmente abandono, inassiduidade, vantagem indevida, uso do cargo, falsidade documental, acumulação ilícita e condutas contra a Administração.</p><h3>Art. 195 — sanções disciplinares</h3><ul><li>advertência;</li><li>suspensão;</li><li>demissão;</li><li>cassação de aposentadoria ou disponibilidade;</li><li>destituição do cargo em comissão.</li></ul><p>Nenhuma sanção pode ser aplicada sem previsão legal e sem regular apuração.</p><h3>Cancelamento de registros</h3><ul><li>advertência: <strong>3 anos</strong> de efetivo exercício sem nova infração;</li><li>suspensão: <strong>5 anos</strong>.</li></ul><p>O cancelamento não produz efeitos retroativos.</p><h3>Art. 208 — prescrição disciplinar</h3><ul><li>demissão/destituição/cassação: <strong>5 anos</strong>;</li><li>suspensão: <strong>2 anos</strong>;</li><li>advertência: <strong>1 ano</strong>.</li></ul><p>A instauração de processo disciplinar interrompe a prescrição <strong>uma única vez</strong>.</p><h2>13. Título VII — sindicância e PAD | P0</h2><h3>Arts. 211–213 — início da apuração</h3><p>Diante de indícios ou representação, a autoridade competente deve determinar sindicância ou processo disciplinar.</p><p>Se já houver indícios suficientes de <strong>autoria e materialidade</strong>, pode ser instaurado <strong>diretamente o processo disciplinar</strong>, sem sindicância prévia.</p><p><strong>Pegadinha:</strong> sindicância não é etapa obrigatória anterior a todo PAD.</p><h3>Arts. 214–215 — sindicância</h3><p>Finalidade investigativa: identificar autoria desconhecida ou apurar materialidade ainda baseada apenas em indícios/notícia.</p><ul><li>prazo: até <strong>30 dias</strong>, prorrogável por igual período;</li><li>pode resultar em arquivamento, PAD ou aplicação de advertência/suspensão de até <strong>30 dias</strong>, observadas as garantias legais.</li></ul><h3>Art. 216 — sindicância patrimonial</h3><p>Destinada a indícios de enriquecimento ilícito/evolução patrimonial incompatível. É sigilosa, exclusivamente investigativa, conduzida por comissão de <strong>3 servidores estáveis</strong>, com prazo de <strong>30 + 30 dias</strong>.</p><h3>Arts. 217–219 — processo disciplinar</h3><p>PAD apura responsabilidade por infração disciplinar.</p><ul><li>prazo para conclusão: até <strong>60 dias</strong>, prorrogável por igual período;</li><li>prazos de PAD no DF ficam suspensos de <strong>20 de dezembro a 20 de janeiro</strong>, inclusive;</li><li>princípios incluem contraditório, ampla defesa, proporcionalidade, razoabilidade, motivação, segurança jurídica e verdade material.</li></ul><h3>Arts. 224–228 — defesa</h3><p>Contraditório e ampla defesa são sempre assegurados. O acusado pode constituir procurador, arrolar/reinquirir/contraditar testemunhas, produzir provas/contraprovas, formular quesitos, acessar autos e recorrer/requerer revisão.</p><h3>Art. 235 — fases do PAD</h3><p><strong>Instauração → instrução → defesa → relatório → julgamento.</strong></p><h3>Julgamento e revisão</h3><p>A autoridade competente tem, em regra, <strong>20 dias</strong> do recebimento dos autos para decidir.</p><p>O processo pode ser revisto <strong>a qualquer tempo</strong> diante de fatos novos/circunstâncias não apreciadas capazes de demonstrar inocência ou inadequação da sanção.</p><p><strong>Da revisão não pode resultar agravamento da sanção.</strong></p><h2>14. Quadro de números para recuperação ativa</h2><div class=\"study-table-wrap\"><table><tr><th>Tema</th><th>Número</th></tr><tr><td>Posse</td><td>30 dias</td></tr><tr><td>Exercício após posse</td><td>5 dias úteis</td></tr><tr><td>Estágio probatório</td><td>3 anos</td></tr><tr><td>Reversão — retorno</td><td>15 dias úteis</td></tr><tr><td>Reintegração — retorno</td><td>5 dias úteis</td></tr><tr><td>Recondução — retorno</td><td>dia seguinte à ciência</td></tr><tr><td>Aproveitamento — retorno</td><td>30 dias</td></tr><tr><td>Abandono</td><td>mais de 30 dias consecutivos</td></tr><tr><td>Inassiduidade habitual</td><td>mais de 60 dias interpolados / 12 meses</td></tr><tr><td>Prescrição disciplinar</td><td>5 / 2 / 1 anos</td></tr><tr><td>Sindicância</td><td>30 + 30 dias</td></tr><tr><td>PAD</td><td>60 + 60 dias</td></tr><tr><td>Julgamento do PAD</td><td>20 dias</td></tr></table></div><h2>15. Pegadinhas prioritárias</h2><ul><li>função de confiança é privativa de servidor <strong>efetivo</strong>;</li><li>posse só existe na <strong>nomeação</strong>;</li><li>exoneração não é penalidade; demissão é;</li><li>estabilidade não surge simplesmente da posse: exige cargo efetivo, aprovação no estágio e 3 anos de efetivo exercício;</li><li>reintegração × recondução × reversão × aproveitamento não podem ser trocados;</li><li>absolvição penal só repercute automaticamente na esfera administrativa nas hipóteses legais de inexistência do fato ou negativa de autoria;</li><li>Título VI ≠ PAD; PAD está no <strong>Título VII</strong>;</li><li>sindicância não é obrigatória antes do PAD;</li><li>revisão do processo disciplinar não pode agravar a penalidade.</li></ul><h2>16. Questões da lei</h2><p><strong>Meta operacional: 30 itens C/E (certo/errado).</strong> Distribuição: <strong>10 + 5 + 8 + 7</strong>. Resolva todos antes de abrir o gabarito.</p><h3>Bloco A — provimento, posse, exercício, estágio, estabilidade e retorno | 10 itens</h3><ol><li>( ) São formas de provimento previstas no art. 8º: nomeação, reversão, aproveitamento, reintegração e recondução.</li><li>( ) A readaptação integra expressamente o rol de formas de provimento do art. 8º da LC nº 840/2011.</li><li>( ) A posse deve ocorrer, em regra, no prazo de 30 dias contados da publicação do ato de nomeação.</li><li>( ) A LC nº 840/2011 admite posse nos casos de nomeação, reversão e reintegração.</li><li>( ) O prazo para o servidor entrar em exercício é de 5 dias úteis contados da posse.</li><li>( ) O servidor nomeado para cargo efetivo, ao entrar em exercício, fica sujeito a estágio probatório de 3 anos.</li><li>( ) Assiduidade, pontualidade, disciplina, capacidade de iniciativa, produtividade e responsabilidade integram os fatores legais de avaliação do estágio probatório.</li><li>( ) Na acumulação lícita de cargos, o estágio probatório é cumprido separadamente em cada cargo, vedado aproveitar prazo ou pontuação de um no outro.</li><li>( ) Reintegração é o retorno à atividade do servidor demitido quando sua demissão é invalidada, com os efeitos previstos em lei.</li><li>( ) Recondução é o instituto reservado ao aposentado que retorna à atividade após cessarem os fundamentos da aposentadoria por invalidez.</li></ol><h3>Bloco B — vacância, jornada e direitos | 5 itens</h3><ol><li>( ) Exoneração, demissão, destituição de cargo em comissão, aposentadoria, falecimento e perda do cargo nos demais casos constitucionais são hipóteses de vacância.</li><li>( ) A exoneração de cargo efetivo constitui sanção disciplinar equivalente à demissão, distinguindo-se apenas quanto à autoridade competente.</li><li>( ) Configura abandono de cargo a ocorrência de faltas injustificadas por mais de 30 dias consecutivos.</li><li>( ) Configura inassiduidade habitual a ocorrência de faltas injustificadas por mais de 60 dias, interpoladamente, no período de 12 meses.</li><li>( ) O direito da Administração de anular ato administrativo favorável ao servidor, em regra, decai em 5 anos, salvo comprovada má-fé.</li></ol><h3>Bloco C — deveres, responsabilidades, sanções e prescrição | 8 itens</h3><ol><li>( ) O servidor pode responder civil, penal e administrativamente pelo exercício irregular de suas atribuições, e as responsabilidades podem cumular-se nos termos legais.</li><li>( ) Toda absolvição penal transitada em julgado afasta automaticamente a responsabilidade administrativa pelo mesmo fato.</li><li>( ) Constitui dever do servidor cumprir as ordens superiores, exceto quando manifestamente ilegais.</li><li>( ) Advertência, suspensão, demissão, cassação de aposentadoria ou disponibilidade e destituição de cargo em comissão são sanções disciplinares previstas no art. 195.</li><li>( ) A exoneração integra o rol de sanções disciplinares do art. 195.</li><li>( ) O registro de advertência pode ser cancelado após 3 anos de efetivo exercício sem nova infração e o de suspensão, após 5 anos, sem efeitos retroativos.</li><li>( ) A ação disciplinar prescreve, respectivamente, em 5 anos para demissão/destituição/cassação, 2 anos para suspensão e 1 ano para advertência.</li><li>( ) A instauração de processo disciplinar interrompe a prescrição uma única vez.</li></ol><h3>Bloco D — sindicância e processo disciplinar | 7 itens</h3><ol><li>( ) A sindicância é procedimento investigativo destinado, entre outras finalidades, a identificar autoria desconhecida ou apurar materialidade ainda fundada em indícios ou notícia.</li><li>( ) O prazo para conclusão da sindicância é de até 30 dias, prorrogável por igual período a critério da autoridade competente.</li><li>( ) Da sindicância pode resultar, observadas as garantias legais, aplicação de advertência ou suspensão de até 30 dias.</li><li>( ) A sindicância patrimonial tem caráter exclusivamente investigativo, é sigilosa e é conduzida por comissão composta por três servidores estáveis.</li><li>( ) O processo disciplinar deve ser concluído em até 60 dias, prorrogável por igual período, e os prazos dos processos administrativos disciplinares no DF ficam suspensos de 20 de dezembro a 20 de janeiro, inclusive.</li><li>( ) A sindicância constitui fase prévia obrigatória de todo processo disciplinar, mesmo quando já existam indícios suficientes de autoria e materialidade.</li><li>( ) O processo disciplinar desenvolve-se nas fases de instauração, instrução, defesa, relatório e julgamento.</li></ol><details class=\"study-toggle\"><summary>🔐 Gabarito — abrir somente depois de responder os 30 itens</summary><p><strong>Bloco A — 10 itens:</strong> 1 C · 2 E · 3 C · 4 E · 5 C · 6 C · 7 C · 8 C · 9 C · 10 E</p><p><strong>Bloco B — 5 itens:</strong> 1 C · 2 E · 3 C · 4 C · 5 C</p><p><strong>Bloco C — 8 itens:</strong> 1 C · 2 E · 3 C · 4 C · 5 E · 6 C · 7 C · 8 C</p><p><strong>Bloco D — 7 itens:</strong> 1 C · 2 C · 3 C · 4 C · 5 C · 6 E · 7 C</p><p><strong>Pontos de revisão:</strong> A2 = art. 8º é lista fechada; A4 = só há posse na nomeação; A10 = descreve reversão, não recondução; B2 = exoneração não é penalidade; C2 = repercussão penal não ocorre por qualquer fundamento; C5 = exoneração não consta do art. 195; D6 = sindicância não é etapa obrigatória anterior ao PAD.</p></details><h3>Classificação dos erros</h3><div class=\"study-todo\"><span>☐</span><span>confundi instituto funcional;</span></div><div class=\"study-todo\"><span>☐</span><span>errei prazo;</span></div><div class=\"study-todo\"><span>☐</span><span>confundi exoneração × demissão;</span></div><div class=\"study-todo\"><span>☐</span><span>confundi dever × infração;</span></div><div class=\"study-todo\"><span>☐</span><span>errei sanção/prescrição;</span></div><div class=\"study-todo\"><span>☐</span><span>confundi sindicância × PAD;</span></div><div class=\"study-todo\"><span>☐</span><span>errei competência/fase processual.</span></div><h2>17. Flashcards da lei</h2><p><strong>Sem meta numérica de flashcards:</strong> faça/revise somente os cartões necessários para conceitos, pegadinhas e erros reais desta Lxx.</p><h3>Cartões-base</h3><ol><li><strong>Frente:</strong> Quais são as formas de provimento do art. 8º?  </li></ol><p><strong>Verso:</strong> Nomeação, reversão, aproveitamento, reintegração e recondução.</p><ol><li><strong>Frente:</strong> Prazo para posse?  </li></ol><p><strong>Verso:</strong> 30 dias da publicação da nomeação.</p><ol><li><strong>Frente:</strong> Prazo para entrar em exercício após a posse?  </li></ol><p><strong>Verso:</strong> 5 dias úteis.</p><ol><li><strong>Frente:</strong> Quanto dura o estágio probatório?  </li></ol><p><strong>Verso:</strong> 3 anos.</p><ol><li><strong>Frente:</strong> Reintegração × recondução?  </li></ol><p><strong>Verso:</strong> Reintegração = retorno após invalidação da demissão; recondução = retorno do servidor estável ao cargo anterior nas hipóteses legais.</p><ol><li><strong>Frente:</strong> O que caracteriza abandono?  </li></ol><p><strong>Verso:</strong> Mais de 30 dias consecutivos de faltas injustificadas.</p><ol><li><strong>Frente:</strong> Quais são as 5 sanções do art. 195?  </li></ol><p><strong>Verso:</strong> Advertência, suspensão, demissão, cassação de aposentadoria/disponibilidade e destituição de cargo em comissão.</p><ol><li><strong>Frente:</strong> Prescrição disciplinar 5/2/1 significa o quê?  </li></ol><p><strong>Verso:</strong> 5 anos para demissão/destituição/cassação; 2 para suspensão; 1 para advertência.</p><ol><li><strong>Frente:</strong> Sindicância é obrigatória antes do PAD?  </li></ol><p><strong>Verso:</strong> Não. Havendo autoria/materialidade suficientes, o PAD pode ser instaurado diretamente.</p><ol><li><strong>Frente:</strong> Quais são as fases do PAD?  </li></ol><p><strong>Verso:</strong> Instauração, instrução, defesa, relatório e julgamento.</p><h3>Produzir após as questões</h3><p>Gere cartões somente a partir de <strong>erros reaplicáveis</strong>, especialmente prazos e confusão entre institutos, sem meta numérica.</p><p><strong>Cartões gerados em 29/09/2026 a partir dos erros reais da bateria:</strong></p><ol><li><strong>Frente:</strong> Recondução × reversão: qual é a diferença essencial?  </li></ol><p><strong>Verso:</strong> Recondução = retorno do servidor estável ao cargo anterior nas hipóteses legais. Reversão = retorno do aposentado à atividade nas hipóteses legais.</p><ol><li><strong>Frente:</strong> Quando podem ser cancelados os registros de advertência e suspensão?  </li></ol><p><strong>Verso:</strong> Advertência: após 3 anos de efetivo exercício sem nova infração. Suspensão: após 5 anos. O cancelamento não produz efeitos retroativos.</p><ol><li><strong>Frente:</strong> Qual é o prazo da sindicância na LC nº 840/2011?  </li></ol><p><strong>Verso:</strong> Até 30 dias, prorrogável por igual período.</p><ol><li><strong>Frente:</strong> Quais resultados podem decorrer da sindicância?  </li></ol><p><strong>Verso:</strong> Arquivamento, instauração de PAD ou, observadas as garantias legais, aplicação de advertência ou suspensão de até 30 dias.</p><h2>18. D0 — fechamento da L05</h2><div class=\"study-todo\"><span>☐</span><span>Estudei o resumo/material desta página.</span></div><div class=\"study-todo\"><span>☐</span><span>Li a orientação da página.</span></div><div class=\"study-todo\"><span>☐</span><span>Li os arts. 4º–54 no SINJ.</span></div><div class=\"study-todo\"><span>☐</span><span>Li o recorte dirigido dos Títulos III e IV.</span></div><div class=\"study-todo\"><span>☐</span><span>Li o art. 180.</span></div><div class=\"study-todo\"><span>☐</span><span>Li os arts. 181–210.</span></div><div class=\"study-todo\"><span>☐</span><span>Li os arts. 211–267 de forma orientada.</span></div><div class=\"study-todo\"><span>☐</span><span>Conferi o Decreto nº 48.806/2026 nos arts. ligados ao estágio probatório.</span></div><div class=\"study-todo\"><span>☑</span><span>Fiz 30 questões.</span></div><div class=\"study-todo\"><span>☑</span><span>Corrigi e classifiquei todos os erros.</span></div><div class=\"study-todo\"><span>☐</span><span>Flashcards feitos/revisados conforme a necessidade desta Lxx.</span></div><div class=\"study-todo\"><span>☑</span><span>Registrei as questões no Banco de Questões vinculando à LC 840.</span></div><div class=\"study-todo\"><span>☐</span><span>Marquei D0 no Banco de Legislação.</span></div><h2>19. Próxima lei</h2><p><strong>L06 — Lei Orgânica do Distrito Federal | Administração Pública + Servidores + Educação.</strong></p><p><strong>Continuidade:</strong> depois de encerrar e registrar a sessão da L05, a sequência pode seguir para L06. D0 ou outro fechamento pendente permanece como dívida de revisão/fechamento e <strong>não retrocede a continuidade canônica</strong>.</p>",
-      "flashcards_scope": "Norma"
+      "flashcards_scope": "Norma",
+      "active_questions_planned": 30,
+      "active_questions_correct": 26,
+      "active_questions_errors": 4,
+      "active_questions_doubts": 0
     },
     {
       "code": "L06",

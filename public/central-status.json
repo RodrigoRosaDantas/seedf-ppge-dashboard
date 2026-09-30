@@ -11,31 +11,34 @@
   "state": {
     "phase": "Fase 1",
     "cycle": "Leis Primeiro",
-    "currentUnit": "L04",
+    "currentUnit": "L05",
     "nextAction": "L05 — LC DF nº 840/2011 | Regime Jurídico dos Servidores do Distrito Federal",
     "nextActionKind": "planned",
-    "alerts": []
+    "alerts": [
+      "L05: 30 questões e 26 acertos registrados; leitura/material e D0 continuam pendentes."
+    ]
   },
   "study": {
     "evidence": "confirmed",
     "sourceRef": "data/seedf-snapshot.json#execution.leis_primeiro",
     "updatedAt": "2026-09-29T18:24:49.031Z",
     "trail": "Leis Primeiro",
-    "lastCompletedUnit": "L04",
+    "lastCompletedUnit": "L03",
     "nextUnit": "L05",
-    "lastStudiedAt": "2026-09-28",
-    "questionsDone": 115,
-    "correct": 97,
-    "errors": 18,
+    "lastStudiedAt": "2026-09-29",
+    "questionsDone": 145,
+    "correct": 123,
+    "errors": 22,
     "doubts": 0,
-    "accuracy": 0.8434782608695652,
+    "accuracy": 0.8482758620689655,
     "reviewsDue": 0,
     "nextReviewAt": null,
-    "activeErrors": 18,
-    "completedSessions": 4,
+    "activeErrors": 22,
+    "completedSessions": 5,
     "totalSessions": 34,
     "notes": [
-      "Próxima lei não iniciada no banco: L05."
+      "Próxima lei não iniciada no banco: L05.",
+      "L05: 30 questões e 26 acertos registrados; leitura/material e D0 continuam pendentes."
     ]
   }
 }
