@@ -91,20 +91,41 @@ test("routes complete daily study reading through the site and keeps MS as catal
   assert.match(liveReader, /buildMaterial\(code: string/);
 });
 
-test("Study OS manual refresh queries Notion live before falling back to published snapshots", async () => {
-  const studyOs = await read("app/study-os-client.tsx");
+test("Study OS manual refresh queries Notion live, preserves execution history and updates the live bank", async () => {
+  const [studyOs, liveReader, liveDashboard] = await Promise.all([
+    read("app/study-os-client.tsx"),
+    read("supabase/functions/seedf-live/index.ts"),
+    read("supabase/functions/seedf-notion/index.ts"),
+  ]);
   assert.match(studyOs, /LIVE_NOTION_API_URL/);
   assert.match(studyOs, /mode=leis&refresh=1/);
   assert.match(studyOs, /function mergeLiveLawsSnapshot/);
+  assert.match(studyOs, /function mergeLiveLegislationBank/);
+  assert.match(studyOs, /function mergeLiveDashboardSnapshot/);
+  assert.match(studyOs, /baseExecution\.leis_primeiro/);
+  assert.match(studyOs, /liveLawExecution\.question_records/);
+  assert.match(studyOs, /liveLawExecution\.errors/);
   assert.match(studyOs, /async function refreshFromNotion/);
   assert.match(studyOs, /Sincronizar Study OS com o Notion agora/);
   assert.match(studyOs, /GitHub · backup/);
   assert.doesNotMatch(studyOs, /aria-label="Recarregar snapshots publicados"/);
+
   const liveDashboardIndex = studyOs.indexOf("const snapshotResponse=await fetch");
   const liveLawsIndex = studyOs.indexOf("const liveLawsResponse=await fetch");
   assert.ok(liveDashboardIndex >= 0 && liveDashboardIndex < liveLawsIndex, "live Notion endpoints must be serialized");
   const simultaneousLiveBlock = studyOs.match(/Promise\.all\(\[[\s\S]{0,1800}LIVE_NOTION_API_URL[\s\S]{0,1800}mode=leis&refresh=1/);
   assert.equal(simultaneousLiveBlock, null, "live Notion endpoints must not burst concurrently");
+
+  assert.match(liveReader, /ERRORS_DATA_SOURCE_ID/);
+  assert.match(liveReader, /question_records: questions/);
+  assert.match(liveReader, /errors,/);
+  assert.match(liveReader, /next_review: propertyDate\(p, "Próxima revisão"\)/);
+  assert.match(liveReader, /Contador — resumo/);
+  assert.match(liveReader, /Contador — leitura/);
+  assert.match(liveReader, /Contador — sessão/);
+
+  assert.match(liveDashboard, /const currentErrors = currentErrorPages/);
+  assert.match(liveDashboard, /errors: currentErrors/);
 });
 
 test("renders Monitor laws as a Radar archive outside the active tracks", async () => {
