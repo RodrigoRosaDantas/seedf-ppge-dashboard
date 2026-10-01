@@ -100,6 +100,11 @@ test("Study OS manual refresh queries Notion live before falling back to publish
   assert.match(studyOs, /Sincronizar Study OS com o Notion agora/);
   assert.match(studyOs, /GitHub · backup/);
   assert.doesNotMatch(studyOs, /aria-label="Recarregar snapshots publicados"/);
+  const liveDashboardIndex = studyOs.indexOf("const snapshotResponse=await fetch");
+  const liveLawsIndex = studyOs.indexOf("const liveLawsResponse=await fetch");
+  assert.ok(liveDashboardIndex >= 0 && liveDashboardIndex < liveLawsIndex, "live Notion endpoints must be serialized");
+  const simultaneousLiveBlock = studyOs.match(/Promise\.all\(\[[\s\S]{0,1800}LIVE_NOTION_API_URL[\s\S]{0,1800}mode=leis&refresh=1/);
+  assert.equal(simultaneousLiveBlock, null, "live Notion endpoints must not burst concurrently");
 });
 
 test("renders Monitor laws as a Radar archive outside the active tracks", async () => {
