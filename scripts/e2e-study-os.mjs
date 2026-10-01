@@ -17,6 +17,17 @@ await withChrome(async({page})=>{
       if(!String(result.text).includes(marker)) throw new Error("E2E "+route+": marcador ausente: "+marker);
       if(String(result.text).includes("Não foi possível montar a inteligência")) throw new Error("E2E "+route+": inteligência não carregou.");
     }
+    await browser.navigate(base+"trilha/");
+    const opened=await browser.cdp.evaluate("new Promise(resolve=>{const button=[...document.querySelectorAll('button')].find(node=>(node.textContent||'').includes('Ler material'));if(!button)return resolve({ok:false,reason:'button'});button.click();let attempt=0;const check=()=>{const dialog=document.querySelector('[role=dialog]');if(dialog||attempt>=40)return resolve({ok:Boolean(dialog),url:location.href,text:dialog?.innerText||''});attempt+=1;setTimeout(check,50)};check()})");
+    if(!opened?.ok) throw new Error("E2E Trilha: leitor interno não abriu pelo botão Ler material.");
+    if(/notion\.so|app\.notion\.com/i.test(String(opened.url))) throw new Error("E2E Trilha: leitura navegou para o Notion.");
+    if(!String(opened.text).includes("MATERIAL DO DIA")) throw new Error("E2E Trilha: diálogo não é o leitor do material.");
+
+    await browser.navigate(base+"trilha/?material=D01");
+    const deepLink=await browser.cdp.evaluate("new Promise(resolve=>{let attempt=0;const check=()=>{const dialog=document.querySelector('[role=dialog]');if(dialog||attempt>=60){const source=[...document.querySelectorAll('[role=dialog] a')].find(a=>(a.textContent||'').includes('Fonte original no Notion'));return resolve({ok:Boolean(dialog),search:location.search,source:source?.getAttribute('href')||'',text:dialog?.innerText||''})}attempt+=1;setTimeout(check,50)};check()})");
+    if(!deepLink?.ok||!String(deepLink.search).includes("material=D01")) throw new Error("E2E Trilha: deep link D01 não abriu o leitor.");
+    if(!/notion\.so|app\.notion\.com/i.test(String(deepLink.source))) throw new Error("E2E Trilha: fonte original do Notion não ficou separada no leitor.");
+
     await browser.navigate(base);
     const home=await browser.cdp.evaluate("({text:document.body.innerText||'',today:[...document.querySelectorAll('a')].some(a=>(a.getAttribute('href')||'').includes('hoje/')),mentor:[...document.querySelectorAll('a')].some(a=>(a.getAttribute('href')||'').includes('mentor/')),leis:[...document.querySelectorAll('a')].some(a=>(a.getAttribute('href')||'').includes('leis/'))})");
     if(!home.today||!home.mentor||!home.leis) throw new Error("E2E Home: navegação operacional incompleta.");
