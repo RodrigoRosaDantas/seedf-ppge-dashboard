@@ -63,7 +63,7 @@ test("keeps local law reading payload with Notion as the canonical operational s
   assert.match(enhancer, /Painel operacional sincronizado do Notion/);
   assert.match(appPage, /Fonte canônica: Notion/);
 });
-test("routes study reading through the site and keeps Notion as an explicit source only", async () => {
+test("routes complete daily study reading through the site and keeps MS as catalog only", async () => {
   const [intelligence, studyOs, dashboard, liveReader] = await Promise.all([
     read("lib/seedf-intelligence.mjs"),
     read("app/study-os-client.tsx"),
@@ -81,10 +81,25 @@ test("routes study reading through the site and keeps Notion as an explicit sour
   assert.doesNotMatch(studyOs, />Registro vivo →<\/SmartLink>/);
 
   assert.match(dashboard, /Abrir material no site/);
-  assert.match(dashboard, /\(\?:D\\d\{2\}\|MS\\d\{2\}\)/);
-  assert.match(liveReader, /SEQUENTIAL_MATERIALS_PAGE_ID/);
-  assert.match(liveReader, /MS\(\?:0\[1-9\]\|1\\d\|2\[0-2\]\)/);
+  assert.match(dashboard, /Catálogo estrutural/);
+  assert.match(dashboard, /ainda não existe página MS completa própria/);
+  assert.doesNotMatch(dashboard, /\(\?:D\\d\{2\}\|MS\\d\{2\}\)/);
+
+  assert.doesNotMatch(liveReader, /SEQUENTIAL_MATERIALS_PAGE_ID/);
+  assert.doesNotMatch(liveReader, /MS\(\?:0\[1-9\]/);
+  assert.match(liveReader, /\^D\(\?:0\[1-9\]\|1\[0-4\]\)\$/);
   assert.match(liveReader, /buildMaterial\(code: string/);
+});
+
+test("Study OS manual refresh queries Notion live before falling back to published snapshots", async () => {
+  const studyOs = await read("app/study-os-client.tsx");
+  assert.match(studyOs, /LIVE_NOTION_API_URL/);
+  assert.match(studyOs, /mode=leis&refresh=1/);
+  assert.match(studyOs, /function mergeLiveLawsSnapshot/);
+  assert.match(studyOs, /async function refreshFromNotion/);
+  assert.match(studyOs, /Sincronizar Study OS com o Notion agora/);
+  assert.match(studyOs, /GitHub · backup/);
+  assert.doesNotMatch(studyOs, /aria-label="Recarregar snapshots publicados"/);
 });
 
 test("renders Monitor laws as a Radar archive outside the active tracks", async () => {
