@@ -29,6 +29,9 @@ await withChrome(async({page})=>{
     if(!/notion\.so|app\.notion\.com/i.test(String(deepLink.source))) throw new Error("E2E Trilha: fonte original do Notion não ficou separada no leitor.");
 
     await browser.navigate(base);
+    const liveSync=await browser.cdp.evaluate("new Promise(resolve=>{const button=document.querySelector('button[aria-label=\"Sincronizar Study OS com o Notion agora\"]');if(!button)return resolve({ok:false,reason:'button',text:''});button.click();let attempt=0;const check=()=>{const text=document.querySelector('.os-sync')?.innerText||'';if(text.includes('Notion ao vivo'))return resolve({ok:true,text});if(text.includes('GitHub · backup'))return resolve({ok:false,reason:'fallback',text});if(attempt>=180)return resolve({ok:false,reason:'timeout',text});attempt+=1;setTimeout(check,200)};check()})");
+    if(!liveSync?.ok) throw new Error("E2E Home: sincronização manual ao vivo falhou ("+(liveSync?.reason||"desconhecido")+") "+(liveSync?.text||""));
+
     const home=await browser.cdp.evaluate("({text:document.body.innerText||'',today:[...document.querySelectorAll('a')].some(a=>(a.getAttribute('href')||'').includes('hoje/')),mentor:[...document.querySelectorAll('a')].some(a=>(a.getAttribute('href')||'').includes('mentor/')),leis:[...document.querySelectorAll('a')].some(a=>(a.getAttribute('href')||'').includes('leis/'))})");
     if(!home.today||!home.mentor||!home.leis) throw new Error("E2E Home: navegação operacional incompleta.");
     if(!home.text.includes("Executar agora")) throw new Error("E2E Home: CTA operacional ausente.");
