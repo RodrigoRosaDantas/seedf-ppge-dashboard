@@ -362,6 +362,10 @@ function buildExecutionSnapshot(
   for (const day of days) statuses[day.status] = (statuses[day.status] || 0) + 1;
   const activeDay = days.find((day) => /próximo|andamento|execução/i.test(day.status))?.day ||
     days.find((day) => day.done > 0 && day.done < day.planned)?.day || null;
+  const currentErrors = currentErrorPages
+    .map(({ page }) => parseC01Error(page))
+    .filter(Boolean)
+    .sort((left, right) => String(right?.date || "").localeCompare(String(left?.date || "")) || String(left?.question_id || "").localeCompare(String(right?.question_id || "")));
 
   return {
     as_of: new Date().toISOString(),
@@ -371,7 +375,8 @@ function buildExecutionSnapshot(
       subjects: Array.from(subjects.values()).sort((left, right) => right.planned - left.planned || left.subject.localeCompare(right.subject)),
       statuses,
       active_day: activeDay,
-      error_count: currentErrorPages.length,
+      error_count: currentErrors.length,
+      errors: currentErrors,
       question_rows: currentQuestionPages.length,
     },
   };
@@ -404,6 +409,36 @@ function parseExecutionDay(page: Record<string, any>): ExecutionDay | null {
     progress: planned > 0 ? done / planned : 0,
     href: propertyUrl(properties, "Página do dia") || page.url || notionPageUrl(page.id),
     executed_at: propertyDate(properties, "Data execução"),
+  };
+}
+
+function parseC01Error(page: Record<string, any>) {
+  const properties = page.properties || {};
+  const day = normalizeC01Day(
+    propertyText(properties, "Origem / Dia ID") ||
+    propertyText(properties, "Dia ID"),
+  );
+  if (!day) return null;
+  const questionId = propertyText(properties, "Questão ID");
+  return {
+    id: page.id,
+    url: page.url || notionPageUrl(page.id),
+    day_id: "C01-" + day,
+    question_id: questionId || page.id,
+    title: propertyText(properties, "Erro / Questão") || questionId || "Erro registrado",
+    subject: propertyText(properties, "Assunto") || null,
+    discipline: propertyText(properties, "Matéria") || null,
+    reason: propertyText(properties, "Motivo do erro") || null,
+    pattern: propertyText(properties, "Padrão do erro") || null,
+    severity: propertyText(properties, "Gravidade") || null,
+    review: propertyText(properties, "Revisão") || null,
+    status: propertyText(properties, "Status") || null,
+    strategic_use: propertyText(properties, "Uso estratégico pós-TR") || null,
+    recurrence: propertyNumber(properties, "Reincidência"),
+    next_review: propertyDate(properties, "Próxima revisão"),
+    date: propertyDate(properties, "Data"),
+    rule: propertyText(properties, "Regra correta / conceito") || null,
+    observations: propertyText(properties, "Observações") || null,
   };
 }
 
@@ -782,6 +817,7 @@ type ExecutionSnapshot = {
     statuses: Record<string, number>;
     active_day: string | null;
     error_count: number;
+    errors: Array<Record<string, unknown>>;
     question_rows: number;
   };
 };
