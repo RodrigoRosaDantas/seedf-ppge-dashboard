@@ -18,6 +18,7 @@ const allowedOrigins = new Set([
   "https://seedf-ppge-dashboard.rodrigo-lzavsj-rr.chatgpt.site",
   "http://localhost:3000",
   "http://localhost:4173",
+  "http://127.0.0.1:4173",
   "http://terminal.local:4173",
 ]);
 
