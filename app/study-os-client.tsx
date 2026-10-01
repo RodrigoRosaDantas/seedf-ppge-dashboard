@@ -68,8 +68,67 @@ function mergeLiveLawsSnapshot(base: any, live: any) {
     execution: {
       ...(base.execution || {}),
       ...(live.execution || {}),
-      errors: base.execution?.errors || [],
-      question_records: base.execution?.question_records || [],
+      errors: live.execution?.errors ?? base.execution?.errors ?? [],
+      question_records: live.execution?.question_records ?? base.execution?.question_records ?? [],
+    },
+  };
+}
+
+function mergeLiveLegislationBank(base: any, live: any) {
+  if (!base || !live) return base;
+  const liveByCode = new Map((live.laws || []).map((law: any) => [String(law.code || "").toUpperCase(), law]));
+  return {
+    ...base,
+    source: { ...(base.source || {}), synced_at: live.synced_at || base.source?.synced_at },
+    rows: (base.rows || []).map((row: any) => {
+      const match = (row.codes || [])
+        .map((code: string) => liveByCode.get(String(code).toUpperCase()))
+        .find(Boolean) as any;
+      if (!match) return row;
+      const { code: _code, ...liveFields } = match;
+      void _code;
+      return {
+        ...row,
+        ...liveFields,
+        codes: row.codes,
+        internal_paths: row.internal_paths,
+        record_kind: row.record_kind,
+        page_id: row.page_id,
+        url: row.url,
+      };
+    }),
+  };
+}
+
+function mergeLiveDashboardSnapshot(base: any, liveDashboard: any, liveLaws: any) {
+  if (!base) return liveDashboard;
+  const baseExecution = base.execution || {};
+  const liveC01 = liveDashboard?.execution?.c01;
+  const liveLawExecution = liveLaws?.execution;
+  return {
+    ...base,
+    ...(liveDashboard || {}),
+    source: { ...(base.source || {}), ...(liveDashboard?.source || {}) },
+    dashboard: { ...(base.dashboard || {}), ...(liveDashboard?.dashboard || {}) },
+    materials: liveDashboard?.materials || base.materials,
+    execution: {
+      ...baseExecution,
+      as_of: liveDashboard?.execution?.as_of || liveLaws?.synced_at || baseExecution.as_of,
+      c01: liveC01
+        ? {
+            ...(baseExecution.c01 || {}),
+            ...liveC01,
+            errors: liveC01.errors ?? baseExecution.c01?.errors ?? [],
+          }
+        : baseExecution.c01,
+      leis_primeiro: liveLawExecution
+        ? {
+            ...(baseExecution.leis_primeiro || {}),
+            ...liveLawExecution,
+            errors: liveLawExecution.errors ?? baseExecution.leis_primeiro?.errors ?? [],
+            question_records: liveLawExecution.question_records ?? baseExecution.leis_primeiro?.question_records ?? [],
+          }
+        : baseExecution.leis_primeiro,
     },
   };
 }
@@ -798,7 +857,10 @@ export default function StudyOsClient({ view, basePrefix }: Props) {
         editalResponse.ok?editalResponse.json():Promise.resolve(data?.edital),
       ]);
       if(!laws||!bank||!edital) throw new Error("Snapshot complementar indisponível.");
-      setData({snapshot,laws:mergeLiveLawsSnapshot(laws,liveLaws),bank,edital});
+      const mergedLaws=mergeLiveLawsSnapshot(laws,liveLaws);
+      const mergedBank=mergeLiveLegislationBank(bank,liveLaws);
+      const mergedSnapshot=mergeLiveDashboardSnapshot(data?.snapshot,snapshot,liveLaws);
+      setData({snapshot:mergedSnapshot,laws:mergedLaws,bank:mergedBank,edital});
       setLiveSyncedAt(liveLaws?.synced_at||snapshot?.source?.synced_at||null);
       setSyncMode("live");
       setError("");
