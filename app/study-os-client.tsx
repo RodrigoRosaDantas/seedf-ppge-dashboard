@@ -52,7 +52,28 @@ type Payload = {
 };
 
 const LIVE_SEEDF_CONTENT_API_URL = "https://fqqkkyusnzhuuizahkww.supabase.co/functions/v1/seedf-live";
+const LIVE_NOTION_API_URL = "https://fqqkkyusnzhuuizahkww.supabase.co/functions/v1/seedf-notion";
 const LIVE_SEEDF_API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZxcWtreXVzbnpodXVpemFoa3d3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU3MjIwNTksImV4cCI6MjEwMTI5ODA1OX0.YZd0d4XsFHFT6uETemPZdcDc9t0pQUn8_XmNFHx7hJ0";
+
+function mergeLiveLawsSnapshot(base: any, live: any) {
+  if (!base || !live) return base;
+  const liveByCode = new Map((live.laws || []).map((law: any) => [String(law.code || "").toUpperCase(), law]));
+  return {
+    ...base,
+    source: { ...(base.source || {}), synced_at: live.synced_at || base.source?.synced_at },
+    laws: (base.laws || []).map((law: any) => ({
+      ...law,
+      ...(liveByCode.get(String(law.code || "").toUpperCase()) || {}),
+    })),
+    execution: {
+      ...(base.execution || {}),
+      ...(live.execution || {}),
+      errors: base.execution?.errors || [],
+      question_records: base.execution?.question_records || [],
+    },
+  };
+}
+
 
 const viewTitle: Record<StudyOsView, string> = {
   home: "Início",
@@ -719,6 +740,9 @@ export default function StudyOsClient({ view, basePrefix }: Props) {
   const [error,setError]=useState("");
   const [menuOpen,setMenuOpen]=useState(false);
   const [refreshKey,setRefreshKey]=useState(0);
+  const [refreshing,setRefreshing]=useState(false);
+  const [syncMode,setSyncMode]=useState<"published"|"live"|"fallback">("published");
+  const [liveSyncedAt,setLiveSyncedAt]=useState<string|null>(null);
 
   useEffect(()=>{
     let alive=true;
@@ -739,6 +763,44 @@ export default function StudyOsClient({ view, basePrefix }: Props) {
     return ()=>{alive=false;};
   },[basePrefix,refreshKey]);
 
+  async function refreshFromNotion(){
+    setRefreshing(true);
+    try{
+      const authHeaders={
+        Accept:"application/json",
+        apikey:LIVE_SEEDF_API_KEY,
+        Authorization:"Bearer "+LIVE_SEEDF_API_KEY,
+      };
+      const [snapshotResponse,liveLawsResponse,lawsResponse,bankResponse,editalResponse]=await Promise.all([
+        fetch(LIVE_NOTION_API_URL+"?refresh=1&ts="+Date.now(),{cache:"no-store",headers:authHeaders}),
+        fetch(LIVE_SEEDF_CONTENT_API_URL+"?mode=leis&refresh=1&ts="+Date.now(),{cache:"no-store",headers:authHeaders}),
+        fetch(basePrefix+"data/leis-primeiro.json?v="+Date.now(),{cache:"no-store"}),
+        fetch(basePrefix+"data/legislation-bank.json?v="+Date.now(),{cache:"no-store"}),
+        fetch(basePrefix+"data/seedf-edital.json?v="+Date.now(),{cache:"no-store"}),
+      ]);
+      if(!snapshotResponse.ok) throw new Error("Notion ao vivo HTTP "+snapshotResponse.status+".");
+      if(!liveLawsResponse.ok) throw new Error("Leis ao vivo HTTP "+liveLawsResponse.status+".");
+      const [snapshot,liveLaws,laws,bank,edital]=await Promise.all([
+        snapshotResponse.json(),
+        liveLawsResponse.json(),
+        lawsResponse.ok?lawsResponse.json():Promise.resolve(data?.laws),
+        bankResponse.ok?bankResponse.json():Promise.resolve(data?.bank),
+        editalResponse.ok?editalResponse.json():Promise.resolve(data?.edital),
+      ]);
+      if(!laws||!bank||!edital) throw new Error("Snapshot complementar indisponível.");
+      setData({snapshot,laws:mergeLiveLawsSnapshot(laws,liveLaws),bank,edital});
+      setLiveSyncedAt(liveLaws?.synced_at||snapshot?.source?.synced_at||null);
+      setSyncMode("live");
+      setError("");
+    }catch{
+      setSyncMode("fallback");
+      setLiveSyncedAt(null);
+      setRefreshKey((value)=>value+1);
+    }finally{
+      setRefreshing(false);
+    }
+  }
+
   const intel=useMemo(()=>data?buildSeedfIntelligence({
     snapshot:data.snapshot,
     lawsSnapshot:data.laws,
@@ -750,7 +812,7 @@ export default function StudyOsClient({ view, basePrefix }: Props) {
   if(error) return <ErrorState message={error}/>;
   if(!data||!intel) return <Loading/>;
 
-  const lastSync=data.snapshot?.source?.synced_at;
+  const lastSync=liveSyncedAt||data.snapshot?.source?.synced_at;
   const title=viewTitle[view];
   return (
     <div className="os-shell">
@@ -786,8 +848,17 @@ export default function StudyOsClient({ view, basePrefix }: Props) {
             <div><span>SEEDF / {title}</span><strong>{intel.state.phase} · {intel.state.cycle}</strong></div>
           </div>
           <div className="os-sync">
-            <span><i></i>{lastSync?`Versão dos dados · ${new Date(lastSync).toLocaleString("pt-BR",{timeZone:"America/Sao_Paulo"})}`:"versão dos dados indisponível"}</span>
-            <button aria-label="Recarregar snapshots publicados" title="Recarregar os dados publicados pelo GitHub Pages" onClick={()=>setRefreshKey((value)=>value+1)}><RefreshCcw size={16}/></button>
+            <span><i></i>{refreshing
+              ?"Sincronizando com o Notion…"
+              :lastSync
+                ?`${syncMode==="live"?"Notion ao vivo":syncMode==="fallback"?"GitHub · backup":"Versão dos dados"} · ${new Date(lastSync).toLocaleString("pt-BR",{timeZone:"America/Sao_Paulo"})}`
+                :"versão dos dados indisponível"}</span>
+            <button
+              aria-label="Sincronizar Study OS com o Notion agora"
+              title="Consultar o Notion agora e atualizar os dados do Study OS"
+              onClick={()=>void refreshFromNotion()}
+              disabled={refreshing}
+            ><RefreshCcw className={refreshing?"os-spin":undefined} size={16}/></button>
           </div>
         </header>
 
