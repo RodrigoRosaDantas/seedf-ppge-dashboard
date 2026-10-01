@@ -771,18 +771,28 @@ export default function StudyOsClient({ view, basePrefix }: Props) {
         apikey:LIVE_SEEDF_API_KEY,
         Authorization:"Bearer "+LIVE_SEEDF_API_KEY,
       };
-      const [snapshotResponse,liveLawsResponse,lawsResponse,bankResponse,editalResponse]=await Promise.all([
-        fetch(LIVE_NOTION_API_URL+"?refresh=1&ts="+Date.now(),{cache:"no-store",headers:authHeaders}),
-        fetch(LIVE_SEEDF_CONTENT_API_URL+"?mode=leis&refresh=1&ts="+Date.now(),{cache:"no-store",headers:authHeaders}),
+      const staticSnapshots=Promise.all([
         fetch(basePrefix+"data/leis-primeiro.json?v="+Date.now(),{cache:"no-store"}),
         fetch(basePrefix+"data/legislation-bank.json?v="+Date.now(),{cache:"no-store"}),
         fetch(basePrefix+"data/seedf-edital.json?v="+Date.now(),{cache:"no-store"}),
       ]);
+      // Serialize the two Notion-heavy endpoints to reduce burst concurrency and rate-limit risk.
+      const snapshotResponse=await fetch(
+        LIVE_NOTION_API_URL+"?refresh=1&ts="+Date.now(),
+        {cache:"no-store",headers:authHeaders},
+      );
       if(!snapshotResponse.ok) throw new Error("Notion ao vivo HTTP "+snapshotResponse.status+".");
+      const snapshot=await snapshotResponse.json();
+
+      const liveLawsResponse=await fetch(
+        LIVE_SEEDF_CONTENT_API_URL+"?mode=leis&refresh=1&ts="+Date.now(),
+        {cache:"no-store",headers:authHeaders},
+      );
       if(!liveLawsResponse.ok) throw new Error("Leis ao vivo HTTP "+liveLawsResponse.status+".");
-      const [snapshot,liveLaws,laws,bank,edital]=await Promise.all([
-        snapshotResponse.json(),
-        liveLawsResponse.json(),
+      const liveLaws=await liveLawsResponse.json();
+
+      const [lawsResponse,bankResponse,editalResponse]=await staticSnapshots;
+      const [laws,bank,edital]=await Promise.all([
         lawsResponse.ok?lawsResponse.json():Promise.resolve(data?.laws),
         bankResponse.ok?bankResponse.json():Promise.resolve(data?.bank),
         editalResponse.ok?editalResponse.json():Promise.resolve(data?.edital),
