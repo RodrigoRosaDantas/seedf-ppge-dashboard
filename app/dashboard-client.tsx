@@ -1170,9 +1170,9 @@ function toneForSequence(order: number): MaterialsTone {
 
 function MaterialReaderModal({ material, onClose }: { material: MaterialPreview; onClose: () => void }) {
   const [payload, setPayload] = useState<LiveMaterialPayload | null>(null);
-  const [loading, setLoading] = useState(/^(?:D\d{2}|MS\d{2})$/i.test(material.label));
+  const [loading, setLoading] = useState(/^D\d{2}$/i.test(material.label));
   const [error, setError] = useState(false);
-  const isLiveMaterial = /^(?:D\d{2}|MS\d{2})$/i.test(material.label);
+  const isLiveMaterial = /^D\d{2}$/i.test(material.label);
 
   useEffect(() => {
     if (!isLiveMaterial) return;
@@ -1421,7 +1421,7 @@ function Materials({ snapshot }: { snapshot?: DashboardSnapshot | null }) {
         <SectionHeading
           eyebrow="TRILHA ATEMPORAL · NOTION"
           title="Catálogo completo MS01–MS22"
-          description="Os módulos são a biblioteca estruturante do projeto. O Macro distribui a sequência nos dias dos ciclos sem criar datas artificiais."
+          description="Os módulos são a biblioteca estruturante do projeto. O Macro distribui cada MS pelos dias Dxx; o catálogo não é apresentado como material completo enquanto não houver página própria."
           action={<a className="text-button" href={sequenceSource} target="_blank" rel="noreferrer">Abrir sequência no Notion <ChevronRight size={16} /></a>}
         />
         <div className="sequence-toolbar">
@@ -1453,22 +1453,10 @@ function Materials({ snapshot }: { snapshot?: DashboardSnapshot | null }) {
                 <div className="material-card-top"><span className="material-day">{material.code}</span><StatusPill tone={tone}>{material.group}</StatusPill></div>
                 <h3>{material.title}</h3>
                 <p>{material.detail}</p>
-                <button
-                  className="text-button material-open-button"
-                  type="button"
-                  onClick={() =>
-                    setSelectedMaterial({
-                      label: material.code,
-                      title: material.title,
-                      detail: material.detail,
-                      meta: material.group,
-                      href: material.href,
-                      tone,
-                    })
-                  }
-                >
-                  Abrir material no site <ArrowRight size={15} />
-                </button>
+                <div className="sequence-catalog-note">
+                  <span>Catálogo estrutural</span>
+                  <small>O conteúdo deste módulo é distribuído nos dias Dxx; ainda não existe página MS completa própria.</small>
+                </div>
               </article>
             );
           }) : <div className="sequence-empty">Nenhum material corresponde à busca ou ao filtro atual.</div>}
@@ -1533,7 +1521,7 @@ function Materials({ snapshot }: { snapshot?: DashboardSnapshot | null }) {
 
       <section className="panel materials-note">
         <div className="note-icon"><CircleAlert size={19} /></div>
-        <div><p className="eyebrow">REGRA-MÃE</p><h3>Fonte oficial atualizada prevalece sobre resumo antigo.</h3><p>O site abre os resumos e as leis vinculadas; o Notion mantém o conteúdo completo e o GitHub conserva o backup quando a consulta ao vivo estiver indisponível.</p></div>
+        <div><p className="eyebrow">REGRA-MÃE</p><h3>Fonte oficial atualizada prevalece sobre resumo antigo.</h3><p>O site hospeda a leitura completa dos materiais diários D01–D14 e das Lxx. MS01–MS22 permanece catálogo estrutural até existir conteúdo próprio; o Notion continua como fonte operacional e o GitHub conserva o backup publicado.</p></div>
       </section>
       {selectedMaterial ? <MaterialReaderModal material={selectedMaterial} onClose={() => setSelectedMaterial(null)} /> : null}
     </div>
