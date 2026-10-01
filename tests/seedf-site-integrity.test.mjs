@@ -113,8 +113,17 @@ test("Study OS manual refresh queries Notion live, preserves execution history a
   const liveDashboardIndex = studyOs.indexOf("const snapshotResponse=await fetch");
   const liveLawsIndex = studyOs.indexOf("const liveLawsResponse=await fetch");
   assert.ok(liveDashboardIndex >= 0 && liveDashboardIndex < liveLawsIndex, "live Notion endpoints must be serialized");
-  const simultaneousLiveBlock = studyOs.match(/Promise\.all\(\[[\s\S]{0,1800}LIVE_NOTION_API_URL[\s\S]{0,1800}mode=leis&refresh=1/);
-  assert.equal(simultaneousLiveBlock, null, "live Notion endpoints must not burst concurrently");
+  assert.match(studyOs, /const staticSnapshots=Promise\.all\(/);
+  assert.doesNotMatch(
+    studyOs,
+    /Promise\.all\(\[\s*fetch\(LIVE_NOTION_API_URL/,
+    "live Notion dashboard endpoint must not run inside Promise.all",
+  );
+  assert.doesNotMatch(
+    studyOs,
+    /Promise\.all\(\[\s*fetch\(LIVE_SEEDF_CONTENT_API_URL\+"\?mode=leis/,
+    "live Leis endpoint must not run inside Promise.all",
+  );
 
   assert.match(liveReader, /ERRORS_DATA_SOURCE_ID/);
   assert.match(liveReader, /question_records: questions/);
