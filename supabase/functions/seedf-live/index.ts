@@ -7,6 +7,7 @@ const NOTION_VERSION = "2026-03-11";
 const CYCLE_PAGE_ID = "3d4cf5a2-6731-8185-a1c6-da3820a7687b";
 const DAYS_DATA_SOURCE_ID = "60966f0a-b3eb-416b-8995-64253ed26a45";
 const QUESTIONS_DATA_SOURCE_ID = "8a241986-94e7-4340-b898-dc905b19fd58";
+const ERRORS_DATA_SOURCE_ID = "68d7c880-165b-4e44-988b-cb9e3c38d8b2";
 const LEGISLATION_DATA_SOURCE_ID = "6b3c940a-a382-419f-9ef6-531a1dc5cad2";
 const LEGISLATION_HISTORY_DATA_SOURCE_ID = "61340ed0-f7cf-4fbf-b543-62e1c2b6f458";
 const MAX_NOTION_CONCURRENCY = 4;
@@ -97,10 +98,11 @@ async function buildMaterial(code: string, notion: NotionRequest) {
 }
 
 async function buildLeisProgress(notion: NotionRequest) {
-  const [bankPages, dayPages, questionPages, sessionPages] = await Promise.all([
+  const [bankPages, dayPages, questionPages, errorPages, sessionPages] = await Promise.all([
     queryDataSource(LEGISLATION_DATA_SOURCE_ID, notion),
     queryDataSource(DAYS_DATA_SOURCE_ID, notion),
     queryDataSource(QUESTIONS_DATA_SOURCE_ID, notion),
+    queryDataSource(ERRORS_DATA_SOURCE_ID, notion),
     queryDataSource(LEGISLATION_HISTORY_DATA_SOURCE_ID, notion),
   ]);
 
@@ -111,6 +113,10 @@ async function buildLeisProgress(notion: NotionRequest) {
     .map(parseLawSession)
     .filter(Boolean)
     .sort((a, b) => String(b.date || b.updated_at || "").localeCompare(String(a.date || a.updated_at || "")));
+  const errors = errorPages
+    .map(parseLawError)
+    .filter(Boolean)
+    .sort((a, b) => String(b.date || "").localeCompare(String(a.date || "")) || String(a.question_id || "").localeCompare(String(b.question_id || "")));
   const days = dayPages
     .map(parseLawDay)
     .filter(Boolean)
@@ -170,6 +176,10 @@ async function buildLeisProgress(notion: NotionRequest) {
     execution: {
       days,
       sessions,
+      question_records: questions,
+      question_rows: questions.length,
+      errors,
+      error_count: errors.length,
       latest_day_id: days[0]?.day_id || null,
       totals: days.reduce((acc, d) => {
         acc.planned += Number(d.planned || 0);
@@ -352,19 +362,27 @@ function parseLawBankRow(page: Record<string, any>) {
   if (!order) return null;
   return {
     operational_order: order,
+    title: propertyText(p, "Norma"),
+    priority: propertyText(p, "Prioridade"),
     status: propertyText(p, "Status"),
     study_phase: propertyText(p, "Fase de estudo"),
+    action: propertyText(p, "Ação atual"),
+    strategic_status: propertyText(p, "Status estratégico pós-TR") || null,
     summaries_done: propertyRollupNumber(p, "Resumos realizados"),
     summary_number: propertyRollupNullableNumber(p, "Resumo nº atual"),
     readings_done: propertyRollupNumber(p, "Leituras realizadas"),
     reading_number: propertyRollupNullableNumber(p, "Leitura nº atual"),
     sessions_done: propertyRollupNumber(p, "Sessões registradas"),
     questions_done: propertyRollupNumber(p, "Questões feitas"),
+    hits: propertyRollupNumber(p, "Acertos"),
+    errors: propertyRollupNumber(p, "Erros"),
+    doubtful_hits: propertyRollupNumber(p, "Acertos com dúvida"),
     flashcards_done: propertyCheckbox(p, "Flashcards feitos?"),
     orientation_read: propertyCheckbox(p, "Orientação lida"),
     d0: propertyCheckbox(p, "D0"),
     d7: propertyCheckbox(p, "D7"),
     d20: propertyCheckbox(p, "D20"),
+    next_review: propertyDate(p, "Próxima revisão"),
     next_step: propertyFormula(p, "Próximo passo"),
   };
 }
@@ -375,14 +393,54 @@ function parseLawQuestion(page: Record<string, any>) {
   if (!dayId) return null;
   const pageCode = pageCodeFromLawId(dayId);
   if (!pageCode) return null;
+  const done = propertyNumber(p, "Questões feitas");
+  const correct = propertyNumber(p, "Acertos");
+  const errors = propertyNumber(p, "Erros");
   return {
+    id: page.id,
+    url: page.url || notionPageUrl(page.id),
+    day_id: dayId,
     page_code: pageCode,
+    title: propertyText(p, "Atividade") || propertyText(p, "Questões") || dayId,
+    discipline: propertyText(p, "Matéria") || null,
+    subject: propertyText(p, "Assunto") || null,
     strategic_use: propertyText(p, "Uso estratégico pós-TR") || null,
+    date: propertyDate(p, "Data"),
     planned: propertyNumber(p, "Meta de questões"),
-    done: propertyNumber(p, "Questões feitas"),
-    correct: propertyNumber(p, "Acertos"),
-    errors: propertyNumber(p, "Erros"),
+    done,
+    correct,
+    errors,
     doubts: propertyNumber(p, "Acertos com dúvida"),
+    precision: done > 0 ? correct / done : null,
+  };
+}
+
+function parseLawError(page: Record<string, any>) {
+  const p = page.properties || {};
+  const dayId = normalizeLawId(propertyText(p, "Origem / Dia ID"));
+  if (!dayId) return null;
+  const questionId = propertyText(p, "Questão ID");
+  return {
+    id: page.id,
+    url: page.url || notionPageUrl(page.id),
+    day_id: dayId,
+    page_code: pageCodeFromLawId(dayId) || questionId.match(/^(L\d{2})-/i)?.[1]?.toUpperCase() || null,
+    question_id: questionId || page.id,
+    title: propertyText(p, "Erro / Questão") || questionId || "Erro registrado",
+    subject: propertyText(p, "Assunto") || null,
+    discipline: propertyText(p, "Matéria") || null,
+    reason: propertyText(p, "Motivo do erro") || null,
+    pattern: propertyText(p, "Padrão do erro") || null,
+    severity: propertyText(p, "Gravidade") || null,
+    review: propertyText(p, "Revisão") || null,
+    status: propertyText(p, "Status") || null,
+    strategic_use: propertyText(p, "Uso estratégico pós-TR") || null,
+    recurrence: propertyNumber(p, "Reincidência"),
+    flashcard: propertyCheckbox(p, "Flashcard?"),
+    next_review: propertyDate(p, "Próxima revisão"),
+    date: propertyDate(p, "Data"),
+    rule: propertyText(p, "Regra correta / conceito") || null,
+    observations: propertyText(p, "Observações") || null,
   };
 }
 
@@ -418,21 +476,28 @@ function parseLawSession(page: Record<string, any>) {
   return {
     id: page.id,
     title: title || page.id,
+    url: page.url || notionPageUrl(page.id),
     page_code: pageCode || null,
     date: propertyDate(p, "Data"),
+    stage: propertyText(p, "Etapa") || null,
+    session_type: propertyText(p, "Tipo de sessão") || null,
+    modality: propertyText(p, "Modalidade") || null,
     progress: propertyText(p, "Progresso da sessão") || null,
+    source: propertyText(p, "Fonte") || null,
     summary_number: propertyNumber(p, "Resumo nº") || null,
     reading_number: propertyNumber(p, "Leitura nº") || null,
-    summary_counter: propertyNumber(p, "Contador - resumo"),
-    reading_counter: propertyNumber(p, "Contador - leitura"),
-    session_counter: propertyNumber(p, "Contador - sessão"),
+    summary_counter: propertyNumberAny(p, ["Contador — resumo", "Contador - resumo"]),
+    reading_counter: propertyNumberAny(p, ["Contador — leitura", "Contador - leitura"]),
+    session_counter: propertyNumberAny(p, ["Contador — sessão", "Contador - sessão"]),
     completed: propertyCheckbox(p, "Concluída"),
     questions_done: done,
     correct,
     errors: propertyNumber(p, "Erros"),
     doubts: propertyNumber(p, "Acertos com dúvida"),
     flashcards: propertyNumber(p, "Flashcards gerados"),
+    minutes: firstKnownNumber(p, ["Tempo (min)", "Minutos", "Tempo"]),
     precision: done > 0 ? correct / done : null,
+    created_at: page.created_time || null,
     updated_at: page.last_edited_time || null,
   };
 }
@@ -474,6 +539,16 @@ function propertyText(p: Record<string, any>, name: string) {
 function propertyNumber(p: Record<string, any>, name: string) {
   const n = p?.[name]?.number;
   return typeof n === "number" && Number.isFinite(n) ? n : 0;
+}
+function propertyNumberAny(p: Record<string, any>, names: string[]) {
+  for (const name of names) {
+    const v = p?.[name];
+    if (!v) continue;
+    if (typeof v.number === "number" && Number.isFinite(v.number)) return v.number;
+    if (v.formula?.type === "number" && typeof v.formula.number === "number") return v.formula.number;
+    if (v.rollup?.type === "number" && typeof v.rollup.number === "number") return v.rollup.number;
+  }
+  return 0;
 }
 function propertyRollupNumber(p: Record<string, any>, name: string) {
   const r = p?.[name]?.rollup;
