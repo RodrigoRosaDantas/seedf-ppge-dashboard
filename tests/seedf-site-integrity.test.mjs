@@ -375,7 +375,9 @@ test("keeps Leis Primeiro execution semantics separated by Dia ID", async () => 
   assert.match(syncMain, /errors: lawErrors/);
   assert.match(liveNotion, /const currentErrorPages = errorPages/);
   assert.match(liveNotion, /Origem \/ Dia ID/);
-  assert.match(liveNotion, /error_count: currentErrorPages\.length/);
+  assert.match(liveNotion, /const currentErrors = currentErrorPages/);
+  assert.match(liveNotion, /error_count: currentErrors\.length/);
+  assert.match(liveNotion, /errors: currentErrors/);
   assert.match(liveNotion, /trail && trail !== "Ciclo principal"/);
   assert.doesNotMatch(liveNotion, /error_count: errorPages\.length/);
   assert.match(syncMain, /sort\(compareLeisPrimeiroDays\)/);
