@@ -115,6 +115,9 @@ h3 { margin-bottom: 8px; font-size: 16px; line-height: 1.25; }
 .sequence-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-top: 18px; }
 .sequence-card { min-height: 178px; }
 .sequence-card .status-pill { max-width: 145px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sequence-catalog-note { margin-top: auto; padding-top: 12px; border-top: 1px solid var(--line); }
+.sequence-catalog-note span { display: block; color: var(--teal-dark); font-size: 10px; font-weight: 900; letter-spacing: .06em; text-transform: uppercase; }
+.sequence-catalog-note small { display: block; margin-top: 4px; color: var(--muted); font-size: 10px; line-height: 1.45; }
 .sequence-empty { grid-column: 1 / -1; padding: 25px; border: 1px dashed var(--line); border-radius: 12px; color: var(--muted); text-align: center; font-size: 12px; }
 @media (max-width: 1120px) { .sequence-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 760px) { .sequence-toolbar { grid-template-columns: 1fr; align-items: stretch; }.sequence-count { white-space: normal; }.sequence-grid { grid-template-columns: 1fr; } }
