@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
   "projectId": "seedf",
-  "publishedAt": "2026-09-30",
+  "publishedAt": "2026-10-02",
   "source": {
     "kind": "public-project-state",
     "ref": "data/seedf-snapshot.json#execution.leis_primeiro",
     "status": "synced",
-    "updatedAt": "2026-09-30T21:02:10.723Z"
+    "updatedAt": "2026-10-02T16:15:32.987Z"
   },
   "state": {
     "phase": "Fase 1",
@@ -21,7 +21,7 @@
   "study": {
     "evidence": "confirmed",
     "sourceRef": "data/seedf-snapshot.json#execution.leis_primeiro",
-    "updatedAt": "2026-09-30T21:02:10.723Z",
+    "updatedAt": "2026-10-02T16:15:32.987Z",
     "trail": "Leis Primeiro",
     "lastCompletedUnit": "L03",
     "nextUnit": "L06",

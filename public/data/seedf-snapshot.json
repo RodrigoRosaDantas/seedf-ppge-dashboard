@@ -6,8 +6,8 @@
     "page_id": "3d4cf5a2-6731-8106-a2c9-c97816aa6cf5",
     "page_url": "https://app.notion.com/p/SEEDF-PPGE-Gestor-Analista-Apoio-Administrativo-Dashboard-PRO-3d4cf5a267318106a2c9c97816aa6cf5",
     "last_edited_time": "2026-09-25T17:01:00.000Z",
-    "synced_at": "2026-09-30T21:02:10.723Z",
-    "content_hash": "7e49aad2ccbe27e750f0733b2b91c3a5222955c566ee90953b02afd94cb8f8bd",
+    "synced_at": "2026-10-02T16:15:32.987Z",
+    "content_hash": "b5a1759bebc7bf2b08e3527b486b4c3c3b395b468284a6a388f578866b65fe16",
     "status": "synced"
   },
   "dashboard": {
@@ -580,7 +580,7 @@
     ]
   },
   "execution": {
-    "as_of": "2026-09-30T21:02:10.717Z",
+    "as_of": "2026-10-02T16:15:32.982Z",
     "c01": {
       "days": [
         {
@@ -588,7 +588,7 @@
           "day_id": "C01-D01",
           "trail": "Ciclo principal",
           "title": "C01-D01 — Português fino + LDB",
-          "status": "Em andamento",
+          "status": "Concluído",
           "type": "Temático",
           "order": 1,
           "planned": 25,
@@ -602,14 +602,14 @@
           "href": "https://app.notion.com/p/3d4cf5a2673181fabef1f407c2451392",
           "executed_at": "2026-09-30",
           "created_at": "2026-09-08T00:34:00.000Z",
-          "updated_at": "2026-09-30T20:51:00.000Z"
+          "updated_at": "2026-10-02T14:47:00.000Z"
         },
         {
           "day": "D02",
           "day_id": "C01-D02",
           "trail": "Ciclo principal",
           "title": "C01-D02 — CF/88 Educação + LDB",
-          "status": "Não iniciado",
+          "status": "Próximo",
           "type": "Temático",
           "order": 2,
           "planned": 30,
@@ -623,7 +623,7 @@
           "href": "https://app.notion.com/p/3d4cf5a267318134be45ca366aa2cda5",
           "executed_at": null,
           "created_at": "2026-09-08T00:34:00.000Z",
-          "updated_at": "2026-09-21T18:17:00.000Z"
+          "updated_at": "2026-10-02T14:48:00.000Z"
         },
         {
           "day": "D03",
@@ -893,11 +893,11 @@
         {
           "subject": "Legislação Educacional",
           "planned": 52,
-          "done": 0,
-          "correct": 0,
-          "errors": 0,
+          "done": 15,
+          "correct": 14,
+          "errors": 1,
           "doubts": null,
-          "precision": null,
+          "precision": 0.9333333333333333,
           "rows": 4
         },
         {
@@ -953,11 +953,11 @@
         {
           "subject": "Português",
           "planned": 33,
-          "done": 0,
-          "correct": 0,
-          "errors": 0,
+          "done": 10,
+          "correct": 7,
+          "errors": 3,
           "doubts": null,
-          "precision": null,
+          "precision": 0.7,
           "rows": 5
         },
         {
@@ -1002,12 +1002,98 @@
         }
       ],
       "statuses": {
-        "Em andamento": 1,
-        "Não iniciado": 13
+        "Concluído": 1,
+        "Próximo": 1,
+        "Não iniciado": 12
       },
-      "active_day": "D01",
-      "error_count": 0,
-      "errors": [],
+      "active_day": "D02",
+      "error_count": 4,
+      "errors": [
+        {
+          "id": "3edcf5a2-6731-8159-a1ee-f41f03d42a23",
+          "url": "https://app.notion.com/p/C01-D01-Q02-precisar-de-se-e-sujeito-indeterminado-3edcf5a267318159a1eef41f03d42a23",
+          "day_id": "C01-D01",
+          "question_id": "C01-D01-Q02",
+          "title": "C01-D01-Q02 — precisar de + se e sujeito indeterminado",
+          "subject": "Concordância verbal e índice de indeterminação do sujeito",
+          "discipline": "Português",
+          "reason": null,
+          "pattern": "Conceito",
+          "severity": "Média",
+          "review": "D0",
+          "status": "Em andamento",
+          "strategic_use": "Ativo",
+          "recurrence": 1,
+          "flashcard": false,
+          "next_review": null,
+          "date": "2026-10-02",
+          "rule": "Em “precisar de + se”, o verbo é transitivo indireto e o “se” funciona como índice de indeterminação do sujeito; a forma normativa é “Precisa-se de servidores”.",
+          "observations": "Erro na bateria D01: resposta C; gabarito E. Motivo do erro não informado."
+        },
+        {
+          "id": "3edcf5a2-6731-818c-a14a-f07d5e9a4aed",
+          "url": "https://app.notion.com/p/C01-D01-Q03-reg-ncia-do-verbo-obedecer-3edcf5a26731818ca14af07d5e9a4aed",
+          "day_id": "C01-D01",
+          "question_id": "C01-D01-Q03",
+          "title": "C01-D01-Q03 — regência do verbo obedecer",
+          "subject": "Regência verbal — obedecer a",
+          "discipline": "Português",
+          "reason": null,
+          "pattern": "Conceito",
+          "severity": "Média",
+          "review": "D0",
+          "status": "Em andamento",
+          "strategic_use": "Ativo",
+          "recurrence": 1,
+          "flashcard": false,
+          "next_review": null,
+          "date": "2026-10-02",
+          "rule": "O verbo “obedecer” rege a preposição “a”: quem obedece, obedece a algo ou a alguém.",
+          "observations": "Erro na bateria D01: resposta E; gabarito C. Motivo do erro não informado."
+        },
+        {
+          "id": "3edcf5a2-6731-8184-b5a2-c7dee05d5200",
+          "url": "https://app.notion.com/p/C01-D01-Q07-ambiguidade-do-pronome-possessivo-3edcf5a267318184b5a2c7dee05d5200",
+          "day_id": "C01-D01",
+          "question_id": "C01-D01-Q07",
+          "title": "C01-D01-Q07 — ambiguidade do pronome possessivo",
+          "subject": "Coesão referencial — ambiguidade de pronome possessivo",
+          "discipline": "Português",
+          "reason": null,
+          "pattern": "Conceito",
+          "severity": "Média",
+          "review": "D0",
+          "status": "Em andamento",
+          "strategic_use": "Ativo",
+          "recurrence": 1,
+          "flashcard": false,
+          "next_review": null,
+          "date": "2026-10-02",
+          "rule": "O possessivo “seu” pode ter mais de um antecedente possível e, sem contexto suficiente, não identifica de forma inequívoca o referente.",
+          "observations": "Erro na bateria D01: resposta C; gabarito E. Motivo do erro não informado."
+        },
+        {
+          "id": "3edcf5a2-6731-81a2-a049-f65d221531e4",
+          "url": "https://app.notion.com/p/C01-D01-Q11-conceito-amplo-de-educa-o-e-recorte-da-LDB-3edcf5a2673181a2a049f65d221531e4",
+          "day_id": "C01-D01",
+          "question_id": "C01-D01-Q11",
+          "title": "C01-D01-Q11 — conceito amplo de educação e recorte da LDB",
+          "subject": "LDB — art. 1º, conceito de educação e educação escolar",
+          "discipline": "Legislação Educacional",
+          "reason": null,
+          "pattern": "Lei seca",
+          "severity": "Média",
+          "review": "D0",
+          "status": "Em andamento",
+          "strategic_use": "Ativo",
+          "recurrence": 1,
+          "flashcard": false,
+          "next_review": null,
+          "date": "2026-10-02",
+          "rule": "A educação abrange processos formativos em diversos espaços sociais; a LDB disciplina especificamente a educação escolar, desenvolvida predominantemente por meio do ensino em instituições próprias.",
+          "observations": "Erro na bateria D01: resposta E; gabarito C. Conteúdo novo no ciclo; motivo do erro não informado."
+        }
+      ],
       "question_rows": 36
     },
     "leis_primeiro": {
