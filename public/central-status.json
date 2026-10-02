@@ -6,26 +6,24 @@
     "kind": "public-project-state",
     "ref": "data/seedf-snapshot.json#execution.leis_primeiro",
     "status": "synced",
-    "updatedAt": "2026-10-02T16:15:32.987Z"
+    "updatedAt": "2026-10-02T20:08:47.857Z"
   },
   "state": {
     "phase": "Fase 1",
     "cycle": "Leis Primeiro",
-    "currentUnit": "L06",
+    "currentUnit": "L07",
     "nextAction": "L06 — Lei Orgânica do Distrito Federal | Administração + Servidores + Educação",
     "nextActionKind": "planned",
-    "alerts": [
-      "L06: 20 questões e 19 acertos registrados; leitura/material e D0 continuam pendentes."
-    ]
+    "alerts": []
   },
   "study": {
     "evidence": "confirmed",
     "sourceRef": "data/seedf-snapshot.json#execution.leis_primeiro",
-    "updatedAt": "2026-10-02T16:15:32.987Z",
+    "updatedAt": "2026-10-02T20:08:47.857Z",
     "trail": "Leis Primeiro",
     "lastCompletedUnit": "L03",
     "nextUnit": "L06",
-    "lastStudiedAt": "2026-09-30",
+    "lastStudiedAt": "2026-10-02",
     "questionsDone": 165,
     "correct": 142,
     "errors": 23,
@@ -36,9 +34,100 @@
     "activeErrors": 23,
     "completedSessions": 6,
     "totalSessions": 34,
+    "timeCredits": [
+      {
+        "id": "seedf:reading:L01:2026-09-21",
+        "date": "2026-09-21",
+        "kind": "reading",
+        "unit": "L01",
+        "trail": "Leis Primeiro",
+        "minutes": 60,
+        "sourceRef": "data/seedf-snapshot.json#execution.leis_primeiro.sessions"
+      },
+      {
+        "id": "seedf:study:L01:2026-09-21",
+        "date": "2026-09-21",
+        "kind": "study",
+        "unit": "L01",
+        "trail": "Leis Primeiro",
+        "minutes": 60,
+        "sourceRef": "data/seedf-snapshot.json#execution.leis_primeiro.sessions"
+      },
+      {
+        "id": "seedf:reading:L02:2026-09-22",
+        "date": "2026-09-22",
+        "kind": "reading",
+        "unit": "L02",
+        "trail": "Leis Primeiro",
+        "minutes": 60,
+        "sourceRef": "data/seedf-snapshot.json#execution.leis_primeiro.sessions"
+      },
+      {
+        "id": "seedf:study:L02:2026-09-22",
+        "date": "2026-09-22",
+        "kind": "study",
+        "unit": "L02",
+        "trail": "Leis Primeiro",
+        "minutes": 60,
+        "sourceRef": "data/seedf-snapshot.json#execution.leis_primeiro.sessions"
+      },
+      {
+        "id": "seedf:reading:L03:2026-09-23",
+        "date": "2026-09-23",
+        "kind": "reading",
+        "unit": "L03",
+        "trail": "Leis Primeiro",
+        "minutes": 60,
+        "sourceRef": "data/seedf-snapshot.json#execution.leis_primeiro.sessions"
+      },
+      {
+        "id": "seedf:study:L03:2026-09-23",
+        "date": "2026-09-23",
+        "kind": "study",
+        "unit": "L03",
+        "trail": "Leis Primeiro",
+        "minutes": 60,
+        "sourceRef": "data/seedf-snapshot.json#execution.leis_primeiro.sessions"
+      },
+      {
+        "id": "seedf:study:L04:2026-09-28",
+        "date": "2026-09-28",
+        "kind": "study",
+        "unit": "L04",
+        "trail": "Leis Primeiro",
+        "minutes": 60,
+        "sourceRef": "data/seedf-snapshot.json#execution.leis_primeiro.sessions"
+      },
+      {
+        "id": "seedf:study:L05:2026-09-29",
+        "date": "2026-09-29",
+        "kind": "study",
+        "unit": "L05",
+        "trail": "Leis Primeiro",
+        "minutes": 60,
+        "sourceRef": "data/seedf-snapshot.json#execution.leis_primeiro.sessions"
+      },
+      {
+        "id": "seedf:study:C01-D01:2026-09-30",
+        "date": "2026-09-30",
+        "kind": "study",
+        "unit": "C01-D01",
+        "trail": "Execução diária SEEDF",
+        "minutes": 60,
+        "sourceRef": "data/seedf-snapshot.json#execution.c01.days"
+      },
+      {
+        "id": "seedf:study:L06:2026-09-30",
+        "date": "2026-09-30",
+        "kind": "study",
+        "unit": "L06",
+        "trail": "Leis Primeiro",
+        "minutes": 60,
+        "sourceRef": "data/seedf-snapshot.json#execution.leis_primeiro.sessions"
+      }
+    ],
     "notes": [
-      "Próxima lei não iniciada no banco: L06.",
-      "L06: 20 questões e 19 acertos registrados; leitura/material e D0 continuam pendentes."
+      "Próxima lei não iniciada no banco: L06."
     ]
   }
 }

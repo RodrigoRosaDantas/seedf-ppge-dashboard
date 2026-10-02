@@ -6,15 +6,15 @@
     "page_id": "3d4cf5a2-6731-8106-a2c9-c97816aa6cf5",
     "page_url": "https://app.notion.com/p/SEEDF-PPGE-Gestor-Analista-Apoio-Administrativo-Dashboard-PRO-3d4cf5a267318106a2c9c97816aa6cf5",
     "last_edited_time": "2026-09-25T17:01:00.000Z",
-    "synced_at": "2026-10-02T16:15:32.987Z",
-    "content_hash": "b5a1759bebc7bf2b08e3527b486b4c3c3b395b468284a6a388f578866b65fe16",
+    "synced_at": "2026-10-02T20:08:47.857Z",
+    "content_hash": "46f3c187830b85d8ca93ab3f1875a44147a47810f28f00c355bb33a3b812011d",
     "status": "synced"
   },
   "dashboard": {
     "phase": "Fase 1",
     "cycle": "Ciclo 01",
-    "next_action": "D01 · Português fino + LDB",
-    "prepared_cycle_day": null,
+    "next_action": "Retomar L07 · sessão incompleta",
+    "prepared_cycle_day": "D02",
     "planned_questions": 355,
     "projected_questions": 425,
     "executed_questions": 0,
@@ -580,7 +580,7 @@
     ]
   },
   "execution": {
-    "as_of": "2026-10-02T16:15:32.982Z",
+    "as_of": "2026-10-02T20:08:47.851Z",
     "c01": {
       "days": [
         {
@@ -609,7 +609,7 @@
           "day_id": "C01-D02",
           "trail": "Ciclo principal",
           "title": "C01-D02 — CF/88 Educação + LDB",
-          "status": "Próximo",
+          "status": "Em andamento",
           "type": "Temático",
           "order": 2,
           "planned": 30,
@@ -621,9 +621,9 @@
           "precision": null,
           "progress": 0,
           "href": "https://app.notion.com/p/3d4cf5a267318134be45ca366aa2cda5",
-          "executed_at": null,
+          "executed_at": "2026-10-02",
           "created_at": "2026-09-08T00:34:00.000Z",
-          "updated_at": "2026-10-02T14:48:00.000Z"
+          "updated_at": "2026-10-02T19:42:00.000Z"
         },
         {
           "day": "D03",
@@ -1003,7 +1003,7 @@
       ],
       "statuses": {
         "Concluído": 1,
-        "Próximo": 1,
+        "Em andamento": 1,
         "Não iniciado": 12
       },
       "active_day": "D02",
@@ -1884,6 +1884,35 @@
       "latest_day_id": "LP-20260930-L06-Q",
       "sessions": [
         {
+          "id": "3edcf5a2-6731-8135-82ef-f3d14a1e0abf",
+          "title": "2026-10-02 · L07 · D0 · resumo 1 + questões",
+          "url": "https://app.notion.com/p/2026-10-02-L07-D0-resumo-1-quest-es-3edcf5a26731813582eff3d14a1e0abf",
+          "date": "2026-10-02",
+          "page_code": "L07",
+          "stage": "D0",
+          "session_type": "Estudo de resumo",
+          "modality": "Resumo / material",
+          "progress": "Resumo 1",
+          "source": "Material auditado",
+          "summary_number": 1,
+          "reading_number": null,
+          "summary_counter": 0,
+          "reading_counter": 0,
+          "session_counter": 0,
+          "completed": false,
+          "questions_planned": 15,
+          "questions_done": null,
+          "correct": null,
+          "errors": null,
+          "doubts": null,
+          "flashcards": null,
+          "minutes": null,
+          "precision": null,
+          "href": "https://app.notion.com/p/3d8cf5a267318152b3c7fd6d37da7fd0",
+          "created_at": "2026-10-02T19:38:00.000Z",
+          "updated_at": "2026-10-02T19:38:00.000Z"
+        },
+        {
           "id": "3ebcf5a2-6731-81b7-a6f3-f375833e3b07",
           "title": "2026-09-30 · L06 · D0 · bateria obrigatória",
           "url": "https://app.notion.com/p/2026-09-30-L06-D0-bateria-obrigat-ria-3ebcf5a2673181b7a6f3f375833e3b07",
@@ -2062,12 +2091,12 @@
         "sessions": 6,
         "summaries": null,
         "readings": 3,
-        "questions": 165,
-        "correct": 142,
-        "errors": 23,
-        "doubts": 0,
-        "flashcards": 18,
-        "precision": 0.8606060606060606
+        "questions": null,
+        "correct": null,
+        "errors": null,
+        "doubts": null,
+        "flashcards": null,
+        "precision": null
       }
     }
   },
