@@ -1,5 +1,4 @@
 name: Sync SEEDF dashboard from Notion
-# Manual sync trigger marker: 2026-10-02T15:47-03:00
 
 on:
   push:
